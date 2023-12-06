@@ -4,9 +4,6 @@
   --violet-light: #D1C4E9;
 }
 
-html {
-  background-color: var(--violet);
-}
 
 * {
   box-sizing: border-box;
