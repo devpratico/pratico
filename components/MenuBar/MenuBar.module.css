@@ -1,0 +1,8 @@
+.menuBarContainer {
+    color: white;
+    background-color: var(--violet);
+    border-bottom: 1px solid var(--violet-dark);
+    height: 50px;
+    display: flex;
+    align-items: center;
+}

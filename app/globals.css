@@ -1,7 +1,12 @@
 :root {
-  --primary-color: #0141ff;
+  --violet: #673AB7;
+  --violet-dark: #512DA8;
+  --violet-light: #D1C4E9;
 }
 
+html {
+  background-color: var(--violet);
+}
 
 * {
   box-sizing: border-box;

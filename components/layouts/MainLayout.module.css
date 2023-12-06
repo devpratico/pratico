@@ -1,33 +1,24 @@
-/*
-    Commentaire
-*/
-
-
 .main {
-    background-color: blue;
     height: 100%;
     display: grid;
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto auto 1fr auto;
     grid-template-areas: 
         "banner     banner      banner"
-        "navBar     navBar      navBar"
+        "menuBar     menuBar      menuBar"
         "leftBar    content     rightBar"
         "footer     footer      footer";
 }
 
 .banner {
-    background-color: yellow;
     grid-area: banner;
 }
 
-.navBar {
-    background-color: green;
-    grid-area: navBar;
+.menuBar {
+    grid-area: menuBar;
 }
 
 .leftBar {
-    background-color: red;
     grid-area: leftBar;
 }
 
@@ -36,12 +27,10 @@
 }
 
 .content {
-    background-color: pink;
     grid-area: content;
 }
 
 .rightBar {
-    background-color: purple;
     grid-area: rightBar;
 }
 
@@ -50,7 +39,6 @@
 }
 
 .footer {
-    background-color: orange;
     grid-area: footer;
 }
 
