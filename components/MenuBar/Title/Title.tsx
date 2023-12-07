@@ -25,11 +25,15 @@ export default function Title({ initialValue, placeholder, focusFirst, editable 
     const inputRef = useRef<HTMLInputElement>(null);
     const sizerRef = useRef<HTMLSpanElement> (null);
 
-    
-    if (inputRef.current) {
-        // Focus the input when the component is mounted (if desired)
-        if (focusFirst && editable) inputRef.current.focus();
-    }
+    useEffect(() => {
+        if (inputRef.current) {
+            // Focus the input when the component is mounted (if desired)
+            if (focusFirst && editable) {
+                inputRef.current.focus();
+                //inputRef.current.select();
+            }
+        }
+    },[]);
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)

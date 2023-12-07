@@ -1,0 +1,26 @@
+.container {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background-color: transparent;
+    border:  none;
+    outline: none;
+    padding: 0;
+    margin:  0;
+    box-sizing: border-box;
+    height: 100%;
+    line-height: inherit;
+}
+
+.container:hover {
+    cursor: pointer;
+}
+
+.label {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--violet-lighter);
+}

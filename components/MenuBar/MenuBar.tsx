@@ -1,16 +1,9 @@
 'use client';
-
 import styles from './MenuBar.module.css'
 import Image from 'next/image';
 import logo from './pratico.svg';
 import Title from './Title/Title';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStopwatch } from '@fortawesome/free-solid-svg-icons';
-import { faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
-import { faMessage } from '@fortawesome/free-solid-svg-icons';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import Icon from './Icon/Icon';
 
 
 interface MenuBarProps {
@@ -20,10 +13,10 @@ interface MenuBarProps {
 
 export default function MenuBar({ mode }: MenuBarProps) {
 
-    type element = "logo" | "title" | "control" | "stopwatch" | "puzzle" | "chat" | "users" | "ellipsis";
-    const creationElements:  element[] = ["logo", "title", "control", "puzzle", "ellipsis"];
-    const animationElements: element[] = ["logo", "title", "control", "stopwatch", "puzzle", "chat", "users", "ellipsis"];
-    const leftAreaElements:  element[] = ["logo", "title", "control"];
+    type element = "logo" | "title" | "play" | "pause" | "stop" | "stopwatch" | "puzzle" | "chat" | "users" | "ellipsis";
+    const creationElements:  element[] = ["logo", "title", "play", "puzzle", "ellipsis"];
+    const animationElements: element[] = ["logo", "title", "pause", "stop", "stopwatch", "puzzle", "chat", "users", "ellipsis"];
+    const leftAreaElements:  element[] = ["logo", "title", "play", "pause", "stop"];
     const rightAreaElements: element[] = ["stopwatch", "puzzle", "chat", "users", "ellipsis"];
 
     const elements = mode === "creation" ? creationElements : animationElements;
@@ -31,7 +24,7 @@ export default function MenuBar({ mode }: MenuBarProps) {
     const rightElements = elements.filter((element) => rightAreaElements.includes(element));
 
     const creationTitleProps = {
-        initialValue: "Untitled",
+        initialValue: "",
         placeholder: "Session name",
         focusFirst: true,
         editable: true
@@ -49,12 +42,14 @@ export default function MenuBar({ mode }: MenuBarProps) {
     const componentsMap: { [key in element]: JSX.Element } = {
         "logo":         <Image className={styles.logo} src={logo} alt="Pratico" />,
         "title":        <Title {...titleProps} />,
-        "control":      <FontAwesomeIcon icon={faPlay} />,
-        "stopwatch":    <FontAwesomeIcon icon={faStopwatch} />,
-        "puzzle":       <FontAwesomeIcon icon={faPuzzlePiece} />,
-        "chat":         <FontAwesomeIcon icon={faMessage} />,
-        "users":        <FontAwesomeIcon icon={faUsers} />,
-        "ellipsis":     <FontAwesomeIcon icon={faEllipsis} />
+        "play":         <Icon type="play" showLabel={true} />,
+        "pause":        <Icon type="pause" showLabel={true} />,
+        "stop":         <Icon type="stop" showLabel={true} />,
+        "stopwatch":    <Icon type="stopwatch" showLabel={true} />,
+        "puzzle":       <Icon type="puzzle" showLabel={true} />,
+        "chat":         <Icon type="chat" showLabel={true} />,
+        "users":        <Icon type="users" showLabel={true} />,
+        "ellipsis":     <Icon type="ellipsis" showLabel={true} />
     }
 
     const leftAreatComponents =  leftElements.map((element)  => componentsMap[element]);

@@ -19,7 +19,12 @@
 }
 
 
-.input:focus {
+.inputHoverable:focus {
+    outline: none;
+    background-color: var(--violet-light);
+}
+
+.inputHoverable:active {
     outline: none;
     background-color: var(--violet-light);
 }

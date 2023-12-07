@@ -5,8 +5,8 @@ import MenuBar from '@/components/MenuBar/MenuBar'
 export default function Home() {
 
   const propsForMainLayout = {
-    menuBar: <MenuBar />,
-    content: <div>Content</div>,
+    menuBar:  <MenuBar mode="animation"/>,
+    content:  <div>Content</div>,
     rightBar: <div>Right Bar</div>
   }
 
