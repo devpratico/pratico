@@ -5,4 +5,16 @@
     height: 50px;
     display: flex;
     align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
+
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+}
+
+.spacer {
+    flex-grow: 1;
 }

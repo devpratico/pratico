@@ -1,7 +1,13 @@
 :root {
-  --violet: #673AB7;
-  --violet-dark: #512DA8;
-  --violet-light: #D1C4E9;
+  --violet: #6866ED;
+  --violet-dark: #4F4CEA;
+  --violet-light: #817FF0;
+  --violet-lighter: #DBDAFB;
+  --pink: #F953B2;
+  --yellow: #F4D13C;
+  --orange: #EF8E3F;
+
+
 }
 
 
@@ -9,4 +15,9 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+input::selection {
+  background-color: var(--violet);
 }

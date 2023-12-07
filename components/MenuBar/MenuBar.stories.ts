@@ -10,8 +10,15 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const MenuBarStory: Story = {
+export const Creation: Story = {
     args: {
-        title: 'Titre',
+        mode: 'creation',
     },
 };
+
+export const Animation: Story = {
+    args: {
+        mode: 'animation',
+    },
+};
+
