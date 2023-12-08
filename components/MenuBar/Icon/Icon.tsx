@@ -11,10 +11,11 @@ import { faStop } from '@fortawesome/free-solid-svg-icons';
 
 interface IconProps {
     type: "stopwatch" | "puzzle" | "chat" | "users" | "ellipsis" | "play" | "pause" | "stop";
-    showLabel?: boolean;
+    hideLabel?: boolean;
+    onClick?: () => void;
 }
 
-export default function Icon({ type, showLabel }: IconProps) {
+export default function Icon({ type, hideLabel, onClick }: IconProps) {
 
     const iconMap: { [key in IconProps["type"]]: JSX.Element } = {
         "stopwatch": <FontAwesomeIcon icon={faStopwatch} />,
@@ -42,9 +43,9 @@ export default function Icon({ type, showLabel }: IconProps) {
     const label = labelMap[type];
 
     return (
-        <button className={styles.container}>
+        <button className={styles.container} onClick={onClick}>
             {iconComponent}
-            {showLabel != false ? <div className={styles.label}>{label}</div> : null}
+            {hideLabel ? null : <div className={styles.label}>{label}</div>}
         </button>
     )
 }
