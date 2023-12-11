@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Icon from './Icon';
+import LabeledIcon from './LabeledIcon';
 
-const meta: Meta<typeof Icon> = {
+const meta: Meta<typeof LabeledIcon> = {
     title: 'Composants/MenuBar/Icons',
-    component: Icon,
+    component: LabeledIcon,
 };
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Bouton: Story = {
+export const LabeledIconStory: Story = {
     args: {
         type: 'play',
-        hideLabel: false,
+        label: 'Play',
     },
 };
 

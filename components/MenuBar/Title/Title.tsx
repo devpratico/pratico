@@ -33,7 +33,7 @@ export default function Title({ initialValue, placeholder, focusFirst, editable 
                 //inputRef.current.select();
             }
         }
-    },[]);
+    },[focusFirst, editable]);
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
@@ -51,7 +51,7 @@ export default function Title({ initialValue, placeholder, focusFirst, editable 
             const cursorWidth = 2;
             inputRef.current.style.width = `${width + border + cursorWidth}px`;
         }
-    }, [inputValue]);
+    }, [inputValue, placeholder]);
 
 
     const inputProps = {

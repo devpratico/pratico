@@ -1,0 +1,18 @@
+.container {
+    background-color: white;
+    display:flex;
+    height: 70px;
+    border-top: 1px solid var(--violet-lighter);
+}
+
+.carouselContainer {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.controls {
+    display: flex;
+    padding: 1rem;
+    gap: 2rem;
+    border-left: 1px solid var(--violet-lighter);
+}

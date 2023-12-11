@@ -1,9 +1,9 @@
 'use client';
 import styles from './MenuBar.module.css'
 import Image from 'next/image';
-import logo from './pratico.svg';
 import Title from './Title/Title';
-import Icon from './Icon/Icon';
+import LabeledIconBtn from '../Buttons/LabaledIconBtn/LabeledIconBtn';
+import { ColorType } from '@/utils/Colors';
 
 
 interface MenuBarProps {
@@ -28,7 +28,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
     const elements = mode === "creation" ? creationElements : animationElements;
 
     // Splitting elements into left and right areas
-    const leftElements = elements.filter((element) => leftAreaElements.includes(element));
+    const leftElements =  elements.filter((element) => leftAreaElements.includes(element));
     const rightElements = elements.filter((element) => rightAreaElements.includes(element));
 
     // The title components behaves differently depending on the mode
@@ -51,30 +51,40 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
         console.log("clicked");
     }
 
+    const labeledIconBtnProps = {
+        iconColor: "white" as ColorType,
+        labelColor: "violet-lighter" as ColorType,
+        onClick: handleClick
+    }
+
     // Each element corresponds to a component
     const componentsMap: { [key in element]: JSX.Element } = {
-        "logo":         <Image className={styles.logo} src={logo} alt="Pratico" />,
+        "logo":         <Image src='/pratico.svg' width={100} height={50} alt="Pratico" />,
         "title":        <Title {...titleProps} />,
-        "play":         <Icon type="play"       hideLabel={hideLabels} onClick={handleClick}/>,
-        "pause":        <Icon type="pause"      hideLabel={hideLabels} onClick={handleClick}/>,
-        "stop":         <Icon type="stop"       hideLabel={hideLabels} onClick={handleClick}/>,
-        "stopwatch":    <Icon type="stopwatch"  hideLabel={hideLabels} onClick={handleClick}/>,
-        "puzzle":       <Icon type="puzzle"     hideLabel={hideLabels} onClick={handleClick}/>,
-        "chat":         <Icon type="chat"       hideLabel={hideLabels} onClick={handleClick}/>,
-        "users":        <Icon type="users"      hideLabel={hideLabels} onClick={handleClick}/>,
-        "ellipsis":     <Icon type="ellipsis"   hideLabel={hideLabels} onClick={handleClick}/>
+        "play":         <LabeledIconBtn type="play"      label={"play"}     {...labeledIconBtnProps} />,
+        "pause":        <LabeledIconBtn type="pause"     label={"pause"}    {...labeledIconBtnProps} />,
+        "stop":         <LabeledIconBtn type="stop"      label={"stop"}     {...labeledIconBtnProps} />,
+        "stopwatch":    <LabeledIconBtn type="stopwatch" label={"stopwatch"}{...labeledIconBtnProps} />,
+        "puzzle":       <LabeledIconBtn type="puzzle"    label={"polls"}    {...labeledIconBtnProps} />,
+        "chat":         <LabeledIconBtn type="chat"      label={"chat"}     {...labeledIconBtnProps} />,
+        "users":        <LabeledIconBtn type="users"     label={"students"} {...labeledIconBtnProps} />,
+        "ellipsis":     <LabeledIconBtn type="ellipsis"  label={"more"}     {...labeledIconBtnProps} />
     }
 
     // Get the components corresponding to the elements
-    const leftAreatComponents =  leftElements.map((element)  => componentsMap[element]);
+    const leftAreatComponents  = leftElements.map( (element) => componentsMap[element]);
     const rightAreatComponents = rightElements.map((element) => componentsMap[element]);
+
+    // Set key to avoid warning
+    const leftAreatComponentsWithKeys  = leftAreatComponents.map( (component, index) => <div key={index}>{component}</div>);
+    const rightAreatComponentsWithKeys = rightAreatComponents.map((component, index) => <div key={index}>{component}</div>);
 
 
     return (
         <nav className={styles.menuBarContainer}>
-            {leftAreatComponents}
+            {leftAreatComponentsWithKeys}
             <div className={styles.spacer}></div>
-            {rightAreatComponents}
+            {rightAreatComponentsWithKeys}
         </nav>
     )
 }

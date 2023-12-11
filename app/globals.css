@@ -1,14 +1,60 @@
 :root {
   --violet: #6866ED;
   --violet-dark: #4F4CEA;
+  --violet-darker: #0b0960;
   --violet-light: #817FF0;
   --violet-lighter: #DBDAFB;
+  --violet-lightest: #EFEEFF;
   --pink: #F953B2;
   --yellow: #F4D13C;
   --orange: #EF8E3F;
-
-
 }
+
+.white {
+  color: white;
+}
+
+.black {
+  color: black;
+}
+
+.violet {
+  color: var(--violet);
+}
+
+.violet-dark {
+  color: var(--violet-dark);
+}
+
+.violet-darker {
+  color: var(--violet-darker);
+}
+
+.violet-light {
+  color: var(--violet-light);
+}
+
+.violet-lighter {
+  color: var(--violet-lighter);
+}
+
+.violet-lightest {
+  color: var(--violet-lightest);
+}
+
+.pink {
+  color: var(--pink);
+}
+
+.yellow {
+  color: var(--yellow);
+}
+
+.orange {
+  color: var(--orange);
+}
+
+
 
 
 * {

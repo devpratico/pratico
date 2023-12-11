@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.counter {
+    display: flex;
+    align-items: center;
+}
+
+.numberLeft {
+    font-size: 1rem;
+    font-weight:bold;
+    color: var(--violet);
+}
+
+.numberRight {
+    font-size: 1rem;
+    font-weight:lighter;
+    color: var(--violet-lighter);
+}
+
+
+.slash {
+    font-size: 1.3rem;
+    font-weight:lighter;
+    font-weight: 200;
+    color: var(--violet-lighter);
+}
