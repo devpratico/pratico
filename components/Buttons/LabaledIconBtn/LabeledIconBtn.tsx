@@ -1,23 +1,17 @@
 'use client'
 import styles from './LabeledIconBtn.module.css';
 import LabeledIcon from '../../LabeledIcon/LabeledIcon';
-import { ColorType } from '@/utils/Colors';
-import { IconName, IconSize } from '@/utils/Icons';
+import { LabeledIconProps } from '../../LabeledIcon/LabeledIcon';
 
 
-interface LabeledIconBtnProps {
-    type: IconName;
-    label?: string;
-    iconColor?: ColorType;
-    labelColor?: ColorType;
-    size?: IconSize;
+interface LabeledIconBtnProps extends LabeledIconProps {
     onClick?: () => void;
 }
 
-export default function LabeledIconBtn({ type, iconColor, labelColor, label, size, onClick }: LabeledIconBtnProps) {
+export default function LabeledIconBtn({ onClick, ...labeledIconProps }: LabeledIconBtnProps) {
     return (
         <button className={styles.btn} onClick={onClick}>
-            <LabeledIcon type={type} label={label} iconColor={iconColor} labelColor={labelColor} size={size} />
+            <LabeledIcon {...labeledIconProps} />
         </button>
     )
 }

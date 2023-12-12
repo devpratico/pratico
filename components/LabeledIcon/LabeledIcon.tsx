@@ -5,15 +5,16 @@ import { ColorType } from '@/utils/Colors';
 import { IconSize } from '@/utils/Icons';
 
 
-interface IconProps {
+export interface LabeledIconProps {
     type: IconName
     label?: string;
+    hideLabel?: boolean;
     iconColor?: ColorType;
     labelColor?: ColorType;
     size?: IconSize;
 }
 
-export default function LabeledIcon({ type, label, iconColor, labelColor, size }: IconProps) {
+export default function LabeledIcon({ type, label, hideLabel, iconColor, labelColor, size }: LabeledIconProps) {
     let icon = getIcon(type);
 
     if (size) {
@@ -30,7 +31,7 @@ export default function LabeledIcon({ type, label, iconColor, labelColor, size }
                 {icon}
             </div>
 
-            {label ? <p className={`${styles.label} ${labelColorClass}`}>{label}</p> : null}
+            {(label && hideLabel != true) ? <p className={`${styles.label} ${labelColorClass}`}>{label}</p> : null}
         </div>
     )
 }

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import LabeledIcon from './LabeledIcon';
 
 const meta: Meta<typeof LabeledIcon> = {
-    title: 'Composants/MenuBar/Icons',
+    title: 'Composants/Icons',
     component: LabeledIcon,
 };
 

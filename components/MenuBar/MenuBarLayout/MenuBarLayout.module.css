@@ -1,0 +1,25 @@
+:root {
+    --mbl-padding: 1.5rem;
+}
+
+.container {
+    background-color: var(--violet);
+    border-bottom: 1px solid var(--violet-dark);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 calc(var(--mbl-padding)/2);
+    overflow: hidden;
+}
+
+.spaceBetween {
+    justify-content: space-between;
+}
+
+.child {
+    padding: 0 calc(var(--mbl-padding)/2);
+}
+
+.spacer {
+    flex-grow: 1;
+}
