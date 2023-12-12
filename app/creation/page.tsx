@@ -1,5 +1,5 @@
 import styles from './page.module.css'
-import MainLayout from '../../components/Layoutss/MainLayout'
+import MainLayout from '../../components/Layouts/MainLayout'
 import MenuBar from '../../components/MenuBar/MenuBar'
 import SlideBar from '../../components/SlideBar/SlideBar'
 import Desk from '../../components/Desk/Desk'
