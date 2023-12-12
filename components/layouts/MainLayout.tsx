@@ -26,12 +26,12 @@ export default function MainLayout({banner, menuBar, leftBar, content, rightBar,
         footerVisible: true,
     };
 
-    const bannerStyle =   styles.banner +   (banner && layoutState.bannerVisible ?     "" : " " + styles.collapsed);
-    const menuBarStyle =   styles.menuBar + (menuBar && layoutState.menuBarVisible ?   "" : " " + styles.collapsed);
-    const leftBarStyle =  styles.leftBar +  (leftBar && layoutState.leftBarVisible ?   "" : " " + styles.collapsed);
-    const contentStyle =  styles.content +  (content && layoutState.contentVisible ?   "" : " " + styles.collapsed);
+    const bannerStyle   = styles.banner   + (banner   && layoutState.bannerVisible   ? "" : " " + styles.collapsed);
+    const menuBarStyle  = styles.menuBar  + (menuBar  && layoutState.menuBarVisible  ? "" : " " + styles.collapsed);
+    const leftBarStyle  = styles.leftBar  + (leftBar  && layoutState.leftBarVisible  ? "" : " " + styles.collapsed);
+    const contentStyle  = styles.content  + (content  && layoutState.contentVisible  ? "" : " " + styles.collapsed);
     const rightBarStyle = styles.rightBar + (rightBar && layoutState.rightBarVisible ? "" : " " + styles.collapsed);
-    const footerStyle =   styles.footer +   (footer && layoutState.footerVisible ?     "" : " " + styles.collapsed);
+    const footerStyle   = styles.footer   + (footer   && layoutState.footerVisible   ? "" : " " + styles.collapsed);
 
     return (
         <div className={styles.main}>
