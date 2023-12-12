@@ -5,7 +5,7 @@
     grid-template-rows: auto auto 1fr auto;
     grid-template-areas: 
         "banner     banner      banner"
-        "menuBar     menuBar      menuBar"
+        "menuBar    menuBar     menuBar"
         "leftBar    content     rightBar"
         "footer     footer      footer";
 }
