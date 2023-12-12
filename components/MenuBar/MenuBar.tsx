@@ -1,10 +1,10 @@
-'use client';
-import styles from './MenuBar.module.css'
 import Image from 'next/image';
 import Title from './Title/Title';
 import LabeledIconBtn from '../Buttons/LabaledIconBtn/LabeledIconBtn';
 import { ColorType } from '@/utils/Colors';
 import MenuBarLayout from './MenuBarLayout/MenuBarLayout';
+import praticoLogo from '../../public/pratico.svg';
+import { IconSize } from '@/utils/Icons';
 
 
 interface MenuBarProps {
@@ -12,11 +12,14 @@ interface MenuBarProps {
     hideLabels?: boolean;
 }
 
-
+/**
+ * This component uses the `MenuBarLayout` component to render a menu bar with the appropriate buttons for the specified mode.
+ */
 export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
 
     const styleBtnProps = {
         iconColor: "white" as ColorType,
+        size: "sm" as IconSize,
         labelColor: "violet-lighter" as ColorType,
         hideLabel: hideLabels
     }
@@ -25,10 +28,10 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
         case "creation":
             return (
                 <MenuBarLayout spacerPosition={3}>
-                    <Image src='/pratico.svg' width={100} height={50} alt="Pratico" />
+                    <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                     <Title initialValue="" placeholder="Session name" focusFirst={true} editable={true} />
                     <LabeledIconBtn type="play"         label="play"        {...styleBtnProps} />
-                    <LabeledIconBtn type="stopwatch"    label="stopwatch"   {...styleBtnProps} />
+                    <LabeledIconBtn type="puzzle"       label="polls"       {...styleBtnProps} />
                     <LabeledIconBtn type="ellipsis"     label="more"        {...styleBtnProps} />
                 </MenuBarLayout>
             )
@@ -36,7 +39,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
         case "animation":
             return (
                 <MenuBarLayout spacerPosition={4}>
-                    <Image src='/pratico.svg' width={100} height={50} alt="Pratico" />
+                    <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                     <Title initialValue="My session" placeholder="Session name" focusFirst={false} editable={false} />
                     <LabeledIconBtn type="pause"        label="pause"       {...styleBtnProps} />
                     <LabeledIconBtn type="stop"         label="stop"        {...styleBtnProps} />
@@ -50,8 +53,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
         case "dashboard":
             return (
                 <MenuBarLayout spacerPosition={1}>
-                    <Image src='/pratico.svg' width={100} height={50} alt="Pratico" />
-                    <LabeledIconBtn type="ellipsis"     label="more"        {...styleBtnProps} />
+                    <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                 </MenuBarLayout>
             )
     }

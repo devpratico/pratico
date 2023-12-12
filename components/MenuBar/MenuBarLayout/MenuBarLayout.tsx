@@ -2,7 +2,7 @@ import styles from './MenuBarLayout.module.css';
 
 
 interface MenuBarLayoutProps {
-    children: React.ReactNode[];
+    children: React.ReactNode[] | React.ReactNode;
     spacerPosition?: number;
 }
 
@@ -14,8 +14,11 @@ interface MenuBarLayoutProps {
  */
 export default function MenuBarLayout({ children, spacerPosition }: MenuBarLayoutProps) {
 
+    // Make sure children is an array
+    const childrenArray = Array.isArray(children) ? children : [children];
+
     // Add a div around each child to style them and add a key
-    const styledChildren = children.map((child, index) => 
+    const styledChildren = childrenArray.map((child, index) => 
         <div className={styles.child} key={index}>{child}</div>
     );
 

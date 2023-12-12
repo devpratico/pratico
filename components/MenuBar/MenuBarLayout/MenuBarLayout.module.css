@@ -1,8 +1,5 @@
-:root {
-    --mbl-padding: 1.5rem;
-}
-
 .container {
+    --mbl-padding: 0.7rem;
     background-color: var(--violet);
     border-bottom: 1px solid var(--violet-dark);
     height: 50px;
@@ -18,6 +15,7 @@
 
 .child {
     padding: 0 calc(var(--mbl-padding)/2);
+    display: flex;
 }
 
 .spacer {

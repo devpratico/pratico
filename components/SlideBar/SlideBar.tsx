@@ -14,6 +14,7 @@ export default function SlideBar() {
         iconColor:  "violet" as ColorType,
         labelColor: "violet-darker" as ColorType,
         size:       "xl" as IconSize,
+        centered:   true,
         onClick: () => console.log("clicked")
     }
     const AddPage = () => <LabeledIconBtn {...addPageBtnProps} />
@@ -21,9 +22,10 @@ export default function SlideBar() {
     const expandBtnProps = {
         type:       "expand" as IconName,
         label:      "full screen",
-        iconColor:  "violet-darker" as ColorType,
+        iconColor:  "violet" as ColorType,
         labelColor: "violet-darker" as ColorType,
-        //size:       "xl" as IconSize,
+        size:       "lg" as IconSize,
+        centered:   true,
         onClick: () => console.log("clicked")
     }
     const Expand = () => <LabeledIconBtn {...expandBtnProps} />

@@ -1,14 +1,15 @@
 import styles from './page.module.css'
 import MainLayout from '@/components/Layouts/MainLayout'
 import MenuBar from '@/components/MenuBar/MenuBar'
-import DocumentsView from '@/components/Dashboard/Documents/DocumentsView'
+import SlideBar from '@/components/SlideBar/SlideBar'
+import Desk from '@/components/Desk/Desk'
 
-export default function Home() {
+export default function CreationPage() {
 
   const propsForMainLayout = {
-    menuBar:  <MenuBar mode="dashboard"/>,
-    leftBar:  <div>Left</div>,
-    content:  <DocumentsView/>
+    menuBar:  <MenuBar mode="animation"/>,
+    content:  <Desk/>,
+    footer:   <SlideBar/>,
   }
 
 

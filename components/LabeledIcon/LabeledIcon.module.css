@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
     background-color: transparent;
 }
 
@@ -12,6 +11,10 @@
 }
 
 .label {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 300;
+}
+
+.invisible {
+    visibility: hidden;
 }

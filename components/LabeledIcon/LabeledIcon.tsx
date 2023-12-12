@@ -12,9 +12,13 @@ export interface LabeledIconProps {
     iconColor?: ColorType;
     labelColor?: ColorType;
     size?: IconSize;
+    /**
+     * If true, the center of the element will be set to the center of the icon.
+     */
+    centered?: boolean;
 }
 
-export default function LabeledIcon({ type, label, hideLabel, iconColor, labelColor, size }: LabeledIconProps) {
+export default function LabeledIcon({ type, label, hideLabel, iconColor, labelColor, size, centered }: LabeledIconProps) {
     let icon = getIcon(type);
 
     if (size) {
@@ -27,6 +31,10 @@ export default function LabeledIcon({ type, label, hideLabel, iconColor, labelCo
 
     return (
         <div className={styles.container}>
+
+            {/* The invisible label is used to set the center of the element to the center of the icon */}
+            {(label && hideLabel != true && centered) ? <p className={`${styles.label} ${styles.invisible}`}>{label}</p> : null}
+
             <div className={iconColorClass}>
                 {icon}
             </div>
