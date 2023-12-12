@@ -1,7 +1,7 @@
 'use client'
 import styles from './SlideNavigation.module.css'
-import { IconName, IconSize } from '@/utils/Icons'
-import { ColorType } from '@/utils/Colors'
+import { IconName, IconSize } from '../../../utils/Icons'
+import { ColorType } from '../../../utils/Colors'
 import LabeledIconBtn from '../../Buttons/LabaledIconBtn/LabeledIconBtn'
 
 export default function SlideNavigation() {

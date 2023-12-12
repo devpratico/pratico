@@ -1,8 +1,8 @@
 'use client'
 import styles from './SlideBar.module.css'
 import LabeledIconBtn from '../Buttons/LabaledIconBtn/LabeledIconBtn'
-import { IconName, IconSize } from '@/utils/Icons'
-import { ColorType } from '@/utils/Colors'
+import { IconName, IconSize } from '../../utils/Icons'
+import { ColorType } from '../../utils/Colors'
 import SlideNavigation from './SlideNavigation/SlideNavigation'
 import Carousel from '../Carousel/Carousel'
 

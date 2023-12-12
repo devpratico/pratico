@@ -1,11 +1,11 @@
 import styles from './ToolBar.module.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowPointer } from '@fortawesome/free-solid-svg-icons';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
-import { faT } from '@fortawesome/free-solid-svg-icons';
-import { faShapes } from '@fortawesome/free-solid-svg-icons';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { faEraser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
+import { faArrowPointer }   from '@fortawesome/free-solid-svg-icons';
+import { faPen }            from '@fortawesome/free-solid-svg-icons';
+import { faT }              from '@fortawesome/free-solid-svg-icons';
+import { faShapes }         from '@fortawesome/free-solid-svg-icons';
+import { faImage }          from '@fortawesome/free-solid-svg-icons';
+import { faEraser }         from '@fortawesome/free-solid-svg-icons';
 
 export default function ToolBar() {
     return (
