@@ -1,16 +1,16 @@
 import styles from './page.module.css'
 import MainLayout from '../components/Layouts/MainLayout'
 import MenuBar from '../components/MenuBar/MenuBar'
-import DocumentsView from '../components/Dashboard/Documents/DocumentsView'
+import DocumentsView from '../components/Dashboard/DocumentsView/DocumentsView'
+import DashboardLeftBar from '../components/Dashboard/DashboardLeftBar/DashboardLeftBar'
 
-export default function Home() {
+export default function Dashboard() {
 
   const propsForMainLayout = {
     menuBar:  <MenuBar mode="dashboard"/>,
-    leftBar:  <div>Left</div>,
-    content:  <DocumentsView/>
+    content:  <DocumentsView/>,
+    leftBar:  <DashboardLeftBar/>,
   }
-
 
   return (
     <main className={styles.main}>

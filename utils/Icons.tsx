@@ -1,3 +1,4 @@
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faStopwatch,
@@ -29,6 +30,9 @@ export type IconName =
     | "chevron-right"
     ;
 
+export type IconSize = "2xs" | "xs" | "sm" | "lg" | "xl";
+
+
 const iconsMap: { [key in IconName]: JSX.Element } = {
     "stopwatch":    <FontAwesomeIcon icon={faStopwatch} />,
     "puzzle":       <FontAwesomeIcon icon={faPuzzlePiece} />,
@@ -44,8 +48,11 @@ const iconsMap: { [key in IconName]: JSX.Element } = {
     "chevron-right":<FontAwesomeIcon icon={faChevronRight} />,
 }
 
-export function getIcon(type: IconName): JSX.Element {
-    return iconsMap[type];
+export function getIcon(type: IconName, size?: IconSize): JSX.Element {
+    let icon = iconsMap[type];
+    if (size) {
+        icon = React.cloneElement(icon, { size: size });
+    }
+    return icon;
 }
 
-export type IconSize = "2xs" | "xs" | "sm" | "lg" | "xl";
