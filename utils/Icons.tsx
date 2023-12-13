@@ -13,10 +13,16 @@ import {
     faExpand,
     faChevronLeft,
     faChevronRight,
+    faFile,
+    faClockRotateLeft,
+    faBook,
+    faCircleQuestion,
+    faGear,
+    faFileLines,
 } from '@fortawesome/free-solid-svg-icons';
 
 export type IconName =
-    "stopwatch"
+      "stopwatch"
     | "puzzle"
     | "chat"
     | "users"
@@ -28,6 +34,12 @@ export type IconName =
     | "expand"
     | "chevron-left"
     | "chevron-right"
+    | "file"
+    | "clock-rotate-left"
+    | "book"
+    | "circle-question"
+    | "gear"
+    | "file-lines"
     ;
 
 export type IconSize = "2xs" | "xs" | "sm" | "lg" | "xl";
@@ -46,6 +58,12 @@ const iconsMap: { [key in IconName]: JSX.Element } = {
     "expand":       <FontAwesomeIcon icon={faExpand} />,
     "chevron-left": <FontAwesomeIcon icon={faChevronLeft} />,
     "chevron-right":<FontAwesomeIcon icon={faChevronRight} />,
+    "file":         <FontAwesomeIcon icon={faFile} />,
+    "clock-rotate-left": <FontAwesomeIcon icon={faClockRotateLeft} />,
+    "book":         <FontAwesomeIcon icon={faBook} />,
+    "circle-question": <FontAwesomeIcon icon={faCircleQuestion} />,
+    "gear":         <FontAwesomeIcon icon={faGear} />,
+    "file-lines":   <FontAwesomeIcon icon={faFileLines} />,
 }
 
 export function getIcon(type: IconName, size?: IconSize): JSX.Element {

@@ -5,6 +5,7 @@
     background-repeat: repeat;
     background-size: 200px;
     padding: 3rem;
+    overflow-y: scroll;
 }
 
 .header {

@@ -1,3 +1,4 @@
+'use client'
 import styles from './PlainBtn.module.css';
 import { getIcon, IconName, IconSize } from '@/utils/Icons';
 

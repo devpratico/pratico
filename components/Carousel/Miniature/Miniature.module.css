@@ -1,5 +1,6 @@
 .container {
     background-color: white;
+    border: 0.5px solid var(--violet-lighter);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 0.5rem;
 

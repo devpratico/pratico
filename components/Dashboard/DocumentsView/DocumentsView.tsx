@@ -6,7 +6,7 @@ export default function DocumentsView() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1 className={styles.title}>Supports</h1>
+                <h1 className={styles.title}>Présentations</h1>
                 <PlainBtn text="Créer un support" iconName="square-plus" style="violet" />
             </div>
             <DocumentsGrid/>
