@@ -1,1 +1,0 @@
-export type ColorType = "white" | "black" | "violet" | "violet-dark" | "violet-darker" | "violet-light" | "violet-lighter" | "pink" | "yellow" | "orange";
