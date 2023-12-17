@@ -1,0 +1,25 @@
+.container {
+    text-decoration: none;
+    color: inherit;
+    gap:0.2rem;
+}
+
+.legend {
+    font-size: 0.7rem;
+    color: var(--primary-text);
+    margin-top: 0.5rem;
+}
+
+
+.mini {
+    background-color: var(--background);
+    aspect-ratio: 16/9;
+    border-radius: 0.5rem;
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 0.7rem;
+}

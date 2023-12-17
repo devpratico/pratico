@@ -1,0 +1,23 @@
+.container {
+    --mbl-padding: 0.7rem;
+    background-color: var(--menu-bar);
+    border-bottom: 1px solid var(--primary-border);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 calc(var(--mbl-padding)/2);
+    overflow: hidden;
+}
+
+.spaceBetween {
+    justify-content: space-between;
+}
+
+.child {
+    padding: 0 calc(var(--mbl-padding)/2);
+    display: flex;
+}
+
+.spacer {
+    flex-grow: 1;
+}

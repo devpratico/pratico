@@ -1,0 +1,21 @@
+.container {
+    background-color: var(--background);
+    display:flex;
+    align-items: stretch;
+    height: 70px;
+    border-top: 1px solid var(--secondary-border);
+    overflow: hidden;
+}
+
+.carouselContainer {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    gap: 2rem;
+    border-left: 1px solid var(--secondary-border);
+}

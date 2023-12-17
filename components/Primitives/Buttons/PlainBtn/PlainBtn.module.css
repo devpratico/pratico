@@ -1,0 +1,47 @@
+.container {
+    border: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.068) 0px 1px 4px;
+}
+
+.btnSmall {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    gap: 0.3rem;
+    border-radius: 0.2rem;
+}
+
+.btnMedium {
+    font-size: 0.8em;
+    padding: 0.4rem 0.6rem;
+    gap: 0.5rem;
+    border-radius: 0.4rem;
+}
+
+.btnLarge {
+    font-size: 2rem;
+    padding: 0.6rem 0.8rem;
+    gap: 0.7rem;
+    border-radius: 0.6rem;
+}
+
+.btnPrimary {
+    color: var(--background);
+    background-color: var(--primary);
+}
+
+.btnPrimary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btnSecondary {
+    color: var(--primary);
+    background-color: white;
+}
+
+.btnSecondary:hover {
+    background-color: var(--secondary-hover);
+}
