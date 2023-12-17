@@ -9,7 +9,7 @@ export default function DocumentsView() {
             <h1 className={styles.title}>Présentations</h1>
             <div className={styles.buttons}>
                 <PToggleGroup />
-                <PlainBtn text="Créer" iconName="square-plus" style="violet" />
+                <PlainBtn text="Créer" iconName="square-plus" style="primary" />
             </div>
             <DocumentsGrid/>
         </div>
