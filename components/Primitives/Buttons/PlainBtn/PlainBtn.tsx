@@ -1,16 +1,17 @@
 'use client'
 import styles from './PlainBtn.module.css';
-import { getIcon, IconName, IconSize } from '@/utils/Icons';
+import { getIcon, IconName, IconSize } from '../../../../utils/Icons'
 
-
+export type ThemeColors = "primary" | "secondary" | "red" | "green";
 
 export interface PlainBtnProps {
     text: string;
-    size?: "s" | "m" | "l";
-    enabled?: boolean;
     iconName?: IconName;
-    style?: "primary" | "secondary" | "translucent" | "transparent" | "orange" | "pink";
+    size?: "s" | "m" | "l";
+    style?: "solid" | "soft" | "outline" | "ghost";
+    color?: ThemeColors;
     onClick?: () => void;
+    enabled?: boolean;
 }
 
 
@@ -23,53 +24,66 @@ export default function PlainBtn(props: PlainBtnProps) {
         icon = getIcon(props.iconName, iconSize);
     }
 
-    // Set the style
-    let btnStyle = styles.container;
-    switch (props.style) {
-        case "primary":
-            btnStyle = btnStyle.concat(" ", styles.btnPrimary);
+    // Set the styles
+    const stylesArray = [styles.container,"smallShadow"];
+
+    switch (props.size) {
+        case "s":
+            stylesArray.push(styles.s);
             break;
-        case "secondary":
-            btnStyle = btnStyle.concat(" ", styles.btnSecondary);
+        case "m":
+            stylesArray.push(styles.m);
             break;
-        case "translucent":
-            btnStyle = btnStyle.concat(" ", styles.btnTranslucent);
-            break;
-        case "transparent":
-            btnStyle = btnStyle.concat(" ", styles.btnTransparent);
-            break;
-        case "orange":
-            btnStyle = btnStyle.concat(" ", styles.btnOrange);
-            break;
-        case "pink":
-            btnStyle = btnStyle.concat(" ", styles.btnPink);
+        case "l":
+            stylesArray.push(styles.l);
             break;
         default:
-            btnStyle = btnStyle.concat(" ", styles.btnPrimary);
+            stylesArray.push(styles.m);
             break;
     }
 
-    // Set the size
-    const size = props.size ? props.size : "m";
-    switch (size) {
-        case "s":
-            btnStyle = btnStyle.concat(" ", styles.btnSmall);
+    switch (props.style) {
+        case "solid":
+            stylesArray.push(styles.solid);
             break;
-        case "m":
-            btnStyle = btnStyle.concat(" ", styles.btnMedium);
+        case "soft":
+            stylesArray.push(styles.soft);
             break;
-        case "l":
-            btnStyle = btnStyle.concat(" ", styles.btnLarge);
+        case "outline":
+            stylesArray.push(styles.outline);
+            break;
+        case "ghost":
+            stylesArray.push(styles.ghost);
             break;
         default:
-            btnStyle = btnStyle.concat(" ", styles.btnMedium);
+            stylesArray.push(styles.solid);
+            break;
+    }
+
+    switch (props.color) {
+        case "primary":
+            stylesArray.push(styles.primary);
+            break;
+        case "secondary":
+            stylesArray.push(styles.secondary);
+            break;
+        case "red":
+            stylesArray.push(styles.red);
+            break;
+        case "green":
+            stylesArray.push(styles.green);
+            break;
+        default:
+            stylesArray.push(styles.primary);
             break;
     }
 
     // Set the enabled state
     if (props.enabled === false) {
-        btnStyle = btnStyle.concat(" ", styles.disabled);
+        stylesArray.push(styles.disabled);
     }
+
+    const btnStyle = stylesArray.join(" ");
 
 
     return (

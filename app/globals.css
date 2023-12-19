@@ -16,11 +16,11 @@ input::selection {
 }
 
 .smallShadow {
-  box-shadow: rgba(0, 0, 0, 0.068) 0px 1px 4px;
-  border: 0.5px solid var(--secondary-border);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+  /*border: 0.5px solid var(--secondary-border);*/
 }
 
 .bigShadow {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
-  border: 0.5px solid var(--secondary-border);
+  /*border: 0.5px solid var(--secondary-border);*/
 }
