@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react";
-import '../app/globals.css'; // Storybook needs to import the global styles.
+import '../app/globals.css';
+import '../app/colors.css';
 
 const preview: Preview = {
   parameters: {

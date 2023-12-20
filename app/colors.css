@@ -21,7 +21,7 @@
   --secondary-l: 96%;
   --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
   --secondary-border: hsl(var(--secondary-h), calc(var(--secondary-s)*var(--border-s-mult)), calc(var(--secondary-l)*var(--border-l-mult)));
-  --text-on-secondary: var(--text);
+  --text-on-secondary: var(--intermediate);
 
   /* Intermediate */
   --intermediate-h: 252;
@@ -70,7 +70,7 @@
   --red-s: 84%;
   --red-l: 59%;
   --red: hsl(var(--red-h), var(--red-s), var(--red-l));
-  --red-border: hsl(var(--primary-h), calc(var(--primary-s)*var(--border-s-mult)), calc(var(--primary-l)*var(--border-l-mult)));
+  --red-border: hsl(var(--red-h), calc(var(--red-s)*var(--border-s-mult)), calc(var(--red-l)*var(--border-l-mult)));
   --text-on-red: white;
 
   /* Orange */

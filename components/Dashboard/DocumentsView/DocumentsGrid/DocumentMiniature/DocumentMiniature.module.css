@@ -6,7 +6,7 @@
 
 .legend {
     font-size: 0.7rem;
-    color: var(--primary-text);
+    color: var(--text);
     margin-top: 0.5rem;
 }
 
@@ -15,6 +15,7 @@
     background-color: var(--background);
     aspect-ratio: 16/9;
     border-radius: 0.5rem;
+    border: 0.5px solid var(--secondary-border);
 }
 
 .title {

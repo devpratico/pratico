@@ -11,12 +11,12 @@
 .container::after {
     content: "";
     position: absolute;
-    top: -1px;
-    left: -1px;
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
-    background-color: rgba(0, 0, 0, 0.3);
-    mix-blend-mode:soft-light;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: hsl(var(--primary-h), var(--primary-s), var(--primary-l), 0.05);
+    mix-blend-mode: multiply;
     border-radius: inherit;
     opacity: 0;
 }
@@ -27,29 +27,83 @@
 
 
 .s {
+    height: 1.2rem;
     font-size: 0.6rem;
-    padding: 0.2rem 0.4rem;
+    padding: 0 0.3rem;
     gap: 0.3rem;
     border-radius: 0.2rem;
 }
 
 .m {
+    height: 1.8rem;
     font-size: 0.8em;
-    padding: 0.4rem 0.6rem;
+    padding: 0 0.6rem;
     gap: 0.5rem;
     border-radius: 0.4rem;
 }
 
 .l {
-    font-size: 2rem;
-    padding: 0.6rem 0.8rem;
+    height: 2.4rem;
+    font-size: 1rem;
+    padding: 0 0.7rem;
     gap: 0.7rem;
     border-radius: 0.6rem;
 }
 
 .primary {
-    color: var(--text-on-primary);
-    background-color: var(--primary);
-    border-color: var(--primary-border);
+    --btn-solid-text-color: var(--text-on-primary);
+    --btn-soft-text-color: var(--primary);
+    --btn-solid-background-color: var(--primary);
+    --btn-soft-background-color: hsl(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
+    --btn-border-color: var(--primary-border);
 }
 
+.secondary {
+    --btn-solid-text-color: var(--primary);
+    --btn-soft-text-color: var(--primary);
+    --btn-solid-background-color: var(--background);
+    --btn-soft-background-color: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.8);
+    --btn-border-color: var(--secondary-border);
+}
+
+
+.red {
+    --btn-solid-text-color: var(--text-on-red);
+    --btn-soft-text-color: var(--red);
+    --btn-solid-background-color: var(--red);
+    --btn-soft-background-color: hsl(var(--red-h), var(--red-s), var(--red-l), 0.2);
+    --btn-border-color: var(--red-border);
+}
+
+.green {
+    --btn-solid-text-color: var(--text-on-green);
+    --btn-soft-text-color: var(--green);
+    --btn-solid-background-color: var(--green);
+    --btn-soft-background-color: hsl(var(--green-h), var(--green-s), var(--green-l), 0.2);
+    --btn-border-color: var(--green-border);
+}
+
+.solid {
+    color: var(--btn-solid-text-color);
+    background-color: var(--btn-solid-background-color);
+    border-color: var(--btn-border-color);
+
+}
+
+.soft {
+    color: var(--btn-soft-text-color);
+    background-color: var(--btn-soft-background-color);
+    border: none;
+}
+
+.outline {
+    color: var(--btn-soft-text-color);
+    background-color: transparent;
+    border-color: var(--btn-border-color);
+}
+
+.ghost {
+    color: var(--btn-soft-text-color);
+    background-color: transparent;
+    border: none;
+}

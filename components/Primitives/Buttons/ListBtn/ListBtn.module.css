@@ -16,9 +16,11 @@
 }
 
 .active {
-    background-color: var(--secondary-hover);
+    background-color: var(--secondary);
 }
 
+/*
 .container:hover {
-    color: var(--primary-hover);
+    background-color: var(--secondary);
 }
+*/

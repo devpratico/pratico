@@ -25,7 +25,7 @@ export default function PlainBtn(props: PlainBtnProps) {
     }
 
     // Set the styles
-    const stylesArray = [styles.container,"smallShadow"];
+    const stylesArray = [styles.container];
 
     switch (props.size) {
         case "s":
@@ -42,23 +42,6 @@ export default function PlainBtn(props: PlainBtnProps) {
             break;
     }
 
-    switch (props.style) {
-        case "solid":
-            stylesArray.push(styles.solid);
-            break;
-        case "soft":
-            stylesArray.push(styles.soft);
-            break;
-        case "outline":
-            stylesArray.push(styles.outline);
-            break;
-        case "ghost":
-            stylesArray.push(styles.ghost);
-            break;
-        default:
-            stylesArray.push(styles.solid);
-            break;
-    }
 
     switch (props.color) {
         case "primary":
@@ -75,6 +58,25 @@ export default function PlainBtn(props: PlainBtnProps) {
             break;
         default:
             stylesArray.push(styles.primary);
+            break;
+    }
+
+    switch (props.style) {
+        case "solid":
+            stylesArray.push(styles.solid);
+            stylesArray.push("smallShadow");
+            break;
+        case "soft":
+            stylesArray.push(styles.soft);
+            break;
+        case "outline":
+            stylesArray.push(styles.outline);
+            break;
+        case "ghost":
+            stylesArray.push(styles.ghost);
+            break;
+        default:
+            stylesArray.push(styles.solid);
             break;
     }
 

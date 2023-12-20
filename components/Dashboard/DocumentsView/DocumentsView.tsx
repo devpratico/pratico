@@ -1,7 +1,7 @@
 import styles from './DocumentsView.module.css';
 import DocumentsGrid from './DocumentsGrid/DocumentsGrid';
 import PlainBtn from '@/components/Primitives/Buttons/PlainBtn/PlainBtn';
-import PToggleGroup from '@/components/Primitives/ToggleGroup/PToggleGroup';
+import PToggleGroup from '@/components/Primitives/Buttons/PToggleGroup/PToggleGroup';
 
 export default function DocumentsView() {
     return (

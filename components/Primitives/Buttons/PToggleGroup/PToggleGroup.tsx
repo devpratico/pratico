@@ -6,8 +6,8 @@ import { getIcon } from '@/utils/Icons';
 
 export default function PToggleGroup(){
 
-    const gridIcon = getIcon('grip', 'lg');
-    const listIcon = getIcon('list', 'lg');
+    const gridIcon = getIcon('grip');
+    const listIcon = getIcon('list');
 
     const [selectedValue, setSelectedValue] = useState('grid');
 

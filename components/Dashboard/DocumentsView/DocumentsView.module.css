@@ -1,6 +1,6 @@
 .container {
     height: 100%;
-    background-color: var(--background-2);
+    background-color: var(--secondary);
     /*
     background-image: url("/noise-texture.png");
     background-repeat: repeat;
@@ -17,7 +17,7 @@
 }
 
 .title {
-    color: var(--primary-text);
+    color: var(--text);
     font-size: 1.5rem;
     font-weight: 700;
 }

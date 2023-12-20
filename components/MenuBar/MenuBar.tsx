@@ -18,9 +18,9 @@ interface MenuBarProps {
 export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
 
     const styleBtnProps = {
-        iconColor: "var(--secondary)",
+        iconColor: "var(--text-on-primary)",
         size: "sm" as IconSize,
-        labelColor: "var(--secondary-text)",
+        labelColor: "var(--secondary)",
         hideLabel: hideLabels,
         centered: true,
     }

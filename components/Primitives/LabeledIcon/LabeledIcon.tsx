@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './LabeledIcon.module.css';
-import {getIcon, IconName} from '../../utils/Icons';
-import { IconSize } from '../../utils/Icons';
+import {getIcon, IconName} from '../../../utils/Icons';
+import { IconSize } from '../../../utils/Icons';
 
 
 export interface LabeledIconProps {

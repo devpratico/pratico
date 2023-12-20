@@ -12,13 +12,13 @@
 .numberLeft {
     font-size: 1rem;
     font-weight:bold;
-    color: var(--primary-text);
+    color: var(--text);
 }
 
 .numberRight {
     font-size: 1rem;
     font-weight:lighter;
-    color: var(--secondary-text);
+    color: var(--intermediate);
 }
 
 
@@ -26,5 +26,5 @@
     font-size: 1.3rem;
     font-weight:lighter;
     font-weight: 200;
-    color: var(--secondary-text);
+    color: var(--intermediate);
 }

@@ -1,7 +1,7 @@
 .container {
     --mbl-padding: 0.7rem;
-    background-color: var(--menu-bar);
-    border-bottom: 1px solid var(--primary-border);
+    background-color: var(--brand);
+    border-bottom: 1px solid var(--brand-border);
     height: 50px;
     display: flex;
     align-items: center;

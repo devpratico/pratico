@@ -1,7 +1,7 @@
 'use client'
 import styles from './LabeledIconBtn.module.css';
-import LabeledIcon from '../../../LabeledIcon/LabeledIcon';
-import { LabeledIconProps } from '../../../LabeledIcon/LabeledIcon';
+import LabeledIcon from '../../LabeledIcon/LabeledIcon';
+import { LabeledIconProps } from '../../LabeledIcon/LabeledIcon';
 
 
 interface LabeledIconBtnProps extends LabeledIconProps {
