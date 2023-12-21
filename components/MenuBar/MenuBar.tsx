@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import Title from './Title/Title';
 import LabeledIconBtn from '../Primitives/Buttons/LabaledIconBtn/LabeledIconBtn';
+import LabeledIcon from '../Primitives/LabeledIcon/LabeledIcon';
 import MenuBarLayout from './MenuBarLayout/MenuBarLayout';
 import praticoLogo from '../../public/images/pratico.svg';
 import { IconSize } from '../../utils/Icons';
+import Modal from '../Primitives/Modal/Modal';
 
 
 interface MenuBarProps {
@@ -18,10 +20,10 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
 
     const styleBtnProps = {
         iconColor: "var(--text-on-primary)",
-        size: "sm" as IconSize,
+        size: "lg" as IconSize,
         labelColor: "var(--secondary)",
         hideLabel: hideLabels,
-        centered: true,
+        centered: false,
     }
 
     switch (mode) {
@@ -46,6 +48,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
                     <LabeledIconBtn type="stopwatch"    label="stopwatch"   {...styleBtnProps} />
                     <LabeledIconBtn type="chat"         label="chat"        {...styleBtnProps} />
                     <LabeledIconBtn type="users"        label="students"    {...styleBtnProps} />
+                    <Modal button={<LabeledIcon type="puzzle" label="polls" {...styleBtnProps} />} content={<div></div>} position="right"/>
                     <LabeledIconBtn type="ellipsis"     label="more"        {...styleBtnProps} />
                 </MenuBarLayout>
             )

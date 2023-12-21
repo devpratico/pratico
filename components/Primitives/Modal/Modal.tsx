@@ -1,3 +1,4 @@
+'use client'
 import styles from './Modal.module.css';
 import * as Dialog from '@radix-ui/react-dialog';
 

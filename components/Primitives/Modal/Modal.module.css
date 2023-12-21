@@ -25,7 +25,12 @@
     border-radius: 1rem;
     position: fixed;
     border: 0.5px solid var(--secondary-border);
+    z-index: 100;
 }
+
+.content:focus {
+    outline: none;
+  }
 
 .contentBlur {
     -webkit-backdrop-filter: blur(10px);
