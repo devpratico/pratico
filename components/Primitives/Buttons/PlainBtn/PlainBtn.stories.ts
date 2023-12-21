@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import PlainBtn, {ThemeColors} from './PlainBtn';
+import PlainBtn from './PlainBtn';
 
 
 const meta = {

@@ -16,6 +16,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@storybook/addon-docs": "^7.6.6",
     "next": "14.0.3",
