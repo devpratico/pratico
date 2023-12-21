@@ -14,7 +14,7 @@ const luciole = localFont({
     {
       path: '../public/fonts/Luciole-Bold.woff2',
       weight: 'bold',
-      style: 'bold',
+      style: 'normal',
     },
     {
       path: '../public/fonts/Luciole-Italic.woff2',
@@ -24,7 +24,7 @@ const luciole = localFont({
     {
       path: '../public/fonts/Luciole-BoldItalic.woff2',
       weight: 'bold',
-      style: 'bold italic',
+      style: 'italic',
     },
   ],
 })
