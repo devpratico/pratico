@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Title from './Title/Title';
 import LabeledIconBtn from '../Primitives/Buttons/LabaledIconBtn/LabeledIconBtn';
-import { ColorType } from '../../utils/Colors';
 import MenuBarLayout from './MenuBarLayout/MenuBarLayout';
-import praticoLogo from '../../public/pratico.svg';
+import praticoLogo from '../../public/images/pratico.svg';
 import { IconSize } from '../../utils/Icons';
 
 

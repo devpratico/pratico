@@ -1,6 +1,6 @@
 'use client'
 import styles from './PlainBtn.module.css';
-import { getIcon, IconName, IconSize } from '../../../../utils/Icons'
+import { getIcon, IconName, IconSize } from '../../../../utils/Icons';
 
 export type ThemeColors = "primary" | "secondary" | "red" | "green";
 

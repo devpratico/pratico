@@ -1,10 +1,34 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import './colors.css'
 import './globals.css'
 
 
-const inter = Inter({ subsets: ['latin'] })
+export const luciole = localFont({
+  src: [
+    {
+      path: '../public/fonts/Luciole-Regular.woff2',
+      weight: 'normal',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Luciole-Bold.woff2',
+      weight: 'bold',
+      style: 'bold',
+    },
+    {
+      path: '../public/fonts/Luciole-Italic.woff2',
+      weight: 'normal',
+      style: 'italic',
+    },
+    {
+      path: '../public/fonts/Luciole-BoldItalic.woff2',
+      weight: 'bold',
+      style: 'bold italic',
+    },
+  ],
+})
+
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="pratico">
-      <body className={inter.className}>{children}</body>
+      <body className={luciole.className}>{children}</body>
     </html>
   )
 }
