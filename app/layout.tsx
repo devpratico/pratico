@@ -4,7 +4,7 @@ import './colors.css'
 import './globals.css'
 
 
-export const luciole = localFont({
+const luciole = localFont({
   src: [
     {
       path: '../public/fonts/Luciole-Regular.woff2',
