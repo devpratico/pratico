@@ -1,6 +1,6 @@
 'use client'
 import styles from './Canvas.module.css'
-import { Tldraw, Editor, useEditor, createShapeId, setUserPreferences, Box2d } from '@tldraw/tldraw'
+import { Tldraw, Editor, useEditor, createShapeId, setUserPreferences, Box2d, TLEditorComponents, T } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
 
@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 export default function Canvas() {
     
     const handleMount = (editor: Editor) => {
+        /*
         editor.createShape({
             id: createShapeId("toile"),
             type: 'geo',
@@ -23,21 +24,22 @@ export default function Canvas() {
                 fill: 'solid',
                 size: 'm',
             }
-        })
+        })*/
 
-        //editor.zoomToFit()
         //editor.updateInstanceState({ canMoveCamera: false })
-        setUserPreferences({ id: 'tldraw', edgeScrollSpeed: 0 })
+        setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
+        
 
     }
 
     return (
         <Tldraw
             onMount={handleMount}
-            /** 
             components={{
                 Background: () => <div className={styles.background}/>,
-            }}*/
+                OnTheCanvas: () => <div className={styles.toileDeFond + " " + "smallShadow"}/>
+                //SnapLine: () => null,
+            }}
         >
             <InsideEditorContext/>
         </Tldraw>
