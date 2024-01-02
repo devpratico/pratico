@@ -30,6 +30,7 @@
     min-height: 50px;
     border-radius: 0.5rem;
     border: 0.5px solid var(--secondary-border);
+    overflow: hidden;
 }
 
 .touchLeftRight {

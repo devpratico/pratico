@@ -2,6 +2,7 @@
 import styles from './Desk.module.css'
 import ToolBar from './ToolBar/ToolBar'
 import { useRef, useState, useEffect } from 'react'
+import Canvas from './Canvas/Canvas'
 
 
 export default function Desk() {
@@ -46,7 +47,9 @@ export default function Desk() {
             <ToolBar/>
 
             <div className={styles.canvasContainer} ref={canvasContainerRef}>
-                <div className={`${styles.canvas} smallShadow`} ref={canvasRef}></div>
+                <div className={`${styles.canvas} smallShadow`} ref={canvasRef}>
+                    <Canvas/>
+                </div>
             </div>
 
         </div>
