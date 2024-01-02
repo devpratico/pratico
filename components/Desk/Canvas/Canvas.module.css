@@ -25,3 +25,12 @@ Seems to be useless as the TLdraw component is 100% width and height by default.
     border: 0.5px solid var(--secondary-border);
     border-radius: 1rem;;
 }
+
+
+.customUI {
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: 1rem;
+}

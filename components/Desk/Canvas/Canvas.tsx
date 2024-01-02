@@ -3,45 +3,28 @@ import styles from './Canvas.module.css'
 import { Tldraw, Editor, useEditor, createShapeId, setUserPreferences, Box2d, TLEditorComponents, T } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
+import ToolBar from '../ToolBar/ToolBar'
 
 
 export default function Canvas() {
     
     const handleMount = (editor: Editor) => {
-        /*
-        editor.createShape({
-            id: createShapeId("toile"),
-            type: 'geo',
-            x: 0,
-            y: 0,
-            isLocked: true,
-            props: {
-                geo: 'rectangle',
-                w: 1920,
-                h: 1080,
-                dash: 'draw',
-                color: 'blue',
-                fill: 'solid',
-                size: 'm',
-            }
-        })*/
-
         //editor.updateInstanceState({ canMoveCamera: false })
         setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
-        
-
     }
 
     return (
         <Tldraw
+            hideUi={true}
             onMount={handleMount}
             components={{
-                Background: () => <div className={styles.background}/>,
+                Background:  () => <div className={styles.background}/>,
                 OnTheCanvas: () => <div className={styles.toileDeFond + " " + "smallShadow"}/>
                 //SnapLine: () => null,
             }}
         >
             <InsideEditorContext/>
+            <CustomUI/>
         </Tldraw>
     )
 }
@@ -72,4 +55,16 @@ const InsideEditorContext = () => {
     }, [])
 
     return null
+}
+
+const CustomUI = () => {
+    const editor = useEditor()
+    return (
+        <div className={styles.customUI}>
+            <ToolBar
+                draw={() => editor.setCurrentTool('draw')}
+                erase={() => editor.setCurrentTool('eraser')}
+            />
+        </div>
+    )
 }
