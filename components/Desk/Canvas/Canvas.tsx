@@ -1,6 +1,6 @@
 'use client'
 import styles from './Canvas.module.css'
-import { Tldraw, Editor, useEditor, createShapeId, setUserPreferences, Box2d, TLEditorComponents, T } from '@tldraw/tldraw'
+import { Tldraw, Editor, useEditor, track, setUserPreferences, Box2d, DefaultColorStyle, DefaultSizeStyle } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
 import ToolBar from '../ToolBar/ToolBar'
@@ -11,6 +11,8 @@ export default function Canvas() {
     const handleMount = (editor: Editor) => {
         //editor.updateInstanceState({ canMoveCamera: false })
         setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
+        //editor.setStyleForNextShapes(DefaultColorStyle, "green");
+        editor.setStyleForNextShapes(DefaultSizeStyle, "xl");
     }
 
     return (
@@ -57,14 +59,16 @@ const InsideEditorContext = () => {
     return null
 }
 
-const CustomUI = () => {
+const CustomUI = track(() => {
     const editor = useEditor()
+    const activeTool = editor.getCurrentToolId()
+    
     return (
         <div className={styles.customUI}>
             <ToolBar
-                draw={() => editor.setCurrentTool('draw')}
-                erase={() => editor.setCurrentTool('eraser')}
+                activeToolId={activeTool}
+                setTool={(toolId) => editor.setCurrentTool(toolId)}
             />
         </div>
     )
-}
+})

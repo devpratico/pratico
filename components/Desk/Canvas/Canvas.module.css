@@ -1,7 +1,8 @@
 /*
 There used to be a container div with this classname.
 You can also pass a className prop to the TLdraw component.
-Seems to be useless as the TLdraw component is 100% width and height by default.
+Seems to be useless as the TLdraw component is 100% width and height by default
+and needs to be wrapped in a container with a fixed size (provided by the layout here)
 .canvas {
     width: 100%;
     height: 100%;

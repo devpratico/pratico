@@ -25,3 +25,7 @@
     cursor: pointer;
     background-color: var(--secondary);
 }
+
+.active {
+    background-color: var(--secondary);
+}
