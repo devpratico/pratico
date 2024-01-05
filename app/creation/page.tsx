@@ -1,9 +1,9 @@
 import styles from './page.module.css'
-import MainLayout from '../../components/-layouts/MainLayout/MainLayout'
-import MenuBar from '../../components/-menu-bar/MenuBar/MenuBar'
+import MainLayout from '../../components/layouts/MainLayout/MainLayout'
+import MenuBar from '../../components/menu-bar/MenuBar/MenuBar'
 import SlideBar from '../../components/-slide-bar/SlideBar/SlideBar'
-import Desk from '../../components/-desk/Desk/Desk'
-import Canvas from '../../components/-desk/Canvas/Canvas'
+import Desk from '../../components/desk/Desk/Desk'
+import Canvas from '../../components/desk/Canvas/Canvas'
 
 export default function CreationPage() {
 

@@ -2,7 +2,7 @@
 import styles from './SlideNavigation.module.css'
 import { IconName, IconSize } from '../../../utils/Icons'
 import { ColorType } from '../../../utils/Colors'
-import LabeledIconBtn from '../../-primitives/-buttons/LabaledIconBtn/LabeledIconBtn'
+import LabeledIconBtn from '../../primitives/buttons/LabaledIconBtn/LabeledIconBtn'
 
 export default function SlideNavigation() {
 

@@ -8,7 +8,7 @@ import { faShapes }         from '@fortawesome/free-solid-svg-icons';
 import { faImage }          from '@fortawesome/free-solid-svg-icons';
 import { faEraser }         from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition }   from '@fortawesome/free-solid-svg-icons';
-import { Tooltip } from '@/components/-primitives/Tooltip/Tooltip';
+import { Tooltip } from '@/components/primitives/Tooltip/Tooltip';
 
 /**
  * IDs of default tlDraw tools (see tldraw documentation)
