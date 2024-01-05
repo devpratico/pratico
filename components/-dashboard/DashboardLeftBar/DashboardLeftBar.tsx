@@ -1,5 +1,5 @@
 import styles from './DashboardLeftBar.module.css';
-import ListBtn from '@/components/Primitives/Buttons/ListBtn/ListBtn';
+import ListBtn from '@/components/-primitives/-buttons/ListBtn/ListBtn';
 
 export default function DashboardLeftBar() {
     return (

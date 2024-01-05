@@ -1,5 +1,5 @@
 import styles from './Carousel.module.css'
-import Miniature from './Miniature/Miniature'
+import Miniature from '../Miniature/Miniature'
 
 
 export default function Carousel() {

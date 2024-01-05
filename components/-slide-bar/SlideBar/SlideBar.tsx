@@ -1,9 +1,9 @@
 'use client'
 import styles from './SlideBar.module.css'
-import LabeledIconBtn from '../Primitives/Buttons/LabaledIconBtn/LabeledIconBtn'
-import { IconName, IconSize } from '../../utils/Icons'
-import SlideNavigation from './SlideNavigation/SlideNavigation'
-import Carousel from '../Carousel/Carousel'
+import LabeledIconBtn from '../../-primitives/-buttons/LabaledIconBtn/LabeledIconBtn'
+import { IconName, IconSize } from '../../../utils/Icons'
+import SlideNavigation from '../SlideNavigation/SlideNavigation'
+import Carousel from '../../-carousel/Carousel/Carousel'
 
 export default function SlideBar() {
 

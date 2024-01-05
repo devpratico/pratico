@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import Title from './Title/Title';
-import LabeledIconBtn from '../Primitives/Buttons/LabaledIconBtn/LabeledIconBtn';
-import LabeledIcon from '../Primitives/LabeledIcon/LabeledIcon';
-import MenuBarLayout from './MenuBarLayout/MenuBarLayout';
-import praticoLogo from '../../public/images/pratico.svg';
-import { IconSize } from '../../utils/Icons';
-import Modal from '../Primitives/Modal/Modal';
+import Title from '../Title/Title';
+import LabeledIconBtn from '../../-primitives/-buttons/LabaledIconBtn/LabeledIconBtn';
+import LabeledIcon from '../../-primitives/LabeledIcon/LabeledIcon';
+import MenuBarLayout from '../MenuBarLayout/MenuBarLayout';
+import praticoLogo from '../../../public/images/pratico.svg';
+import { IconSize } from '../../../utils/Icons';
+import Modal from '../../-primitives/Modal/Modal';
 
 
 interface MenuBarProps {
