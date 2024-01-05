@@ -54,7 +54,7 @@ const InsideEditorContext = () => {
         updateSize()
         window.addEventListener('resize', debouncedUpdateSize);
         return () => window.removeEventListener('resize', debouncedUpdateSize)
-    }, [])
+    }, []) // TODO: there's a dependency array warning here
 
     return null
 }

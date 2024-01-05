@@ -22,7 +22,7 @@ interface TooltipProps {
 /**
  * A [Radix library tooltip](https://radix-ui.com/primitives/docs/components/tooltip)
  */
-export function Tooltip({content, children, side='top', align='center', sideOffset=5, delayDuration=0}: TooltipProps) {
+export default function Tooltip({content, children, side='top', align='center', sideOffset=0, delayDuration=0}: TooltipProps) {
     return (
         <TooltipPrimitives.Provider delayDuration={delayDuration}>
             <TooltipPrimitives.Root>
