@@ -3,7 +3,7 @@ import styles from './Canvas.module.css'
 import { Tldraw, Editor, useEditor, track, setUserPreferences, Box2d, DefaultColorStyle, DefaultSizeStyle } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
-import ToolBar from '../ToolBar/ToolBar'
+import ToolBar from '../tool-bar/ToolBar/ToolBar'
 
 
 export default function Canvas() {

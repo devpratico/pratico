@@ -1,6 +1,6 @@
 'use client'
 import styles from './Desk.module.css'
-import ToolBar from '../ToolBar/ToolBar'
+import ToolBar from '../tool-bar/ToolBar/ToolBar'
 import { useRef, useState, useEffect } from 'react'
 import Canvas from '../Canvas/Canvas'
 
