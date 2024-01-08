@@ -1,0 +1,96 @@
+.trigger {
+    all: unset;
+    padding: 0.5rem;
+}
+
+.trigger:hover {
+    cursor: pointer;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    animation: overlayShow 200ms cubic-bezier(0, 0.71, 0.33, 1);
+}
+
+.overlayBlur {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    background-color: hsla(var(--text-h), var(--text-s), var(--text-l), 0.05);
+}
+
+.content {
+    background-color: var(--background);
+    padding: 1rem;
+    border-radius: 1rem;
+    position: fixed;
+    border: 0.5px solid var(--secondary-border);
+    z-index: 9999;
+}
+
+.content:focus {
+    outline: none;
+  }
+
+.contentBlur {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background-color: hsla(var(--background-h), var(--background-s), var(--background-l), 0.8);
+}
+
+.close:hover {
+    cursor: pointer;
+}
+
+.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.right {
+    width: 30%;
+    height: calc(100% - 2rem);
+    top: 0;
+    right: 0;
+    margin: 1rem 1rem 1rem 0;
+    animation: contentShowRight 200ms cubic-bezier(0, 0.71, 0.33, 1);
+}
+
+.left {
+    top: 50px;
+    left: 10px;
+}
+
+.top {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.bottom {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+@keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+@keyframes contentShowRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}

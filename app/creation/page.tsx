@@ -1,14 +1,15 @@
 import styles from './page.module.css'
-import MainLayout from '../../components/Layouts/MainLayout'
-import MenuBar from '../../components/MenuBar/MenuBar'
-import SlideBar from '../../components/SlideBar/SlideBar'
-import Desk from '../../components/Desk/Desk'
+import MainLayout from '../../components/layouts/MainLayout/MainLayout'
+import MenuBar from '../../components/menu-bar/MenuBar/MenuBar'
+import SlideBar from '../../components/slide-bar/SlideBar/SlideBar'
+import Desk from '../../components/desk/Desk/Desk'
+import Canvas from '../../components/desk/Canvas/Canvas'
 
 export default function CreationPage() {
 
   const propsForMainLayout = {
     menuBar:  <MenuBar mode="animation"/>,
-    content:  <Desk/>,
+    content:  <Canvas/>,
     footer:   <SlideBar/>,
   }
 

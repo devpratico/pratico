@@ -1,0 +1,11 @@
+.container {
+    background-color:  white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--big-shadow);
+    border: 0.5px solid var(--secondary-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:fit-content;
+}

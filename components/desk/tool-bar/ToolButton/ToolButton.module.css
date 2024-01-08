@@ -1,0 +1,19 @@
+.btn {
+    color: var(--primary);
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.8rem;
+    margin: 0;
+}
+
+.btn:hover {
+    cursor: pointer;
+    background-color: var(--secondary);
+}
+
+.active {
+    background-color: var(--secondary);
+}
