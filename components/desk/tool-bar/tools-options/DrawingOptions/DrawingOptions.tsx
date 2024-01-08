@@ -1,16 +1,30 @@
-import styles from './DrawingOptions.module.css'
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer'
+import ColorsOptions, { ColorDispatch } from '../ColorsOptions/ColorsOptions'
 
 
-export default function DrawingOptions() {
+type Action = "clickedDrawOption";
+type Option = "color" | "size";
+export type DrawOptionDispatch = {action: Action, payload: Option};
+
+interface DrawingOptionsProps {
+    //setColor: (color: string) => void;
+    activeColor: string;
+    dispatch: (_: DrawOptionDispatch | ColorDispatch) => void;
+}
+
+export default function DrawingOptions({dispatch, activeColor}: DrawingOptionsProps) {
+
+    // We won't pass the original dispatch function.
+    // We want to say "we come from the DrawingOptions component"
+    // So that we'll be able to change the tool to draw
+    const dispatchColor = (colorDispatch: ColorDispatch) => {
+        dispatch({action: "clickedDrawOption", payload: "color"})
+        dispatch(colorDispatch)
+    }
+
     return (
         <ToolOptionsContainer>
-            <div className={styles.colorsContainer}>
-                <div className={styles.colorPick + " " + styles.blue + " " + styles.colorSelected}/>
-                <div className={styles.colorPick + " " + styles.red}/>
-                <div className={styles.colorPick + " " + styles.green}/>
-                <div className={styles.colorPick + " " + styles.violet}/>
-            </div>
+            <ColorsOptions activeColor={activeColor} dispatch={dispatchColor}/>
         </ToolOptionsContainer>
     )
 }

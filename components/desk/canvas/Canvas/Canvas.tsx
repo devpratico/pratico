@@ -1,17 +1,31 @@
 'use client'
 import styles from './Canvas.module.css'
-import { Tldraw, Editor, useEditor, track, setUserPreferences, Box2d, DefaultColorStyle, DefaultSizeStyle } from '@tldraw/tldraw'
+import {
+    Tldraw,
+    Editor, 
+    useEditor, 
+    track, 
+    setUserPreferences, 
+    Box2d, 
+    DefaultColorStyle, 
+    DefaultSizeStyle,
+} from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
-import { useEffect } from 'react'
-import ToolBar from '../tool-bar/ToolBar/ToolBar'
+import { useEffect, useState } from 'react'
+import ToolBar from '../../tool-bar/ToolBar/ToolBar'
+import CustomUI from '../CustomUI/CustomUI'
 
 
 export default function Canvas() {
     
+    /**
+     * This function is called when the editor is mounted.
+     * It's used to set some initial preferences.
+     */
     const handleMount = (editor: Editor) => {
         //editor.updateInstanceState({ canMoveCamera: false })
         setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
-        //editor.setStyleForNextShapes(DefaultColorStyle, "green");
+        editor.setStyleForNextShapes(DefaultColorStyle, "green");
         editor.setStyleForNextShapes(DefaultSizeStyle, "xl");
     }
 
@@ -25,14 +39,17 @@ export default function Canvas() {
                 //SnapLine: () => null,
             }}
         >
-            <InsideEditorContext/>
+            <Resizer/>
             <CustomUI/>
         </Tldraw>
     )
 }
 
-
-const InsideEditorContext = () => {
+/**
+ * This element is responsible for resizing the canvas to fit the window.
+ * It doesn't actually render anything.
+ */
+const Resizer = () => {
     const editor = useEditor()
     const box = new Box2d(0, 0, 1920, 1080)
 
@@ -59,16 +76,3 @@ const InsideEditorContext = () => {
     return null
 }
 
-const CustomUI = track(() => {
-    const editor = useEditor()
-    const activeTool = editor.getCurrentToolId()
-    
-    return (
-        <div className={styles.customUI}>
-            <ToolBar
-                activeToolId={activeTool}
-                setTool={(toolId) => editor.setCurrentTool(toolId)}
-            />
-        </div>
-    )
-})

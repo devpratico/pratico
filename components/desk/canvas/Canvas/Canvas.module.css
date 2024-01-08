@@ -28,10 +28,3 @@ and needs to be wrapped in a container with a fixed size (provided by the layout
 }
 
 
-.customUI {
-    position: absolute;
-    z-index: 1000;
-    top: 50%;
-    transform: translate(0, -50%);
-    left: 1rem;
-}

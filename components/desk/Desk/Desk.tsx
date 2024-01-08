@@ -2,7 +2,7 @@
 import styles from './Desk.module.css'
 import ToolBar from '../tool-bar/ToolBar/ToolBar'
 import { useRef, useState, useEffect } from 'react'
-import Canvas from '../Canvas/Canvas'
+import Canvas from '../canvas/Canvas/Canvas'
 
 
 export default function Desk() {
