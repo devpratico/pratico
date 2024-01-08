@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  align-items: center;
+  align-items:baseline;
   gap: 0.6rem;
 }
 
@@ -9,22 +9,20 @@
     align-items: center;
 }
 
+
 .numberLeft {
     font-size: 1rem;
-    font-weight:bold;
     color: var(--text);
+;
 }
 
 .numberRight {
     font-size: 1rem;
-    font-weight:lighter;
     color: var(--intermediate);
 }
 
 
 .slash {
-    font-size: 1.3rem;
-    font-weight:lighter;
-    font-weight: 200;
+    font-size: 1rem;
     color: var(--intermediate);
 }
