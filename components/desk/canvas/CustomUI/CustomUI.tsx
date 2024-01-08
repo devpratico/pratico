@@ -32,7 +32,7 @@ function dispatchEditor(editor: Editor, dispatchObj: ToolDispatch | DrawOptionDi
         case "clickedDrawOption":
             editor.setCurrentTool("draw")
             break
-        case "clickColor":
+        case "clickedColor":
             editor.setStyleForNextShapes(DefaultColorStyle, dispatchObj.payload)
             break
     }
