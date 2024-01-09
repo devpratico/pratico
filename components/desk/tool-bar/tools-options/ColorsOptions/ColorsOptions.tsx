@@ -1,13 +1,11 @@
 import styles from './ColorsOptions.module.css'
 
 type Action = "clickedColor";
-type Color  = "black" | "blue" | "green" | "red";
-export type ColorDispatch = {action: Action, payload: Color};
+export type Color  = "black" | "blue" | "green" | "red";
 
 interface ColorsOptionsProps {
-    activeColor: string;
-    //setColor: (color: string) => void;
-    dispatch: (_: ColorDispatch) => void;
+    activeColor: Color;
+    dispatch: <A,P>(action: A, payload: P) => void;
 }
 
 export default function ColorsOptions({activeColor, dispatch}: ColorsOptionsProps) {
@@ -15,7 +13,7 @@ export default function ColorsOptions({activeColor, dispatch}: ColorsOptionsProp
     const ColorBtn = ({color, selected}: {color: Color, selected: boolean}) => (
         <button
             className={styles.colorPick + " " + styles[color] + " " + (selected ? styles.colorSelected : "")}
-            onClick={() => dispatch({action: "clickedColor", payload: color})}
+            onClick={() => dispatch<Action, Color>("clickedColor", color)}
         />
     )
 

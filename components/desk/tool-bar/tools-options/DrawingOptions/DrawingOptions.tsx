@@ -1,30 +1,36 @@
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer'
-import ColorsOptions, { ColorDispatch } from '../ColorsOptions/ColorsOptions'
+import ColorsOptions, { Color } from '../ColorsOptions/ColorsOptions'
+import LineOptions, {Size, Dash} from '../LineOptions/LineOptions';
 
 
 type Action = "clickedDrawOption";
-type Option = "color" | "size";
-export type DrawOptionDispatch = {action: Action, payload: Option};
+type Option = "color" | "line";
 
 interface DrawingOptionsProps {
-    //setColor: (color: string) => void;
-    activeColor: string;
-    dispatch: (_: DrawOptionDispatch | ColorDispatch) => void;
+    activeColor: Color;
+    activeSize: Size;
+    activeDash: Dash;
+    dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function DrawingOptions({dispatch, activeColor}: DrawingOptionsProps) {
+export default function DrawingOptions({activeColor, activeSize, activeDash, dispatch}: DrawingOptionsProps) {
 
     // We won't pass the original dispatch function.
-    // We want to say "we come from the DrawingOptions component"
-    // So that we'll be able to change the tool to draw
-    const dispatchColor = (colorDispatch: ColorDispatch) => {
-        dispatch({action: "clickedDrawOption", payload: "color"})
-        dispatch(colorDispatch)
+    // We need to declare first that we come from the draw tool.
+    const dispatchColor = <A, P>(action: A, payload: P) => {
+        dispatch<Action, Option>("clickedDrawOption", "color")
+        dispatch<A, P>(action, payload)
+    }
+
+    const dispatchLine = <A, P>(action: A, payload: P) => {
+        dispatch<Action, Option>("clickedDrawOption", "line")
+        dispatch<A, P>(action, payload)
     }
 
     return (
         <ToolOptionsContainer>
             <ColorsOptions activeColor={activeColor} dispatch={dispatchColor}/>
+            <LineOptions   activeSize={activeSize} activeDash={activeDash} dispatch={dispatchLine}/>
         </ToolOptionsContainer>
     )
 }
