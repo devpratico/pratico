@@ -1,44 +1,29 @@
 import styles from './ToolBar.module.css'
-import ToolButton, { ToolId } from '../ToolButton/ToolButton';
-import DrawingOptions from '../tools-options/DrawingOptions/DrawingOptions';
 import { Color } from '../tools-options/ColorsOptions/ColorsOptions';
-import {Size, Dash} from '../tools-options/LineOptions/LineOptions';
+import {Size, Dash, Tool} from '../tools-options/LineOptions/LineOptions';
+import DrawTool from '../DrawTool/DrawTool';
+import SelectTool from '../SelectTool/SelectTool';
+import EraserTool from '../EraserTool/EraserTool';
+import TextTool from '../TextTool/TextTool';
 
-
-type Action = "clickedTool";
-type Tool = "select" | "draw" | "eraser";
 
 interface ToolBarProps {
     activeToolId: string; // But should be a TlDrawToolId
     activeColor: Color;
     activeSize: Size;
     activeDash: Dash;
+    isStickyNote: boolean;
+    alignText: "start" | "middle" | "end";
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function ToolBar({activeToolId, activeColor, activeSize, activeDash, dispatch}: ToolBarProps) {
-
-    const dispatchTool = (toolId: ToolId) => {
-        dispatch<Action, Tool>("clickedTool", toolId)
-    }
-
-    const dispatchDrawOption = <A, P>(action: A, payload: P) => {
-        dispatchTool("draw")
-        dispatch<A, P>(action, payload)
-    }
-
-    const drawButtonProps = {
-        toolId: "draw" as ToolId,
-        onClick: ()=>dispatchTool('draw'),
-        active: activeToolId === "draw",
-        tooltipContent: <DrawingOptions dispatch={dispatchDrawOption} activeColor={activeColor} activeSize={activeSize} activeDash={activeDash}/>
-    }
-
+export default function ToolBar({activeToolId, activeColor, activeSize, activeDash, isStickyNote, alignText, dispatch}: ToolBarProps) {
     return (
         <div className={`${styles.container} bigShadow`}>
-            <ToolButton toolId="select" onClick={()=>dispatchTool('select')} active={activeToolId === "select"}/>
-            <ToolButton {...drawButtonProps}/>
-            <ToolButton toolId="eraser" onClick={()=>dispatchTool('eraser')} active={activeToolId === "eraser"}/>
+            <SelectTool active={activeToolId === "select"} dispatch={dispatch}/>
+            <DrawTool   active={activeToolId === "draw"} activeColor={activeColor} activeSize={activeSize} activeDash={activeDash} activeTool={activeToolId as Tool} dispatch={dispatch}/>
+            <TextTool   active={activeToolId === "text"} activeColor={activeColor} isStickyNote={isStickyNote} alignText={alignText} dispatch={dispatch}/>
+            <EraserTool active={activeToolId === "eraser"} dispatch={dispatch}/>
         </div>
     )
 }

@@ -4,24 +4,49 @@
     gap: 0.5rem;
 }
 
-.sizePick, .dashPick {
+.optionBtn {
     background-color: transparent;
+    color: var(--primary);
     border: none;
     cursor: pointer;
-    width:  1rem;
-    height: 1rem;
     border-radius: 20%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.1s ease-in-out;
+    /*transition: transform 0.1s ease-in-out;*/
+    padding: 0.1rem;
 }
 
-.sizePick:hover, .dashPick:hover {
-    transform: scale(1.1);
+.optionBtn:hover {
+    /*transform: scale(1.1);*/
+    cursor: pointer;
 }
 
 .active {
-    /*background-color: var(--secondary-border);*/
-    outline: 2px solid var(--secondary-border);
+    background-color:  var(--secondary);
+}
+
+.sizeDisk {
+    background-color: var(--primary);
+    border-radius: 50%;
+}
+
+.s {
+    height: 2px;
+    width:  2px;
+}
+
+.m {
+    height: 4px;
+    width:  4px;
+}
+
+.l {
+    height: 6px;
+    width:  6px;
+}
+
+.xl {
+    height: 8px;
+    width:  8px;
 }

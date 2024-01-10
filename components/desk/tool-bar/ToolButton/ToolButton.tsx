@@ -5,16 +5,18 @@ import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
 import { faArrowPointer }   from '@fortawesome/free-solid-svg-icons';
 import { faPen }            from '@fortawesome/free-solid-svg-icons';
 import { faEraser }         from '@fortawesome/free-solid-svg-icons';
+import { faT }           from '@fortawesome/free-solid-svg-icons';
 import Tooltip              from '@/components/primitives/Tooltip/Tooltip';
 
 /**
  * IDs of default tlDraw tools (see tldraw documentation)
  */
-export type ToolId = "select" | "draw" | "eraser";
+export type ToolId = "select" | "draw" | "eraser" | "text";
 const iconsMap: Record<ToolId, IconDefinition> = {
     "select": faArrowPointer,
     "draw":   faPen,
     "eraser": faEraser,
+    "text":   faT,
 }
 
 

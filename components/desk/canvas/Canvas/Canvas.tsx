@@ -21,7 +21,7 @@ import CustomUI from '../CustomUI/CustomUI'
 const handleMount = (editor: Editor) => {
     //editor.updateInstanceState({ canMoveCamera: false })
     setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
-    editor.setStyleForNextShapes(DefaultColorStyle, "black");
+    editor.setStyleForNextShapes(DefaultColorStyle, "blue");
     editor.setStyleForNextShapes(DefaultSizeStyle , "xl");
 }
 

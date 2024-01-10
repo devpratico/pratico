@@ -1,8 +1,9 @@
 import styles from './CustomUI.module.css'
-import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle } from "@tldraw/tldraw"
+import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
+import { text } from 'stream/consumers'
 
 /**
  * This component is a custom UI for the editor.
@@ -13,20 +14,23 @@ const CustomUI = track(() => {
     const activeToolId = editor.getCurrentToolId()
     const stylesForNextShapes = editor.getInstanceState().stylesForNextShape
     const activeColor = stylesForNextShapes["tldraw:color"] as Color || "black"
-    const activeSize  = stylesForNextShapes["tldraw:size"]  as Size || "m"
-    const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash || "solid"
+    const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
+    const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
+    const isStickyNote = editor.getCurrentToolId() === "note"
+    const textAlign = stylesForNextShapes["tldraw:horizontalAlign"] as "start" | "middle" | "end" || "start"
+
+    // useful to discover the styles cache
+    //console.log(stylesForNextShapes)
 
     /**
      * This function will be called by toolbar elements to dispatch actions
      * @example dispatch("clickedTool", "select")
      */
     function dispatch<A,P>(action: A, payload: P) {
+        console.log("dispatch", action, payload)
         switch (action as string) {
             case "clickedTool":
                 editor.setCurrentTool(payload as string)
-                break
-            case "clickedDrawOption":
-                editor.setCurrentTool("draw")
                 break
             case "clickedColor":
                 editor.setStyleForNextShapes(DefaultColorStyle, payload as string)
@@ -38,21 +42,41 @@ const CustomUI = track(() => {
                 const newStyle = activeDash === "solid" ? "dashed" : "solid"
                 editor.setStyleForNextShapes(DefaultDashStyle, newStyle)
                 break
+            case "clickedTextOption":
+                switch (payload as string) {
+                    case "sticky-note":
+                        editor.setCurrentTool(isStickyNote ? "select" : "note")
+                        break
+                    case "align-left":
+                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "start")
+                        break
+                    case "align-center":
+                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "middle")
+                        break
+                    case "align-right":
+                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "end")
+                        break
+                    default:
+                        console.warn("Text option not handled", payload)
+                        break
+                }
+                break
             default:
-                console.error("Unknown action", action)
+                console.warn("Action not handled", action, payload)
                 break
         }
-            
     }
     
     return (
         <div className={styles.customUI}>
             <ToolBar
                 activeToolId={activeToolId}
-                activeColor={activeColor}
-                activeSize={activeSize}
-                activeDash={activeDash}
-                dispatch={dispatch}
+                activeColor ={activeColor}
+                activeSize  ={activeSize}
+                activeDash  ={activeDash}
+                isStickyNote={isStickyNote}
+                alignText   ={textAlign}
+                dispatch    ={dispatch}
             />
         </div>
     )

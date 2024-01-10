@@ -1,11 +1,6 @@
-.container {
-    display: flex;
-    gap: 0.5rem;
-}
-
 .colorPick {
-    width: 1rem;
-    height: 1rem;
+    /*background-color is set as inline css*/
+    margin: 0.1rem;
     border-radius: 50%;
     cursor: pointer;
     position: relative;
@@ -14,26 +9,11 @@
 }
 
 .colorSelected {
-    outline: 4px solid var(--secondary-border);
-    outline-offset: 0px;
+    outline: 3px solid var(--secondary-border);
+    /*outline-offset: 0px;*/
+    background-color: var(--secondary);
 }
 
 .colorPick:hover {
     transform: scale(1.1);
-}
-
-.black {
-    background-color: black;
-}
-
-.blue {
-    background-color: #4263EB;
-}
-
-.red {
-    background-color: #E03130;
-}
-
-.green {
-    background-color: #079268;
 }

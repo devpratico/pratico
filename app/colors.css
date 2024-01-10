@@ -1,4 +1,5 @@
 :root {
+  /* These values are ratios used to generate darker shades for borders */
   --border-s-mult: 1.2;
   --border-l-mult: 0.9;
 

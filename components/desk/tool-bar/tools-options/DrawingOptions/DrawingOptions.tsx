@@ -1,6 +1,6 @@
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer'
 import ColorsOptions, { Color } from '../ColorsOptions/ColorsOptions'
-import LineOptions, {Size, Dash} from '../LineOptions/LineOptions';
+import LineOptions, {Size, Dash, Tool} from '../LineOptions/LineOptions';
 
 
 type Action = "clickedDrawOption";
@@ -10,10 +10,11 @@ interface DrawingOptionsProps {
     activeColor: Color;
     activeSize: Size;
     activeDash: Dash;
+    activeTool: Tool;
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function DrawingOptions({activeColor, activeSize, activeDash, dispatch}: DrawingOptionsProps) {
+export default function DrawingOptions({activeColor, activeSize, activeDash, activeTool, dispatch}: DrawingOptionsProps) {
 
     // We won't pass the original dispatch function.
     // We need to declare first that we come from the draw tool.
@@ -29,8 +30,8 @@ export default function DrawingOptions({activeColor, activeSize, activeDash, dis
 
     return (
         <ToolOptionsContainer>
-            <ColorsOptions activeColor={activeColor} dispatch={dispatchColor}/>
-            <LineOptions   activeSize={activeSize} activeDash={activeDash} dispatch={dispatchLine}/>
+            {ColorsOptions({activeColor, dispatch: dispatchColor})}
+            {LineOptions({activeSize, activeDash, activeTool, dispatch: dispatchLine})}
         </ToolOptionsContainer>
     )
 }

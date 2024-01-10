@@ -23,6 +23,11 @@ import {
     faFileLines,
     faGrip,
     faList,
+    faStickyNote,
+    faAlignLeft,
+    faAlignRight,
+    faAlignCenter,
+    faHighlighter,
 } from '@fortawesome/free-solid-svg-icons';
 
 export type IconName =
@@ -46,6 +51,11 @@ export type IconName =
     | "file-lines"
     | "grip"
     | "list"
+    | "sticky-note"
+    | "align-left"
+    | "align-right"
+    | "align-center"
+    | "highlighter"
     ;
 
 export type IconSize = "2xs" | "xs" | "sm" | "lg" | "xl";
@@ -72,6 +82,11 @@ const iconsMap: { [key in IconName]: JSX.Element } = {
     "file-lines":   <FontAwesomeIcon icon={faFileLines} />,
     "grip":         <FontAwesomeIcon icon={faGrip} />,
     "list":         <FontAwesomeIcon icon={faList} />,
+    "sticky-note":  <FontAwesomeIcon icon={faStickyNote} />,
+    "align-left":   <FontAwesomeIcon icon={faAlignLeft} />,
+    "align-right":  <FontAwesomeIcon icon={faAlignRight} />,
+    "align-center": <FontAwesomeIcon icon={faAlignCenter} />,
+    "highlighter":  <FontAwesomeIcon icon={faHighlighter} />,
 }
 
 export function getIcon(type: IconName, size?: IconSize): JSX.Element {
