@@ -7,7 +7,7 @@ export default function DashLineIcon({className}: DashLineIconProps) {
     return (
         <svg
             height="100%"
-            stroke-miterlimit="10"
+            strokeMiterlimit="10"
             style={{ 
                 fillRule: "nonzero", 
                 clipRule: "evenodd", 
@@ -27,10 +27,10 @@ export default function DashLineIcon({className}: DashLineIconProps) {
                 fill="none"
                 opacity="1"
                 stroke="currentColor"
-                stroke-dasharray="0.0,33.0"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="19"
+                strokeDasharray="0.0,33.0"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="19"
             />
 
         </svg>

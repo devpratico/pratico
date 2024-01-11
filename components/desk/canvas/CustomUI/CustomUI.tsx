@@ -3,7 +3,6 @@ import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, De
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
-import { text } from 'stream/consumers'
 
 /**
  * This component is a custom UI for the editor.
@@ -12,12 +11,12 @@ import { text } from 'stream/consumers'
 const CustomUI = track(() => {
     const editor = useEditor() // This is provided by the parent Tldraw component
     const activeToolId = editor.getCurrentToolId()
+    const isStickyNote = activeToolId === "note"
     const stylesForNextShapes = editor.getInstanceState().stylesForNextShape
     const activeColor = stylesForNextShapes["tldraw:color"] as Color || "black"
     const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
     const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
-    const isStickyNote = editor.getCurrentToolId() === "note"
-    const textAlign = stylesForNextShapes["tldraw:horizontalAlign"] as "start" | "middle" | "end" || "start"
+    const textAlign   = stylesForNextShapes["tldraw:horizontalAlign"] as "start" | "middle" | "end" || "start"
 
     // useful to discover the styles cache
     //console.log(stylesForNextShapes)
@@ -39,10 +38,24 @@ const CustomUI = track(() => {
                 editor.setStyleForNextShapes(DefaultSizeStyle, payload as string)
                 break
             case "clickedDash":
-                const newStyle = activeDash === "solid" ? "dashed" : "solid"
-                editor.setStyleForNextShapes(DefaultDashStyle, newStyle)
+                editor.setCurrentTool("draw")
+                editor.setStyleForNextShapes(DefaultDashStyle, payload as string)
                 break
-            case "clickedTextOption":
+            case "clickedOption":
+                // from:
+                switch (payload as string) {
+                    case "draw":
+                        // Set to draw only if not already draw or highlight or laser
+                        if (!["draw", "highlight", "laser"].includes(activeToolId)) {
+                            editor.setCurrentTool("draw")
+                        }
+                        break
+                    default:
+                        console.warn("Option not handled", payload)
+                        break
+                }
+                break
+            case "clickedTextOption": // TODO: handle like above
                 switch (payload as string) {
                     case "sticky-note":
                         editor.setCurrentTool(isStickyNote ? "select" : "note")

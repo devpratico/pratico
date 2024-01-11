@@ -15,19 +15,19 @@ interface DrawToolProps {
 
 export default function DrawTool({active, activeColor, activeSize, activeDash, activeTool, dispatch}: DrawToolProps) {
 
-    // We won't pass the original dispatch function.
-    // We need to declare first that we come from the draw tool.
+    /*
     const dispatchDrawOption = <A, P>(action: A, payload: P) => {
         dispatch<string, string>("clickedTool", "draw")
         dispatch<A, P>(action, payload)
     }
+    */
 
     const drawingOptionsProps = {
         activeColor,
         activeSize,
         activeDash,
         activeTool,
-        dispatch: dispatchDrawOption
+        dispatch: dispatch
     }
 
     const drawButtonProps = {

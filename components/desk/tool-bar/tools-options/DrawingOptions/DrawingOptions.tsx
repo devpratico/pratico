@@ -3,8 +3,7 @@ import ColorsOptions, { Color } from '../ColorsOptions/ColorsOptions'
 import LineOptions, {Size, Dash, Tool} from '../LineOptions/LineOptions';
 
 
-type Action = "clickedDrawOption";
-type Option = "color" | "line";
+type Action = "clickedOption";
 
 interface DrawingOptionsProps {
     activeColor: Color;
@@ -16,22 +15,21 @@ interface DrawingOptionsProps {
 
 export default function DrawingOptions({activeColor, activeSize, activeDash, activeTool, dispatch}: DrawingOptionsProps) {
 
-    // We won't pass the original dispatch function.
-    // We need to declare first that we come from the draw tool.
-    const dispatchColor = <A, P>(action: A, payload: P) => {
-        dispatch<Action, Option>("clickedDrawOption", "color")
+    // Before letting the option button dispatching something,
+    // let's say 'we come from the draw tool'
+    // This way, when dispatching a color without clicking on the draw button,
+    // we'll be able to tswitch to the draw tool automatically.
+    const dispatchOption = <A, P>(action: A, payload: P) => {
+        // "Clicked an option *from* the draw tool":
+        dispatch<Action, Tool>("clickedOption", "draw")
         dispatch<A, P>(action, payload)
     }
-
-    const dispatchLine = <A, P>(action: A, payload: P) => {
-        dispatch<Action, Option>("clickedDrawOption", "line")
-        dispatch<A, P>(action, payload)
-    }
+    
 
     return (
         <ToolOptionsContainer>
-            {ColorsOptions({activeColor, dispatch: dispatchColor})}
-            {LineOptions({activeSize, activeDash, activeTool, dispatch: dispatchLine})}
+            {ColorsOptions({activeColor, dispatch: dispatchOption})}
+            {LineOptions({activeSize, activeDash, activeTool, dispatch: dispatchOption})}
         </ToolOptionsContainer>
     )
 }

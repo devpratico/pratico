@@ -1,6 +1,11 @@
 .colorPick {
     /*background-color is set as inline css*/
-    margin: 0.1rem;
+    --colorOptionSize: 70%;
+    height: var(--colorOptionSize);
+    width:  var(--colorOptionSize);
+    align-self: center;
+    justify-self: center;
+    /*margin: 0.1rem;*/
     border-radius: 50%;
     cursor: pointer;
     position: relative;
@@ -9,7 +14,7 @@
 }
 
 .colorSelected {
-    outline: 3px solid var(--secondary-border);
+    outline: 2px solid var(--secondary-border);
     /*outline-offset: 0px;*/
     background-color: var(--secondary);
 }

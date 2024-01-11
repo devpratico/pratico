@@ -7,7 +7,7 @@ export default function SolidLineIcon({className}: SolidLineIconProps) {
     return (
         <svg
             height="100%"
-            stroke-miterlimit="10"
+            strokeMiterlimit="10"
             style={{
                 fillRule: "nonzero", 
                 clipRule: "evenodd", 
@@ -20,7 +20,7 @@ export default function SolidLineIcon({className}: SolidLineIconProps) {
             xmlSpace="preserve"
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink">
-        <path d="M14.4493 85.4074L85.5507 14.5926" fill="none" opacity="1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="19"/>
+        <path d="M14.4493 85.4074L85.5507 14.5926" fill="none" opacity="1" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="19"/>
         </svg>
     )
 }

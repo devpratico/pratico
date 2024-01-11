@@ -7,7 +7,7 @@ import LaserIcon from '@/public/icons/LaserIcon';
 type Action = "clickedSize" | "clickedDash" | "clickedTool";
 export type Size   = "s" | "m" | "l" | "xl";
 export type Dash   = "solid" | "dashed";
-export type Tool = "highlighter" | "laser";
+export type Tool = "draw" | "highlight" | "laser";
 
 interface LineOptionsProps {
     activeSize: Size;
@@ -76,16 +76,23 @@ function LaserIconBtn({active, onClick}: {active: boolean, onClick?: () => void}
     )
 }
 
+
 export default function LineOptions({activeSize, activeDash, activeTool, dispatch}: LineOptionsProps): JSX.Element[] {
+
+    const handleSizeClick = (size: Size) => {
+        console.log(`Size clicked: ${size}`);
+        dispatch && dispatch<Action, Size>("clickedSize", size);
+    };
+
     return ([
-            <SizeBtn size="s"  active={activeSize === "s"}      onClick={dispatch ? () => dispatch<Action, Size>("clickedSize", "s")  : undefined}/>,
-            <SizeBtn size="m"  active={activeSize === "m"}      onClick={dispatch ? () => dispatch<Action, Size>("clickedSize", "m")  : undefined}/>,
-            <SizeBtn size="l"  active={activeSize === "l"}      onClick={dispatch ? () => dispatch<Action, Size>("clickedSize", "l")  : undefined}/>,
-            <SizeBtn size="xl" active={activeSize === "xl"}     onClick={dispatch ? () => dispatch<Action, Size>("clickedSize", "xl") : undefined}/>,
-            <SolidLineBtn      active={activeDash === "solid"}  onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "solid") : undefined}/>,
-            <DashBtn           active={activeDash === "dashed"} onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "dashed") : undefined}/>,
-            <HighlighterBtn    active={activeTool === "highlighter"} onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "highlighter") : undefined}/>,
-            <LaserIconBtn      active={activeTool === "laser"}       onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "laser") : undefined}/>
+            <SizeBtn size="s"  key={"s"} active={activeSize === "s"}      onClick={() => handleSizeClick("s")}/>,
+            <SizeBtn size="m"  key={"m"} active={activeSize === "m"}      onClick={() => handleSizeClick("m")}/>,
+            <SizeBtn size="l"  key={"l"} active={activeSize === "l"}      onClick={() => handleSizeClick("l")}/>,
+            <SizeBtn size="xl" key={"exl"} active={activeSize === "xl"}   onClick={() => handleSizeClick("xl")}/>,
+            <SolidLineBtn      key={"solid"} active={activeDash === "solid"  && activeTool=="draw" } onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "solid") : undefined}/>,
+            <DashBtn           key={"dash"} active={activeDash === "dashed" && activeTool=="draw"}  onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "dashed") : undefined}/>,
+            <HighlighterBtn    key={"highlight"} active={activeTool === "highlight"} onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "highlight") : undefined}/>,
+            <LaserIconBtn      key={"laser"} active={activeTool === "laser"}     onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "laser") : undefined}/>
         ]
     )
 }
