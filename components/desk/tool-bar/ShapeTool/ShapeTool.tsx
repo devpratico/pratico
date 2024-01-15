@@ -17,7 +17,7 @@ export default function ShapeTool({activeToolId, activeColor, activeShape, dispa
     const shapeButtonProps = {
         toolId: "shape" as ToolId,
         onClick: ()=>dispatch<string, string>("clickedTool", "geo"),
-        active: activeToolId === "geo",
+        active: activeToolId === "geo" || activeToolId === "arrow",
         tooltipContent: <ShapeOptions activeColor={activeColor} activeShape={activeShape} dispatch={dispatch}/>
     }
 

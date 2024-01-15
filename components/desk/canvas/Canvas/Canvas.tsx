@@ -8,6 +8,7 @@ import {
     Box2d, 
     DefaultColorStyle, 
     DefaultSizeStyle,
+    DefaultFillStyle,
 } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useEffect } from 'react'
@@ -21,7 +22,8 @@ import CustomUI from '../CustomUI/CustomUI'
 const handleMount = (editor: Editor) => {
     //editor.updateInstanceState({ canMoveCamera: false })
     setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
-    editor.setStyleForNextShapes(DefaultColorStyle, "blue");
+    editor.setStyleForNextShapes(DefaultFillStyle,  "solid");
+    editor.setStyleForNextShapes(DefaultColorStyle, "black");
     editor.setStyleForNextShapes(DefaultSizeStyle , "xl");
 }
 

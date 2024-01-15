@@ -19,7 +19,10 @@ const CustomUI = track(() => {
     const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
     const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
     const activeFont  = stylesForNextShapes["tldraw:font"]  as Font  || "draw"
-    const activeShape = stylesForNextShapes["tldraw:geo"]   as Shape || "rectangle"
+    let   activeShape = stylesForNextShapes["tldraw:geo"]   as Shape || "rectangle"
+    if (activeToolId == "arrow") {
+        activeShape = "arrow"
+    }
 
     // useful to discover the styles cache
     //console.log(stylesForNextShapes)
