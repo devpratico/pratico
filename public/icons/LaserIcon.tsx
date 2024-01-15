@@ -10,7 +10,7 @@ export default function LaserIcon({className}: LaserIconProps) {
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
             height="100%"
-            viewBox="0 0 512.000000 512.000000"
+            viewBox="0 0 512 512"
             preserveAspectRatio="xMidYMid meet">
 
             <g fill="currentColor" stroke="none">

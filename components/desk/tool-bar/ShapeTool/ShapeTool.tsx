@@ -1,19 +1,24 @@
 import ToolButton, {ToolId} from '../ToolButton/ToolButton'
+import ShapeOptions from '../tools-options/ShapeOptions/ShapeOptions';
+import { Color } from '../tools-options/ColorsOptions/ColorsOptions';
+import { Shape } from '../tools-options/ShapeOptions/ShapeOptions';
 
 
 interface ShapeToolProps {
-    activeToolId:  string
+    activeToolId:  string;
+    activeColor: Color;
+    activeShape: Shape;
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function ShapeTool({activeToolId, dispatch}: ShapeToolProps) {
+export default function ShapeTool({activeToolId, activeColor, activeShape, dispatch}: ShapeToolProps) {
 
 
     const shapeButtonProps = {
         toolId: "shape" as ToolId,
         onClick: ()=>dispatch<string, string>("clickedTool", "geo"),
-        active: activeToolId === "image" || activeToolId === "video",
-        //tooltipContent: <DrawingOptions {...drawingOptionsProps}/>
+        active: activeToolId === "geo",
+        tooltipContent: <ShapeOptions activeColor={activeColor} activeShape={activeShape} dispatch={dispatch}/>
     }
 
     return <ToolButton {...shapeButtonProps}/>

@@ -4,6 +4,7 @@ import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
 import { Font } from '../../tool-bar/tools-options/TextOptions/TextOptions'
+import { Shape } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
 
 /**
  * This component is a custom UI for the editor.
@@ -18,6 +19,7 @@ const CustomUI = track(() => {
     const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
     const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
     const activeFont  = stylesForNextShapes["tldraw:font"]  as Font  || "draw"
+    const activeShape = stylesForNextShapes["tldraw:geo"]   as Shape || "rectangle"
 
     // useful to discover the styles cache
     //console.log(stylesForNextShapes)
@@ -30,10 +32,10 @@ const CustomUI = track(() => {
         console.log("dispatch", action, payload)
         switch (action as string) {
             case "clickedTool":
-                if (payload==='geo') {
-                    editor.setStyleForNextShapes(GeoShapeGeoStyle, 'star')
-                }
                 editor.setCurrentTool(payload as string)
+                break
+            case "clickedShape":
+                editor.setStyleForNextShapes(GeoShapeGeoStyle, payload as string)
                 break
             case "clickedColor":
                 editor.setStyleForNextShapes(DefaultColorStyle, payload as string)
@@ -83,6 +85,7 @@ const CustomUI = track(() => {
                 activeDash  ={activeDash}
                 isStickyNote={isStickyNote}
                 activeFont  ={activeFont}
+                activeShape ={activeShape}
                 dispatch    ={dispatch}
             />
         </div>

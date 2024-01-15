@@ -1,7 +1,7 @@
 //'use client'
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition, SizeProp } from '@fortawesome/fontawesome-svg-core';
 //import { FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import '@fortawesome/fontawesome-svg-core/styles.css' // import Font Awesome CSS to fix icon bug
 import {
@@ -133,3 +133,30 @@ export function getIcon(type: IconName, size?: IconSize): JSX.Element {
 }
 
 // TODO: Delete that
+
+
+export function FontAwesomeSvg({icon, className}: {icon: IconDefinition, className?: string}) {
+    const width    = icon.icon[0];
+    const height   = icon.icon[1];
+    const pathData = icon.icon[4];
+    let pathString = "";
+    if (typeof pathData === "string") {
+        pathString = pathData;
+    } else {
+        pathString = pathData.join(" ");
+    }
+
+    return (
+        <svg
+            viewBox={`0 0 ${width} ${height}`}
+            xmlns="http://www.w3.org/2000/svg"
+            width ="100%"
+            height="100%"
+            className={className}
+        >
+            <g fill="currentColor">
+                <path d={pathString} />
+            </g>
+        </svg>
+    );
+}
