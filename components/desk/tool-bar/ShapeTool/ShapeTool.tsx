@@ -13,7 +13,7 @@ interface ShapeToolProps {
 
 export default function ShapeTool({activeToolId, activeColor, activeShape, dispatch}: ShapeToolProps) {
 
-
+    // test
     const shapeButtonProps = {
         toolId: "shape" as ToolId,
         onClick: ()=>dispatch<string, string>("clickedTool", "geo"),
