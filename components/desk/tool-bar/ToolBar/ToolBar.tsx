@@ -5,6 +5,9 @@ import DrawTool from '../DrawTool/DrawTool';
 import SelectTool from '../SelectTool/SelectTool';
 import EraserTool from '../EraserTool/EraserTool';
 import TextTool from '../TextTool/TextTool';
+import MediaTool from '../MediaTool/MediaTool';
+import ShapeTool from '../ShapeTool/ShapeTool';
+import { Font } from '../tools-options/TextOptions/TextOptions';
 
 
 interface ToolBarProps {
@@ -13,16 +16,22 @@ interface ToolBarProps {
     activeSize: Size;
     activeDash: Dash;
     isStickyNote: boolean;
-    alignText: "start" | "middle" | "end";
+    activeFont: Font;
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function ToolBar({activeToolId, activeColor, activeSize, activeDash, isStickyNote, alignText, dispatch}: ToolBarProps) {
+export default function ToolBar({activeToolId, activeColor, activeSize, activeDash, isStickyNote, activeFont, dispatch}: ToolBarProps) {
+
+    const drawIsActive = ["draw", "highlight", "laser"].includes(activeToolId)
+    const textIsActive = ["text", "note"].includes(activeToolId)
+
     return (
         <div className={`${styles.container} bigShadow`}>
             <SelectTool active={activeToolId === "select"} dispatch={dispatch}/>
-            <DrawTool   active={activeToolId === "draw"} activeColor={activeColor} activeSize={activeSize} activeDash={activeDash} activeTool={activeToolId as Tool} dispatch={dispatch}/>
-            <TextTool   active={activeToolId === "text"} activeColor={activeColor} isStickyNote={isStickyNote} alignText={alignText} dispatch={dispatch}/>
+            <DrawTool   active={drawIsActive} activeColor={activeColor} activeSize={activeSize} activeDash={activeDash} activeTool={activeToolId as Tool} dispatch={dispatch}/>
+            <TextTool   active={textIsActive} activeColor={activeColor} isStickyNote={isStickyNote} activeFont={activeFont} dispatch={dispatch}/>
+            <ShapeTool  activeToolId={activeToolId} dispatch={dispatch}/>
+            <MediaTool  activeToolId={activeToolId} dispatch={dispatch}/>
             <EraserTool active={activeToolId === "eraser"} dispatch={dispatch}/>
         </div>
     )

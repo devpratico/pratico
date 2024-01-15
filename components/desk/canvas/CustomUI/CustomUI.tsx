@@ -1,8 +1,9 @@
 import styles from './CustomUI.module.css'
-import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle } from "@tldraw/tldraw"
+import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
+import { Font } from '../../tool-bar/tools-options/TextOptions/TextOptions'
 
 /**
  * This component is a custom UI for the editor.
@@ -16,7 +17,7 @@ const CustomUI = track(() => {
     const activeColor = stylesForNextShapes["tldraw:color"] as Color || "black"
     const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
     const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
-    const textAlign   = stylesForNextShapes["tldraw:horizontalAlign"] as "start" | "middle" | "end" || "start"
+    const activeFont  = stylesForNextShapes["tldraw:font"]  as Font  || "draw"
 
     // useful to discover the styles cache
     //console.log(stylesForNextShapes)
@@ -29,6 +30,9 @@ const CustomUI = track(() => {
         console.log("dispatch", action, payload)
         switch (action as string) {
             case "clickedTool":
+                if (payload==='geo') {
+                    editor.setStyleForNextShapes(GeoShapeGeoStyle, 'star')
+                }
                 editor.setCurrentTool(payload as string)
                 break
             case "clickedColor":
@@ -38,8 +42,11 @@ const CustomUI = track(() => {
                 editor.setStyleForNextShapes(DefaultSizeStyle, payload as string)
                 break
             case "clickedDash":
-                editor.setCurrentTool("draw")
+                editor.setCurrentTool("draw") // We want to go back to draw even if we are in highlight or laser
                 editor.setStyleForNextShapes(DefaultDashStyle, payload as string)
+                break
+            case "clickedFont":
+                editor.setStyleForNextShapes(DefaultFontStyle, payload as string)
                 break
             case "clickedOption":
                 // from:
@@ -50,27 +57,14 @@ const CustomUI = track(() => {
                             editor.setCurrentTool("draw")
                         }
                         break
+                    case "text":
+                        // Set only if not already text or note
+                        if (!["text", "note"].includes(activeToolId)) {
+                            editor.setCurrentTool("text")
+                        }
+                        break
                     default:
                         console.warn("Option not handled", payload)
-                        break
-                }
-                break
-            case "clickedTextOption": // TODO: handle like above
-                switch (payload as string) {
-                    case "sticky-note":
-                        editor.setCurrentTool(isStickyNote ? "select" : "note")
-                        break
-                    case "align-left":
-                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "start")
-                        break
-                    case "align-center":
-                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "middle")
-                        break
-                    case "align-right":
-                        editor.setStyleForNextShapes(DefaultHorizontalAlignStyle, "end")
-                        break
-                    default:
-                        console.warn("Text option not handled", payload)
                         break
                 }
                 break
@@ -88,7 +82,7 @@ const CustomUI = track(() => {
                 activeSize  ={activeSize}
                 activeDash  ={activeDash}
                 isStickyNote={isStickyNote}
-                alignText   ={textAlign}
+                activeFont  ={activeFont}
                 dispatch    ={dispatch}
             />
         </div>

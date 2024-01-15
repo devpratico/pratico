@@ -1,6 +1,8 @@
 //'use client'
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SizeProp } from '@fortawesome/fontawesome-svg-core';
+//import { FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import '@fortawesome/fontawesome-svg-core/styles.css' // import Font Awesome CSS to fix icon bug
 import {
     faStopwatch,
@@ -31,7 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export type IconName =
-      "stopwatch"
+    "stopwatch"
     | "puzzle"
     | "chat"
     | "users"
@@ -58,7 +60,39 @@ export type IconName =
     | "highlighter"
     ;
 
-export type IconSize = "2xs" | "xs" | "sm" | "lg" | "xl";
+/*
+const iconNameToIconMap: { [key: string]: FontAwesomeIconProps["icon"] } = {
+    "stopwatch":    faStopwatch,
+    "puzzle":       faPuzzlePiece,
+    "chat":         faMessage,
+    "users":        faUsers,
+    "ellipsis":     faEllipsis,
+    "play":         faPlay,
+    "pause":        faPause,
+    "stop":         faStop,
+    "square-plus":  faSquarePlus,
+    "expand":       faExpand,
+    "chevron-left": faChevronLeft,
+    "chevron-right":faChevronRight,
+    "file":         faFile,
+    "clock-rotate-left": faClockRotateLeft,
+    "book":         faBook,
+    "circle-question": faCircleQuestion,
+    "gear":         faGear,
+    "file-lines":   faFileLines,
+    "grip":         faGrip,
+    "list":         faList,
+    "sticky-note":  faStickyNote,
+    "align-left":   faAlignLeft,
+    "align-right":  faAlignRight,
+    "align-center": faAlignCenter,
+    "highlighter":  faHighlighter,
+}
+*/
+
+
+
+export type IconSize = SizeProp;
 
 
 const iconsMap: { [key in IconName]: JSX.Element } = {
@@ -89,6 +123,7 @@ const iconsMap: { [key in IconName]: JSX.Element } = {
     "highlighter":  <FontAwesomeIcon icon={faHighlighter} />,
 }
 
+
 export function getIcon(type: IconName, size?: IconSize): JSX.Element {
     let icon = iconsMap[type];
     if (size) {
@@ -97,3 +132,4 @@ export function getIcon(type: IconName, size?: IconSize): JSX.Element {
     return icon;
 }
 
+// TODO: Delete that

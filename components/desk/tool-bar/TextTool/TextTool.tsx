@@ -1,29 +1,31 @@
 import ToolButton from "../ToolButton/ToolButton";
-import TextOptions from "../tools-options/text-options/TextOptions/TextOptions";
+import TextOptions from "../tools-options/TextOptions/TextOptions";
 import { Color } from "../tools-options/ColorsOptions/ColorsOptions";
+import { Font } from "../tools-options/TextOptions/TextOptions";
 
 
 interface TextToolProps {
     active: boolean;
     activeColor: Color;
     isStickyNote: boolean;
-    alignText: "start" | "middle" | "end";
+    activeFont: Font;
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function TextTool({active, activeColor, isStickyNote, alignText, dispatch}: TextToolProps) {
+export default function TextTool({active, activeColor, isStickyNote, activeFont, dispatch}: TextToolProps) {
 
     // We won't pass the original dispatch function.
     // We need to declare first that we come from the text tool.
     const dispatchTextOption = <A, P>(action: A, payload: P) => {
-        dispatch<string, string>("clickedTool", "text")
+        // "Clicked option *from* text tool"
+        dispatch<string, string>("clickedOption", "text")
         dispatch<A, P>(action, payload)
     }
 
     const textOptionsProps = {
         activeColor,
         isStickyNote,
-        alignText,
+        activeFont,
         dispatch: dispatchTextOption
     }
     

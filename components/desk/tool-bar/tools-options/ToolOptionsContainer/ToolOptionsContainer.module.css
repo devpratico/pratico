@@ -6,8 +6,8 @@
     border: 0.5px solid var(--secondary-border);
     width: fit-content;
     display: grid;
-    --cellSize: 1.3rem;
-    grid-template-columns: repeat(4, var(--cellSize));
-    grid-auto-rows: var(--cellSize);
+    --toolBarCellSize: 1.7rem;
+    grid-template-columns: repeat(4, var(--toolBarCellSize));
+    grid-auto-rows: var(--toolBarCellSize);
     gap: 0.1rem;
 }
