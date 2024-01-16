@@ -7,7 +7,8 @@
     width: fit-content;
     display: grid;
     --toolBarCellSize: 1.7rem;
-    grid-template-columns: repeat(4, var(--toolBarCellSize));
+    grid-template-columns: repeat(var(--tool-options-rows), var(--toolBarCellSize));
+    /*grid-template-columns: repeat(attr(data-rows), var(--toolBarCellSize));*/
     grid-auto-rows: var(--toolBarCellSize);
     gap: 0.1rem;
 }

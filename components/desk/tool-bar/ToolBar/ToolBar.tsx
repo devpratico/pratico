@@ -5,7 +5,7 @@ import DrawTool from '../DrawTool/DrawTool';
 import SelectTool from '../SelectTool/SelectTool';
 import EraserTool from '../EraserTool/EraserTool';
 import TextTool from '../TextTool/TextTool';
-import MediaTool from '../MediaTool/MediaTool';
+import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { Font } from '../tools-options/TextOptions/TextOptions';
 import { Shape } from '../tools-options/ShapeOptions/ShapeOptions';

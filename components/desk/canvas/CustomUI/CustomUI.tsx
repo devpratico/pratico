@@ -1,5 +1,5 @@
 import styles from './CustomUI.module.css'
-import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle } from "@tldraw/tldraw"
+import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
@@ -23,6 +23,10 @@ const CustomUI = track(() => {
     if (activeToolId == "arrow") {
         activeShape = "arrow"
     }
+    //const defaultToolsIds = defaultShapeTools.map(tool => tool.id) 
+    //const defaultToolsIds = defaultTools.concat(defaultShapeTools).map(tool => tool.id)
+    const defaultToolsIds = defaultTools.map(tool => tool.id).concat(defaultShapeTools.map(tool => tool.id))
+
 
     // useful to discover the styles cache
     //console.log(stylesForNextShapes)
@@ -35,7 +39,11 @@ const CustomUI = track(() => {
         console.log("dispatch", action, payload)
         switch (action as string) {
             case "clickedTool":
-                editor.setCurrentTool(payload as string)
+                if (defaultToolsIds.includes(payload as string)) {
+                    editor.setCurrentTool(payload as string)
+                } else {
+                    console.warn("Tool not recognized", payload)
+                }
                 break
             case "clickedShape":
                 editor.setStyleForNextShapes(GeoShapeGeoStyle, payload as string)
@@ -52,6 +60,58 @@ const CustomUI = track(() => {
                 break
             case "clickedFont":
                 editor.setStyleForNextShapes(DefaultFontStyle, payload as string)
+                break
+            case "providedAnImage":
+                //editor.setStyleForNextShapes(DefaultBrush, payload as string)
+                console.log("providedAnImage")
+                const imageSrc = payload as string
+                const image = new Image()
+                image.src = imageSrc
+                const imageWidth  = image.width
+                const imageHeight = image.height
+                const aspectRatio = imageWidth / imageHeight
+                const assetId = AssetRecordType.createId()
+
+                editor.createAssets([
+                    {
+                        id: assetId,
+                        type: 'image',
+                        typeName: 'asset',
+                        props: {
+                            name: 'tldraw.png',
+                            src: imageSrc,
+                            w: imageWidth,
+                            h: imageHeight,
+                            mimeType: 'image/png',
+                            isAnimated: false,
+                        },
+                        meta: {},
+                    },
+                ])
+
+                // Calculate the size of the image to fit in the editor
+                let imageWidthInEditor = imageWidth
+                let imageHeightInEditor = imageHeight
+                if (imageWidth > 1920) {
+                    imageWidthInEditor = window.innerWidth
+                    imageHeightInEditor = imageWidthInEditor / aspectRatio
+                }
+                if (imageHeight > 1080) {
+                    imageHeightInEditor = window.innerHeight
+                    imageWidthInEditor = imageHeightInEditor * aspectRatio
+                }
+
+                editor.createShape({
+                    type: 'image',
+                    // Let's center the image in the editor
+                    x: (1920 - imageWidthInEditor)  / 2,
+                    y: (1080 - imageHeightInEditor) / 2,
+                    props: {
+                        assetId,
+                        w: imageWidthInEditor,
+                        h: imageHeightInEditor,
+                    },
+                })
                 break
             case "clickedOption":
                 // from:
