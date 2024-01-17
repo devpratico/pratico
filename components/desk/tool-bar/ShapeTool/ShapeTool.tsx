@@ -13,12 +13,19 @@ interface ShapeToolProps {
 
 export default function ShapeTool({activeToolId, activeColor, activeShape, dispatch}: ShapeToolProps) {
 
-    // test
+    // We won't pass the original dispatch function.
+    // We need to declare first that we come from the shape tool.
+    const dispatchShapeOption = <A, P>(action: A, payload: P) => {
+        // "Clicked option *from* text tool"
+        dispatch<string, string>("clickedOption", "shape")
+        dispatch<A, P>(action, payload)
+    }
+
     const shapeButtonProps = {
         toolId: "shape" as ToolId,
         onClick: ()=>dispatch<string, string>("clickedTool", "geo"),
         active: activeToolId === "geo" || activeToolId === "arrow",
-        tooltipContent: <ShapeOptions activeColor={activeColor} activeShape={activeShape} dispatch={dispatch}/>
+        tooltipContent: <ShapeOptions activeColor={activeColor} activeShape={activeShape} dispatch={dispatchShapeOption}/>
     }
 
     return <ToolButton {...shapeButtonProps}/>

@@ -1,5 +1,5 @@
 import styles from './CustomUI.module.css'
-import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType } from "@tldraw/tldraw"
+import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType, EmbedShapeUtil, TLShapeId, TLEmbedShape, createShapeId } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
@@ -41,12 +41,30 @@ const CustomUI = track(() => {
             case "clickedTool":
                 if (defaultToolsIds.includes(payload as string)) {
                     editor.setCurrentTool(payload as string)
+                } else if (payload === "video") {
+
+
+                    editor.createShape<TLEmbedShape>({
+                        id: createShapeId(),
+                        type: 'embed', 
+                        x: 0, 
+                        y: 0, 
+                        props: {
+                            url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                            w: 1920,
+                            h: 1080,
+                        }
+                    })
+
+                    editor.setCurrentTool("select")
+
                 } else {
                     console.warn("Tool not recognized", payload)
                 }
                 break
             case "clickedShape":
                 editor.setStyleForNextShapes(GeoShapeGeoStyle, payload as string)
+
                 break
             case "clickedColor":
                 editor.setStyleForNextShapes(DefaultColorStyle, payload as string)
@@ -62,56 +80,65 @@ const CustomUI = track(() => {
                 editor.setStyleForNextShapes(DefaultFontStyle, payload as string)
                 break
             case "providedAnImage":
-                //editor.setStyleForNextShapes(DefaultBrush, payload as string)
-                console.log("providedAnImage")
                 const imageSrc = payload as string
+
+                // We could directly create an image using imageSrc, but we want to get the image size first
+                // To get the size, we need to create an Image element to access its width and height
+                // But width and height are only available after the image is loaded
+                // So we need to continue in the onload handler
                 const image = new Image()
-                image.src = imageSrc
-                const imageWidth  = image.width
-                const imageHeight = image.height
-                const aspectRatio = imageWidth / imageHeight
                 const assetId = AssetRecordType.createId()
 
-                editor.createAssets([
-                    {
-                        id: assetId,
-                        type: 'image',
-                        typeName: 'asset',
-                        props: {
-                            name: 'tldraw.png',
-                            src: imageSrc,
-                            w: imageWidth,
-                            h: imageHeight,
-                            mimeType: 'image/png',
-                            isAnimated: false,
+                // This handler will be called when the image is done loading
+                image.onload = () => {
+                    const imageWidth  = image.width
+                    const imageHeight = image.height
+                    const aspectRatio = imageWidth / imageHeight
+
+                    editor.createAssets([
+                        {
+                            id: assetId,
+                            type: 'image',
+                            typeName: 'asset',
+                            props: {
+                                name: 'tldraw.png',
+                                src: imageSrc,
+                                w: imageWidth,
+                                h: imageHeight,
+                                mimeType: 'image/png',
+                                isAnimated: false,
+                            },
+                            meta: {},
                         },
-                        meta: {},
-                    },
-                ])
-
-                // Calculate the size of the image to fit in the editor
-                let imageWidthInEditor = imageWidth
-                let imageHeightInEditor = imageHeight
-                if (imageWidth > 1920) {
-                    imageWidthInEditor = window.innerWidth
-                    imageHeightInEditor = imageWidthInEditor / aspectRatio
+                    ])
+    
+                    // Calculate the size of the image to fit in the editor
+                    let imageWidthInEditor = imageWidth
+                    let imageHeightInEditor = imageHeight
+                    if (imageWidth > 1920) {
+                        imageWidthInEditor = window.innerWidth
+                        imageHeightInEditor = imageWidthInEditor / aspectRatio
+                    }
+                    if (imageHeight > 1080) {
+                        imageHeightInEditor = window.innerHeight
+                        imageWidthInEditor = imageHeightInEditor * aspectRatio
+                    }
+    
+                    editor.createShape({
+                        type: 'image',
+                        // Let's center the image in the editor
+                        x: (1920 - imageWidthInEditor)  / 2,
+                        y: (1080 - imageHeightInEditor) / 2,
+                        props: {
+                            assetId,
+                            w: imageWidthInEditor,
+                            h: imageHeightInEditor,
+                        },
+                    })
                 }
-                if (imageHeight > 1080) {
-                    imageHeightInEditor = window.innerHeight
-                    imageWidthInEditor = imageHeightInEditor * aspectRatio
-                }
 
-                editor.createShape({
-                    type: 'image',
-                    // Let's center the image in the editor
-                    x: (1920 - imageWidthInEditor)  / 2,
-                    y: (1080 - imageHeightInEditor) / 2,
-                    props: {
-                        assetId,
-                        w: imageWidthInEditor,
-                        h: imageHeightInEditor,
-                    },
-                })
+                image.src = imageSrc
+                
                 break
             case "clickedOption":
                 // from:
@@ -126,6 +153,12 @@ const CustomUI = track(() => {
                         // Set only if not already text or note
                         if (!["text", "note"].includes(activeToolId)) {
                             editor.setCurrentTool("text")
+                        }
+                        break
+                    case "shape":
+                        // Set only if not already geo or arrow
+                        if (!["geo", "arrow"].includes(activeToolId)) {
+                            editor.setCurrentTool("geo")
                         }
                         break
                     default:
