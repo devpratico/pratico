@@ -43,23 +43,6 @@ const CustomUI = () => {
             case "clickedTool":
                 if (defaultToolsIds.includes(payload as string)) {
                     editor.setCurrentTool(payload as string)
-                } else if (payload === "video") {
-
-
-                    editor.createShape<TLEmbedShape>({
-                        id: createShapeId(),
-                        type: 'embed', 
-                        x: 0, 
-                        y: 0, 
-                        props: {
-                            url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                            w: 1920,
-                            h: 1080,
-                        }
-                    })
-
-                    editor.setCurrentTool("select")
-
                 } else {
                     console.warn("Tool not recognized", payload)
                 }
@@ -142,6 +125,24 @@ const CustomUI = () => {
                 image.src = imageSrc
                 
                 break
+
+
+            case "SubmitYouTubeVideoURL":
+                editor.createShape<TLEmbedShape>({
+                    id: createShapeId(),
+                    type: 'embed', 
+                    x: 0, 
+                    y: 0, 
+                    props: {
+                        url: payload as string,
+                        w: 1920,
+                        h: 1080,
+                    }
+                })
+
+                editor.setCurrentTool("select")
+
+
             case "clickedOption":
                 // from:
                 switch (payload as string) {

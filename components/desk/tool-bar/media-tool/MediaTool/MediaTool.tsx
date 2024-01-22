@@ -33,12 +33,27 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
     return (
         <div>
             <ToolButton {...mediaButtonProps}/>
+
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
+
             <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
-                <DialogContent>
-                    Hello
+                <DialogContent closeBtn>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.target as HTMLFormElement);
+                        const url = formData.get("video-url") as string;
+                        dispatch<string, string>("SubmitYouTubeVideoURL", url);
+                        setOpenVideoModal(false);
+                    }}>
+                        <label htmlFor="video-url">Video URL</label>
+                        <br/>
+                        <input type="text" id="video-url" name="video-url" placeholder='Enter a video URL'/>
+                        <br/>
+                        <button type="submit">Submit</button>
+                    </form>
                 </DialogContent>
             </Dialog>
+
         </div>
     )
 }
