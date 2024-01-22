@@ -26,5 +26,3 @@ and needs to be wrapped in a container with a fixed size (provided by the layout
     border: 0.5px solid var(--secondary-border);
     border-radius: 1rem;;
 }
-
-

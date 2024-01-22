@@ -1,0 +1,150 @@
+.button {
+    all: unset;
+  }
+  
+  .DialogOverlay {
+    background-color: rgba(0, 0, 0, 0.339);
+    position: fixed;
+    inset: 0;
+    animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9998;
+    pointer-events: none !important; /* Doesn't work in Tldraw otherwise (?) */
+  }
+  
+  .DialogContent {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 450px;
+    max-height: 85vh;
+    padding: 25px;
+    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9999;
+  }
+  .DialogContent:focus {
+    outline: none;
+  }
+  
+  
+  @keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes contentShow {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+/*
+.trigger {
+    all: unset;
+}
+
+.trigger:hover {
+    cursor: pointer;
+}
+
+.overlay {
+    position: fixed;
+    inset: 100px;
+    animation: overlayShow 200ms cubic-bezier(0, 0.71, 0.33, 1);
+    z-index: 9998;
+}
+
+.overlayBlur {
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    background-color: hsla(var(--text-h), var(--text-s), var(--text-l), 0.3);
+}
+
+.content {
+    background-color: var(--background);
+    padding: 1rem;
+    border-radius: 1rem;
+    position: fixed;
+    border: 0.5px solid var(--secondary-border);
+    z-index: 9999;
+}
+
+.content:focus {
+    outline: none;
+}
+
+.contentBlur {
+    -webkit-backdrop-filter: blur(50px);
+    backdrop-filter: blur(50px);
+    background-color: hsla(var(--background-h), var(--background-s), var(--background-l), 0.8);
+}
+
+.close:hover {
+    cursor: pointer;
+}
+
+.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.right {
+    width: 30%;
+    height: calc(100% - 2rem);
+    top: 0;
+    right: 0;
+    margin: 1rem 1rem 1rem 0;
+    animation: contentShowRight 200ms cubic-bezier(0, 0.71, 0.33, 1);
+}
+
+.left {
+    top: 50px;
+    left: 10px;
+}
+
+.top {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.bottom {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+@keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+@keyframes contentShowRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+*/

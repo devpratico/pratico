@@ -1,7 +1,9 @@
-import { useRef } from 'react';
+'use client'
+import { useRef, useState } from 'react';
 import ToolButton, {ToolId} from '../../ToolButton/ToolButton'
 import MediaOptions from '../../tools-options/MediaOptions/MediaOptions';
 import FileInputBtn from '../FileInputBtn/FileInputBtn';
+import {Dialog, DialogContent, DialogTrigger } from '@/components/primitives/Dialog/Dialog';
 
 
 interface MediaToolProps {
@@ -10,6 +12,10 @@ interface MediaToolProps {
 }
 
 export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
+
+    //const [tooltipOpen, setTooltipOpen] = useState<boolean | undefined>(undefined);
+    const [openVideoModal, setOpenVideoModal] = useState<boolean | undefined>(false);
+
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleClick = () => {
@@ -21,13 +27,18 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
         toolId: "image" as ToolId,
         onClick: handleClick,
         active: activeToolId === "image" || activeToolId === "video",
-        tooltipContent: <MediaOptions dispatch={dispatch}/>
+        tooltipContent: <MediaOptions setOpenVideoModal={setOpenVideoModal} dispatch={dispatch}/>,
     }
 
     return (
         <div>
             <ToolButton {...mediaButtonProps}/>
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
+            <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
+                <DialogContent>
+                    Hello
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

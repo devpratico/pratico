@@ -9,7 +9,8 @@ interface FileInputBtnProps {
  * This component is used to upload an image from the user's computer.
  * It doesn't render anything, but triggers a popup to select a file.
  */
-const FileInputBtn = forwardRef<HTMLInputElement , FileInputBtnProps>(({ dispatch }, ref) => {
+const FileInputBtn = forwardRef<HTMLInputElement , FileInputBtnProps>(
+  function FileInputBtn({ dispatch }, ref) {
   
   const localInputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => localInputRef.current as HTMLInputElement);

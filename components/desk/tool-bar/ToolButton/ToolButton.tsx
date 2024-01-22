@@ -45,7 +45,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
         </button>
     );
 
-    // If no tooltip, return the button itself
+    // If no tooltip, return just the button, no need to call Tooltip
     if (!tooltipContent) {
         return <Button />;
 

@@ -1,3 +1,4 @@
+'use client'
 import styles from './CustomUI.module.css'
 import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType, EmbedShapeUtil, TLShapeId, TLEmbedShape, createShapeId } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
@@ -10,7 +11,8 @@ import { Shape } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
  * This component is a custom UI for the editor.
  * For now, it only contains the tool bar (left)
  */
-const CustomUI = track(() => {
+//const CustomUI = track(() => {
+const CustomUI = () => {
     const editor = useEditor() // This is provided by the parent Tldraw component
     const activeToolId = editor.getCurrentToolId()
     const isStickyNote = activeToolId === "note"
@@ -186,6 +188,6 @@ const CustomUI = track(() => {
             />
         </div>
     )
-})
+}
 
 export default CustomUI

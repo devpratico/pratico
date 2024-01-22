@@ -5,7 +5,6 @@ import LabeledIcon from '../../primitives/LabeledIcon/LabeledIcon';
 import MenuBarLayout from '../MenuBarLayout/MenuBarLayout';
 import praticoLogo from '../../../public/images/pratico.svg';
 import { IconSize } from '../../../utils/Icons';
-import Modal from '../../primitives/Modal/Modal';
 
 
 interface MenuBarProps {
@@ -48,7 +47,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
                     <LabeledIconBtn type="stopwatch"    label="stopwatch"   {...styleBtnProps} />
                     <LabeledIconBtn type="chat"         label="chat"        {...styleBtnProps} />
                     <LabeledIconBtn type="users"        label="students"    {...styleBtnProps} />
-                    <Modal button={<LabeledIcon type="puzzle" label="polls" {...styleBtnProps} />} content={<div></div>} position="right"/>
+                    <LabeledIcon    type="puzzle"       label="polls"       {...styleBtnProps} />
                     <LabeledIconBtn type="ellipsis"     label="more"        {...styleBtnProps} />
                 </MenuBarLayout>
             )
