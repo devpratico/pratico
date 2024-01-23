@@ -1,11 +1,10 @@
 'use client'
 import styles from './MediaOptions.module.css';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer';
 import { faCamera, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeSvg } from '@/utils/Icons';
 import FileInputBtn from '../../media-tool/FileInputBtn/FileInputBtn';
-import {Dialog, DialogContent, DialogTrigger} from '@/components/primitives/Dialog/Dialog';
 
 
 interface MediaOptionsProps {
@@ -15,12 +14,15 @@ interface MediaOptionsProps {
 
 export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptionsProps) {
 
-    //const [openVideoModal, setOpenVideoModal] = useState<boolean>(false);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleImageClick = () => {
         dispatch<string, string>("clickedTool", "image");
         fileInputRef.current?.click();
+    }
+
+    const handleVideoClick = () => {
+        dispatch<string, string>("clickedTool", "video");
+        setOpenVideoModal(true);
     }
 
     const ImageBtn = () => (
@@ -33,11 +35,7 @@ export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptions
     )
 
     const VideoBtn = () => (
-        <button className={styles.optionBtn} onClick={() => {
-            setOpenVideoModal(true)
-            //dispatch<string, string>("clickedTool", "video");
-        }
-        }>
+        <button className={styles.optionBtn} onClick={handleVideoClick}>
             <FontAwesomeSvg icon={faVideo} className={styles.optionIcon}/>
         </button>
     )

@@ -1,6 +1,6 @@
 'use client'
 import styles from './CustomUI.module.css'
-import { useEditor, track, DefaultColorStyle, DefaultBrush, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType, EmbedShapeUtil, TLShapeId, TLEmbedShape, createShapeId } from "@tldraw/tldraw"
+import { useEditor, track, DefaultColorStyle, DefaultFillStyle, DefaultDashStyle, DefaultSizeStyle, DefaultFontStyle, DefaultHorizontalAlignStyle, defaultTools, defaultShapeTools, ShapeIndicator, GeoShapeTool, GeoShapeGeoStyle, AssetRecordType, EmbedShapeUtil, TLShapeId, TLEmbedShape, createShapeId } from "@tldraw/tldraw"
 import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
@@ -11,8 +11,7 @@ import { Shape } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
  * This component is a custom UI for the editor.
  * For now, it only contains the tool bar (left)
  */
-//const CustomUI = track(() => {
-const CustomUI = () => {
+const CustomUI = track(() => {
     const editor = useEditor() // This is provided by the parent Tldraw component
     const activeToolId = editor.getCurrentToolId()
     const isStickyNote = activeToolId === "note"
@@ -43,13 +42,16 @@ const CustomUI = () => {
             case "clickedTool":
                 if (defaultToolsIds.includes(payload as string)) {
                     editor.setCurrentTool(payload as string)
+                    if (payload === "draw") {
+                        editor.setStyleForNextShapes(DefaultFillStyle, "none")
+                    }
                 } else {
                     console.warn("Tool not recognized", payload)
                 }
                 break
             case "clickedShape":
+                editor.setStyleForNextShapes(DefaultFillStyle, "solid");
                 editor.setStyleForNextShapes(GeoShapeGeoStyle, payload as string)
-
                 break
             case "clickedColor":
                 editor.setStyleForNextShapes(DefaultColorStyle, payload as string)
@@ -59,6 +61,7 @@ const CustomUI = () => {
                 break
             case "clickedDash":
                 editor.setCurrentTool("draw") // We want to go back to draw even if we are in highlight or laser
+                editor.setStyleForNextShapes(DefaultFillStyle, "none")
                 editor.setStyleForNextShapes(DefaultDashStyle, payload as string)
                 break
             case "clickedFont":
@@ -128,18 +131,23 @@ const CustomUI = () => {
 
 
             case "SubmitYouTubeVideoURL":
+                const resizeRatio = 0.5
+                const width = 1920 * resizeRatio
+                const height = 1080 * resizeRatio
+                const x = (1920 - width) / 2
+                const y = (1080 - height) / 2
+                const shapeId = createShapeId()
                 editor.createShape<TLEmbedShape>({
-                    id: createShapeId(),
+                    id: shapeId,
                     type: 'embed', 
-                    x: 0, 
-                    y: 0, 
+                    x: x,
+                    y: y, 
                     props: {
                         url: payload as string,
-                        w: 1920,
-                        h: 1080,
+                        w: width,
+                        h: height,
                     }
                 })
-
                 editor.setCurrentTool("select")
 
 
@@ -149,6 +157,7 @@ const CustomUI = () => {
                     case "draw":
                         // Set to draw only if not already draw or highlight or laser
                         if (!["draw", "highlight", "laser"].includes(activeToolId)) {
+                            editor.setStyleForNextShapes(DefaultFillStyle, "none")
                             editor.setCurrentTool("draw")
                         }
                         break
@@ -161,6 +170,7 @@ const CustomUI = () => {
                     case "shape":
                         // Set only if not already geo or arrow
                         if (!["geo", "arrow"].includes(activeToolId)) {
+                            editor.setStyleForNextShapes(DefaultFillStyle, "solid")
                             editor.setCurrentTool("geo")
                         }
                         break
@@ -189,6 +199,6 @@ const CustomUI = () => {
             />
         </div>
     )
-}
+})
 
 export default CustomUI

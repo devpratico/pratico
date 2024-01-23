@@ -1,0 +1,32 @@
+.Input {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    /*height: 2rem;*/
+    font-size: 0.8rem;
+    line-height: 1;
+    color: var(--primary-text);
+    background-color: var(--background);
+    /*box-shadow: 0 0 0 1px black;*/
+    border: 1px solid var(--secondary-border);
+    box-sizing: border-box;
+    cursor: text;
+    caret-color: var(--primary);
+}
+
+.Input:focus {
+    /*box-shadow: 0 0 0 2px black;*/
+    border: 1px solid var(--primary);
+}
+
+.Input::selection {
+    background-color: var(--primary);
+    color: var(--text-on-primary);
+}
+
+.Input::placeholder {
+    color: var(--secondary-border);
+}

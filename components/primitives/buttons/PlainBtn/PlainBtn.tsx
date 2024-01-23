@@ -12,6 +12,8 @@ export interface PlainBtnProps {
     color?: ThemeColors;
     onClick?: () => void;
     enabled?: boolean;
+    type?: "button" | "submit" | "reset";
+    className?: string;
 }
 
 
@@ -26,6 +28,9 @@ export default function PlainBtn(props: PlainBtnProps) {
 
     // Set the styles
     const stylesArray = [styles.container];
+    if (props.className) {
+        stylesArray.push(props.className);
+    }
 
     switch (props.size) {
         case "s":
@@ -89,7 +94,7 @@ export default function PlainBtn(props: PlainBtnProps) {
 
 
     return (
-        <button className={btnStyle}>
+        <button className={btnStyle} onClick={props.onClick} type={props.type} disabled={props.enabled === false}>
             {icon}
             <p>{props.text}</p>
         </button>

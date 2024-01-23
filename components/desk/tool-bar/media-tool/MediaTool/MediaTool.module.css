@@ -1,0 +1,38 @@
+.videoForm {
+    gap: 0.2rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-right: 0.5rem;
+}
+
+.btns {
+    display: flex;
+    align-self: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.submitBtn {
+    right: 0px;
+}
+
+.textfield {
+    width: 100%;
+}
+
+.title {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.ytIcon {
+    color: var(--red);
+    /*transform:rotate(4deg);*/
+    align-self: center;
+    height: 80px;
+    width: 80px;
+}
