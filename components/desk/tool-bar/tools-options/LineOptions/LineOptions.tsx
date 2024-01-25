@@ -4,6 +4,7 @@ import SolidLineIcon from '@/public/icons/SolidLineIcon';
 import LaserIcon from '@/public/icons/LaserIcon';
 import { faHighlighter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import HighlighterIcon from '@/components/icons/HighlighterIcon';
 
 type Action = "clickedSize" | "clickedDash" | "clickedTool";
 export type Size   = "s" | "m" | "l" | "xl";
@@ -64,7 +65,8 @@ function SolidLineBtn({active, onClick}: {active: boolean, onClick?: () => void}
 function HighlighterBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <FontAwesomeIcon icon={faHighlighter} size="xl"/>
+            {/*<FontAwesomeIcon icon={faHighlighter} size="xl"/>*/}
+            <HighlighterIcon/>
         </OptionBtn>
     )
 }

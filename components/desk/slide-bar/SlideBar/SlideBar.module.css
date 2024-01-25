@@ -19,3 +19,15 @@
     gap: 2rem;
     border-left: 1px solid var(--secondary-border);
 }
+
+.addPageBtn {
+    --icon-size: 3rem;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+.expandBtn {
+    --icon-size: 1.5rem;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}

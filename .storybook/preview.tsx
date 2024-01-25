@@ -1,6 +1,10 @@
+import React from "react";
 import type { Preview } from "@storybook/react";
 import '../app/globals.css';
 import '../app/colors.css';
+import RootLayout from "../app/layout";
+import { luciole } from "../app/layout";
+
 
 const preview: Preview = {
   parameters: {
@@ -12,6 +16,13 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <main className={luciole.className}>
+        <Story />
+      </main>
+    )
+  ],
 };
 
 export default preview;

@@ -10,7 +10,7 @@ interface LabeledIconBtnProps extends LabeledIconProps {
 
 export default function LabeledIconBtn({ onClick, ...labeledIconProps }: LabeledIconBtnProps) {
     return (
-        <button className={styles.btn} onClick={onClick}>
+        <button className={styles.btn + " " + labeledIconProps.className} onClick={onClick}>
             <LabeledIcon {...labeledIconProps} />
         </button>
     )

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import LabeledIcon from './LabeledIcon';
+import HighlighterIcon from '@/components/icons/HighlighterIcon';
 
 const meta: Meta<typeof LabeledIcon> = {
     title: 'Composants',
@@ -12,8 +13,11 @@ type Story = StoryObj<typeof meta>;
 
 export const LabeledIcon_: Story = {
     args: {
-        type: 'play',
-        label: 'Play',
+        icon:  <HighlighterIcon/>,
+        iconSize: "xl",
+        label: 'Highlighter',
+        centered: true,
+        gap: "0",
     },
 };
 

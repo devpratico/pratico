@@ -1,0 +1,86 @@
+import { Box2d, Editor, TLAnimationOptions } from '@tldraw/tldraw'
+
+
+
+interface Insets {
+    /**
+     * The top inset in pixels, to fit a menu bar for example.
+     */
+    top: number
+
+    /**
+     * The right inset in pixels, to fit a sidebar for example.
+     */
+    right: number
+
+    /**
+     * The bottom inset in pixels, to fit a footer bar for example.
+     */
+    bottom: number
+
+    /**
+     * The left inset in pixels, to fit a tool for example.
+     */
+    left: number
+}
+
+interface ZoomToBoundsArgs {
+    /**
+     * Tldraw editor instance.
+     */
+    editor: Editor
+
+    /**
+     * The box to fit in the viewport, i.e. the canvas (tldraw coordinates)
+     */
+    box: Box2d
+
+    /**
+     * The insets in pixels, to fit UI elements around the canvas.
+     */
+    insets?: Insets
+    animation?: TLAnimationOptions
+}
+
+/**
+ * Fit the box in the viewport, with some insets.
+ * This is a custom version of tldraw's `editor.zoomToBounds()`.
+ */
+export default function zoomToBounds({ editor, box, insets, animation }: ZoomToBoundsArgs) {
+    //const viewportScreenBounds = editor.getViewportScreenBounds()
+    const viewportScreenBounds = editor.getContainer().getBoundingClientRect()
+    const margin = 5 //px
+    const _insets = insets || {top: 0, right: 0, bottom: 0, left: 0}
+
+    // Given the viewport, margin and insets, we can get the aspect ratio of the "usable" area
+    const usableWidth  = viewportScreenBounds.width  - _insets.left - _insets.right  - 2*margin
+    const usableHeight = viewportScreenBounds.height - _insets.top  - _insets.bottom - 2*margin
+    const usableAspectRatio = usableWidth / usableHeight
+
+    // Let's compare the aspect ratio of the usable area with the aspect ratio of the box
+    const boxAspectRatio = box.width / box.height
+    const usableAreaIsWider = usableAspectRatio > boxAspectRatio
+
+    // let's compute a zoom that will fit the box in the usable area
+    const zoom = usableAreaIsWider ? usableHeight/box.height : usableWidth/box.width
+
+    // Convert some values to canvas coordinates
+    const cMargin       = margin       / zoom
+    const cUsableWidth  = usableWidth  / zoom
+    const cUsableHeight = usableHeight / zoom
+    const cInsetTop     = _insets.top  / zoom
+    const cInsetLeft    = _insets.left / zoom
+
+    // Now we can compute the camera position (top-left corner of the camera view)
+    // So that the box is centered in the usable area
+    const cameraX = -cMargin - cInsetLeft - (usableAreaIsWider ? (cUsableWidth - box.width) / 2 : 0)
+    const cameraY = -cMargin - cInsetTop  - (usableAreaIsWider ? 0 : (cUsableHeight - box.height) / 2)
+
+    editor.setCamera({
+            x: -cameraX,
+            y: -cameraY,
+            z: zoom,
+        },
+        animation
+    )
+}

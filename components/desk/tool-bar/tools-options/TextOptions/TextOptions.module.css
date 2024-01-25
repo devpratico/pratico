@@ -1,7 +1,8 @@
 .button {
     border: none;
     background-color: transparent;
-    color: var(--primary);
+    /*color: var(--primary);*/
+    color: black;
     border-radius: 20%;
     cursor: pointer;
     padding: 0.2rem;

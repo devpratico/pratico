@@ -1,9 +1,6 @@
-interface YoutubeIconProps {
-    className?: string;
-}
+import IconProps from "./IconProps";
 
-
-export default function YoutubeIcon({className}: YoutubeIconProps) {
+export default function YoutubeIcon({className}: IconProps) {
     return (
         <div className={className}>
             <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16">

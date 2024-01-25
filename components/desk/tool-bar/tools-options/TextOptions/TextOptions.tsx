@@ -6,6 +6,7 @@ import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import FontDrawIcon from "@/public/icons/FontDrawIcon";
 import FontSerifIcon from "@/public/icons/FontSerifIcon";
 import FontSansIcon from "@/public/icons/FontSansIcon";
+import StickyIcon from "@/components/icons/StickyIcon";
 
 
 type Action = "clickedOption" | "clickedTool" | "clickedFont";
@@ -31,7 +32,8 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
 
     
     function StickyNoteButton() {
-        const stickyNoteIcon = <FontAwesomeIcon icon={faStickyNote} size="xl"/>;
+        //const stickyNoteIcon = <FontAwesomeIcon icon={faStickyNote} size="xl"/>;
+        const stickyNoteIcon = <StickyIcon fill={false}/>
         const className = styles.button + " " + (isStickyNote ? styles.active : "")
         const dispatchStickyNote = () => dispatch<Action, Tool>("clickedTool", "note")
         return <button key={"note"} className={className} onClick={dispatchStickyNote} >{stickyNoteIcon}</button>

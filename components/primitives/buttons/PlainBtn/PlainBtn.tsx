@@ -6,7 +6,8 @@ export type ThemeColors = "primary" | "secondary" | "red" | "green";
 
 export interface PlainBtnProps {
     text: string;
-    iconName?: IconName;
+    //iconName?: IconName;
+    icon?: JSX.Element;
     size?: "s" | "m" | "l";
     style?: "solid" | "soft" | "outline" | "ghost";
     color?: ThemeColors;
@@ -17,22 +18,34 @@ export interface PlainBtnProps {
 }
 
 
-export default function PlainBtn(props: PlainBtnProps) {
+export default function PlainBtn({
+    text,
+    icon,
+    size="m",
+    style="solid",
+    color="primary",
+    onClick=() => {},
+    enabled=true,
+    type="button",
+    className
+}: PlainBtnProps) {
 
     // Set the icon
+    /*
     let icon = null;
     if (props.iconName) {
         const iconSize = "lg" as IconSize;
         icon = getIcon(props.iconName, iconSize);
     }
+    */
 
     // Set the styles
     const stylesArray = [styles.container];
-    if (props.className) {
-        stylesArray.push(props.className);
+    if (className) {
+        stylesArray.push(className);
     }
 
-    switch (props.size) {
+    switch (size) {
         case "s":
             stylesArray.push(styles.s);
             break;
@@ -48,7 +61,7 @@ export default function PlainBtn(props: PlainBtnProps) {
     }
 
 
-    switch (props.color) {
+    switch (color) {
         case "primary":
             stylesArray.push(styles.primary);
             break;
@@ -66,7 +79,7 @@ export default function PlainBtn(props: PlainBtnProps) {
             break;
     }
 
-    switch (props.style) {
+    switch (style) {
         case "solid":
             stylesArray.push(styles.solid);
             stylesArray.push("smallShadow");
@@ -86,7 +99,7 @@ export default function PlainBtn(props: PlainBtnProps) {
     }
 
     // Set the enabled state
-    if (props.enabled === false) {
+    if (enabled === false) {
         stylesArray.push(styles.disabled);
     }
 
@@ -94,9 +107,9 @@ export default function PlainBtn(props: PlainBtnProps) {
 
 
     return (
-        <button className={btnStyle} onClick={props.onClick} type={props.type} disabled={props.enabled === false}>
-            {icon}
-            <p>{props.text}</p>
+        <button className={btnStyle} onClick={onClick} type={type} disabled={enabled === false}>
+            {icon && icon}
+            <p>{text}</p>
         </button>
     )
 }

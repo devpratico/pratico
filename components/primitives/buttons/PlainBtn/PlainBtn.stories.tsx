@@ -1,5 +1,7 @@
+import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import PlainBtn from './PlainBtn';
+import StopwatchIcon from '@/components/icons/StopwatchIcon';
 
 
 const meta = {
@@ -17,7 +19,7 @@ type Story = StoryObj<typeof meta>;
 export const AllStyles: Story = {
   args: {
     text: "Text",
-    iconName: "stopwatch",
+    icon: <StopwatchIcon />,
     size: "m",
     style: "solid",
     color: "primary",

@@ -1,31 +1,31 @@
 'use client'
 import styles from './SlideBar.module.css'
 import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIconBtn'
-import { IconName, IconSize } from '../../../../utils/Icons'
 import SlideNavigation from '../SlideNavigation/SlideNavigation'
 import Carousel from '../../carousel/Carousel/Carousel'
+import PlusSquareIcon from '@/components/icons/PlusSquareIcon'
+import FullScreenIcon from '@/components/icons/FullScreenIcon'
+import { IconSize } from '../../../primitives/LabeledIcon/LabeledIcon'
 
 export default function SlideBar() {
 
     const addPageBtnProps = {
-        type:       "square-plus" as IconName,
-        label:      "add",
+        icon:       <PlusSquareIcon />,
+        iconSize:   "lg" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        size:       "xl" as IconSize,
-        centered:   true,
-        onClick: () => console.log("clicked")
+        onClick: () => console.log("clicked"),
+        className:  styles.addPageBtn
     }
     const AddPage = () => <LabeledIconBtn {...addPageBtnProps} />
 
     const expandBtnProps = {
-        type:       "expand" as IconName,
-        label:      "full screen",
+        icon:       <FullScreenIcon />,
+        iconSize:   "md" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        size:       "lg" as IconSize,
-        centered:   true,
-        onClick: () => console.log("clicked")
+        onClick: () => console.log("clicked"),
+        className:  styles.expandBtn
     }
     const Expand = () => <LabeledIconBtn {...expandBtnProps} />
 

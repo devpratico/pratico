@@ -16,7 +16,8 @@
 }
 
 .optionIcon {
-    color: var(--primary);
+    /*color: var(--primary);*/
+    color: black;
     width: 100%;
     height: 100%;
 }

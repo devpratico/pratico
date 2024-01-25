@@ -1,11 +1,11 @@
 .container {
-    --mbl-padding: 0.7rem;
+    --mbl-padding: 2rem;
     background-color: var(--brand);
     border-bottom: 1px solid var(--brand-border);
-    height: 50px;
+    height: 56px;
     display: flex;
     align-items: center;
-    padding: 0 calc(var(--mbl-padding)/2);
+    padding: 0.4rem  calc(var(--mbl-padding)/2);
     overflow: hidden;
 }
 
@@ -15,7 +15,6 @@
 
 .child {
     padding: 0 calc(var(--mbl-padding)/2);
-    display: flex;
 }
 
 .spacer {

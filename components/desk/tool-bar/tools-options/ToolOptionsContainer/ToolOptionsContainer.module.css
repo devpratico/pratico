@@ -6,7 +6,7 @@
     border: 0.5px solid var(--secondary-border);
     width: fit-content;
     display: grid;
-    --toolBarCellSize: 1.7rem;
+    --toolBarCellSize: 2rem;
     grid-template-columns: repeat(var(--tool-options-rows), var(--toolBarCellSize));
     /*grid-template-columns: repeat(attr(data-rows), var(--toolBarCellSize));*/
     grid-auto-rows: var(--toolBarCellSize);

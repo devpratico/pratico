@@ -10,19 +10,28 @@ import {
     faImage,
     faShapes,
  }   from '@fortawesome/free-solid-svg-icons';
-import Tooltip              from '@/components/primitives/Tooltip/Tooltip';
+import Tooltip from '@/components/primitives/Tooltip/Tooltip';
+import CursorIcon from '@/components/icons/CursorIcon';
+import PencilIcon from '@/components/icons/PencilIcon';
+import TextAreaIcon from '@/components/icons/TextAreaIcon';
+import StarIcon from '@/components/icons/StarIcon';
+import ImageIcon from '@/components/icons/ImageIcon';
+import EraserIcon from '@/components/icons/EraserIcon';
 
 /**
  * IDs of default tlDraw tools (see tldraw documentation)
  */
 export type ToolId = "select" | "draw" | "eraser" | "text" | "image" | "shape";
-const iconsMap: Record<ToolId, IconDefinition> = {
-    "select": faArrowPointer,
-    "draw":   faPen,
-    "eraser": faEraser,
-    "text":   faT,
-    "image":  faImage,
-    "shape":  faShapes,
+
+const fill = false;
+
+const iconsMap: Record<ToolId, JSX.Element> = {
+    "select": <CursorIcon   fill={fill} />,
+    "draw":   <PencilIcon   fill={fill} />,
+    "text":   <TextAreaIcon fill={fill} />,
+    "shape":  <StarIcon     fill={fill} />,
+    "image":  <ImageIcon    fill={fill} />,
+    "eraser": <EraserIcon   fill={fill} />,
 }
 
 
@@ -41,7 +50,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
     // The button itself
     const Button = () => (
         <button onClick={onClick} className={styles.btn + " " + (active ? styles.active : "")}>
-            <FontAwesomeIcon icon={iconsMap[toolId]} />
+            {iconsMap[toolId]}
         </button>
     );
 

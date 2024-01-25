@@ -1,42 +1,101 @@
-import React from 'react';
 import styles from './LabeledIcon.module.css';
-import {getIcon, IconName} from '../../../utils/Icons';
-import { IconSize } from '../../../utils/Icons';
 
+export type IconSize = "sm" | "md" | "lg" | "xl";
+export const iconSizeMap = {
+    "sm": "1.2rem",
+    "md": "1.5rem",
+    "lg": "2rem",
+    "xl": "2.5rem",
+}
 
 export interface LabeledIconProps {
-    type: IconName
+    icon: JSX.Element;
+
+    iconSize: IconSize;
+
     label?: string;
+
+    /**
+     * The maximum width of the label.
+     * @example "2rem", "100px"
+     */
+    labelMaxWidth?: string;
+
     hideLabel?: boolean;
+
     iconColor?: string;
+
     labelColor?: string;
-    size?: IconSize;
+
     /**
      * If true, the center of the element will be set to the center of the icon.
      */
     centered?: boolean;
+
+    className?: string;
+
+    /**
+     * The gap between the icon and the label.
+     * @default "0.3rem"
+     * @example "1rem", "2px"
+     */
+    gap?: string;
 }
 
-export default function LabeledIcon({ type, label, hideLabel, iconColor, labelColor, size, centered }: LabeledIconProps) {
-    let icon = getIcon(type);
 
-    if (size) {
-        icon = React.cloneElement(icon, { size });
-    }
+
+export default function LabeledIcon({
+        icon,
+        iconSize,
+        label,
+        labelMaxWidth,
+        hideLabel=false,
+        iconColor,
+        labelColor,
+        centered=false,
+        className,
+        gap="10%"
+    }: LabeledIconProps) {
+
+    const containerClasses = [styles.container]
+    if (className) containerClasses.push(className)
+    const containerClassNames = containerClasses.join(' ')
+    const containerSizeStyle = { width: iconSizeMap[iconSize] }
+
+    // Set the icon container size and color (will affect the icon)
+    const iconSizeStyle  = iconSize  ? { width: iconSizeMap[iconSize], height: iconSizeMap[iconSize] } : {}
+    const iconColorStyle = iconColor ? { color: iconColor } : {}
+    const iconStyles = { ...iconSizeStyle, ...iconColorStyle }
+
+    // Set the label color, size and gap
+    const defaultLabelMaxWidth = `calc(3 * ${iconSizeMap[iconSize]})`
+    const labelSizeStyle  = labelMaxWidth ? { maxWidth: labelMaxWidth } : { maxWidth: defaultLabelMaxWidth }
+    const labelColorStyle = labelColor ? { color: labelColor } : {}
+    const labelMarginStyle = { marginTop: gap }
+    const labelStyles = { ...labelColorStyle, ...labelSizeStyle, ...labelMarginStyle }
+
+    // Set the ghost label size and gap
+    const ghostLabelMarginStyle = { marginBottom: gap }
+    const ghostLabelStyles = { ...labelSizeStyle, ...ghostLabelMarginStyle }
 
     return (
-        <div className={styles.container}>
+        <div className={containerClassNames} style={containerSizeStyle}>
 
-            {/* The invisible label is used to set the center of the element to the center of the icon */}
-            {(label && hideLabel != true && centered) ? <p className={`${styles.label} ${styles.invisible}`}>{label}</p> : null}
+            {/* This invisible label is used to create a symmetry when centered set to true */}
+            {(label && !hideLabel && centered) ?
+                <p className={styles.ghostLabel} style={ghostLabelStyles}>{label}</p>
+                : null
+            }
 
-            <div style={{ color: iconColor }}>
+            <div style={iconStyles} className={styles.iconContainer}>
                 {icon}
             </div>
 
-            {(label && hideLabel != true) ? <p className={styles.label} style={{ color: labelColor }}>{label}</p> : null}
+            {(label && !hideLabel) ?
+                <p className={styles.label} style={labelStyles}>{label}</p>
+                : null
+            }
+
         </div>
     )
 }
-
-

@@ -5,6 +5,8 @@ import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer';
 import { faCamera, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeSvg } from '@/utils/Icons';
 import FileInputBtn from '../../media-tool/FileInputBtn/FileInputBtn';
+import CameraIcon from '@/components/icons/CameraIcon';
+import YoutubeIcon from '@/components/icons/YoutubeIcon';
 
 
 interface MediaOptionsProps {
@@ -28,7 +30,8 @@ export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptions
     const ImageBtn = () => (
         <>
         <button className={styles.optionBtn} onClick={handleImageClick}>
-            <FontAwesomeSvg icon={faCamera} className={styles.optionIcon}/>
+            {/*<FontAwesomeSvg icon={faCamera} className={styles.optionIcon}/>*/}
+            <CameraIcon/>
         </button>
         <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
         </>
@@ -36,7 +39,8 @@ export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptions
 
     const VideoBtn = () => (
         <button className={styles.optionBtn} onClick={handleVideoClick}>
-            <FontAwesomeSvg icon={faVideo} className={styles.optionIcon}/>
+            {/*<FontAwesomeSvg icon={faVideo} className={styles.optionIcon}/>*/}
+            <YoutubeIcon/>
         </button>
     )
 

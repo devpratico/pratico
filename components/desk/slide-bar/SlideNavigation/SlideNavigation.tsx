@@ -1,26 +1,29 @@
 'use client'
 import styles from './SlideNavigation.module.css'
-import { IconName, IconSize } from '../../../../utils/Icons'
-import { ColorType } from '../../../../utils/Colors'
 import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIconBtn'
+import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
+import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
+import { IconSize } from '../../../primitives/LabeledIcon/LabeledIcon'
 
 export default function SlideNavigation() {
 
     const leftArrowBtnProps = {
-        type:       "chevron-left" as IconName,
+        icon:       <ChevronLeftIcon />,
+        iconSize:   "md" as IconSize,
         label:      undefined,
         iconColor:  "var(--primary)",
-        size:       "xl" as IconSize,
-        onClick: () => console.log("clicked")
+        onClick: () => console.log("clicked"),
+        className:  styles.arrowBtn
     }
     const LeftArrow = () => <LabeledIconBtn {...leftArrowBtnProps} />
 
     const rightArrowBtnProps = {
-        type:       "chevron-right" as IconName,
+        icon:       <ChevronRightIcon />,
+        iconSize:   "md" as IconSize,
         label:      undefined,
         iconColor:  "var(--primary)",
-        size:       "xl" as IconSize,
-        onClick: () => console.log("clicked")
+        onClick: () => console.log("clicked"),
+        className:  styles.arrowBtn
     }
     const RightArrow = () => <LabeledIconBtn {...rightArrowBtnProps} />
 
