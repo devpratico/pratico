@@ -2,11 +2,10 @@
 import styles from './MediaOptions.module.css';
 import { useRef } from 'react';
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer';
-import { faCamera, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeSvg } from '@/utils/old_Icons';
 import FileInputBtn from '../../media-tool/FileInputBtn/FileInputBtn';
 import CameraIcon from '@/components/icons/CameraIcon';
 import YoutubeIcon from '@/components/icons/YoutubeIcon';
+import FileEarmarkImageIcon from '@/components/icons/FileEarmarkImageIcon';
 
 
 interface MediaOptionsProps {
@@ -29,17 +28,15 @@ export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptions
 
     const ImageBtn = () => (
         <>
-        <button className={styles.optionBtn} onClick={handleImageClick}>
-            {/*<FontAwesomeSvg icon={faCamera} className={styles.optionIcon}/>*/}
-            <CameraIcon/>
+        <button className={styles.optionBtn} onClick={handleImageClick} title="Upload Image">
+            <FileEarmarkImageIcon/>
         </button>
         <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
         </>
     )
 
     const VideoBtn = () => (
-        <button className={styles.optionBtn} onClick={handleVideoClick}>
-            {/*<FontAwesomeSvg icon={faVideo} className={styles.optionIcon}/>*/}
+        <button className={styles.optionBtn} onClick={handleVideoClick} title="Embed Video">
             <YoutubeIcon/>
         </button>
     )

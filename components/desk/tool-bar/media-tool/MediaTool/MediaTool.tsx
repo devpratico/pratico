@@ -41,7 +41,7 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
     }
 
     return (
-        <div>
+        <>
             <ToolButton {...mediaButtonProps}/>
 
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
@@ -61,6 +61,6 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
                 </DialogContent>
             </Dialog>
 
-        </div>
+        </>
     )
 }
