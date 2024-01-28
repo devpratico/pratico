@@ -36,6 +36,11 @@ interface ZoomToBoundsArgs {
     box: Box2d
 
     /**
+     * The margin in pixels around the box.
+     */
+    margin?: number
+
+    /**
      * The insets in pixels, to fit UI elements around the canvas.
      */
     insets?: Insets
@@ -46,15 +51,19 @@ interface ZoomToBoundsArgs {
  * Fit the box in the viewport, with some insets.
  * This is a custom version of tldraw's `editor.zoomToBounds()`.
  */
-export default function zoomToBounds({ editor, box, insets, animation }: ZoomToBoundsArgs) {
+export default function zoomToBounds({
+    editor,
+    box,
+    margin = 0,
+    insets = {top: 0, right: 0, bottom: 0, left: 0},
+    animation
+}: ZoomToBoundsArgs) {
     //const viewportScreenBounds = editor.getViewportScreenBounds()
     const viewportScreenBounds = editor.getContainer().getBoundingClientRect()
-    const margin = 5 //px
-    const _insets = insets || {top: 0, right: 0, bottom: 0, left: 0}
 
     // Given the viewport, margin and insets, we can get the aspect ratio of the "usable" area
-    const usableWidth  = viewportScreenBounds.width  - _insets.left - _insets.right  - 2*margin
-    const usableHeight = viewportScreenBounds.height - _insets.top  - _insets.bottom - 2*margin
+    const usableWidth  = viewportScreenBounds.width  - insets.left - insets.right  - 2*margin
+    const usableHeight = viewportScreenBounds.height - insets.top  - insets.bottom - 2*margin
     const usableAspectRatio = usableWidth / usableHeight
 
     // Let's compare the aspect ratio of the usable area with the aspect ratio of the box
@@ -68,8 +77,8 @@ export default function zoomToBounds({ editor, box, insets, animation }: ZoomToB
     const cMargin       = margin       / zoom
     const cUsableWidth  = usableWidth  / zoom
     const cUsableHeight = usableHeight / zoom
-    const cInsetTop     = _insets.top  / zoom
-    const cInsetLeft    = _insets.left / zoom
+    const cInsetTop     = insets.top  / zoom
+    const cInsetLeft    = insets.left / zoom
 
     // Now we can compute the camera position (top-left corner of the camera view)
     // So that the box is centered in the usable area

@@ -1,9 +1,9 @@
 .container {
-    background-color: var(--background);
+    background-color: var(--secondary);
     display:flex;
     align-items: stretch;
     height: 70px;
-    border-top: 1px solid var(--secondary-border);
+    /*border-top: 1px solid var(--secondary-border);*/
     overflow: hidden;
 }
 
@@ -13,11 +13,12 @@
 }
 
 .controls {
+    background-color: var(--secondary);
     display: flex;
     align-items: center;
     padding: 1rem;
     gap: 2rem;
-    border-left: 1px solid var(--secondary-border);
+    /*border-left: 1px solid var(--secondary-border);*/
 }
 
 .addPageBtn {

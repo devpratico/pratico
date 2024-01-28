@@ -1,22 +1,12 @@
-import styles from './ToolButton.module.css'
 import React from 'react';
-import { IconDefinition }   from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
-import {
-    faArrowPointer,
-    faPen,
-    faEraser,
-    faT,
-    faImage,
-    faShapes,
- }   from '@fortawesome/free-solid-svg-icons';
+import styles from './ToolButton.module.css'
 import Tooltip from '@/components/primitives/Tooltip/Tooltip';
 import CursorIcon from '@/components/icons/CursorIcon';
-import PencilIcon from '@/components/icons/PencilIcon';
-import TextAreaIcon from '@/components/icons/TextAreaIcon';
 import StarIcon from '@/components/icons/StarIcon';
 import ImageIcon from '@/components/icons/ImageIcon';
 import EraserIcon from '@/components/icons/EraserIcon';
+import BlankPenIcon from '@/components/icons/BlankPenIcon';
+import FontsIcon from '@/components/icons/FontsIcon';
 
 /**
  * IDs of default tlDraw tools (see tldraw documentation)
@@ -27,8 +17,8 @@ const fill = false;
 
 const iconsMap: Record<ToolId, JSX.Element> = {
     "select": <CursorIcon   fill={fill} />,
-    "draw":   <PencilIcon   fill={fill} />,
-    "text":   <TextAreaIcon fill={fill} />,
+    "draw":   <BlankPenIcon fill={fill} />,
+    "text":   <FontsIcon    fill={fill} />,
     "shape":  <StarIcon     fill={fill} />,
     "image":  <ImageIcon    fill={fill} />,
     "eraser": <EraserIcon   fill={fill} />,
@@ -50,7 +40,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
     // The button itself
     const Button = () => (
         <button onClick={onClick} className={styles.btn + " " + (active ? styles.active : "")}>
-            {iconsMap[toolId]}
+            {React.cloneElement(iconsMap[toolId], {fill: active})}
         </button>
     );
 

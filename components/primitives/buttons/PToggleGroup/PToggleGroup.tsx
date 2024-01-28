@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import styles from './PToggleGroup.module.css';
-import { getIcon } from '@/utils/Icons';
+import { getIcon } from '@/utils/old_Icons';
 
 export default function PToggleGroup(){
 

@@ -3,7 +3,7 @@ import styles from './MediaOptions.module.css';
 import { useRef } from 'react';
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer';
 import { faCamera, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeSvg } from '@/utils/Icons';
+import { FontAwesomeSvg } from '@/utils/old_Icons';
 import FileInputBtn from '../../media-tool/FileInputBtn/FileInputBtn';
 import CameraIcon from '@/components/icons/CameraIcon';
 import YoutubeIcon from '@/components/icons/YoutubeIcon';

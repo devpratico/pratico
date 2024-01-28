@@ -1,14 +1,13 @@
 import styles from './LineOptions.module.css'
 import DashLineIcon from '@/public/icons/DashLineIcon';
-import SolidLineIcon from '@/public/icons/SolidLineIcon';
-import LaserIcon from '@/public/icons/LaserIcon';
-import { faHighlighter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HighlighterIcon from '@/components/icons/HighlighterIcon';
+import PencilStrokeIcon from '@/components/icons/PencilStrokeIcon';
+import PencilDashIcon from '@/components/icons/PencilDashIcon';
+import LaserIcon from '@/components/icons/LaserIcon';
 
 type Action = "clickedSize" | "clickedDash" | "clickedTool";
 export type Size   = "s" | "m" | "l" | "xl";
-export type Dash   = "solid" | "dashed";
+export type Dash   = "solid" | "dotted";
 export type Tool = "draw" | "highlight" | "laser";
 
 interface LineOptionsProps {
@@ -24,7 +23,7 @@ interface LineOptionsProps {
  */
 function OptionBtn({children, active, onClick}: {children: JSX.Element, active: boolean, onClick?: () => void}) {
     return (
-        <button className={styles.optionBtn + (active ? " " + styles.active : "")} onClick={onClick}>
+        <button className={styles.optionBtn + (active ? " " + styles.btnActive : "")} onClick={onClick}>
             {children}
         </button>
     )
@@ -37,7 +36,7 @@ function OptionBtn({children, active, onClick}: {children: JSX.Element, active: 
 function SizeBtn({size, active, onClick}: {size: Size, active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <div className={styles.sizeDisk + " " + styles[size]}/>
+            <div className={styles.sizeDisk + " " + styles[size] + (active ? " " + styles.sizeActive : "")}/>
         </OptionBtn>
     )
 }
@@ -48,7 +47,7 @@ function SizeBtn({size, active, onClick}: {size: Size, active: boolean, onClick?
 function DashBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <DashLineIcon/>
+            <PencilDashIcon fill={active} size="md"/>
         </OptionBtn>
     )
 }
@@ -57,7 +56,7 @@ function DashBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
 function SolidLineBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <SolidLineIcon/>
+            <PencilStrokeIcon fill={active} size="md"/>
         </OptionBtn>
     )
 }
@@ -65,8 +64,7 @@ function SolidLineBtn({active, onClick}: {active: boolean, onClick?: () => void}
 function HighlighterBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            {/*<FontAwesomeIcon icon={faHighlighter} size="xl"/>*/}
-            <HighlighterIcon/>
+            <HighlighterIcon fill={active} size="md"/>
         </OptionBtn>
     )
 }
@@ -74,7 +72,7 @@ function HighlighterBtn({active, onClick}: {active: boolean, onClick?: () => voi
 function LaserIconBtn({active, onClick}: {active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <LaserIcon/>
+            <LaserIcon size="md"/>
         </OptionBtn>
     )
 }
@@ -91,9 +89,9 @@ export default function LineOptions({activeSize, activeDash, activeTool, dispatc
             <SizeBtn size="s"  key={"s"} active={activeSize === "s"}      onClick={() => handleSizeClick("s")}/>,
             <SizeBtn size="m"  key={"m"} active={activeSize === "m"}      onClick={() => handleSizeClick("m")}/>,
             <SizeBtn size="l"  key={"l"} active={activeSize === "l"}      onClick={() => handleSizeClick("l")}/>,
-            <SizeBtn size="xl" key={"exl"} active={activeSize === "xl"}   onClick={() => handleSizeClick("xl")}/>,
+            <SizeBtn size="xl" key={"xl"} active={activeSize === "xl"}    onClick={() => handleSizeClick("xl")}/>,
             <SolidLineBtn      key={"solid"} active={activeDash === "solid"  && activeTool=="draw" } onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "solid") : undefined}/>,
-            <DashBtn           key={"dash"} active={activeDash === "dashed" && activeTool=="draw"}  onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "dashed") : undefined}/>,
+            <DashBtn           key={"dotted"} active={activeDash === "dotted" && activeTool=="draw"}  onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "dotted") : undefined}/>,
             <HighlighterBtn    key={"highlight"} active={activeTool === "highlight"} onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "highlight") : undefined}/>,
             <LaserIconBtn      key={"laser"} active={activeTool === "laser"}     onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "laser") : undefined}/>
         ]

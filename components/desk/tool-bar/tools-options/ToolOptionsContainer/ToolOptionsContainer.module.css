@@ -3,7 +3,7 @@
     padding: 0.3rem;
     border-radius: 0.6rem;
     box-shadow: var(--big-shadow);
-    border: 0.5px solid var(--secondary-border);
+    /*border: 0.5px solid var(--secondary-border);*/
     width: fit-content;
     display: grid;
     --toolBarCellSize: 2rem;

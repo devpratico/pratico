@@ -5,7 +5,7 @@
     color: black;
     border-radius: 20%;
     cursor: pointer;
-    padding: 0.2rem;
+    padding: 0.1rem;
     align-self: center;
     justify-self: center;
     height: 100%;
@@ -13,5 +13,5 @@
 }
 
 .active {
-    background-color:  var(--secondary);
+    color:  var(--primary);
 }

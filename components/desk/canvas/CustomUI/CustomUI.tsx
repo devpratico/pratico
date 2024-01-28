@@ -5,7 +5,7 @@ import ToolBar from '../../tool-bar/ToolBar/ToolBar'
 import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
 import { Font } from '../../tool-bar/tools-options/TextOptions/TextOptions'
-import { Shape } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
+import { Shape, Style } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
 
 /**
  * This component is a custom UI for the editor.
@@ -20,10 +20,15 @@ const CustomUI = track(() => {
     const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
     const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
     const activeFont  = stylesForNextShapes["tldraw:font"]  as Font  || "draw"
+
     let   activeShape = stylesForNextShapes["tldraw:geo"]   as Shape || "rectangle"
     if (activeToolId == "arrow") {
         activeShape = "arrow"
     }
+
+    const activeFill  = stylesForNextShapes["tldraw:fill"]  as string|| "none"
+    let activeStyle: Style = activeFill === "solid" ? "fillSolid" : activeDash === "solid" ? "emptySolid" : "emptyDotted"
+
     //const defaultToolsIds = defaultShapeTools.map(tool => tool.id) 
     //const defaultToolsIds = defaultTools.concat(defaultShapeTools).map(tool => tool.id)
     const defaultToolsIds = defaultTools.map(tool => tool.id).concat(defaultShapeTools.map(tool => tool.id))
@@ -44,13 +49,15 @@ const CustomUI = track(() => {
                     editor.setCurrentTool(payload as string)
                     if (payload === "draw") {
                         editor.setStyleForNextShapes(DefaultFillStyle, "none")
-                    }
+                    } 
                 } else {
                     console.warn("Tool not recognized", payload)
                 }
                 break
             case "clickedShape":
+                editor.setStyleForNextShapes(DefaultSizeStyle, "m")
                 editor.setStyleForNextShapes(DefaultFillStyle, "solid");
+                editor.setStyleForNextShapes(DefaultDashStyle, "solid");
                 editor.setStyleForNextShapes(GeoShapeGeoStyle, payload as string)
                 break
             case "clickedColor":
@@ -67,6 +74,24 @@ const CustomUI = track(() => {
             case "clickedFont":
                 editor.setStyleForNextShapes(DefaultFontStyle, payload as string)
                 break
+            case "clickedStyle":
+                switch (payload as string) {
+                    case "emptySolid":
+                        editor.setStyleForNextShapes(DefaultFillStyle, "none")
+                        editor.setStyleForNextShapes(DefaultDashStyle, "solid")
+                        break
+                    case "fillSolid":
+                        editor.setStyleForNextShapes(DefaultFillStyle, "solid")
+                        editor.setStyleForNextShapes(DefaultDashStyle, "solid")
+                        break
+                    case "emptyDotted":
+                        editor.setStyleForNextShapes(DefaultFillStyle, "none")
+                        editor.setStyleForNextShapes(DefaultDashStyle, "dotted")
+                        break
+                    default:
+                        console.warn("Style not handled", payload)
+                        break
+                }
             case "providedAnImage":
                 const imageSrc = payload as string
 
@@ -195,6 +220,7 @@ const CustomUI = track(() => {
                 isStickyNote={isStickyNote}
                 activeFont  ={activeFont}
                 activeShape ={activeShape}
+                activeStyle ={activeStyle}
                 dispatch    ={dispatch}
             />
         </div>

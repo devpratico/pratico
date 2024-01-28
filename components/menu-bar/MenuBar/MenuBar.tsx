@@ -4,7 +4,7 @@ import Title from '../Title/Title';
 import LabeledIconBtn from '../../primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import LabeledIcon from '../../primitives/LabeledIcon/LabeledIcon';
 import MenuBarLayout from '../MenuBarLayout/MenuBarLayout';
-import { IconSize } from '../../primitives/LabeledIcon/LabeledIcon';
+import { IconSize } from '@/utils/icons/IconProps';
 import praticoLogo from '../../../public/images/pratico.svg';
 import PlayCircleIcon from '@/components/icons/PlayCircleIcon';
 import PuzzleIcon from '@/components/icons/PuzzleIcon';
@@ -47,13 +47,14 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
                     <LabeledIconBtn icon={<ThreeDotsIcon/>}   label="more"        {...styleBtnProps} />
                 </MenuBarLayout>
             )
+            
 
         case "animation":
             return (
                 <MenuBarLayout spacerPosition={3}>
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                     <Title initialValue="My session" placeholder="Session name" focusFirst={false} editable={false} />
-                    <PlainBtn text="End session" color="secondary" size="l" />
+                    <PlainBtn text="Start session" color="secondary" size="l" />
                     <LabeledIconBtn icon={<StopwatchIcon fill={false}/>} label="stopwatch" {...styleBtnProps} />
                     <LabeledIconBtn icon={<ChatSquareDotIcon fill={false}/>} label="chat" {...styleBtnProps} />
                     <LabeledIconBtn icon={<PeopleIcon fill={false}/>} label="students" {...styleBtnProps} />

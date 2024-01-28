@@ -1,7 +1,7 @@
 .container {
     --mbl-padding: 2rem;
     background-color: var(--brand);
-    border-bottom: 1px solid var(--brand-border);
+    /*border-bottom: 1px solid var(--brand-border);*/
     height: 56px;
     display: flex;
     align-items: center;

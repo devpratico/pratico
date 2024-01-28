@@ -1,7 +1,7 @@
 'use client'
 import styles from './ListBtn.module.css';
 import Link from 'next/link';
-import { getIcon, IconName } from '@/utils/Icons';
+import { getIcon, IconName } from '@/utils/old_Icons';
 
 interface ListBtnProps {
     title: string;

@@ -1,6 +1,6 @@
 .colorPick {
     /*background-color is set as inline css*/
-    --colorOptionSize: 70%;
+    --colorOptionSize: 50%;
     height: var(--colorOptionSize);
     width:  var(--colorOptionSize);
     align-self: center;
@@ -10,12 +10,12 @@
     cursor: pointer;
     position: relative;
     transition: transform 0.1s ease-in-out;
-    border: 0.5px solid rgba(0,0,0, 0.1);
+    border: none;
 }
 
 .colorSelected {
-    outline: 2px solid var(--secondary-border);
-    /*outline-offset: 0px;*/
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
     background-color: var(--secondary);
 }
 

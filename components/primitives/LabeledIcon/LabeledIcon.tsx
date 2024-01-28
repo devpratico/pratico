@@ -1,12 +1,7 @@
+import React from 'react';
 import styles from './LabeledIcon.module.css';
+import { IconSize, iconSizeMap } from '@/utils/icons/IconProps';
 
-export type IconSize = "sm" | "md" | "lg" | "xl";
-export const iconSizeMap = {
-    "sm": "1.2rem",
-    "md": "1.5rem",
-    "lg": "2rem",
-    "xl": "2.5rem",
-}
 
 export interface LabeledIconProps {
     icon: JSX.Element;
@@ -87,7 +82,7 @@ export default function LabeledIcon({
                 : null
             }
 
-            <div style={iconStyles} className={styles.iconContainer}>
+            <div style={iconStyles}>
                 {icon}
             </div>
 

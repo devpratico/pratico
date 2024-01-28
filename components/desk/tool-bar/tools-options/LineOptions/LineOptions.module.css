@@ -7,7 +7,7 @@
 .optionBtn {
     background-color: transparent;
     /*color: var(--primary);*/
-    color: black;
+    /*color: black;*/
     border: none;
     cursor: pointer;
     border-radius: 20%;
@@ -23,8 +23,8 @@
     cursor: pointer;
 }
 
-.active {
-    background-color:  var(--secondary);
+.btnActive {
+    color: var(--primary);
 }
 
 .sizeDisk {
@@ -33,22 +33,30 @@
     border-radius: 50%;
 }
 
-.s {
-    height: 2px;
-    width:  2px;
+.sizeActive {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    /*background-color: var(--primary);*/
 }
 
-.m {
+
+
+.s {
     height: 4px;
     width:  4px;
 }
 
-.l {
+.m {
     height: 6px;
     width:  6px;
 }
 
+.l {
+    height: 10px;
+    width:  10px;
+}
+
 .xl {
-    height: 8px;
-    width:  8px;
+    height: 14px;
+    width:  14px;
 }

@@ -1,12 +1,11 @@
 import ToolOptionsContainer from "../ToolOptionsContainer/ToolOptionsContainer";
 import ColorsOptions, { Color } from "../ColorsOptions/ColorsOptions";
 import styles from "./TextOptions.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import FontDrawIcon from "@/public/icons/FontDrawIcon";
 import FontSerifIcon from "@/public/icons/FontSerifIcon";
 import FontSansIcon from "@/public/icons/FontSansIcon";
 import StickyIcon from "@/components/icons/StickyIcon";
+import TextAreaIcon from "@/components/icons/TextAreaIcon";
 
 
 type Action = "clickedOption" | "clickedTool" | "clickedFont";
@@ -33,10 +32,18 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
     
     function StickyNoteButton() {
         //const stickyNoteIcon = <FontAwesomeIcon icon={faStickyNote} size="xl"/>;
-        const stickyNoteIcon = <StickyIcon fill={false}/>
+        const stickyNoteIcon = <StickyIcon fill={isStickyNote}/>
         const className = styles.button + " " + (isStickyNote ? styles.active : "")
         const dispatchStickyNote = () => dispatch<Action, Tool>("clickedTool", "note")
         return <button key={"note"} className={className} onClick={dispatchStickyNote} >{stickyNoteIcon}</button>
+    }
+
+
+    function TextAreaButton() {
+        const textAreaIcon = <TextAreaIcon/>
+        const className = styles.button + " " + (!isStickyNote ? styles.active : "")
+        const dispatchTextArea = () => dispatch<Action, Tool>("clickedTool", "text")
+        return <button key={"text"} className={className} onClick={dispatchTextArea} >{textAreaIcon}</button>
     }
 
     function FontButton(font: Font) {
@@ -56,10 +63,12 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
     return (
         <ToolOptionsContainer>
             <ColorsOptions activeColor={activeColor} dispatch={dispatchOption}/>
-            <StickyNoteButton/>
             {FontButton("draw")}
             {FontButton("sans")}
             {FontButton("serif")}
+            {FontButton("mono")}
+            <TextAreaButton/>
+            <StickyNoteButton/>
         </ToolOptionsContainer>
     )
 }

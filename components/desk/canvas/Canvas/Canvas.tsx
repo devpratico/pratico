@@ -63,7 +63,7 @@ const CustomBackground  = () => <div className={styles.background}/>
 /**
  * This is the white rectangle on the canvas.
  */
-const CustomOnTheCanvas = () => <div className={styles.toileDeFond + " " + "smallShadow"}/>
+const CustomOnTheCanvas = () => <div className={styles.toileDeFond}/>
 
 
 /**

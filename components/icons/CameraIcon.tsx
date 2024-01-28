@@ -1,4 +1,4 @@
-import IconProps from "./IconProps"
+import { IconProps } from '@/utils/icons/IconProps';
 
 
 export default function CameraIcon({className, fill=true}: IconProps) {
