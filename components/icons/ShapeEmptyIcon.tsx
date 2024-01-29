@@ -3,7 +3,7 @@ import {IconProps, iconSizeMap} from "../../utils/icons/IconProps"
 
 export default function ShapeEmptyIcon({className, size}: IconProps) {
     
-    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : {}
+    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : className ? {} : {width: "100%", height: "100%"}
 
     return (
         <div className={className} style={style}>

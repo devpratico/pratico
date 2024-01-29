@@ -4,7 +4,7 @@
     border: none;
     width: 100%;
     height: 100%;
-    padding: 25%;
+    padding: 20%;
     border-radius: 0.5rem;
     margin: 0;
 }
@@ -17,4 +17,6 @@
 
 .active {
     color: var(--primary);
+    background-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
+    /*background-color: var(--secondary);*/
 }

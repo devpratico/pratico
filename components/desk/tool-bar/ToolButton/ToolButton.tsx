@@ -7,6 +7,7 @@ import ImageIcon from '@/components/icons/ImageIcon';
 import EraserIcon from '@/components/icons/EraserIcon';
 import BlankPenIcon from '@/components/icons/BlankPenIcon';
 import FontsIcon from '@/components/icons/FontsIcon';
+import ShapesIcon from '@/components/icons/ShapesIcon';
 
 /**
  * IDs of default tlDraw tools (see tldraw documentation)
@@ -19,7 +20,7 @@ const iconsMap: Record<ToolId, JSX.Element> = {
     "select": <CursorIcon   fill={fill} />,
     "draw":   <BlankPenIcon fill={fill} />,
     "text":   <FontsIcon    fill={fill} />,
-    "shape":  <StarIcon     fill={fill} />,
+    "shape":  <ShapesIcon     fill={fill} />,
     "image":  <ImageIcon    fill={fill} />,
     "eraser": <EraserIcon   fill={fill} />,
 }

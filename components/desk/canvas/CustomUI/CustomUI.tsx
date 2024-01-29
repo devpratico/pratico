@@ -27,7 +27,25 @@ const CustomUI = track(() => {
     }
 
     const activeFill  = stylesForNextShapes["tldraw:fill"]  as string|| "none"
-    let activeStyle: Style = activeFill === "solid" ? "fillSolid" : activeDash === "solid" ? "emptySolid" : "emptyDotted"
+    let activeStyle: Style
+    switch (`${activeDash}-${activeFill}`) {
+        case "solid-none":
+            activeStyle = "emptySolid"
+            break
+        case "solid-semi":
+            activeStyle = "whiteSolid"
+            break
+        case "dotted-none":
+            activeStyle = "emptyDotted"
+            break
+        case "solid-solid":
+            activeStyle = "fillSolid"
+            break
+        default:
+            activeStyle = "emptySolid"
+            break
+    }
+
 
     //const defaultToolsIds = defaultShapeTools.map(tool => tool.id) 
     //const defaultToolsIds = defaultTools.concat(defaultShapeTools).map(tool => tool.id)
@@ -88,6 +106,10 @@ const CustomUI = track(() => {
                     case "emptyDotted":
                         editor.setStyleForNextShapes(DefaultFillStyle, "none")
                         editor.setStyleForNextShapes(DefaultDashStyle, "dotted")
+                        break
+                    case "whiteSolid":
+                        editor.setStyleForNextShapes(DefaultFillStyle, "semi")
+                        editor.setStyleForNextShapes(DefaultDashStyle, "solid")
                         break
                     default:
                         console.warn("Style not handled", payload)
@@ -208,7 +230,7 @@ const CustomUI = track(() => {
                 }
                 break
 
-                
+
             default:
                 console.warn("Action not handled", action, payload)
                 break

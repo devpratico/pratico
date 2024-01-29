@@ -5,13 +5,14 @@ import SquareIcon from "@/components/icons/SquareIcon";
 import CircleIcon from "@/components/icons/CircleIcon";
 import ArrowRightIcon from "@/components/icons/ArrowRightIcon";
 import StarIcon from "@/components/icons/StarIcon";
-import ShapeEmptyIcon from "@/components/icons/ShapeEmptyIcon";
-import ShapeFillIcon from "@/components/icons/ShapeFillIcon";
-import ShapeDashIcon from "@/components/icons/ShapeDashIcon";
+import TransparentShapesIcon from "@/components/icons/TransparentShapesIcon";
+import SemiFilledShapesIcon from "@/components/icons/SemiFilledShapesIcon";
+import EmptyDottedShapesIcon from "@/components/icons/EmptyDottedShapesIcon";
+import ShapesIcon from "@/components/icons/ShapesIcon";
 
 
 export type Shape = "rectangle" | "ellipse" | "arrow" | "star";
-export type Style = "emptySolid" | "fillSolid" | "emptyDotted";
+export type Style = "emptySolid" | "fillSolid" | "emptyDotted" | "whiteSolid";
 
 interface ShapeOptionsProps {
     activeColor: Color;
@@ -24,12 +25,12 @@ export default function ShapeOptions({activeColor, activeShape, activeStyle, dis
 
     const dispatchShape = (shape: Shape) => {
         dispatch && dispatch<string, string>("clickedOption", "shape")
-        dispatch && dispatch<string, string>("clickedShape", shape)
+        dispatch && dispatch<string, Shape>("clickedShape", shape)
     }
 
     const dispatchStyle = (style: Style) => {
         dispatch && dispatch<string, string>("clickedOption", "shape")
-        dispatch && dispatch<string, string>("clickedStyle", style)
+        dispatch && dispatch<string, Style>("clickedStyle", style)
     }
 
     return(
@@ -54,15 +55,19 @@ export default function ShapeOptions({activeColor, activeShape, activeStyle, dis
             </button>
 
             <button key="empty" className={styles.optionBtn + (activeStyle == "emptySolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptySolid")}>
-                <ShapeEmptyIcon/>
+                <TransparentShapesIcon/>
+            </button>
+
+            <button key="white" className={styles.optionBtn + (activeStyle == "whiteSolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("whiteSolid")}>
+                <ShapesIcon fill={false}/>
             </button>
 
             <button key="fill" className={styles.optionBtn + (activeStyle == "fillSolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("fillSolid")}>
-                <ShapeFillIcon/>
+                <SemiFilledShapesIcon/>
             </button>
 
             <button key="dot" className={styles.optionBtn + (activeStyle == "emptyDotted" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptyDotted")}>
-                <ShapeDashIcon/>
+                <EmptyDottedShapesIcon/>
             </button>
 
         </ToolOptionsContainer>
