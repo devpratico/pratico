@@ -55,6 +55,7 @@ const CustomUI = track(() => {
                 }
                 break
             case "clickedShape":
+                editor.setCurrentTool("geo")
                 editor.setStyleForNextShapes(DefaultSizeStyle, "m")
                 editor.setStyleForNextShapes(DefaultFillStyle, "solid");
                 editor.setStyleForNextShapes(DefaultDashStyle, "solid");
