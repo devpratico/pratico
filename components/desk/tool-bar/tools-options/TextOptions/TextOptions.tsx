@@ -33,7 +33,7 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
     function StickyNoteButton() {
         //const stickyNoteIcon = <FontAwesomeIcon icon={faStickyNote} size="xl"/>;
         const stickyNoteIcon = <StickyIcon fill={isStickyNote}/>
-        const className = styles.button + " " + styles.center + " " +(isStickyNote ? styles.active : "")
+        const className = styles.button + " " + styles.double + " " +(isStickyNote ? styles.active : "")
         const dispatchStickyNote = () => dispatch<Action, Tool>("clickedTool", "note")
         return <button key={"note"} title={"Sticky note"} className={className} onClick={dispatchStickyNote} >{stickyNoteIcon}</button>
     }
@@ -41,7 +41,7 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
 
     function TextAreaButton() {
         const textAreaIcon = <TextAreaIcon/>
-        const className = styles.button + " " + styles.center + " " + (!isStickyNote ? styles.active : "")
+        const className = styles.button + " " + styles.double + " " + (!isStickyNote ? styles.active : "")
         const dispatchTextArea = () => dispatch<Action, Tool>("clickedTool", "text")
         return <button key={"text"} title={"Free text area"} className={className} onClick={dispatchTextArea} >{textAreaIcon}</button>
     }
@@ -68,7 +68,6 @@ export default function TextOptions({activeColor, isStickyNote, activeFont, disp
             {FontButton("serif")}
             {FontButton("mono")}
             <TextAreaButton/>
-            <div></div>
             <StickyNoteButton/>
         </ToolOptionsContainer>
     )

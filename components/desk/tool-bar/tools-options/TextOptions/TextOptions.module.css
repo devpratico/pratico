@@ -3,17 +3,18 @@
     background-color: transparent;
     /*color: var(--primary);*/
     color: black;
-    border-radius: 20%;
+    border-radius: 0.4rem;
     cursor: pointer;
     padding: 0.1rem;
     align-self: center;
     justify-self: center;
     height: 100%;
     width: 100%;
+    display: flex;
 }
 
-.center {
-    transform: translateX(50%);
+.double {
+    grid-column: span 2;
 }
 
 .active {

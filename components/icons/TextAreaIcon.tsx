@@ -1,7 +1,7 @@
-import { IconProps } from '@/utils/icons/IconProps';
+import { IconProps, iconSizeMap } from '@/utils/icons/IconProps';
 
 
-export default function TextAreaIcon({className}: IconProps) {
+export default function TextAreaIcon({className, size}: IconProps) {
 
     const FillPath = () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16" overflow="visible">
@@ -10,8 +10,10 @@ export default function TextAreaIcon({className}: IconProps) {
         </svg>
     )
 
+    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : className ? {} : {width: "100%", height: "100%"}
+
     return (
-        <div className={className}>
+        <div className={className} style={style}>
             <FillPath/>
         </div>
     )

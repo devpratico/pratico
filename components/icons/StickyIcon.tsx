@@ -15,7 +15,7 @@ export default function StickyIcon({className, fill=true, size}: IconProps) {
         </svg>
     )
 
-    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : {}
+    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : className ? {} : {width: "100%", height: "100%"}
 
     return (
         <div className={className} style={style}>
