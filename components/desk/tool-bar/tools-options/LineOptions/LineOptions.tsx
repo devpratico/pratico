@@ -36,7 +36,7 @@ function OptionBtn({children, active, onClick}: {children: JSX.Element, active: 
 function SizeBtn({size, active, onClick}: {size: Size, active: boolean, onClick?: () => void}) {
     return (
         <OptionBtn active={active} onClick={onClick}>
-            <div className={styles.sizeDisk + " " + styles[size] + (active ? " " + styles.sizeActive : "")}/>
+            <div className={styles.sizeDisk + " " + styles[size]}/>
         </OptionBtn>
     )
 }

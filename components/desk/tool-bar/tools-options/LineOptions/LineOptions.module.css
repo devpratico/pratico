@@ -25,6 +25,7 @@
 
 .btnActive {
     color: var(--primary);
+    background-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
 }
 
 .sizeDisk {
@@ -33,11 +34,12 @@
     border-radius: 50%;
 }
 
+/*
 .sizeActive {
     outline: 2px solid var(--primary);
     outline-offset: 3px;
-    /*background-color: var(--primary);*/
-}
+    //background-color: var(--primary);
+}*/
 
 
 

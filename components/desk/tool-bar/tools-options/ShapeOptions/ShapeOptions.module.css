@@ -25,4 +25,5 @@
 .active {
     /*background-color:  var(--secondary);*/
     color: var(--primary);
+    background-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.2);
 }
