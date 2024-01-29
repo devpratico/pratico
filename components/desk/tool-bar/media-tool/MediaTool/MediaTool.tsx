@@ -40,6 +40,7 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
         tooltipContent: <MediaOptions setOpenVideoModal={setOpenVideoModal} dispatch={dispatch}/>,
     }
 
+    // TODO: Put dialog in its own component
     return (
         <>
             <ToolButton {...mediaButtonProps}/>
