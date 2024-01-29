@@ -93,6 +93,7 @@ const CustomUI = track(() => {
                         console.warn("Style not handled", payload)
                         break
                 }
+                break
             case "providedAnImage":
                 const imageSrc = payload as string
 
@@ -175,6 +176,7 @@ const CustomUI = track(() => {
                     }
                 })
                 editor.setCurrentTool("select")
+                break
 
 
             case "clickedOption":
@@ -196,7 +198,7 @@ const CustomUI = track(() => {
                     case "shape":
                         // Set only if not already geo or arrow
                         if (!["geo", "arrow"].includes(activeToolId)) {
-                            editor.setStyleForNextShapes(DefaultFillStyle, "solid")
+                            //editor.setStyleForNextShapes(DefaultFillStyle, "solid")
                             editor.setCurrentTool("geo")
                         }
                         break
@@ -205,6 +207,8 @@ const CustomUI = track(() => {
                         break
                 }
                 break
+
+                
             default:
                 console.warn("Action not handled", action, payload)
                 break
