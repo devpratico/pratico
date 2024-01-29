@@ -4,8 +4,9 @@ export default function ImageIcon({className }: IconProps) {
 
     const EmptyPath = () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16" overflow="visible">
-        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+            <path d="M0.59958 2.40706L15.4004 2.40706L15.4004 13.5929L0.59958 13.5929L0.59958 2.40706Z" fill="none" opacity="1" stroke="currentColor" strokeLinecap="butt" strokeLinejoin="round" strokeWidth="1"/>
+            <path d="M0.621954 10.7491L3.64985 8.65744L6.79495 10.5976L11.5841 6.72914L15.3041 10.7873" fill="none" opacity="1" stroke="currentColor" strokeLinecap="butt" strokeLinejoin="round" strokeWidth="1"/>
+            <path d="M4.74137 5.84957C4.74137 4.84953 5.55206 4.03884 6.5521 4.03884C7.55213 4.03884 8.36282 4.84953 8.36282 5.84957C8.36282 6.84961 7.55213 7.6603 6.5521 7.6603C5.55206 7.6603 4.74137 6.84961 4.74137 5.84957Z" fill="none" opacity="1" stroke="currentColor" strokeLinecap="butt" strokeLinejoin="round" strokeWidth="1"/>
         </svg>
     )
 
