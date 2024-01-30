@@ -20,7 +20,7 @@ import zoomToBounds from '@/utils/tldraw/zoomToBounds'
  * It's used to set some initial preferences.
  */
 const handleMount = (editor: Editor) => {
-    setUserPreferences({ id: 'tldraw', edgeScrollSpeed: null })
+    setUserPreferences({ id: 'tldraw', edgeScrollSpeed: 0 })
     editor.updateInstanceState({ canMoveCamera: false })
     editor.setStyleForNextShapes(DefaultColorStyle, "black");
     editor.setStyleForNextShapes(DefaultSizeStyle , "xl");
