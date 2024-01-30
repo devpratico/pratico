@@ -1,5 +1,4 @@
 import styles from './LineOptions.module.css'
-import DashLineIcon from '@/public/icons/DashLineIcon';
 import HighlighterIcon from '@/components/icons/HighlighterIcon';
 import PencilStrokeIcon from '@/components/icons/PencilStrokeIcon';
 import PencilDashIcon from '@/components/icons/PencilDashIcon';

@@ -5,7 +5,7 @@ import SlideNavigation from '../SlideNavigation/SlideNavigation'
 import Carousel from '../../carousel/Carousel/Carousel'
 import PlusSquareIcon from '@/components/icons/PlusSquareIcon'
 import FullScreenIcon from '@/components/icons/FullScreenIcon'
-import { IconSize } from '../../../primitives/LabeledIcon/LabeledIcon'
+import { IconSize } from '@/utils/icons/IconProps';
 
 export default function SlideBar() {
 
@@ -15,7 +15,6 @@ export default function SlideBar() {
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
         onClick: () => console.log("clicked"),
-        className:  styles.addPageBtn
     }
     const AddPage = () => <LabeledIconBtn {...addPageBtnProps} />
 
@@ -25,7 +24,6 @@ export default function SlideBar() {
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
         onClick: () => console.log("clicked"),
-        className:  styles.expandBtn
     }
     const Expand = () => <LabeledIconBtn {...expandBtnProps} />
 

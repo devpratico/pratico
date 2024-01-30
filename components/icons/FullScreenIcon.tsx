@@ -1,6 +1,6 @@
-import { IconProps } from '@/utils/icons/IconProps';
+import { IconProps, iconSizeMap } from '@/utils/icons/IconProps';
 
-export default function FullScreenIcon({className}: IconProps) {
+export default function FullScreenIcon({className, size}: IconProps) {
 
     const FillPath = () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 16 16" overflow="visible">
@@ -8,8 +8,10 @@ export default function FullScreenIcon({className}: IconProps) {
         </svg>
     )
 
+    const style = size ? {width: iconSizeMap[size], height: iconSizeMap[size]} : {}
+
     return (
-        <div className={className}>
+        <div className={className} style={style}>
             <FillPath/>
         </div>
     )

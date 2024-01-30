@@ -36,7 +36,7 @@ const Resizer = () => {
 
     const updateSize = () => {
         const insets = {top: 0, right: 0, bottom: 0, left: 67}
-        zoomToBounds({ editor, box, insets, animation: { duration: 200 } })
+        zoomToBounds({ editor, box, margin: 10,  insets, animation: { duration: 200 } })
     }
 
     let timeout: NodeJS.Timeout
@@ -63,7 +63,7 @@ const CustomBackground  = () => <div className={styles.background}/>
 /**
  * This is the white rectangle on the canvas.
  */
-const CustomOnTheCanvas = () => <div className={styles.toileDeFond}/>
+const CustomOnTheCanvas = () => <div className={styles.toileDeFond + " " + styles.smallShadow}/>
 
 
 /**

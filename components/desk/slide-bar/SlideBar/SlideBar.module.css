@@ -1,10 +1,8 @@
 .container {
-    background-color: var(--secondary);
+    background-color: var(--background);
     display:flex;
-    align-items: stretch;
     height: 70px;
-    /*border-top: 1px solid var(--secondary-border);*/
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .carouselContainer {
@@ -13,22 +11,9 @@
 }
 
 .controls {
-    background-color: var(--secondary);
+    background-color: var(--background);
     display: flex;
     align-items: center;
-    padding: 1rem;
-    gap: 2rem;
-    /*border-left: 1px solid var(--secondary-border);*/
-}
-
-.addPageBtn {
-    --icon-size: 3rem;
-    width: var(--icon-size);
-    height: var(--icon-size);
-}
-
-.expandBtn {
-    --icon-size: 1.5rem;
-    width: var(--icon-size);
-    height: var(--icon-size);
+    padding: 0 1rem;
+    gap: 1rem;
 }

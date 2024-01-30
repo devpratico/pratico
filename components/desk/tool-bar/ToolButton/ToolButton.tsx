@@ -40,7 +40,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
 
     // The button itself
     const Button = () => (
-        <button onClick={onClick} className={styles.btn + " " + (active ? styles.active : "")}>
+        <button onClick={onClick} className={styles.btn + " " + (active ? styles.active : "")} title={toolId}>
             {React.cloneElement(iconsMap[toolId], {fill: active})}
         </button>
     );

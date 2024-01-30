@@ -3,7 +3,7 @@ import styles from './SlideNavigation.module.css'
 import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIconBtn'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
-import { IconSize } from '../../../primitives/LabeledIcon/LabeledIcon'
+import { IconSize } from '@/utils/icons/IconProps';
 
 export default function SlideNavigation() {
 
@@ -13,7 +13,6 @@ export default function SlideNavigation() {
         label:      undefined,
         iconColor:  "var(--primary)",
         onClick: () => console.log("clicked"),
-        className:  styles.arrowBtn
     }
     const LeftArrow = () => <LabeledIconBtn {...leftArrowBtnProps} />
 
@@ -23,7 +22,6 @@ export default function SlideNavigation() {
         label:      undefined,
         iconColor:  "var(--primary)",
         onClick: () => console.log("clicked"),
-        className:  styles.arrowBtn
     }
     const RightArrow = () => <LabeledIconBtn {...rightArrowBtnProps} />
 

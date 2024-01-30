@@ -1,19 +1,21 @@
 .container {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .counter {
     display: flex;
     align-items: center;
+    gap: 0.3rem;
+    padding-top: 0.25rem;
 }
 
 
 .numberLeft {
     font-size: 1rem;
     color: var(--text);
-;
 }
 
 .numberRight {
@@ -25,10 +27,4 @@
 .slash {
     font-size: 1rem;
     color: var(--intermediate);
-}
-
-.arrowBtn {
-    --icon-size: 1.5rem;
-    width: var(--icon-size);
-    height: var(--icon-size);
 }
