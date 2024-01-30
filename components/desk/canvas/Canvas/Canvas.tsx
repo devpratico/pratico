@@ -35,7 +35,7 @@ const Resizer = () => {
     const box = new Box2d(0, 0, 1920, 1080)
 
     const updateSize = () => {
-        const insets = {top: 0, right: 0, bottom: 0, left: 67}
+        const insets = {top: 0, right: 0, bottom: 0, left: 60}
         zoomToBounds({ editor, box, margin: 10,  insets, animation: { duration: 200 } })
     }
 

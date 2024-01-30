@@ -3,7 +3,7 @@
     z-index: 300;
     top: 50%;
     transform: translate(0, -50%);
-    left: 1rem;
+    left: 10px;
 }
 
 .container {
