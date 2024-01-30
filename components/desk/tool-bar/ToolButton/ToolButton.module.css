@@ -1,5 +1,5 @@
 .btn {
-    color: black;/*var(--primary);*/
+    color: var(--text);
     background-color: transparent;
     border: none;
     width: 100%;

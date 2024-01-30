@@ -1,4 +1,5 @@
 .optionBtn {
+    color: var(--text);
     background: none;
     border: none;
     padding: none;
@@ -15,12 +16,6 @@
     cursor: pointer;
 }
 
-.optionIcon {
-    /*color: var(--primary);*/
-    color: black;
-    width: 100%;
-    height: 100%;
-}
 
 .active {
     /*background-color:  var(--secondary);*/

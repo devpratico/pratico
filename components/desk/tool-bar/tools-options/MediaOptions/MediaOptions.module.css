@@ -1,4 +1,5 @@
 .optionBtn {
+    color: var(--text);
     background: none;
     border: none;
     padding: none;
@@ -13,13 +14,6 @@
 .optionBtn:hover {
     /*transform: scale(1.1);*/
     cursor: pointer;
-}
-
-.optionIcon {
-    /*color: var(--primary);*/
-    color: black;
-    width: 100%;
-    height: 100%;
 }
 
 .active {

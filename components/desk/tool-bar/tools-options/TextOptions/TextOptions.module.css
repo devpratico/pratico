@@ -2,7 +2,7 @@
     border: none;
     background-color: transparent;
     /*color: var(--primary);*/
-    color: black;
+    color: var(--text);
     border-radius: 0.4rem;
     cursor: pointer;
     padding: 0.1rem;

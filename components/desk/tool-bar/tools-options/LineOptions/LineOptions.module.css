@@ -7,7 +7,7 @@
 .optionBtn {
     background-color: transparent;
     /*color: var(--primary);*/
-    /*color: black;*/
+    color: var(--text);
     border: none;
     cursor: pointer;
     border-radius: 20%;
@@ -30,7 +30,7 @@
 
 .sizeDisk {
     /*background-color: var(--primary);*/
-    background-color: black;
+    background-color: var(--text);
     border-radius: 50%;
 }
 
