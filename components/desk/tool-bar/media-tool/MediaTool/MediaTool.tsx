@@ -12,7 +12,7 @@ import YoutubeIcon from '@/components/icons/YoutubeIcon';
 
 interface MediaToolProps {
     active: boolean;
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function MediaTool({active, dispatch}: MediaToolProps) {
@@ -21,7 +21,7 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageClick = () => {
-        dispatch<string, string>("clickedTool", "image");
+        dispatch("CLICK_TOOL", "media");
         fileInputRef.current?.click();
     }
 
@@ -29,7 +29,7 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
         const url = formData.get("video-url") as string;
-        dispatch<string, string>("SubmitYouTubeVideoURL", url);
+        dispatch("SUBMIT_YOUTUBE_URL", url);
         setOpenVideoModal(false);
     }
 

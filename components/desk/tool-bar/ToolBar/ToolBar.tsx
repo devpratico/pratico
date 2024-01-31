@@ -10,7 +10,7 @@ import { ToolBarState } from '@/utils/tldraw/toolBarState';
 
 interface ToolBarProps {
     state: ToolBarState;
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function ToolBar({state, dispatch}: ToolBarProps) {

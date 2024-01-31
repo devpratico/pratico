@@ -85,6 +85,9 @@ export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
         shapeStyle = "dotted";
     }
 
+    // Get font, if undefined, default to "draw"
+    const font = tldState.nextFont || "draw";
+
     return {
         activeTool: activeTool as ToolBarState["activeTool"],
         drawOptions: {
@@ -94,7 +97,7 @@ export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
         },
         textOptions: {
             color: tldState.nextColor,
-            font:  tldState.nextFont,
+            font:  font as ToolBarState["textOptions"]["font"],
             type:  textType as ToolBarState["textOptions"]["type"],
         },
         shapeOptions: {

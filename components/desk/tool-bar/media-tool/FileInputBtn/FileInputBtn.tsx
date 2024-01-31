@@ -2,7 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 
 
 interface FileInputBtnProps {
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 /**
@@ -21,7 +21,7 @@ const FileInputBtn = forwardRef<HTMLInputElement , FileInputBtnProps>(
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageSrc = e.target?.result as string; // Data URL
-        dispatch<string, string>("providedAnImage", imageSrc);
+        dispatch("CLICK_SUBMIT_IMAGE", imageSrc);
       };
       reader.readAsDataURL(file);
     }

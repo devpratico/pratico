@@ -12,7 +12,7 @@ export type Tool = "draw" | "highlight" | "laser";
 
 interface LineOptionsProps {
     state: ToolBarState["drawOptions"];
-    dispatch?: <A,P>(action: A, payload: P) => void;
+    dispatch?: (action: string, payload: string) => void;
 }
 
 
@@ -79,8 +79,7 @@ function LaserIconBtn({active, onClick}: {active: boolean, onClick?: () => void}
 export default function LineOptions({state, dispatch}: LineOptionsProps): JSX.Element[] {
 
     const handleSizeClick = (size: Size) => {
-        console.log(`Size clicked: ${size}`);
-        dispatch && dispatch<Action, Size>("clickedSize", size);
+        dispatch && dispatch("CLICK_DRAW_SIZE", size);
     };
 
     return ([
@@ -88,10 +87,10 @@ export default function LineOptions({state, dispatch}: LineOptionsProps): JSX.El
             <SizeBtn size="m"  key={"m"}  active={state.size === "m"}      onClick={() => handleSizeClick("m")}/>,
             <SizeBtn size="l"  key={"l"}  active={state.size === "l"}      onClick={() => handleSizeClick("l")}/>,
             <SizeBtn size="xl" key={"xl"} active={state.size === "xl"}    onClick={() => handleSizeClick("xl")}/>,
-            <SolidLineBtn      key={"solid"} active={state.type == "normal"} onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "solid") : undefined}/>,
-            <DashBtn           key={"dotted"} active={state.type == "dotted"}  onClick={dispatch ? () => dispatch<Action, Dash>("clickedDash", "dotted") : undefined}/>,
-            <HighlighterBtn    key={"highlight"} active={state.type == "highlight"} onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "highlight") : undefined}/>,
-            <LaserIconBtn      key={"laser"} active={state.type == "laser"}     onClick={dispatch ? () => dispatch<Action, Tool>("clickedTool", "laser") : undefined}/>
+            <SolidLineBtn      key={"solid"} active={state.type == "normal"} onClick={dispatch ? () => dispatch("CLICK_DRAW_TYPE", "solid") : undefined}/>,
+            <DashBtn           key={"dotted"} active={state.type == "dotted"}  onClick={dispatch ? () => dispatch("CLICK_DRAW_TYPE", "dotted") : undefined}/>,
+            <HighlighterBtn    key={"highlight"} active={state.type == "highlight"} onClick={dispatch ? () => dispatch("CLICK_DRAW_TYPE", "highlight") : undefined}/>,
+            <LaserIconBtn      key={"laser"} active={state.type == "laser"}     onClick={dispatch ? () => dispatch("CLICK_DRAW_TYPE", "laser") : undefined}/>
         ]
     )
 }

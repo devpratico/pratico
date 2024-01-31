@@ -6,17 +6,17 @@ import { ToolBarState } from "@/utils/tldraw/toolBarState";
 interface TextToolProps {
     active: boolean;
     state: ToolBarState["textOptions"];
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function TextTool({active, state, dispatch}: TextToolProps) {
 
     // We won't pass the original dispatch function.
     // We need to declare first that we come from the text tool.
-    const dispatchTextOption = <A, P>(action: A, payload: P) => {
+    const dispatchTextOption = (action: string, payload: string) => {
         // "Clicked option *from* text tool"
-        dispatch<string, string>("clickedOption", "text")
-        dispatch<A, P>(action, payload)
+        dispatch("CLICK_OPTION", "text")
+        dispatch(action, payload)
     }
 
     const textOptionsProps = {
@@ -27,7 +27,7 @@ export default function TextTool({active, state, dispatch}: TextToolProps) {
     return (
         <ToolButton
             toolId="text"
-            onClick={()=>dispatch<string, string>("clickedTool", "text")}
+            onClick={()=>dispatch("CLICK_TOOL", "text")}
             active={active}
             tooltipContent={<TextOptions {...textOptionsProps}/>}
         />

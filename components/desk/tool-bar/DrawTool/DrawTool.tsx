@@ -10,14 +10,14 @@ type DrawToolState = ToolBarState["drawOptions"]
 interface DrawToolProps {
     active: boolean;
     state: DrawToolState;
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function DrawTool({active, state, dispatch}: DrawToolProps) {
 
     const drawButtonProps = {
         toolId: "draw" as ToolId,
-        onClick: ()=>dispatch<string, string>("clickedTool", "draw"),
+        onClick: ()=>dispatch("CLICK_TOOL", "draw"),
         active: active,
         tooltipContent: <DrawingOptions state={state} dispatch={dispatch}/>
     }

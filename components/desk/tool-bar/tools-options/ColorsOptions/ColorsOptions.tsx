@@ -11,7 +11,7 @@ export type Color  = typeof colors[number];
 
 interface ColorsOptionsProps {
     activeColor: Color;
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 /**
@@ -32,7 +32,7 @@ export default function ColorsOptions({activeColor, dispatch}: ColorsOptionsProp
         return (
             <button
                 className={styles.colorPick + " " + (selected ? styles.colorSelected : "")}
-                onClick={() => dispatch<Action, Color>("clickedColor", color)}
+                onClick={() => dispatch("CLICK_COLOR", color)}
                 style={colorStyle}
             />)
     }   

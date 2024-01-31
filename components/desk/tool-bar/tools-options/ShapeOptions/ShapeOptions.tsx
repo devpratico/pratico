@@ -1,6 +1,6 @@
 import styles from "./ShapeOptions.module.css";
 import ToolOptionsContainer from "../ToolOptionsContainer/ToolOptionsContainer";
-import ColorsOptions, {Color} from "../ColorsOptions/ColorsOptions";
+import ColorsOptions from "../ColorsOptions/ColorsOptions";
 import SquareIcon from "@/components/icons/SquareIcon";
 import CircleIcon from "@/components/icons/CircleIcon";
 import ArrowRightIcon from "@/components/icons/ArrowRightIcon";
@@ -12,24 +12,24 @@ import ShapesIcon from "@/components/icons/ShapesIcon";
 import { ToolBarState } from "@/utils/tldraw/toolBarState";
 
 
-export type Shape = "rectangle" | "ellipse" | "arrow" | "star";
-export type Style = "emptySolid" | "fillSolid" | "emptyDotted" | "whiteSolid";
+export type Shape = ToolBarState["shapeOptions"]["shape"];
+export type Style = ToolBarState["shapeOptions"]["style"];
 
 interface ShapeOptionsProps {
     state: ToolBarState["shapeOptions"];
-    dispatch?: <A,P>(action: A, payload: P) => void;
+    dispatch?: (action: string, payload: string) => void;
 }
 
 export default function ShapeOptions({state, dispatch}: ShapeOptionsProps) {
 
     const dispatchShape = (shape: Shape) => {
-        dispatch && dispatch<string, string>("clickedOption", "shape")
-        dispatch && dispatch<string, Shape>("clickedShape", shape)
+        dispatch && dispatch("CLICK_OPTION", "shape")
+        dispatch && dispatch("CLICK_SHAPE_TYPE", shape)
     }
 
     const dispatchStyle = (style: Style) => {
-        dispatch && dispatch<string, string>("clickedOption", "shape")
-        dispatch && dispatch<string, Style>("clickedStyle", style)
+        dispatch && dispatch("CLICK_OPTION", "shape")
+        dispatch && dispatch("CLICK_SHAPE_STYLE", style)
     }
 
     return(
@@ -45,7 +45,7 @@ export default function ShapeOptions({state, dispatch}: ShapeOptionsProps) {
                 <CircleIcon fill={state.shape === "ellipse"} />
             </button>
 
-            <button key="arrow" className={styles.optionBtn + (state.shape === "arrow" ? " " + styles.active : "")} onClick={()=>dispatch && dispatch<string, string>("clickedTool", "arrow")}>
+            <button key="arrow" className={styles.optionBtn + (state.shape === "arrow" ? " " + styles.active : "")} onClick={()=>dispatchShape("arrow")}>
                 <ArrowRightIcon fill={state.shape === "arrow"} />
             </button>
 
@@ -53,19 +53,19 @@ export default function ShapeOptions({state, dispatch}: ShapeOptionsProps) {
                 <StarIcon fill={state.shape === "star"} />
             </button>
 
-            <button key="empty" className={styles.optionBtn + (state.style == "empty" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptySolid")}>
+            <button key="empty" className={styles.optionBtn + (state.style == "empty" ? " " + styles.active : "")} onClick={()=>dispatchStyle("empty")}>
                 <TransparentShapesIcon/>
             </button>
 
-            <button key="white" className={styles.optionBtn + (state.style == "whiteFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("whiteSolid")}>
+            <button key="white" className={styles.optionBtn + (state.style == "whiteFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("whiteFilled")}>
                 <ShapesIcon fill={false}/>
             </button>
 
-            <button key="fill" className={styles.optionBtn + (state.style == "colorFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("fillSolid")}>
+            <button key="fill" className={styles.optionBtn + (state.style == "colorFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("colorFilled")}>
                 <SemiFilledShapesIcon/>
             </button>
 
-            <button key="dot" className={styles.optionBtn + (state.style == "dotted" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptyDotted")}>
+            <button key="dot" className={styles.optionBtn + (state.style == "dotted" ? " " + styles.active : "")} onClick={()=>dispatchStyle("dotted")}>
                 <EmptyDottedShapesIcon/>
             </button>
 

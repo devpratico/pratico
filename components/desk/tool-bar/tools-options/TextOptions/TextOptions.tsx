@@ -15,25 +15,17 @@ export type Font = "draw" | "sans" | "serif" | "mono";
 
 interface TextOptionsProps {
     state: ToolBarState["textOptions"];
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
+
 
 export default function TextOptions({state, dispatch}: TextOptionsProps) {
 
-    // Before dispatching the option, we need to declare that we come from the text tool.
-    // We'll be able to switch automatically to the text tool when clicking on an option (i.e. color)
-    // Except if the current tool is "note" for example.
-    const dispatchOption = <A, P>(action: A, payload: P) => {
-        dispatch<Action, Tool>("clickedOption", "text")
-        dispatch<A, P>(action, payload)
-    }
-
-    
     function StickyNoteButton() {
         //const stickyNoteIcon = <FontAwesomeIcon icon={faStickyNote} size="xl"/>;
         const stickyNoteIcon = <StickyIcon fill={state.type == "stickyNote"}/>
         const className = styles.button + " " + styles.double + " " +(state.type == "stickyNote" ? styles.active : "")
-        const dispatchStickyNote = () => dispatch<Action, Tool>("clickedTool", "note")
+        const dispatchStickyNote = () => dispatch("CLICK_TEXT_TYPE", "stickyNote")
         return <button key={"note"} title={"Sticky note"} className={className} onClick={dispatchStickyNote} >{stickyNoteIcon}</button>
     }
 
@@ -41,7 +33,7 @@ export default function TextOptions({state, dispatch}: TextOptionsProps) {
     function TextAreaButton() {
         const textAreaIcon = <TextAreaIcon/>
         const className = styles.button + " " + styles.double + " " + (!(state.type == "stickyNote") ? styles.active : "")
-        const dispatchTextArea = () => dispatch<Action, Tool>("clickedTool", "text")
+        const dispatchTextArea = () => dispatch("CLICK_TEXT_TYPE", "normal")
         return <button key={"text"} title={"Free text area"} className={className} onClick={dispatchTextArea} >{textAreaIcon}</button>
     }
 
@@ -54,14 +46,14 @@ export default function TextOptions({state, dispatch}: TextOptionsProps) {
         }
         const fontIcon = fontIconsMap[font]
         const className = styles.button + " " + (state.font === font ? styles.active : "")
-        const dispatchFont = () => dispatchOption<Action, Font>("clickedFont", font)
+        const dispatchFont = () => dispatch("CLICK_FONT", font)
         return <button key={font} title={`Font - ${font}`} className={className} onClick={dispatchFont} >{fontIcon}</button>
     }
 
 
     return (
         <ToolOptionsContainer>
-            <ColorsOptions activeColor={state.color} dispatch={dispatchOption}/>
+            <ColorsOptions activeColor={state.color} dispatch={dispatch}/>
             {FontButton("draw")}
             {FontButton("sans")}
             {FontButton("serif")}

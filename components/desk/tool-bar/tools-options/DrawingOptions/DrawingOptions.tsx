@@ -8,7 +8,7 @@ type Action = "clickedOption";
 
 interface DrawingOptionsProps {
     state: ToolBarState["drawOptions"]
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function DrawingOptions({state, dispatch}: DrawingOptionsProps) {
@@ -16,11 +16,11 @@ export default function DrawingOptions({state, dispatch}: DrawingOptionsProps) {
     // Before letting the option button dispatching something,
     // let's say 'we come from the draw tool'
     // This way, when dispatching a color without clicking on the draw button,
-    // we'll be able to tswitch to the draw tool automatically.
-    const dispatchOption = <A, P>(action: A, payload: P) => {
+    // we'll be able to switch to the draw tool automatically.
+    const dispatchOption = (action: string, payload: string) => {
         // "Clicked an option *from* the draw tool":
-        dispatch<Action, Tool>("clickedOption", "draw")
-        dispatch<A, P>(action, payload)
+        dispatch("CLICK_OPTION", "draw")
+        dispatch(action, payload)
     }
     
 

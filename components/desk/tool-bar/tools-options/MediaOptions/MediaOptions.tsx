@@ -10,19 +10,19 @@ import FileEarmarkImageIcon from '@/components/icons/FileEarmarkImageIcon';
 
 interface MediaOptionsProps {
     setOpenVideoModal: (open: boolean) => void;
-    dispatch: <A,P>(action: A, payload: P) => void;
+    dispatch: (action: string, payload: string) => void;
 }
 
 export default function MediaOptions({setOpenVideoModal, dispatch}: MediaOptionsProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleImageClick = () => {
-        dispatch<string, string>("clickedTool", "image");
+        dispatch("CLICK_MEDIA_TYPE", "image");
         fileInputRef.current?.click();
     }
 
     const handleVideoClick = () => {
-        dispatch<string, string>("clickedTool", "video");
+        dispatch("CLICK_MEDIA_TYPE", "video");
         setOpenVideoModal(true);
     }
 
