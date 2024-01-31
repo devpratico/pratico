@@ -236,8 +236,32 @@ const CustomUI = track(() => {
                 break
         }
     }
+
+
+    let hintPosition = {x: 0, y: 0}
+    let display = "none"
+    const selectedShapesIds = editor.getSelectedShapeIds()
+    if (selectedShapesIds.length > 0) {
+        const firstSelectedShapeId = selectedShapesIds[0]
+        const shape = editor.getShape(firstSelectedShapeId)
+        const isEmbed = shape?.type === "embed"
+        const isInteracting = editor.getEditingShapeId() === firstSelectedShapeId
+        if (isEmbed && !isInteracting) {
+            display = "block"
+            const bounds = editor.getShapePageBounds(firstSelectedShapeId)
+            if (bounds) {
+                const screenPoint = editor.pageToScreen(bounds)
+                const screenBounds = editor.getViewportScreenBounds()
+                hintPosition = {
+                    x: screenPoint.x - screenBounds.x,
+                    y: screenPoint.y - screenBounds.y,
+                }
+            }
+        }
+    }
     
     return (
+        <>
         <div className={styles.customUI}>
             <ToolBar
                 activeToolId={activeToolId}
@@ -251,6 +275,21 @@ const CustomUI = track(() => {
                 dispatch    ={dispatch}
             />
         </div>
+
+        <div
+        style={{
+            position: "absolute",
+            left: hintPosition.x,
+            top: hintPosition.y - 40,
+            padding: 7,
+            background: "var(--secondary)",
+            color: "var(--text-on-secondary)",
+            borderRadius: 10,
+            zIndex: 1000,
+            display: display,
+        }}
+        >Double click to interact!</div>
+        </>
     )
 })
 
