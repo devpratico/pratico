@@ -11,7 +11,7 @@ export interface ToolBarState {
     drawOptions: {
         color: TLDefaultColorStyle;
         size:  TLDefaultSizeStyle;
-        type: "normal" | "dotted" | "highlighter" | "laser";
+        type: "normal" | "dotted" | "highlight" | "laser";
     };
 
     textOptions: {
@@ -50,14 +50,14 @@ export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
     let drawType = "normal";
     if (tldState.activeTool == "draw" && tldState.nextDash == "dotted") {
         drawType = "dotted";
-    } else if (tldState.activeTool == "highlighter" || tldState.activeTool == "laser") {
+    } else if (tldState.activeTool == "highlight" || tldState.activeTool == "laser") {
         drawType = tldState.activeTool;
     }
 
     // Get text option `type` from tldraw's `activeTool`
     let textType = "normal";
-    if (tldState.activeTool == "stickyNote") {
-        textType = "note";
+    if (tldState.activeTool == "note") {
+        textType = "stickyNote";
     }
 
     // Get shape from tldraw if we support it, otherwise default to "rectangle"

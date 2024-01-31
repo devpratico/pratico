@@ -6,6 +6,8 @@ import { Color } from '../../tool-bar/tools-options/ColorsOptions/ColorsOptions'
 import { Size, Dash } from '../../tool-bar/tools-options/LineOptions/LineOptions'
 import { Font } from '../../tool-bar/tools-options/TextOptions/TextOptions'
 import { Shape, Style } from '../../tool-bar/tools-options/ShapeOptions/ShapeOptions'
+import getTldrawState from '@/utils/tldraw/tldrawState'
+import { toolBarStateFrom } from '@/utils/tldraw/toolBarState'
 
 /**
  * This component is a custom UI for the editor.
@@ -13,47 +15,12 @@ import { Shape, Style } from '../../tool-bar/tools-options/ShapeOptions/ShapeOpt
  */
 const CustomUI = track(() => {
     const editor = useEditor() // This is provided by the parent Tldraw component
-    const activeToolId = editor.getCurrentToolId()
-    const isStickyNote = activeToolId === "note"
-    const stylesForNextShapes = editor.getInstanceState().stylesForNextShape
-    const activeColor = stylesForNextShapes["tldraw:color"] as Color || "black"
-    const activeSize  = stylesForNextShapes["tldraw:size"]  as Size  || "l"
-    const activeDash  = stylesForNextShapes["tldraw:dash"]  as Dash  || "solid"
-    const activeFont  = stylesForNextShapes["tldraw:font"]  as Font  || "draw"
-
-    let   activeShape = stylesForNextShapes["tldraw:geo"]   as Shape || "rectangle"
-    if (activeToolId == "arrow") {
-        activeShape = "arrow"
-    }
-
-    const activeFill  = stylesForNextShapes["tldraw:fill"]  as string|| "none"
-    let activeStyle: Style
-    switch (`${activeDash}-${activeFill}`) {
-        case "solid-none":
-            activeStyle = "emptySolid"
-            break
-        case "solid-semi":
-            activeStyle = "whiteSolid"
-            break
-        case "dotted-none":
-            activeStyle = "emptyDotted"
-            break
-        case "solid-solid":
-            activeStyle = "fillSolid"
-            break
-        default:
-            activeStyle = "emptySolid"
-            break
-    }
-
+    const tldrawState = getTldrawState(editor)
+    const toolBarState = toolBarStateFrom(tldrawState)
 
     //const defaultToolsIds = defaultShapeTools.map(tool => tool.id) 
     //const defaultToolsIds = defaultTools.concat(defaultShapeTools).map(tool => tool.id)
     const defaultToolsIds = defaultTools.map(tool => tool.id).concat(defaultShapeTools.map(tool => tool.id))
-
-
-    // useful to discover the styles cache
-    //console.log(stylesForNextShapes)
 
     /**
      * This function will be called by toolbar elements to dispatch actions
@@ -206,20 +173,20 @@ const CustomUI = track(() => {
                 switch (payload as string) {
                     case "draw":
                         // Set to draw only if not already draw or highlight or laser
-                        if (!["draw", "highlight", "laser"].includes(activeToolId)) {
+                        if (!["draw", "highlight", "laser"].includes(tldrawState.activeTool)) {
                             editor.setStyleForNextShapes(DefaultFillStyle, "none")
                             editor.setCurrentTool("draw")
                         }
                         break
                     case "text":
                         // Set only if not already text or note
-                        if (!["text", "note"].includes(activeToolId)) {
+                        if (!["text", "note"].includes(tldrawState.activeTool)) {
                             editor.setCurrentTool("text")
                         }
                         break
                     case "shape":
                         // Set only if not already geo or arrow
-                        if (!["geo", "arrow"].includes(activeToolId)) {
+                        if (!["geo", "arrow"].includes(tldrawState.activeTool)) {
                             //editor.setStyleForNextShapes(DefaultFillStyle, "solid")
                             editor.setCurrentTool("geo")
                         }
@@ -263,17 +230,7 @@ const CustomUI = track(() => {
     return (
         <>
         <div className={styles.customUI}>
-            <ToolBar
-                activeToolId={activeToolId}
-                activeColor ={activeColor}
-                activeSize  ={activeSize}
-                activeDash  ={activeDash}
-                isStickyNote={isStickyNote}
-                activeFont  ={activeFont}
-                activeShape ={activeShape}
-                activeStyle ={activeStyle}
-                dispatch    ={dispatch}
-            />
+            <ToolBar state={toolBarState} dispatch={dispatch}/>
         </div>
 
         <div

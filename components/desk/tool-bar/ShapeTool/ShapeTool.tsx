@@ -2,17 +2,16 @@ import ToolButton, {ToolId} from '../ToolButton/ToolButton'
 import ShapeOptions from '../tools-options/ShapeOptions/ShapeOptions';
 import { Color } from '../tools-options/ColorsOptions/ColorsOptions';
 import { Shape, Style } from '../tools-options/ShapeOptions/ShapeOptions';
+import { ToolBarState } from '@/utils/tldraw/toolBarState';
 
 
 interface ShapeToolProps {
-    activeToolId:  string;
-    activeColor: Color;
-    activeShape: Shape;
-    activeStyle: Style;
+    active: boolean;
+    state: ToolBarState["shapeOptions"];
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function ShapeTool({activeToolId, activeColor, activeShape, activeStyle, dispatch}: ShapeToolProps) {
+export default function ShapeTool({active, state, dispatch}: ShapeToolProps) {
 
     // We won't pass the original dispatch function.
     // We need to declare first that we come from the shape tool.
@@ -25,8 +24,8 @@ export default function ShapeTool({activeToolId, activeColor, activeShape, activ
     const shapeButtonProps = {
         toolId: "shape" as ToolId,
         onClick: ()=>dispatch<string, string>("clickedTool", "geo"),
-        active: activeToolId === "geo" || activeToolId === "arrow",
-        tooltipContent: <ShapeOptions activeColor={activeColor} activeShape={activeShape} activeStyle={activeStyle} dispatch={dispatchShapeOption}/>
+        active: active,
+        tooltipContent: <ShapeOptions state={state} dispatch={dispatchShapeOption}/>
     }
 
     return <ToolButton {...shapeButtonProps}/>

@@ -11,11 +11,11 @@ import YoutubeIcon from '@/components/icons/YoutubeIcon';
 
 
 interface MediaToolProps {
-    activeToolId:  string
+    active: boolean;
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
+export default function MediaTool({active, dispatch}: MediaToolProps) {
 
     const [openVideoModal, setOpenVideoModal] = useState<boolean | undefined>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,7 +36,7 @@ export default function MediaTool({activeToolId, dispatch}: MediaToolProps) {
     const mediaButtonProps = {
         toolId: "image" as ToolId,
         onClick: handleImageClick,
-        active: activeToolId === "image" || activeToolId === "video",
+        active: active,
         tooltipContent: <MediaOptions setOpenVideoModal={setOpenVideoModal} dispatch={dispatch}/>,
     }
 

@@ -9,19 +9,18 @@ import TransparentShapesIcon from "@/components/icons/TransparentShapesIcon";
 import SemiFilledShapesIcon from "@/components/icons/SemiFilledShapesIcon";
 import EmptyDottedShapesIcon from "@/components/icons/EmptyDottedShapesIcon";
 import ShapesIcon from "@/components/icons/ShapesIcon";
+import { ToolBarState } from "@/utils/tldraw/toolBarState";
 
 
 export type Shape = "rectangle" | "ellipse" | "arrow" | "star";
 export type Style = "emptySolid" | "fillSolid" | "emptyDotted" | "whiteSolid";
 
 interface ShapeOptionsProps {
-    activeColor: Color;
-    activeShape: Shape;
-    activeStyle: Style;
+    state: ToolBarState["shapeOptions"];
     dispatch?: <A,P>(action: A, payload: P) => void;
 }
 
-export default function ShapeOptions({activeColor, activeShape, activeStyle, dispatch}: ShapeOptionsProps) {
+export default function ShapeOptions({state, dispatch}: ShapeOptionsProps) {
 
     const dispatchShape = (shape: Shape) => {
         dispatch && dispatch<string, string>("clickedOption", "shape")
@@ -36,37 +35,37 @@ export default function ShapeOptions({activeColor, activeShape, activeStyle, dis
     return(
         <ToolOptionsContainer>
             
-            {ColorsOptions({activeColor, dispatch: dispatch || (()=>{})})}
+            {ColorsOptions({activeColor: state.color, dispatch: dispatch || (()=>{})})}
 
-            <button key="rectangle" className={styles.optionBtn + (activeShape === "rectangle" ? " " + styles.active : "")} onClick={()=>dispatchShape("rectangle")}>
-                <SquareIcon fill={activeShape === "rectangle"} />
+            <button key="rectangle" className={styles.optionBtn + (state.shape === "rectangle" ? " " + styles.active : "")} onClick={()=>dispatchShape("rectangle")}>
+                <SquareIcon fill={state.shape === "rectangle"} />
             </button>
 
-            <button key="ellipse" className={styles.optionBtn + (activeShape === "ellipse" ? " " + styles.active : "")} onClick={()=>dispatchShape("ellipse")}>
-                <CircleIcon fill={activeShape === "ellipse"} />
+            <button key="ellipse" className={styles.optionBtn + (state.shape === "ellipse" ? " " + styles.active : "")} onClick={()=>dispatchShape("ellipse")}>
+                <CircleIcon fill={state.shape === "ellipse"} />
             </button>
 
-            <button key="arrow" className={styles.optionBtn + (activeShape === "arrow" ? " " + styles.active : "")} onClick={()=>dispatch && dispatch<string, string>("clickedTool", "arrow")}>
-                <ArrowRightIcon fill={activeShape === "arrow"} />
+            <button key="arrow" className={styles.optionBtn + (state.shape === "arrow" ? " " + styles.active : "")} onClick={()=>dispatch && dispatch<string, string>("clickedTool", "arrow")}>
+                <ArrowRightIcon fill={state.shape === "arrow"} />
             </button>
 
-            <button key="star" className={styles.optionBtn + (activeShape === "star" ? " " + styles.active : "")} onClick={()=>dispatchShape("star")}>
-                <StarIcon fill={activeShape === "star"} />
+            <button key="star" className={styles.optionBtn + (state.shape === "star" ? " " + styles.active : "")} onClick={()=>dispatchShape("star")}>
+                <StarIcon fill={state.shape === "star"} />
             </button>
 
-            <button key="empty" className={styles.optionBtn + (activeStyle == "emptySolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptySolid")}>
+            <button key="empty" className={styles.optionBtn + (state.style == "empty" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptySolid")}>
                 <TransparentShapesIcon/>
             </button>
 
-            <button key="white" className={styles.optionBtn + (activeStyle == "whiteSolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("whiteSolid")}>
+            <button key="white" className={styles.optionBtn + (state.style == "whiteFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("whiteSolid")}>
                 <ShapesIcon fill={false}/>
             </button>
 
-            <button key="fill" className={styles.optionBtn + (activeStyle == "fillSolid" ? " " + styles.active : "")} onClick={()=>dispatchStyle("fillSolid")}>
+            <button key="fill" className={styles.optionBtn + (state.style == "colorFilled" ? " " + styles.active : "")} onClick={()=>dispatchStyle("fillSolid")}>
                 <SemiFilledShapesIcon/>
             </button>
 
-            <button key="dot" className={styles.optionBtn + (activeStyle == "emptyDotted" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptyDotted")}>
+            <button key="dot" className={styles.optionBtn + (state.style == "dotted" ? " " + styles.active : "")} onClick={()=>dispatchStyle("emptyDotted")}>
                 <EmptyDottedShapesIcon/>
             </button>
 

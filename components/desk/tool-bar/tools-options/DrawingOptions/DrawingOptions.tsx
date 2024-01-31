@@ -1,19 +1,17 @@
 import ToolOptionsContainer from '../ToolOptionsContainer/ToolOptionsContainer'
 import ColorsOptions, { Color } from '../ColorsOptions/ColorsOptions'
 import LineOptions, {Size, Dash, Tool} from '../LineOptions/LineOptions';
+import { ToolBarState } from '@/utils/tldraw/toolBarState';
 
 
 type Action = "clickedOption";
 
 interface DrawingOptionsProps {
-    activeColor: Color;
-    activeSize: Size;
-    activeDash: Dash;
-    activeTool: Tool;
+    state: ToolBarState["drawOptions"]
     dispatch: <A,P>(action: A, payload: P) => void;
 }
 
-export default function DrawingOptions({activeColor, activeSize, activeDash, activeTool, dispatch}: DrawingOptionsProps) {
+export default function DrawingOptions({state, dispatch}: DrawingOptionsProps) {
 
     // Before letting the option button dispatching something,
     // let's say 'we come from the draw tool'
@@ -28,8 +26,8 @@ export default function DrawingOptions({activeColor, activeSize, activeDash, act
 
     return (
         <ToolOptionsContainer>
-            {ColorsOptions({activeColor, dispatch: dispatchOption})}
-            {LineOptions({activeSize, activeDash, activeTool, dispatch: dispatchOption})}
+            {ColorsOptions({activeColor: state.color, dispatch: dispatchOption})}
+            {LineOptions({state: state, dispatch: dispatchOption})}
         </ToolOptionsContainer>
     )
 }
