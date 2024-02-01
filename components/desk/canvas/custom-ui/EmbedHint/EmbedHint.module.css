@@ -1,9 +1,10 @@
 .container {
     position: absolute;
-    padding: 7px;
+    padding: 10px 10px 7px 10px;
     background: var(--secondary);
     color: var(--text-on-secondary);
-    border-radius: 10px;
+    border-radius: 5px;
     z-index: 1000;
     display: display;
+    line-height: 1;
 }
