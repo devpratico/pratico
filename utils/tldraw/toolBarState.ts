@@ -42,6 +42,9 @@ export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
         case "geo":
             activeTool = "shape";
             break;
+        case "arrow":
+            activeTool = "shape";
+            break;
         default:
             break;
     }
