@@ -20,8 +20,10 @@ export default function Tooltip({ children, content, side, align = "center", arr
     return (
         <TooltipPrimitive.Provider delayDuration={0}>
             <TooltipPrimitive.Root open={open} onOpenChange={onOpenChange} defaultOpen={defaultOpen}>
-                <TooltipPrimitive.Trigger className={styles.button} asChild>{children}</TooltipPrimitive.Trigger>
-                <TooltipPrimitive.Content side={side} align={align} className={styles.TooltipContent}>
+                <TooltipPrimitive.Trigger className={styles.button} asChild onClick={(event) => event.preventDefault()}>
+                    {children}
+                </TooltipPrimitive.Trigger>
+                <TooltipPrimitive.Content side={side} align={align} className={styles.TooltipContent} onPointerDownOutside={(event) => {event.preventDefault()}}>
                     {content}
                     {arrow && <TooltipPrimitive.Arrow width={11} height={5} className={styles.TooltipArrow} />}
                 </TooltipPrimitive.Content>

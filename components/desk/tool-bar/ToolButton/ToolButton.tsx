@@ -54,7 +54,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
         // Also wrap it in a div so that the tooltip can use its ref https://www.radix-ui.com/primitives/docs/guides/composition
         return (
             <Tooltip content={tooltipContent} side="right">
-                <div>
+                <div id="tooltip-trigger">
                     <Button />
                 </div>
             </Tooltip>
