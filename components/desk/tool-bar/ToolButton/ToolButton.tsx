@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './ToolButton.module.css'
 import Tooltip from '@/components/primitives/Tooltip/Tooltip';
+import Popover from '@/components/primitives/Popover/Popover';
 import CursorIcon from '@/components/icons/CursorIcon';
-import StarIcon from '@/components/icons/StarIcon';
 import ImageIcon from '@/components/icons/ImageIcon';
 import EraserIcon from '@/components/icons/EraserIcon';
 import BlankPenIcon from '@/components/icons/BlankPenIcon';
@@ -20,7 +20,7 @@ const iconsMap: Record<ToolId, JSX.Element> = {
     "select": <CursorIcon   fill={fill} />,
     "draw":   <BlankPenIcon fill={fill} />,
     "text":   <FontsIcon    fill={fill} />,
-    "shape":  <ShapesIcon     fill={fill} />,
+    "shape":  <ShapesIcon   fill={fill} />,
     "image":  <ImageIcon    fill={fill} />,
     "eraser": <EraserIcon   fill={fill} />,
 }
@@ -43,7 +43,7 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
         <button onClick={onClick} className={styles.btn + " " + (active ? styles.active : "")} title={toolId}>
             {React.cloneElement(iconsMap[toolId], {fill: active})}
         </button>
-    );
+    )
 
     // If no tooltip, return just the button, no need to call Tooltip
     if (!tooltipContent) {
@@ -53,11 +53,15 @@ export default function ToolButton({toolId, onClick, active, tooltipContent}: To
         // Else, wrap the button in a tooltip
         // Also wrap it in a div so that the tooltip can use its ref https://www.radix-ui.com/primitives/docs/guides/composition
         return (
-            <Tooltip content={tooltipContent} side="right">
-                <div id="tooltip-trigger">
-                    <Button />
-                </div>
-            </Tooltip>
+            <Popover content={tooltipContent} side="right">
+                <Button />
+            </Popover>
         )
     }
 }
+
+/*
+<Popover content={tooltipContent} side="right">
+    <Button />
+</Popover>
+*/

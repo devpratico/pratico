@@ -6,7 +6,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover'
 
 interface PopoverProps {
     children: React.ReactNode;
-    content: React.ReactNode;
+    content:  React.ReactNode;
     side?: "top" | "right" | "bottom" | "left";
     align?: "start" | "center" | "end";
     defaultOpen?: boolean;
@@ -17,12 +17,15 @@ interface PopoverProps {
 }
 
 
-export default function Popover({ children, content, side="right", align="center", defaultOpen=false, open, onOpenChange, modal=false, arrow=false }: PopoverProps) {
+export default function Popover({ children, content, side="right", align="center", defaultOpen, open, onOpenChange, modal, arrow=false }: PopoverProps) {
     return (
         <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange} defaultOpen={defaultOpen} modal={modal}>
 
             <PopoverPrimitive.Trigger className={styles.trigger} asChild>
-                {children}
+                {/* We need to wrap the children in a div so that the trigger can use its ref*/}
+                <div>
+                    {children}
+                </div>
             </PopoverPrimitive.Trigger>
 
 
@@ -31,9 +34,11 @@ export default function Popover({ children, content, side="right", align="center
 
                     { arrow && <PopoverPrimitive.Arrow className={styles.arrow} /> }
 
+                    {/*
                     <div className={styles.contentInner}>
                         <PopoverPrimitive.Close className={styles.close} />
                     </div>
+                    */}
 
                     {content}
 
