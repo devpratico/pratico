@@ -1,8 +1,12 @@
-import { useEditor } from "@tldraw/tldraw";
+import { useEditor, track } from "@tldraw/tldraw";
 import styles from './EmbedHint.module.css'
 
 
-export default function EmbedHint() {
+/**
+ * Displays a hint on top of the embed shape when it's not being edited.
+ * `Triple click to play!`
+ */
+const EmbedHint = track(() => {
     const editor = useEditor()
     let hintPosition = {x: 0, y: 0}
     let display = "none"
@@ -32,9 +36,12 @@ export default function EmbedHint() {
             style={{
                 left: hintPosition.x,
                 top: hintPosition.y - 40,
+                display: display,
             }}
         >
             Triple click to play!
         </div>
     )
-}
+})
+
+export default EmbedHint
