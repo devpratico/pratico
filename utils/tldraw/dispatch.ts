@@ -154,7 +154,7 @@ export function dispatch({ editor, action, payload }: DispatchArgs) {
             }
             break
 
-        case 'CLICK_SUBMIT_YOUTUBE_URL':
+        case 'SUBMIT_YOUTUBE_URL':
             const resizeRatio = 0.5
             const width = 1920 * resizeRatio
             const height = 1080 * resizeRatio

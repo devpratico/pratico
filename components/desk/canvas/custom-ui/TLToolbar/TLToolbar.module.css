@@ -1,0 +1,7 @@
+.container {
+    position: absolute;
+    z-index: 300;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: 10px;
+}

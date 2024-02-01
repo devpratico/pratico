@@ -9,14 +9,15 @@ import { ToolBarState } from '@/utils/tldraw/toolBarState';
 
 
 interface ToolBarProps {
+    className?: string;
     state: ToolBarState;
     dispatch: (action: string, payload: string) => void;
 }
 
-export default function ToolBar({state, dispatch}: ToolBarProps) {
+export default function ToolBar({className, state, dispatch}: ToolBarProps) {
 
     return (
-        <div className={`${styles.container} bigShadow`}>
+        <div className={`${styles.container} bigShadow ${className}`}>
             <SelectTool active={state.activeTool == "select"} dispatch={dispatch}/>
             <DrawTool   active={state.activeTool == "draw"} state={state.drawOptions} dispatch={dispatch}/>
             <TextTool   active={state.activeTool == "text"} state={state.textOptions} dispatch={dispatch}/>

@@ -1,0 +1,9 @@
+.container {
+    position: absolute;
+    padding: 7px;
+    background: var(--secondary);
+    color: var(--text-on-secondary);
+    border-radius: 10px;
+    z-index: 1000;
+    display: display;
+}
