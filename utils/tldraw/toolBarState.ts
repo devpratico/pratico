@@ -77,9 +77,9 @@ export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
     let shapeStyle = "empty";
     if (tldState.nextFill == "none" && tldState.nextDash == "solid") {
         shapeStyle = "empty";
-    } else if (tldState.nextFill == "solid" && tldState.nextDash == "solid") {
-        shapeStyle = "whiteFilled";
     } else if (tldState.nextFill == "semi" && tldState.nextDash == "solid") {
+        shapeStyle = "whiteFilled";
+    } else if (tldState.nextFill == "solid" && tldState.nextDash == "solid") {
         shapeStyle = "colorFilled";
     } else if (tldState.nextFill == "none" && tldState.nextDash == "dotted") {
         shapeStyle = "dotted";

@@ -137,11 +137,11 @@ export function dispatch({ editor, action, payload }: DispatchArgs) {
                     editor.setStyleForNextShapes(DefaultDashStyle, 'solid')
                     break
                 case 'whiteFilled':
-                    editor.setStyleForNextShapes(DefaultFillStyle, 'solid')
+                    editor.setStyleForNextShapes(DefaultFillStyle, 'semi')
                     editor.setStyleForNextShapes(DefaultDashStyle, 'solid')
                     break
                 case 'colorFilled':
-                    editor.setStyleForNextShapes(DefaultFillStyle, 'semi')
+                    editor.setStyleForNextShapes(DefaultFillStyle, 'solid')
                     editor.setStyleForNextShapes(DefaultDashStyle, 'solid')
                     break
                 case 'dotted':
