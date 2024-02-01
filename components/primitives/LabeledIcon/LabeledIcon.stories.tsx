@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>;
 export const LabeledIcon_: Story = {
     args: {
         icon:  <HighlighterIcon/>,
-        iconSize: "xl",
+        iconSize: "lg",
         label: 'Highlighter',
         centered: true,
         gap: "0",
