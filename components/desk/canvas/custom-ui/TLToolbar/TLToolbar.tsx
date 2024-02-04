@@ -4,6 +4,7 @@ import getTldrawState from "@/utils/tldraw/tldrawState"
 import { toolBarStateFrom } from "@/utils/tldraw/toolBarState"
 import * as tlDispatch from '@/utils/tldraw/dispatch'
 import ToolBar from "@/components/desk/tool-bar/ToolBar/ToolBar"
+import { useKeyboardShortcuts } from "@tldraw/tldraw"
 
 /**
  * This is the toolbar of the canvas.
@@ -13,6 +14,8 @@ import ToolBar from "@/components/desk/tool-bar/ToolBar/ToolBar"
  */
 const  TLToolbar = track(() => {
     const editor = useEditor() // This is provided by the parent Tldraw component
+    useKeyboardShortcuts()
+
     const tldrawState = getTldrawState(editor)
     const toolBarState = toolBarStateFrom(tldrawState)
     const dispatch = (action: string, payload: string) => {
