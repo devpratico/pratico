@@ -22,7 +22,7 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
 
     const handleImageClick = () => {
         dispatch("CLICK_TOOL", "media");
-        fileInputRef.current?.click();
+        //fileInputRef.current?.click();
     }
 
     const handleVideoSubmit = (e: React.FormEvent<HTMLFormElement>) => {
