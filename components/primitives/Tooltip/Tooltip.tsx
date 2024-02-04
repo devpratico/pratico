@@ -21,7 +21,9 @@ export default function Tooltip({ children, content, side, align = "center", arr
         <TooltipPrimitive.Provider delayDuration={0}>
             <TooltipPrimitive.Root open={open} onOpenChange={onOpenChange} defaultOpen={defaultOpen}>
                 <TooltipPrimitive.Trigger className={styles.button} asChild onClick={(event) => event.preventDefault()}>
-                    {children}
+                    <div> {/* We need to wrap the children in a div because the trigger need an element compatible with `ref` */}
+                        {children}
+                    </div>
                 </TooltipPrimitive.Trigger>
                 <TooltipPrimitive.Content side={side} align={align} className={styles.TooltipContent} onPointerDownOutside={(event) => {event.preventDefault()}}>
                     {content}

@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import { useState } from 'react';
 import styles from './Popover.module.css'
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 
@@ -17,20 +17,35 @@ interface PopoverProps {
 }
 
 
+/**
+ * A [Radix library popover](https://radix-ui.com/primitives/docs/components/popover)
+ */
 export default function Popover({ children, content, side="right", align="center", defaultOpen, open, onOpenChange, modal, arrow=false }: PopoverProps) {
+
+    //const [openState, setOpenState] = useState<boolean | undefined>(defaultOpen);
+
     return (
         <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange} defaultOpen={defaultOpen} modal={modal}>
 
             <PopoverPrimitive.Trigger className={styles.trigger} asChild>
-                {/* We need to wrap the children in a div so that the trigger can use its ref*/}
-                <div>
+                {/* We need to wrap the children in a div because the trigger needs an element compatible with `ref` */}
+                <div
+                    //onPointerEnter={() => setOpenState(true)}
+                    //onMouseLeave={() => setOpenState(false)}
+                >
                     {children}
                 </div>
             </PopoverPrimitive.Trigger>
 
 
             <PopoverPrimitive.Portal>
-                <PopoverPrimitive.Content side={side} className={styles.content} align={align}>
+                <PopoverPrimitive.Content
+                    side={side}
+                    className={styles.content}
+                    align={align}
+                    //onMouseEnter={() => setOpenState(true)}
+                    //onMouseLeave={() => setOpenState(false)}
+                    >
 
                     { arrow && <PopoverPrimitive.Arrow className={styles.arrow} /> }
 
@@ -48,3 +63,13 @@ export default function Popover({ children, content, side="right", align="center
         </PopoverPrimitive.Root>
     )
 }
+
+
+
+/*
+onPointerDownOutside={(event) => {
+    if (event.target !== triggerRef.current?.children[0]) {
+        setOpenState(false)
+    }
+}}
+*/
