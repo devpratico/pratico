@@ -4,6 +4,7 @@ import MenuBar from '../components/menu-bar/MenuBar/MenuBar'
 import DocumentsView from '../components/dashboard/DocumentsView/DocumentsView'
 import DashboardLeftBar from '../components/dashboard/DashboardLeftBar/DashboardLeftBar'
 
+
 export default function Dashboard() {
 
   const propsForMainLayout = {

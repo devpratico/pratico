@@ -1,5 +1,5 @@
 .container {
-    --mbl-padding: 2rem;
+    --mbl-padding: 3rem;
     background-color: var(--brand);
     /*border-bottom: 1px solid var(--brand-border);*/
     height: 56px;

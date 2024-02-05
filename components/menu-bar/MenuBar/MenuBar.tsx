@@ -55,11 +55,10 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                     <Title initialValue="My session" placeholder="Session name" focusFirst={false} editable={false} />
                     <PlainBtn text="Start session" color="secondary" size="l" />
-                    <LabeledIconBtn icon={<StopwatchIcon     fill={false}/>} label="stopwatch" {...styleBtnProps} />
-                    <LabeledIconBtn icon={<ChatSquareDotIcon fill={false}/>} label="chat"      {...styleBtnProps} />
-                    <LabeledIconBtn icon={<PeopleIcon        fill={false}/>} label="students"  {...styleBtnProps} />
-                    <LabeledIcon    icon={<PuzzleIcon        fill={false}/>} label="polls"     {...styleBtnProps} />
-                    <LabeledIconBtn icon={<ThreeDotsIcon     fill={false}/>} label="more"      {...styleBtnProps} />
+                    <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label="polls"     {...styleBtnProps} />
+                    <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label="chat"      {...styleBtnProps} />
+                    <LabeledIconBtn icon={<PeopleIcon        fill={true}/>} label="students"  {...styleBtnProps} />
+                    <LabeledIconBtn icon={<ThreeDotsIcon     fill={true}/>} label="more"      {...styleBtnProps} />
                 </MenuBarLayout>
             )
 
