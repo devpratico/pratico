@@ -44,8 +44,7 @@ export default function RootLayout({
     return (
         <html lang="en" data-theme="pratico">
             <body className={luciole.className}>{children}</body>
-            <AuthDialog />
+            <AuthDialog/>
         </html>
-        )
-    }
-    
+    )
+}

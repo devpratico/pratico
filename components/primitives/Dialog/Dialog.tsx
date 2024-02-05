@@ -1,4 +1,4 @@
-"use client";
+//"use client";
 import styles from "./Dialog.module.css";
 import { forwardRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -12,7 +12,7 @@ interface DialogContentProps {
 /**
  * A [Radix library dialog](https://www.radix-ui.com/primitives/docs/components/dialog)
  */
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent({ children, closeBtn=false }, forwardedRef) {
+export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(function DialogContentF({ children, closeBtn=false }, forwardedRef) {
 
     const CloseBtn = () => (
         <DialogPrimitive.Close aria-label="Close" className={styles.DialogClose}>
