@@ -9,12 +9,13 @@ import praticoLogo from '../../../public/images/pratico.svg';
 import PlayCircleIcon from '@/components/icons/PlayCircleIcon';
 import PuzzleIcon from '@/components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/components/icons/ThreeDotsIcon';
-import PauseCircleIcon from '@/components/icons/PauseCircleIcon';
-import StopCircleIcon from '@/components/icons/StopCircleIcon';
-import StopwatchIcon from '@/components/icons/StopwatchIcon';
+//import PauseCircleIcon from '@/components/icons/PauseCircleIcon';
+//import StopCircleIcon from '@/components/icons/StopCircleIcon';
+//import StopwatchIcon from '@/components/icons/StopwatchIcon';
 import ChatSquareDotIcon from '@/components/icons/ChatSquareDotIcon';
 import PeopleIcon from '@/components/icons/PeopleIcon';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
+import UserInfo from '../UserInfo/UserInfo';
 
 
 
@@ -66,6 +67,7 @@ export default function MenuBar({ mode, hideLabels }: MenuBarProps) {
             return (
                 <MenuBarLayout spacerPosition={1}>
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
+                    <UserInfo/>
                 </MenuBarLayout>
             )
     }

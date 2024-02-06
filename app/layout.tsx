@@ -3,6 +3,8 @@ import localFont from 'next/font/local'
 import './colors.css'
 import './globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
+import { UiProvider } from '@/contexts/UiContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 
 export const luciole = localFont({
@@ -42,9 +44,13 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en" data-theme="pratico">
-            <body className={luciole.className}>{children}</body>
-            <AuthDialog/>
-        </html>
+        <AuthProvider>
+            <UiProvider>
+                <html lang="en" data-theme="pratico">
+                    <body className={luciole.className}>{children}</body>
+                    <AuthDialog/>
+                </html>
+            </UiProvider>
+        </AuthProvider>
     )
 }
