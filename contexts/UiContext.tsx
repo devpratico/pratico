@@ -19,12 +19,10 @@ const UiContext = createContext<UiContextType | undefined>(undefined);
 export function UiProvider({ children }: { children: React.ReactNode }) {
     const [isDark, setIsDark] = useState(false);
     const [authDialogOpen, setAuthDialogOpen] = useState(false);
-
     const toggleDark = () => setIsDark(!isDark);
-    const _setAuthDialogOpen = (open: boolean) => setAuthDialogOpen(open);
 
     return (
-        <UiContext.Provider value={{ isDark, toggleDark, authDialogOpen, setAuthDialogOpen: _setAuthDialogOpen }}>
+        <UiContext.Provider value={{ isDark, toggleDark, authDialogOpen, setAuthDialogOpen}}>
             {children}
         </UiContext.Provider>
     );

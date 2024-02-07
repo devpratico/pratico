@@ -7,6 +7,7 @@ import { User } from '@supabase/supabase-js';
 interface AuthContextProps {
     user: User | null;
     isUserLoading: boolean;
+
     //signIn: () => void;
     signOut: () => void;
 }
@@ -35,7 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Subscribes to changes in the auth state
         const onAuthChange = supabase.auth.onAuthStateChange((event, session) => {
             console.log('🔐','event', event, 'session', session);
-            setUser(session?.user ?? null);
+            const user = session?.user ?? null;
+            setUser(user);
             setIsUserLoading(false);
         }).data.subscription;
 
@@ -50,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, signOut, isUserLoading }}>
+        <AuthContext.Provider value={{ user, signOut, isUserLoading}}>
             {children}
         </AuthContext.Provider>
     );

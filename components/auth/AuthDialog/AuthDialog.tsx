@@ -8,47 +8,65 @@ import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'
 //import Image from 'next/image';
 import { useUi } from '@/contexts/UiContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 
 export default function AuthDialog() {
-
-    const { authDialogOpen: open, setAuthDialogOpen: setOpen } = useUi();
+    const { authDialogOpen, setAuthDialogOpen } = useUi();
     const { user, isUserLoading } = useAuth();
+    const [firstRender, setFirstRender] = useState(true);
 
+    // Dialog opens on first render, after loading and if no user is logged in
     useEffect(() => {
-        if (user || isUserLoading) {
-            setOpen(false);
-        } else {
-            setOpen(true);
+        if (firstRender && !isUserLoading) {
+            setFirstRender(false)
+            setAuthDialogOpen(true)
         }
-    }, [user, isUserLoading, setOpen]);
+    }, [firstRender, isUserLoading, setAuthDialogOpen]);
+
+    // Dialog is never open if user is logged in (or if loading)
+    useEffect(() => {
+        if (user && !isUserLoading) {
+            setAuthDialogOpen(false)
+        }
+    }, [user, isUserLoading, setAuthDialogOpen]);
+    
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
 
-            <DialogContent closeBtn={true}>
-                
-                <div className={styles.formContainer}>
-                    <Auth
-                        supabaseClient={createClient()}
-                        providers={[]}
-                        socialLayout='horizontal'
-                        redirectTo='/dashboard'
-                        appearance={{
-                            theme: ThemeSupa,
-                            variables: {
-                                default: {
-                                    colors: {
-                                        brand: 'var(--primary)',
-                                        brandAccent: 'var(--primary-border)',
+            <DialogContent closeBtn={false}>
+                <div className={styles.container}>
+                    <h1>Sign in</h1>
+                    <div className={styles.formContainer}>
+                        <Auth
+                            supabaseClient={createClient()}
+                            providers={[]}
+                            socialLayout='horizontal'
+                            appearance={{
+                                theme: ThemeSupa,
+                                variables: {
+                                    default: {
+                                        colors: {
+                                            brand: 'var(--primary)',
+                                            brandAccent: 'var(--primary-border)',
+                                        },
                                     },
                                 },
-                            },
+                            }}
+                        />
+                    </div>
+                    <PlainBtn
+                        text="Try Pratico without an account"
+                        color="secondary"
+                        size="l"
+                        onClick={() => {
+                            //setIsAnonymous(true)
+                            setAuthDialogOpen(false)
                         }}
-                    />
+                        />
+                    {/*<Image src={loginImage} alt="Login" height={400} />*/}
                 </div>
-
-                {/*<Image src={loginImage} alt="Login" height={400} />*/}
 
             </DialogContent>
         </Dialog>

@@ -1,10 +1,17 @@
 'use client'
 import { useAuth } from "@/contexts/AuthContext";
+import { useUi } from "@/contexts/UiContext";
 
 
 export default function UserInfo() {
     const { user, isUserLoading, signOut } = useAuth();
     const userEmail = user?.email
+    const { setAuthDialogOpen } = useUi();
+
+    const _signOut = async () => {
+        signOut();
+        setAuthDialogOpen(true);
+    }
 
     return (
         <div>
@@ -12,11 +19,11 @@ export default function UserInfo() {
                 <p>Loading...</p>
                 :
                 userEmail ?
-                    <div>
-                        <p>{userEmail}</p> <button onClick={signOut}>Sign out</button>
-                    </div>
+                    <span>
+                        <p>{userEmail}</p> <button onClick={_signOut}>Sign out</button>
+                    </span>
                     :
-                    <p>No user</p>
+                    <button onClick={() => setAuthDialogOpen(true)}>Sign in</button>
             }
         </div>
     )
