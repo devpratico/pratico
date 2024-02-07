@@ -1,4 +1,9 @@
 {
+    "auth": {
+        "sign in": "Se connecter",
+        "log out": "Se déconnecter",
+        "sign up": "S'inscrire"
+    },
     "dashboard": {
         "help": "Aide"
     }

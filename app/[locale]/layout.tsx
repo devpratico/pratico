@@ -5,6 +5,7 @@ import './globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
 import { UiProvider } from '@/contexts/UiContext'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { NextIntlClientProvider, useMessages } from 'next-intl'
 
 
 export const luciole = localFont({
@@ -45,12 +46,17 @@ export default function RootLayout({
     children: React.ReactNode
     params: { locale: string }
 }) {
+
+    const messages = useMessages()
+
     return (
         <AuthProvider>
             <UiProvider>
                 <html lang={locale} data-theme="pratico">
-                    <body className={luciole.className}>{children}</body>
-                    <AuthDialog/>
+                    <NextIntlClientProvider messages={messages}>
+                        <body className={luciole.className}>{children}</body>
+                        <AuthDialog/>
+                    </NextIntlClientProvider>
                 </html>
             </UiProvider>
         </AuthProvider>
