@@ -3,7 +3,10 @@
   }
   
 .DialogOverlay {
-  background-color: rgba(0, 0, 0, 0.339);
+  /*background-color: rgba(0, 0, 0, 0.339);*/
+  background-color: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.7);
+  /*mix-blend-mode: color;*/
+  backdrop-filter: blur(3px);
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
