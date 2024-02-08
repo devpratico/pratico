@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 👋 Bonjour
 
-## Getting Started
+Pratico est une application web construite avec TypeScript, React et Next.js. Son backend utilise Supabase. Elle est déployée sur Vercel.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# 🚀 Pour commencer
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Pour développer Pratico, suis les étapes suivantes :
+1. Assure-toi d'avoir l'autorisation de cloner le dépôt et de faire des modifications.
+>Si tu lis ceci, c'est probablement le cas 😉
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. Clone le dépôt.
+>Je te conseille d'utiliser [l'outil CLI de GitHub](https://cli.github.com/) afin de le cloner simplement avec `gh repo clone devpratico/pratico`.
 
-## Learn More
+3. Installe [pnpm](https://pnpm.io/fr/) sur ta machine
+>Ou mets-le à jour avec `pnpm add -g pnpm`.
 
-To learn more about Next.js, take a look at the following resources:
+4. Installe les dépendances avec `pnpm install` depuis le répertoire racine du projet.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Crée un fichier `.env.local` à la racine du projet et ajoute les variables d'environnement documentées dans le fichier `.env.example`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. Lance le serveur de développement avec `pnpm dev`.
 
-## Deploy on Vercel
+>🤞 Ça devrait marcher à l'adresse [localhost:3000](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+# 📚 Pour aller plus loin
+
+## Documentation
+
+La documentation de Pratico est écrite dans des fichiers Markdown présents principalement dans le répertoire `docs`, mais aussi dispersés dans le répertoire du projet au plus près du code concerné. Elle sera bientôt accessible sous forme de site web.
+
+Les composants React sont également visibles individuellements sous forme de [Storybook](https://storybook.js.org/). Tu peux visiter la version en ligne à l'adresse [pratico.vercel.app/storybook](https://pratico-storybook.vercel.app), ou lancer la version locale avec `pnpm storybook`.
+
+
+## Projet
+
+Les grandes lignes du projet sont gérées dans Notion et sur GitHub :
+1. Le processus de boîte à idée est géré en équipe dans Notion
+2. Les réflexions plus techniques sont documentées dans Notion `🛠️ Dev`
+3. Les tâches sont gérées dans les issues de GitHub
