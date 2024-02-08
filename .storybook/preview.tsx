@@ -1,8 +1,8 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
-import '../app/globals.css';
-import '../app/colors.css';
-import RootLayout from "../app/[locale]/layout";
+import '../app/[locale]/globals.css';
+import '../app/[locale]/colors.css';
+//import RootLayout from "../app/[locale]/layout";
 import { luciole } from "../app/[locale]/layout";
 
 
