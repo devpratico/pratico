@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o .storybook/static"
+    "storybook:dev": "storybook dev -p 6006",
+    "storybook:build": "storybook build -o .storybook/static",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -48,6 +50,7 @@
     "eslint-plugin-storybook": "^0.6.15",
     "jest": "^29.7.0",
     "storybook": "^7.6.12",
+    "supabase": "^1.142.2",
     "typescript": "^5.3.3"
   }
 }
