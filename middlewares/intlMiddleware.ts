@@ -1,5 +1,6 @@
 import createMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
+import config from '../intl/intl.config'
 
 
 /**
@@ -32,14 +33,23 @@ export default function intlMiddleware(request: NextRequest) {
     }
     */
 
-    // Otherwise, apply the middleware
-    return nextIntlMiddleware(request)
+    const decision = nextIntlMiddleware(request)
+
+    /*
+    console.log({
+        tags: ["internationalization", "middleware", "next-intl", "i18n", "intlMiddleware"],
+        pathname: request.nextUrl.pathname,
+        browserLanguages: request.headers.get("accept-language"),
+        nextLocaleCookie: decision.headers.get("x-middleware-request-cookie")?.substring(12),
+        chosenLocale: decision.headers.get("x-middleware-request-x-next-intl-locale")
+    })
+    */
+
+    return decision
 }
 
 // This is the middleware provided by next-intl library
 const nextIntlMiddleware = createMiddleware({
-    // Define the supported locales
-    locales: ['en', 'fr'],
-    // Define the default locale
-    defaultLocale: 'fr',
+    locales: config.locales,
+    defaultLocale: config.defaultLocale,
 })
