@@ -1,7 +1,8 @@
 # Développer en local avec Supabase
 
 ## Introduction
-On utilise [l'outil CLI](https://github.com/supabase/cli) de Supabase pour créer un environnement de test et développer en local, ainsi que pour déployer les changements sur l'environnement de production.
+
+En développement, l'application ne se connecte jamais à la base de données de production. Les clés d'API de production ne sont jamais utilisées en local. Ainsi, pour tester son code, on lance une instance Supabase en local sur sa machine. On utilise pour cela [l'outil CLI](https://github.com/supabase/cli) de Supabase.
 
 Pas besoin d'installer l'outil CLI de façon globale sur sa machine. On peut appeler les commandes directement avec `pnpm`.
 
@@ -28,11 +29,20 @@ pnpm supabase:start
 ```
 Une interface graphique est disponible à [localhost:54323](http://localhost:54323).
 
+Ensuite seulement, on pourra lancer le server front-end avec `pnpm dev`.
+
 Pour arrêter l'environnement de développement :
 ```bash
 pnpm supabase:stop
 ```
-Pour arrêter sans conserver les données :
+Pour arrêter sans conserver les modifications effectées sur les tables depuis le dashboard ('Studio') :
 ```bash
 pnpm supabase stop --no-backup
 ```
+
+Les données de la base de données sont, elles, conservées entre les redémarrages de l'environnement de développement. Pour les supprimer, il faut effectuer un reset `pnpm supabase db reset`.
+
+
+## CI/CD
+
+Le déploiement en production se fait automatiquement avec GitHub Actions. Là encore, c'est l'outil CLI de supabase qui est utilisé - cette fois-ci par le script GitHub. Il applique les modifications sur la base de données de production. Les secrets nécessaires sont enregistrés dans les paramètres du dépôt.
