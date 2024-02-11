@@ -1,4 +1,6 @@
-# Comportement souhaité
+# Intrnationalisation
+
+## Comportement souhaité
 
 Le langage de la page correspond à la `locale` présente dans l’url. Exemple :
 
