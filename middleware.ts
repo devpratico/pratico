@@ -1,5 +1,9 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import intlMiddleware from './middlewares/intlMiddleware'
+import { type NextRequest, NextResponse } from 'next/server'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import createMiddleware from 'next-intl/middleware'
+//import authMiddleware from './middlewares/authMiddleware'
+//import intlMiddleware from './middlewares/intlMiddleware'
+import config from './intl/intl.config'
     
     
 // Middleware is used to make decisions about how to respond to a request.
@@ -7,12 +11,122 @@ export async function middleware(request: NextRequest) {
 
     // Internationalization middleware
     const intlResponse = intlMiddleware(request)
-    
-    return intlResponse
+
+    // Auth middleware
+    const authResponse = await authMiddleware(request, intlResponse)
+
+    return authResponse
 }
 
-/*
-export const config = {
-    matcher: [],
-}
+
+
+/**
+* This middleware revalidates the user's session
+* @see https://supabase.com/docs/guides/auth/server-side/nextjs
 */
+async function authMiddleware(request: NextRequest, response: NextResponse) {
+    
+    /*
+    * Bypass middleware for specific paths:
+    * - _next/static (static files)
+    * - _next/image (image optimization files)
+    * - favicon.ico (favicon file)
+    * Feel free to modify this pattern to include more paths.
+    */
+    const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico)/
+    if (bypassPathsRegex.test(request.nextUrl.pathname)) {
+        //return NextResponse.next()
+        return response
+    }
+    
+    // The default decision is to proceed normally.
+    //let decision = NextResponse.next()
+    let decision = response
+    
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {cookies: {
+            get(name: string) {
+                return request.cookies.get(name)?.value
+            },
+            set(name: string, value: string, options: CookieOptions) {
+                request.cookies.set( {name, value, ...options})
+                decision.cookies.set({name,value,...options})
+            },
+            remove(name: string, options: CookieOptions) {
+                request.cookies.set( {name, value: '', ...options})
+                decision.cookies.set({name,value: '',...options})
+            },
+        }}
+    )
+        
+    const {data:{user}, error} = await supabase.auth.getUser()
+    
+    /**
+    * Conditionnaly do things
+    * @see https://www.notion.so/praticolive/Middleware-62e7436f171d401d8e3cfb4678d19804?pvs=4
+    */
+    if (error || !user) {
+        //console.error('Error getting user:', error)
+        //decision = NextResponse.redirect('/login')
+    }
+    
+    return decision
+}
+
+
+
+
+
+
+/**
+ * This middleware handles internationalization
+ * @see https://next-intl-docs.vercel.app/docs/getting-started/app-router
+ */
+export default function intlMiddleware(request: NextRequest) {
+
+    /**
+    * Bypass middleware for specific paths:
+    * - _next/static (static files)
+    * - _next/image (image optimization files)
+    * - favicon.ico (favicon file)
+    * Feel free to modify this pattern to include more paths.
+    * @see https://next-intl-docs.vercel.app/docs/routing/middleware#matcher-no-prefix
+    */
+    const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico)/
+    if (bypassPathsRegex.test(request.nextUrl.pathname)) {
+        return NextResponse.next()
+    }
+
+    /*
+    // Match only internationalized pathnames
+    //const internationalizedPathnameRegex = /^\/(en|fr)(\/|$)/
+    const internationalizedPathnameRegex = /^\/(fr|en)($|\/.*)/
+
+    // If it doesn't match, do nothing
+    if (!internationalizedPathnameRegex.test(request.nextUrl.pathname)) {
+        return NextResponse.next()
+    }
+    */
+
+    const decision = nextIntlMiddleware(request)
+
+    /*
+    console.log({
+        tags: ["internationalization", "middleware", "next-intl", "i18n", "intlMiddleware"],
+        pathname: request.nextUrl.pathname,
+        browserLanguages: request.headers.get("accept-language"),
+        nextLocaleCookie: decision.headers.get("x-middleware-request-cookie")?.substring(12),
+        chosenLocale: decision.headers.get("x-middleware-request-x-next-intl-locale")
+    })
+    */
+
+    return decision
+}
+
+// This is the middleware provided by next-intl library
+const nextIntlMiddleware = createMiddleware({
+    locales: config.locales,
+    defaultLocale: config.defaultLocale,
+})
