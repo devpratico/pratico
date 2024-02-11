@@ -1,6 +1,6 @@
 'use client';
 import styles from './AuthDialog.module.css';
-import { createClient } from "@/utils/supabase/client";
+import createClient from "@/supabase/clients/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'

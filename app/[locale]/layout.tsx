@@ -8,7 +8,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { NextIntlClientProvider, useMessages } from 'next-intl'
 
 
-export const luciole = localFont({
+const luciole = localFont({
     src: [
         {
             path: '../../public/fonts/Luciole-Regular.woff2',
