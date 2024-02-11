@@ -1,0 +1,12 @@
+.avatarEmailContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.email {
+    font-size: 0.9rem;
+    line-height: 1;
+    color: var(--secondary);
+}
