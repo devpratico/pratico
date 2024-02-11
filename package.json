@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
+    "dev": "pnpm supabase:start && echo;echo && next dev -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "pnpm supabase:start && next start",
     "lint": "next lint",
     "storybook:dev": "storybook dev -p 6006",
     "storybook:build": "storybook build -o .storybook/static",
-    "supabase:start": "supabase start",
-    "supabase:stop": "supabase stop"
+    "supabase:start": "./scripts/start-docker.sh && supabase start",
+    "supabase:stop": "supabase stop && ./scripts/stop-docker.sh"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
