@@ -1,4 +1,5 @@
-import { getUser, getProfile } from '@/supabase/services/user';
+import styles from './page.module.css'
+import { getUser, signOut, getProfile } from '@/supabase/services/user';
 
 export default async function AccountPage() {
 
@@ -14,11 +15,11 @@ export default async function AccountPage() {
 
 
     return (
-        <div>
+        <div className={styles.container}>
             <h1>Account</h1>
             <p>{"email: " + user?.email}</p>
             <p>{"id: " + user?.id}</p>
-            {/*<button onClick={() => {signOut();  setAuthDialogOpen(true)}}>Logout</button>*/}
+            {/*<button onClick={() => {signOut()}}>Logout</button>*/}
         </div>
     )
 }

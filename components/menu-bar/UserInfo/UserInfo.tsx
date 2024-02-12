@@ -23,7 +23,7 @@ export default function UserInfo() {
         return (
             <Link href="/account" className={styles.avatarEmailContainer}>
                 <p className={styles.email}>{userEmail}</p>
-                <Avatar size={40} alt={avatarLetters} />
+                <Avatar size={35} alt={avatarLetters} />
             </Link>
         )
     }

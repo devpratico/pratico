@@ -26,7 +26,7 @@ export default function Avatar({ size, src, alt, onLoadingStatusChange }: Avatar
             />
 
             <RadixAvatar.Fallback className={styles.fallback}>
-                {alt}
+                <p className={styles.text}>{alt}</p>
             </RadixAvatar.Fallback>
 
         </RadixAvatar.Root>
