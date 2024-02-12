@@ -10,13 +10,14 @@ import { useUi } from '@/contexts/UiContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
-import { useTranslations } from 'next-intl';
+//import { useTranslations } from 'next-intl';
 
 export default function AuthDialog() {
     const { authDialogOpen, setAuthDialogOpen } = useUi();
     const { user, isUserLoading } = useAuth();
     const [firstRender, setFirstRender] = useState(true);
-    const t = useTranslations('auth');
+    //const t = useTranslations('auth');
+    const t = (key: string) => key
 
     // Dialog opens on first render, after loading and if no user is logged in
     useEffect(() => {

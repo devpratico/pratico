@@ -1,19 +1,19 @@
+'use server'
 import styles from './DashboardLeftBar.module.css';
 import ListBtn from '@/components/primitives/buttons/ListBtn/ListBtn';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function DashboardLeftBar() {
-    const t = useTranslations('dashboard');
+export default async function DashboardLeftBar() {
+    const t = await getTranslations("dashboard")
 
     return (
         <div className={styles.container}>
-            <ListBtn title="Présentations" href="/" iconName={"file"} active={true}/>
-            <ListBtn title="Quiz et sondages" href="/" iconName={"puzzle"} />
-            <ListBtn title="Historique des sessions" href="/" iconName={"clock-rotate-left"} />
-            <ListBtn title="Rapports" href="/" iconName={"file-lines"} />
+            <ListBtn title={t('capsules')} href="/" iconName={"file"} active={true}/>
+            <ListBtn title={t('quizzes and surveys')} href="/" iconName={"puzzle"} />
+            <ListBtn title={t('reports')} href="/" iconName={"file-lines"} />
             <div className={styles.spacer}></div>
             <ListBtn title={t('help')} href="/" iconName={"circle-question"} />
-            <ListBtn title="Paramètres" href="/" iconName={"gear"} />
+            <ListBtn title={t('settings')} href="/" iconName={"gear"} />
         </div>
     )
 }

@@ -16,11 +16,13 @@ Pour développer Pratico, suis les étapes suivantes :
 3. Installe [pnpm](https://pnpm.io/fr/) sur ta machine
 >Ou mets-le à jour avec `pnpm add -g pnpm`.
 
-4. Installe les dépendances avec `pnpm install` depuis le répertoire racine du projet.
+4. Installe [Docker Desktop](https://www.docker.com/products/docker-desktop) sur ta machine.
 
-5. Crée un fichier `.env.local` à la racine du projet et ajoute les variables d'environnement documentées dans le fichier `.env.example`.
+5. Installe les dépendances avec `pnpm install` depuis le répertoire racine du projet.
 
-5. Lance le serveur de développement avec `pnpm dev`.
+6. Crée un fichier `.env.local` à la racine du projet et ajoute les variables d'environnement documentées dans le fichier `.env.example`.
+
+7. Lance le serveur de développement avec `pnpm dev`.
 
 >🤞 Ça devrait marcher à l'adresse [localhost:3000](http://localhost:3000)
 

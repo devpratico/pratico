@@ -26,6 +26,7 @@ On utilise la librairie `next-intl` en suivant ce [tutoriel](https://next-intl-d
 * Le répertoire `[locale]` est ajouté après le répertoire `pages`. C'est ce qui permet d'ajouter la locale dans l'url. C'est une fonctionnalité de routing de Next.js.
 * Dans le layout global [layout.tsx](../../app/[locale]/layout.tsx)
     * La locale de l'url est récupérée pour la passer au composant `<html>`
-    * On fournit un context provider pour permettre aux composants de type client components d'utiliser les traductions. (Les composants de type server components utilisent directement next-intl).
+    * ~~On fournit un context provider pour permettre aux composants de type client components d'utiliser les traductions. (Les composants de type server components utilisent directement next-intl).~~~
+* Les composants de type client components n'utilisent pas l'internationalisation afin d'améliorer les performances (ne pas charger les traductions inutilement). On leur passe les message par les props. [Voir tutoriel](https://next-intl-docs.vercel.app/docs/environments/server-client-components).
 
 

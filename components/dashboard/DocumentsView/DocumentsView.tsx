@@ -1,15 +1,16 @@
+'use server'
 import styles from './DocumentsView.module.css';
 import DocumentsGrid from '../DocumentsGrid/DocumentsGrid';
-//import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 import PToggleGroup from '@/components/primitives/buttons/PToggleGroup/PToggleGroup';
+import { getTranslations } from 'next-intl/server';
 
 
-export default function DocumentsView() {
+export default async function DocumentsView() {
+    const t = await getTranslations("dashboard")
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Présentations</h1>
+            <h1 className={styles.title}>{t('capsules')}</h1>
             <div className={styles.buttons}>
-                {/*<PlainBtn text="Créer" iconName="square-plus" style="solid" />*/}
                 <PToggleGroup />
             </div>
             <DocumentsGrid/>
