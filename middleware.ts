@@ -62,6 +62,7 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
     )
         
     const {data:{user}, error} = await supabase.auth.getUser()
+    //console.log("🔐",user?.email || error?.message || "no user")
     
     /**
     * Conditionnaly do things

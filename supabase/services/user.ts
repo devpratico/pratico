@@ -1,4 +1,4 @@
-import getSupabaseClient from "./getSupabaseClient";
+import getSupabaseClient from "../clients/getSupabaseClient";
 import { User as SupabaseUser} from "@supabase/supabase-js";
 
 

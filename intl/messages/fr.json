@@ -32,6 +32,7 @@
     "surname": "Nom",
     "nickname": "Pseudo",
     "id": "Identifiant",
-    "stripe id": "Identifiant Stripe"
+    "stripe id": "Identifiant Stripe",
+    "sign out": "Se déconnecter"
 }
 }

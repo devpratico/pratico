@@ -13,24 +13,30 @@ export default function createClient(cookieStore: ReturnType<typeof cookies>) {
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value
+          const value = cookieStore.get(name)?.value
+          //console.log('🍪 get', JSON.parse(value || "null")?.user?.email)
+          return value
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value, ...options })
+            //console.log('🍪 set', name, value, ...options)
           } catch (error) {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
+            //console.warn('🍪 set error', error)
           }
         },
         remove(name: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value: '', ...options })
+            console.log('🍪 remove', name, ...options)
           } catch (error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
+            //console.warn('🍪 remove error', error)
           }
         },
       },

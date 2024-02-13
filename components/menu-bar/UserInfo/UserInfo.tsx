@@ -1,36 +1,28 @@
-'use client'
 import styles from './UserInfo.module.css';
-import { useAuth } from "@/contexts/AuthContext";
-import { useUi } from "@/contexts/UiContext";
 import Avatar from "@/components/primitives/Avatar/Avatar";
+import { getUser, getProfile } from '@/supabase/services/user';
 import Link from 'next/link';
+import LogInBtn from './LogInBtn';
+import { getTranslations } from 'next-intl/server';
 
 
-export default function UserInfo() {
-    const { setAuthDialogOpen } = useUi();
-    const { user, isUserLoading, signOut } = useAuth();
-    const userEmail = user?.email
-    const avatarLetters = userEmail?.substring(0, 2).toUpperCase() || "TD";
-    
-    const _signOut = async () => {
-        signOut();
-        setAuthDialogOpen(true);
+export default async function UserInfo() {
+
+    const t = await getTranslations("auth")
+
+    const {data, error} = await getUser()
+    if (error || !data?.user) {
+        return <LogInBtn>{t("sign in")}</LogInBtn>
     }
-
-    const LoadingIndicator = () => <p>Loading...</p>
-    const SignInButton = () => <button onClick={() => setAuthDialogOpen(true)}>Sign in</button>
-    const AvatarEmail = () => {
-        return (
-            <Link href="/settings" className={styles.avatarEmailContainer}>
-                <p className={styles.email}>{userEmail}</p>
-                <Avatar size={35} alt={avatarLetters} />
-            </Link>
-        )
-    }
+    const { data: profileData, error: profileError } = await getProfile(data?.user?.id)
+    const name = profileData?.[0]?.name ?? "no name"
+    const surname = profileData?.[0]?.surname ?? "no surname"
+    const letters = name[0] + surname[0]
 
     return (
-        <div>
-            {isUserLoading ? <LoadingIndicator /> : userEmail ? <AvatarEmail /> : <SignInButton />}
-        </div>
+        <Link href='/settings' className={styles.container}>
+            <p className={styles.text}>{name}</p>
+            <Avatar size={35} alt={letters} />
+        </Link>
     )
 }

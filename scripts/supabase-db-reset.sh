@@ -1,6 +1,6 @@
 #!/bin/bash
 # Don't forget to make the script executable with chmod +x ./scripts/supabase-db-reset.sh
-# this script is used to test the migration files and the seed files upon the local database.
+# this script is used to reset the local supabase database and apply the migration files and the seed file.
 
 
 # Reset the database
@@ -12,7 +12,7 @@ echo
 
 # Generate types
 echo "🔄 Generating types..."
-# The directory is relative to package.json from which the script is run
+# The output directory for types is relative to package.json from which the script is run (not from here)
 pnpm supabase gen types typescript --local > ./supabase/types/database.types.ts
 echo "✅ Types generated in supabase/types/database.types.ts."
 echo

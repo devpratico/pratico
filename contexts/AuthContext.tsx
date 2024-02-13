@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, getUser, onAuthStateChange, signOut } from '@/supabase/services/user';
 import { Subscription } from '@supabase/supabase-js';
-
+import { useRouter } from 'next/navigation';
 
 interface AuthContextProps {
     user: User | null;
@@ -16,6 +16,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isUserLoading, setIsUserLoading] = useState(true);
+    const router = useRouter();
 
     // This useEffect runs once when the component mounts
     // It sets the user for the first time (null if not logged in)
@@ -35,10 +36,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const _subscribeToAuthChange = async () => {
             // Get the _onAuthChange method
             const _onAuthChange = await onAuthStateChange((event, session) => {
-                console.log('🔐','event', event, 'session', session);
+                //console.log('🔐','event', event, 'session', session);
                 const user = session?.user ?? null;
                 setUser(user);
                 setIsUserLoading(false);
+                router.refresh();
             })
             // Set the onAuthChange method
             onAuthChange = _onAuthChange.data.subscription;

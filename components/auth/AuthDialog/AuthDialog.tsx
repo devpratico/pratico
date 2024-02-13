@@ -66,14 +66,13 @@ export default function AuthDialog({ title }: AuthDialogProps) {
                         />
                     </div>
                     <PlainBtn
-                        text="Try Pratico without an account"
                         color="secondary"
                         size="l"
                         onClick={() => {
                             //setIsAnonymous(true)
                             setAuthDialogOpen(false)
                         }}
-                        />
+                    >Try pratico without an account</PlainBtn>
                     {/*<Image src={loginImage} alt="Login" height={400} />*/}
                 </div>
 

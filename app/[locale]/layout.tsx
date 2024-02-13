@@ -1,37 +1,11 @@
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
 import '../colors.css'
 import '../globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
 import { UiProvider } from '@/contexts/UiContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { getTranslations } from 'next-intl/server'
-
-
-const luciole = localFont({
-    src: [
-        {
-            path: '../../public/fonts/Luciole-Regular.woff2',
-            weight: 'normal',
-            style: 'normal',
-        },
-        {
-            path: '../../public/fonts/Luciole-Bold.woff2',
-            weight: 'bold',
-            style: 'normal',
-        },
-        {
-            path: '../../public/fonts/Luciole-Italic.woff2',
-            weight: 'normal',
-            style: 'italic',
-        },
-        {
-            path: '../../public/fonts/Luciole-BoldItalic.woff2',
-            weight: 'bold',
-            style: 'italic',
-        },
-    ],
-})
+import { luciole } from '../Fonts'
 
 
 export const metadata: Metadata = {

@@ -10,31 +10,23 @@ import { type cookies } from 'next/headers'
 type CreateServerClientFunction = (cookieStore: ReturnType<typeof cookies>) => SupabaseClient;
 type CreateClientFunction = () => SupabaseClient;
 
-// Placeholder for the Supabase client
-let supabase: SupabaseClient | null = null;
-
 /**
  * Returns the correct Supabase client based on the environment,
- * only if it has not been initialized yet.
  */
 const getSupabaseClient = async (): Promise<SupabaseClient> => {
-    if (supabase) return supabase
-    
-    
+
     // If the code is running on the server
     if (typeof window === 'undefined') {
         const { cookies } = await import('next/headers');
-        const cookieStore = cookies();
-        const createClient: CreateServerClientFunction  = (await import('../clients/server')).default;
+        const cookieStore = cookies(); // Should be called every time to get the latest cookies
+        const createClient: CreateServerClientFunction  = (await import('./server')).default;
         const client = createClient(cookieStore);
-        supabase = client;
         return client;
 
     // If the code is running on the client
     } else {
-        const createClient: CreateClientFunction  = (await import('../clients/client')).default;
+        const createClient: CreateClientFunction  = (await import('./client')).default;
         const client = createClient();
-        supabase = client;
         return client;
     }
 };
