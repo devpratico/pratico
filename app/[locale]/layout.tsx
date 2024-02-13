@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import './colors.css'
-import './globals.css'
+import '../colors.css'
+import '../globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
 import { UiProvider } from '@/contexts/UiContext'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { getTranslations } from 'next-intl/server'
 
 
 const luciole = localFont({
@@ -38,20 +39,21 @@ export const metadata: Metadata = {
     description: '',
 }
 
-export default function RootLayout({
-    children,
-    params: { locale },
-}: {
+interface RootLayoutProps {
     children: React.ReactNode
     params: { locale: string }
-}) {
+}
 
+export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
+
+    const t = await getTranslations("auth")
+    
     return (
         <html lang={locale} data-theme="pratico">
             <AuthProvider>
                 <UiProvider>
                         <body className={luciole.className}>{children}</body>
-                        <AuthDialog/>
+                        <AuthDialog title={t('sign in')} />
                 </UiProvider>
             </AuthProvider>
         </html>

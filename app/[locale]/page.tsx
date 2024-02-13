@@ -1,21 +1,13 @@
 import styles from './page.module.css'
-import MainLayout from '../../components/layouts/MainLayout/MainLayout'
-import MenuBar from '../../components/menu-bar/MenuBar/MenuBar'
-import DocumentsView from '../../components/dashboard/DocumentsView/DocumentsView'
-import DashboardLeftBar from '../../components/dashboard/DashboardLeftBar/DashboardLeftBar'
+import Link from "next/link"
 
-
-export default function Dashboard() {
-
-  const propsForMainLayout = {
-    menuBar:  <MenuBar mode="dashboard"/>,
-    content:  <DocumentsView/>,
-    leftBar:  <DashboardLeftBar/>,
-  }
-
-  return (
-    <main className={styles.main}>
-      <MainLayout {...propsForMainLayout} />
-    </main>
-  )
+export default function HomePage() {
+    return (
+        <div className={styles.container}>
+            <h1>👋</h1>
+            <h1 className={styles.title}>Bonjour</h1>
+            <p>Je suis la landing page de pratico. (Bientôt).</p>
+            <Link className={styles.link} href="/capsules">Capsules</Link>
+        </div>
+    )
 }

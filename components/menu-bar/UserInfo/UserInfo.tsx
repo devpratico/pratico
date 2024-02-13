@@ -21,7 +21,7 @@ export default function UserInfo() {
     const SignInButton = () => <button onClick={() => setAuthDialogOpen(true)}>Sign in</button>
     const AvatarEmail = () => {
         return (
-            <Link href="/account" className={styles.avatarEmailContainer}>
+            <Link href="/settings" className={styles.avatarEmailContainer}>
                 <p className={styles.email}>{userEmail}</p>
                 <Avatar size={35} alt={avatarLetters} />
             </Link>

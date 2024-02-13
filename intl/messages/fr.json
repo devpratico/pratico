@@ -1,7 +1,7 @@
 {
 "auth": {
     "sign in": "Se connecter",
-    "log out": "Se déconnecter",
+    "sign out": "Se déconnecter",
     "sign up": "S'inscrire"
 },
 
@@ -14,6 +14,15 @@
     "settings": "Paramètres",
     "creation": "Création",
     "last session": "Dernière session"
+},
+
+"menu-bar": {
+    "session name": "Nom de la session",
+    "play": "Lancer",
+    "polls": "Activités",
+    "more": "Plus",
+    "chat": "Chat",
+    "participants": "Participants"
 },
 
 "account": {

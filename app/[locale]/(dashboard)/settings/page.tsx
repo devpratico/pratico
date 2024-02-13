@@ -14,7 +14,6 @@ export default async function AccountPage() {
     const user = data.user
 
     const { data: profileData, error: profileError } = await getProfile(user.id)
-    //console.log("🤖", profileData)
     const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
 
 

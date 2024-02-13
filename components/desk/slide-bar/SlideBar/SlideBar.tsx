@@ -1,4 +1,3 @@
-'use client'
 import styles from './SlideBar.module.css'
 import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIconBtn'
 import SlideNavigation from '../SlideNavigation/SlideNavigation'
@@ -14,7 +13,7 @@ export default function SlideBar() {
         iconSize:   "lg" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        onClick: () => console.log("clicked"),
+        //onClick: () => console.log("clicked"),
     }
     const AddPage = () => <LabeledIconBtn {...addPageBtnProps} />
 
@@ -23,7 +22,7 @@ export default function SlideBar() {
         iconSize:   "md" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        onClick: () => console.log("clicked"),
+        //onClick: () => console.log("clicked"),
     }
     const Expand = () => <LabeledIconBtn {...expandBtnProps} />
 
