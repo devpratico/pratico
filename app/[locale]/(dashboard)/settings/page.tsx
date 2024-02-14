@@ -21,7 +21,7 @@ export default async function AccountPage() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-            <h1 className={styles.title}>{t('information')}</h1>
+            <h2 className={styles.title}>{t('information')}</h2>
 
             <p>{t("nickname") + ": " + nickname}</p>
             <p>{t("name") + ": " + name}</p>
@@ -36,7 +36,7 @@ export default async function AccountPage() {
 
             <div className={styles.card}>
 
-            <h1 className={styles.title}>{t('subscription')}</h1>
+            <h2 className={styles.title}>{t('subscription')}</h2>
             <p>{"Customer exists: " + customerExists}</p>
             <p>{t("stripe id") +": " + stripe_id}</p>
             <div className={styles.buttons}>

@@ -13,10 +13,11 @@ export async function POST(request: Request) {
       const secret = process.env.STRIPE_WEBHOOK_SECRET || ''
       const event = stripe.webhooks.constructEvent(body, header, secret)
 
+      // If session is completed, set the Stripe ID in the supabase user_profiles table
       if (event.type === 'checkout.session.completed') {
         const customerId = event.data.object.customer as string
         const clientReferenceId = event.data.object.client_reference_id
-        console.log(`💵 Stripe ID: ${customerId} - Supabase ID: ${clientReferenceId}`)
+        //console.log(`💵 Stripe ID: ${customerId} - Supabase ID: ${clientReferenceId}`)
 
         if (clientReferenceId && customerId) {
           try {
