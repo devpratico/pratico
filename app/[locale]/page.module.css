@@ -1,3 +1,17 @@
-.main {
-    height: 100dvh !important;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    background-color: var(--secondary);
+}
+
+.title {
+    color: var(--primary);
+}
+
+.link {
+    color: var(--primary);
+    margin-top: 20px;
 }

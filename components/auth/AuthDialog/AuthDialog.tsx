@@ -1,6 +1,6 @@
 'use client';
 import styles from './AuthDialog.module.css';
-import { createClient } from "@/utils/supabase/client";
+import createClient from "@/supabase/clients/client";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'
@@ -10,13 +10,20 @@ import { useUi } from '@/contexts/UiContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
-import { useTranslations } from 'next-intl';
 
-export default function AuthDialog() {
+
+/**
+ * The title of the dialog is passed as a prop because it is a client component;
+ * client components can't use translations (see internationalisation guide in docs)
+ */
+interface AuthDialogProps {
+    title: string;
+}
+
+export default function AuthDialog({ title }: AuthDialogProps) {
     const { authDialogOpen, setAuthDialogOpen } = useUi();
     const { user, isUserLoading } = useAuth();
     const [firstRender, setFirstRender] = useState(true);
-    const t = useTranslations('auth');
 
     // Dialog opens on first render, after loading and if no user is logged in
     useEffect(() => {
@@ -39,7 +46,7 @@ export default function AuthDialog() {
 
             <DialogContent closeBtn={false}>
                 <div className={styles.container}>
-                    <h1>{t('sign in')}</h1>
+                    <h1>{title}</h1>
                     <div className={styles.formContainer}>
                         <Auth
                             supabaseClient={createClient()}
@@ -59,14 +66,13 @@ export default function AuthDialog() {
                         />
                     </div>
                     <PlainBtn
-                        text="Try Pratico without an account"
                         color="secondary"
-                        size="l"
+                        size="m"
                         onClick={() => {
                             //setIsAnonymous(true)
                             setAuthDialogOpen(false)
                         }}
-                        />
+                    >Try pratico without an account</PlainBtn>
                     {/*<Image src={loginImage} alt="Login" height={400} />*/}
                 </div>
 

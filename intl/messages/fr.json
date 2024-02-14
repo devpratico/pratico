@@ -1,10 +1,54 @@
 {
-    "auth": {
-        "sign in": "Se connecter",
-        "log out": "Se déconnecter",
-        "sign up": "S'inscrire"
-    },
-    "dashboard": {
-        "help": "Aide"
-    }
+"auth": {
+    "sign in": "Se connecter",
+    "sign out": "Se déconnecter",
+    "sign up": "S'inscrire"
+},
+
+"dashboard": {
+    "capsules": "Capsules",
+    "activities": "Activités",
+    "quizzes and surveys": "Quizz et sondages",
+    "reports": "Rapports",
+    "help": "Aide",
+    "settings": "Paramètres",
+    "creation": "Création",
+    "last session": "Dernière session"
+},
+
+"menu-bar": {
+    "session name": "Nom de la session",
+    "play": "Lancer",
+    "polls": "Activités",
+    "more": "Plus",
+    "chat": "Chat",
+    "participants": "Participants"
+},
+
+"settings": {
+    "information": "Informations",
+    "account": "Compte",
+    "email": "Email",
+    "name": "Prénom",
+    "surname": "Nom",
+    "nickname": "Pseudo",
+    "id": "Identifiant",
+    "stripe id": "Identifiant Stripe",
+    "sign out": "Se déconnecter",
+    "change password": "Changer le mot de passe",
+    "subscription": "Abonnement",
+    "plan": "Plan",
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "subscription status": "Statut de l'abonnement",
+    "subscription end": "Fin de l'abonnement"
+},
+
+"subscribe": {
+    "subscribe to pratico": "S'abonner à pratico",
+    "thanks for subscribing": "Merci pour votre abonnement !",
+    "start using pratico": "Commencez à utiliser pratico"
+}
+
+
 }

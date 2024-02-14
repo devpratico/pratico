@@ -3,6 +3,8 @@
 ## Introduction
 
 En développement, l'application ne se connecte jamais à la base de données de production. Les clés d'API de production ne sont jamais utilisées en local. Ainsi, pour tester son code, on lance une instance Supabase en local sur sa machine. On utilise pour cela [l'outil CLI](https://github.com/supabase/cli) de Supabase.
+Les variables d'environnement de Supabase sont consultables sur le Dashboard du projet, dans l'onglet "Settings" > "API".
+Elles sont automatiquement ajoutée à l'environnement de production Vercel via une intégration automatique (plugin Supabase sur Vercel).
 
 Pas besoin d'installer l'outil CLI de façon globale sur sa machine. On peut appeler les commandes directement avec `pnpm`.
 
@@ -46,3 +48,10 @@ Les données de la base de données sont, elles, conservées entre les redémarr
 ## CI/CD
 
 Le déploiement en production se fait automatiquement avec GitHub Actions. Là encore, c'est l'outil CLI de supabase qui est utilisé - cette fois-ci par le script GitHub. Il applique les modifications sur la base de données de production. Les secrets nécessaires sont enregistrés dans les paramètres du dépôt.
+
+
+## Authentification
+
+Pour tester la création de compte, il suffit de s'inscrire en renseignant n'importe quel email factice et un mot de passe. L'environnement Supabase en local est configuré pour ne pas envoyer de mail de confirmation. L'authentification se fait donc immédiatement sans vérification de l'adresse mail.
+
+Si une fonctionnalité d'envoi de mail est activée manuellement (ce n'est pas le cas pour l'instant), l'environnement local Supabase est configuré pour envoyer les mails sur le serveur SMTP de développement. On peut donc utiliser une adresse email factice. L'outil `Inbucket` est utilisé pour visualiser les mails envoyés. L'adresse url de'`Inbucket` est affichée dans la console lors du lancement de l'environnement de développement.

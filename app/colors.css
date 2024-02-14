@@ -19,7 +19,7 @@
   /* Seconday */
   --secondary-h: 257;
   --secondary-s: 37%;
-  --secondary-l: 96%;
+  --secondary-l: 96%; /* 96% */
   --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
   --secondary-border: hsl(var(--secondary-h), calc(var(--secondary-s)*var(--border-s-mult)), calc(var(--secondary-l)*var(--border-l-mult)));
   --text-on-secondary: var(--intermediate);

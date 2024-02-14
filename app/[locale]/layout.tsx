@@ -1,37 +1,11 @@
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
-import './colors.css'
-import './globals.css'
+import '../colors.css'
+import '../globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
 import { UiProvider } from '@/contexts/UiContext'
 import { AuthProvider } from '@/contexts/AuthContext'
-import { NextIntlClientProvider, useMessages } from 'next-intl'
-
-
-export const luciole = localFont({
-    src: [
-        {
-            path: '../../public/fonts/Luciole-Regular.woff2',
-            weight: 'normal',
-            style: 'normal',
-        },
-        {
-            path: '../../public/fonts/Luciole-Bold.woff2',
-            weight: 'bold',
-            style: 'normal',
-        },
-        {
-            path: '../../public/fonts/Luciole-Italic.woff2',
-            weight: 'normal',
-            style: 'italic',
-        },
-        {
-            path: '../../public/fonts/Luciole-BoldItalic.woff2',
-            weight: 'bold',
-            style: 'italic',
-        },
-    ],
-})
+import { getTranslations } from 'next-intl/server'
+import { luciole } from '../Fonts'
 
 
 export const metadata: Metadata = {
@@ -39,26 +13,23 @@ export const metadata: Metadata = {
     description: '',
 }
 
-export default function RootLayout({
-    children,
-    params: { locale },
-}: {
+interface RootLayoutProps {
     children: React.ReactNode
     params: { locale: string }
-}) {
+}
 
-    const messages = useMessages()
+export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
 
+    const t = await getTranslations("auth")
+    
     return (
-        <AuthProvider>
-            <UiProvider>
-                <html lang={locale} data-theme="pratico">
-                    <NextIntlClientProvider messages={messages}>
-                        <body className={luciole.className}>{children}</body>
-                        <AuthDialog/>
-                    </NextIntlClientProvider>
-                </html>
-            </UiProvider>
-        </AuthProvider>
+        <html lang={locale} data-theme="pratico">
+            <AuthProvider>
+                <UiProvider>
+                    <body className={luciole.className}>{children}</body>
+                    <AuthDialog title={t('sign in')} />
+                </UiProvider>
+            </AuthProvider>
+        </html>
     )
 }

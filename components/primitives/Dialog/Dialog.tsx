@@ -1,4 +1,3 @@
-//"use client";
 import styles from "./Dialog.module.css";
 import { forwardRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";

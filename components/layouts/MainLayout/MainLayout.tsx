@@ -2,12 +2,12 @@ import styles from "./MainLayout.module.css";
 
 
 interface MainLayoutProps {
-    banner?: React.ReactElement,
-    menuBar?: React.ReactElement,
-    leftBar?: React.ReactElement,
-    content?: React.ReactElement,
-    rightBar?: React.ReactElement,
-    footer?: React.ReactElement,
+    banner?: React.ReactNode;
+    menuBar?: React.ReactNode;
+    leftBar?: React.ReactNode;
+    content?: React.ReactNode;
+    rightBar?: React.ReactNode;
+    footer?: React.ReactNode;
 };
 
 /**

@@ -1,0 +1,25 @@
+.container {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 3%;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary);
+}
+
+.card {
+    background-color: var(--background);
+    padding: 3% 3% 0 3%;
+    border-radius: 1rem;
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.title {
+    padding: 0rem 0 1rem 0;
+    align-self: center;
+    color: var(--text);
+}
