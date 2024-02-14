@@ -67,7 +67,7 @@ export default function AuthDialog({ title }: AuthDialogProps) {
                     </div>
                     <PlainBtn
                         color="secondary"
-                        size="l"
+                        size="m"
                         onClick={() => {
                             //setIsAnonymous(true)
                             setAuthDialogOpen(false)

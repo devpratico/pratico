@@ -58,7 +58,7 @@ export default async function MenuBar({ mode, hideLabels }: MenuBarProps) {
                 <MenuBarLayout spacerPosition={3}>
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                     <Title initialValue="My session" placeholder="Session name" focusFirst={false} editable={false} />
-                    <PlainBtn text="Start session" color="secondary" size="l" />
+                    <PlainBtn color="secondary" size="l">Start Session</PlainBtn>
                     <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label={t('polls')}      {...styleBtnProps} />
                     <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={t('chat')}      {...styleBtnProps} />
                     <LabeledIconBtn icon={<PeopleIcon        fill={true}/>} label={t('participants')}   {...styleBtnProps} />

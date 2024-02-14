@@ -55,8 +55,8 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
                         <label htmlFor="video-url" className={styles.label}>URL</label>
                         <TextField  id="video-url" name="video-url" placeholder='https://www.youtube.com...' required className={styles.textfield}/>
                         <div className={styles.btns}>
-                            <PlainBtn text="Cancel" type="button" color="secondary" onClick={() => setOpenVideoModal(false)} className={styles.cancelBtn}/>
-                            <PlainBtn text="Embed"  type="submit" className={styles.submitBtn}/>
+                            <PlainBtn type="button" color="secondary" onClick={() => setOpenVideoModal(false)} className={styles.cancelBtn}>Cancel</PlainBtn>
+                            <PlainBtn type="submit" className={styles.submitBtn}>Embed</PlainBtn>
                         </div>
                     </form>
                 </DialogContent>
