@@ -25,7 +25,8 @@
     "participants": "Participants"
 },
 
-"account": {
+"settings": {
+    "information": "Informations",
     "account": "Compte",
     "email": "Email",
     "name": "Prénom",
@@ -33,6 +34,21 @@
     "nickname": "Pseudo",
     "id": "Identifiant",
     "stripe id": "Identifiant Stripe",
-    "sign out": "Se déconnecter"
+    "sign out": "Se déconnecter",
+    "change password": "Changer le mot de passe",
+    "subscription": "Abonnement",
+    "plan": "Plan",
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "subscription status": "Statut de l'abonnement",
+    "subscription end": "Fin de l'abonnement"
+},
+
+"subscribe": {
+    "subscribe to pratico": "S'abonner à pratico",
+    "thanks for subscribing": "Merci pour votre abonnement !",
+    "start using pratico": "Commencez à utiliser pratico"
 }
+
+
 }

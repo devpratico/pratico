@@ -1,23 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
-//import authMiddleware from './middlewares/authMiddleware'
-//import intlMiddleware from './middlewares/intlMiddleware'
 import config from './intl/intl.config'
     
-    
-// Middleware is used to make decisions about how to respond to a request.
-export async function middleware(request: NextRequest) {
-
-    // Internationalization middleware
-    const intlResponse = intlMiddleware(request)
-
-    // Auth middleware
-    const authResponse = await authMiddleware(request, intlResponse)
-
-    return authResponse
-}
-
+/**
+ * Prevent middleware from running on those specific paths:
+ * - _next/static (static files)
+ * - _next/image (image optimization files)
+ * - favicon.ico (favicon file)
+ * - api (API routes)
+ */
+const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico|api)/
 
 
 /**
@@ -33,7 +26,6 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
     * - favicon.ico (favicon file)
     * Feel free to modify this pattern to include more paths.
     */
-    const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico)/
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
         //return NextResponse.next()
         return response
@@ -95,7 +87,6 @@ export default function intlMiddleware(request: NextRequest) {
     * Feel free to modify this pattern to include more paths.
     * @see https://next-intl-docs.vercel.app/docs/routing/middleware#matcher-no-prefix
     */
-    const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico)/
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
         return NextResponse.next()
     }
@@ -131,3 +122,19 @@ const nextIntlMiddleware = createMiddleware({
     locales: config.locales,
     defaultLocale: config.defaultLocale,
 })
+
+
+
+
+
+// Middleware is used to make decisions about how to respond to a request.
+export async function middleware(request: NextRequest) {
+
+    // Internationalization middleware
+    const intlResponse = intlMiddleware(request)
+
+    // Auth middleware
+    const authResponse = await authMiddleware(request, intlResponse)
+
+    return authResponse
+}

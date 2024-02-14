@@ -26,8 +26,8 @@ export default async function RootLayout({children, params: { locale }}: RootLay
         <html lang={locale} data-theme="pratico">
             <AuthProvider>
                 <UiProvider>
-                        <body className={luciole.className}>{children}</body>
-                        <AuthDialog title={t('sign in')} />
+                    <body className={luciole.className}>{children}</body>
+                    <AuthDialog title={t('sign in')} />
                 </UiProvider>
             </AuthProvider>
         </html>

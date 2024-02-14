@@ -9,7 +9,7 @@ export interface PlainBtnProps {
     icon?: JSX.Element;
     size?: "s" | "m" | "l";
     style?: "solid" | "soft" | "outline" | "ghost";
-    color?: "primary" | "secondary" | "red" | "green";
+    color?: "primary" | "secondary" | "background" | "red" | "green";
     onClick?: () => void;
     enabled?: boolean;
     type?: "button" | "submit" | "reset";
@@ -45,7 +45,7 @@ export default function PlainBtn({
     return (
         <button className={btnStyle} onClick={onClick} type={type} disabled={enabled === false}>
             {_icon}
-            {children}
+            <p className={styles.text}>{children}</p>
         </button>
     )
 }

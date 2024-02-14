@@ -4,6 +4,11 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    font-family: inherit;
+}
+
+.text {
+    padding-top: 0.2rem;
 }
 
 .s {
@@ -44,6 +49,14 @@
     --btn-solid-background-color: var(--secondary);
     --btn-soft-background-color: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.3);
     --btn-border-color: var(--secondary);
+}
+
+.background {
+    --btn-solid-text-color: var(--primary);
+    --btn-soft-text-color: var(--background);
+    --btn-solid-background-color: var(--background);
+    --btn-soft-background-color: hsl(var(--background-h), var(--background-s), var(--background-l), 0.2);
+    --btn-border-color: var(--background);
 }
 
 
