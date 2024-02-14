@@ -59,7 +59,9 @@ export async function getStripeId(userId: string) {
  */
 export async function setStripeId(userId: string, stripeId: string) {
     const supabase =  await getSupabaseClient()
-    const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
+    //const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
+    // Upsert instead (create row if it doesn't exist)
+    const { data, error } = await supabase.from('user_profiles').upsert({id: userId, stripe_id: stripeId})
     if (error) {
         console.error("error setting stripe id", error)
         throw error
