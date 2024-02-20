@@ -7,7 +7,7 @@ Pratico est une application web construite avec TypeScript, React et Next.js. So
 # 🚀 Pour commencer
 
 Pour développer Pratico, suis les étapes suivantes :
-1. Assure-toi d'avoir l'autorisation de cloner le dépôt et de faire des modifications.
+1. Assure-toi de faire partie des utilisateurs autorisés à accéder au dépôt.
 >Si tu lis ceci, c'est probablement le cas 😉
 
 2. Clone le dépôt.
@@ -18,11 +18,13 @@ Pour développer Pratico, suis les étapes suivantes :
 
 4. Installe [Docker Desktop](https://www.docker.com/products/docker-desktop) sur ta machine.
 
-5. Installe les dépendances avec `pnpm install` depuis le répertoire racine du projet.
+5. Si tu souhaites travailler sur l'inscription et l'abonnement, installe [Stripe CLI](https://stripe.com/docs/stripe-cli) sur ta machine.
 
-6. Crée un fichier `.env.local` à la racine du projet et ajoute les variables d'environnement documentées dans le fichier `.env.example`.
+6. Installe les dépendances avec `pnpm install` depuis le répertoire racine du projet.
 
-7. Lance le serveur de développement avec `pnpm dev`.
+7. Crée un fichier `.env.local` à la racine du projet et ajoute les variables d'environnement documentées dans le fichier `.env.example`.
+
+8. Lance le serveur de développement avec `pnpm dev`.
 
 >🤞 Ça devrait marcher à l'adresse [localhost:3000](http://localhost:3000)
 

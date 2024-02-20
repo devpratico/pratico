@@ -1,6 +1,7 @@
 import styles from './UserInfo.module.css';
-import Avatar from "@/components/primitives/Avatar/Avatar";
-import { getUser, getProfile } from '@/supabase/services/user';
+import Avatar from "@/components/primitives/Avatar/Avatar";;
+import { getProfile } from '@/supabase/services/user_profiles';
+import { getUser } from '@/supabase/services/auth';
 import Link from 'next/link';
 import LogInBtn from './LogInBtn';
 import { getTranslations } from 'next-intl/server';

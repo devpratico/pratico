@@ -1,9 +1,16 @@
+/*.wrapper {
+    height: 100%;
+    background-color: var(--secondary);
+    padding: 1rem;
+}*/
+
 .container {
     background-color: var(--background);
     height: 100%;
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    border-radius: 1rem;;
 }
 
 .spacer {

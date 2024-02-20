@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, getUser, onAuthStateChange, signOut } from '@/supabase/services/user';
+import { User, getUser, onAuthStateChange, signOut } from '@/supabase/services/auth';
 import { Subscription } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 

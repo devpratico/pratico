@@ -22,7 +22,10 @@
     "polls": "Activités",
     "more": "Plus",
     "chat": "Chat",
-    "participants": "Participants"
+    "participants": "Participants",
+    "save": "Sauvegarder",
+    "done": "Terminé",
+    "quit": "Quitter"
 },
 
 "settings": {
@@ -41,7 +44,8 @@
     "subscribe": "S'abonner",
     "unsubscribe": "Se désabonner",
     "subscription status": "Statut de l'abonnement",
-    "subscription end": "Fin de l'abonnement"
+    "subscription end": "Fin de l'abonnement",
+    "manage subscription": "Gérer l'abonnement"
 },
 
 "subscribe": {

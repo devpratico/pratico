@@ -6,8 +6,16 @@
 
 echo
 
-# Start your Next.js dev server
-next dev -H 0.0.0.0
+# Concurrently (at the same time):
+# * Start your Next.js dev server
+# * Listen to Stripe events
+run_services() {
+    concurrently \
+        --prefix "{name}" \
+        -n "$,▲" \
+        "./scripts/forward-stripe-events.sh" \
+        "next dev -H 0.0.0.0"
+}
 
 # Function to run on script exit
 cleanup() {
@@ -17,8 +25,7 @@ cleanup() {
     ./scripts/stop-docker.sh
 }
 
-# Trap script exit signals (INT is Ctrl+C)
-trap cleanup EXIT INT
+# Trap script exit signal
+trap cleanup EXIT
 
-# Wait for the Next.js process to exit
-wait
+run_services

@@ -5,13 +5,15 @@ import {
     setUserPreferences, 
     DefaultColorStyle, 
     DefaultSizeStyle,
+    TLStoreWithStatus,
+    TLStore,
+    StoreSnapshot,
+    TLRecord
 } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
-import Resizer from '../custom-ui/Resizer/Resizer'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
-import EmbedHint from '../custom-ui/EmbedHint/EmbedHint'
-import TLToolbar from '../custom-ui/TLToolbar/TLToolbar'
+
 
 
 /**
@@ -25,20 +27,27 @@ const handleMount = (editor: Editor) => {
     editor.setStyleForNextShapes(DefaultSizeStyle , "m");
 }
 
+
+export interface CanvasProps {
+    store?: TLStoreWithStatus | TLStore
+    initialSnapshot?: StoreSnapshot<TLRecord>
+    children?: React.ReactNode
+}
+
 /**
- * This is the main component of the canvas.
- * It contains the infinite canvas and the toolsbar.
+ * This is the canvas component provided by tldraw.
+ * It is a client component. We use [Dask](../Desk/Desk.tsx) to load server components inside (like the toolbar).
  */
-export default function Canvas() {
+export default function Canvas({store, initialSnapshot, children}: CanvasProps) {
     return (
         <Tldraw
             hideUi={true}
             onMount={handleMount}
             components={{Background: Background, OnTheCanvas: CanvasArea}}
+            store={store}
+            snapshot={initialSnapshot}
         >
-            <Resizer/>
-            <EmbedHint/>
-            <TLToolbar/>
+            {children}
         </Tldraw>
     )
 }

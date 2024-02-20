@@ -1,16 +1,19 @@
 import styles from './DocumentMiniature.module.css';
-import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
 
-export default async function DocumentMiniature() {
+interface DocumentMiniatureProps {
+    title: string;
+}
+
+export default async function DocumentMiniature({ title }: DocumentMiniatureProps) {
     const t = await getTranslations("dashboard")
     return (
-        <Link href={'/creation'}   className={styles.container}>
+        <div  className={styles.container}>
             <div className={`${styles.mini} smallShadow`}></div>
 
             <h2 className={styles.title}>
-                Titre de la présentation
+                {title}
             </h2>
 
             <legend className={styles.legend}>
@@ -18,6 +21,6 @@ export default async function DocumentMiniature() {
                 <p>{`${t('last session')} : 02/02/2023`}</p>
             </legend>
 
-        </Link>
+        </div>
     )
 }

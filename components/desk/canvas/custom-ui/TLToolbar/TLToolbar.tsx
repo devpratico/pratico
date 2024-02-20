@@ -1,3 +1,4 @@
+'use client'
 import styles from './TLToolbar.module.css'
 import { track, useEditor } from "@tldraw/tldraw"
 import getTldrawState from "@/utils/tldraw/tldrawState"
@@ -8,7 +9,7 @@ import { useKeyboardShortcuts } from "@tldraw/tldraw"
 
 /**
  * This is the toolbar of the canvas.
- * It takes the ToolBar component and wrap it inside `track`which is useful for tldraw.
+ * It takes the ToolBar component and wrap it inside `track` which is useful for tldraw.
  * It also positions the toolbar on the left of the canvas,
  * And provides the props using tldraw's editor.
  */
