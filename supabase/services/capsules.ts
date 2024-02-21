@@ -115,3 +115,20 @@ export async function getCapsuleIdsByUserId(userId: string): Promise<string[]> {
         return data.map((capsule: any) => capsule.id)
     }
 }
+
+
+/**
+ * Get capsules details for one user
+ */
+export async function getCapsuleIdsTitlesDates(userId: string): Promise<{id: string, title: string, created_at: Date}[]> {
+    const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'getting capsule ids, titles, dates...', { userId })
+    const { data, error } = await supabase.from('capsules').select('id, title, created_at').eq('created_by', userId)
+    if (error) {
+        console.error("error getting capsule id, title, date", error)
+        throw error
+    } else {
+        logger.log('supabase:database', 'got capsule ids, titles, dates', { data })
+        return data as {id: string, title: string, created_at: Date}[]
+    }
+}

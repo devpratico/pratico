@@ -1,45 +1,25 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from './DocumentMiniature/DocumentMiniature';
-import { getCapsuleIdsByUserId, getCapsuleTitle } from '@/supabase/services/capsules';
+import { getCapsuleIdsTitlesDates } from '@/supabase/services/capsules';
 import { getUserId } from '@/supabase/services/auth';
 import Link from 'next/link';
 
 export default async function DocumentsGrid() {
 
-    const untitled = 'Untitled'
-
-    let capsuleIds: string[] = []
+    let capsules: { id: string, title: string, created_at: Date }[] = []
     try {
         const userId = await getUserId()
-        capsuleIds = await getCapsuleIdsByUserId(userId)
+        capsules = await getCapsuleIdsTitlesDates(userId)
     } catch (error) {
-        console.error('Error getting capsule ids', error)
+        console.error('Error getting capsules', error)
     }
-
-    const capsuleTitles = await Promise.all(capsuleIds.map(async (capsuleId: string) => {
-        try {
-            return await getCapsuleTitle(capsuleId) || untitled
-        } catch (error) {
-            console.error('Error getting capsule title', error)
-            return capsuleId
-        }
-    }))
-
-    const capsules = capsuleIds.map((capsuleId: string, index: number) => {
-        return {
-            id: capsuleId,
-            title: capsuleTitles[index]
-        }
-    })
-
-
 
     return (
         <div className={styles.grid}>
-            {capsules.map(({ id: capsuleId, title }) => {
+            {capsules.map(({ id: capsuleId, title, created_at }) => {
                 return (
                     <Link href={`/capsule/${capsuleId}`} key={capsuleId} className={styles.link}>
-                        <DocumentMiniature title={title} />
+                        <DocumentMiniature title={title} createdAt={created_at} />
                     </Link>
                 )
             })}
