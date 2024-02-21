@@ -2,6 +2,7 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import { setCapsuleSnapshot } from "@/supabase/services/capsules";
 import { useEditor } from "@tldraw/tldraw";
+import logger from "@/utils/logger";
 
 
 interface SaveBtnProps {
@@ -15,11 +16,12 @@ export default function SaveBtn({ capsuleId }: SaveBtnProps) {
 
     const editor = useEditor()
     const handleClick = async () => {
-        console.log("Saving snapshot to capsule", capsuleId)
+        logger.log('react:component', 'Clicked save button', { capsuleId })
         const snapshot = editor.store.getSnapshot()
         try {
             await setCapsuleSnapshot(capsuleId!, snapshot)
-            console.log("Snapshot saved")
+            logger.log('react:component', 'Save button callback ended', { capsuleId, snapshot })
+
         } catch (error) {
             console.error("Error saving snapshot", error)
         }

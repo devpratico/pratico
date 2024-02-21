@@ -1,10 +1,12 @@
 .textField {
-    font-size: 0.9rem;
+    font-family: inherit;
+    font-size: 1rem;
     border-radius: 7px;
     padding: 8px 10px;
-    height: 100%;
+    /*height: 100%;*/
     border: none;
     box-sizing: border-box;
+    line-height: 1;
 }
 
 .input {
@@ -15,18 +17,18 @@
 
 
 .inputHoverable:hover {
-    background-color: var(--violet-light);
+    background-color: hsla(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.2);
 }
 
 
 .inputHoverable:focus {
     outline: none;
-    background-color: var(--violet-light);
+    background-color: hsla(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.2);
 }
 
 .inputHoverable:active {
     outline: none;
-    background-color: var(--violet-light);
+    background-color: hsla(var(--secondary-h), var(--secondary-s), var(--secondary-l), 0.2);
 }
 
 .input::placeholder {

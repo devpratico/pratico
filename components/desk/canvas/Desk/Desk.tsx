@@ -11,7 +11,6 @@ interface DeskProps extends CanvasProps {
     capsuleId?: string;
 }
 
-
 /**
  * This is the Canvas but server side, allowing for custom UI
  * with internationalization and other server side features.

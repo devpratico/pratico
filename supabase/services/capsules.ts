@@ -1,6 +1,7 @@
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { TablesInsert } from "../types/database.types";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
+import logger from "@/utils/logger"
 
 
 /**
@@ -17,12 +18,15 @@ async function getCapsules() {
  */
 export async function getCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot> {
     const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'getting snapshot...', { capsuleId })
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) {
         console.error("error getting capsule snapshot", error)
         throw error
     } else {
-        return JSON.parse(data.tld_snapshot)
+        const result = JSON.parse(data.tld_snapshot)
+        logger.log('supabase:database', 'got snapshot', { result })
+        return result
     }
 }
 
@@ -33,11 +37,47 @@ export async function getCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnap
 export async function setCapsuleSnapshot(capsuleId: string, snapshot: TLStoreSnapshot) {
     const supabase =  await getSupabaseClient()
     const _snapshot = [JSON.stringify(snapshot)]
+    logger.log('supabase:database', 'setting snapshot...', { capsuleId, _snapshot })
     const { data, error } = await supabase.from('capsules').update({tld_snapshot: _snapshot}).eq('id', capsuleId)
     if (error) {
         console.error("error setting capsule snapshot", error)
         throw error
     } else {
+        logger.log('supabase:database', 'set snapshot', { data })
+        return data
+    }
+}
+
+
+/**
+ * @returns title from the `capsules` table
+ */
+export async function getCapsuleTitle(capsuleId: string): Promise<string> {
+    const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'getting title...', { capsuleId })
+    const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
+    if (error) {
+        console.error("error getting capsule title", error)
+        throw error
+    } else {
+        logger.log('supabase:database', 'got title', { data })
+        return data.title || ''
+    }
+}
+
+
+/**
+ * Sets title in the `capsules` table
+ */
+export async function setCapsuleTitle(capsuleId: string, title: string) {
+    const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'setting title...', { capsuleId, title })
+    const { data, error } = await supabase.from('capsules').update({title}).eq('id', capsuleId)
+    if (error) {
+        console.error("error setting capsule title", error)
+        throw error
+    } else {
+        logger.log('supabase:database', 'title set', { data })
         return data
     }
 }
@@ -49,11 +89,13 @@ export async function setCapsuleSnapshot(capsuleId: string, snapshot: TLStoreSna
  */
 export async function setCapsule(capsule: TablesInsert<'capsules'>) {
     const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'setting capsule...', { capsule })
     const { data, error } = await supabase.from('capsules').upsert(capsule)
     if (error) {
         console.error("error setting capsule", error)
         throw error
     } else {
+        logger.log('supabase:database', 'set capsule', { data })
         return data
     }
 }
@@ -63,11 +105,13 @@ export async function setCapsule(capsule: TablesInsert<'capsules'>) {
  */
 export async function getCapsuleIdsByUserId(userId: string): Promise<string[]> {
     const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'getting capsule ids...', { userId })
     const { data, error } = await supabase.from('capsules').select('id').eq('created_by', userId)
     if (error) {
         console.error("error getting capsule id", error)
         throw error
     } else {
+        logger.log('supabase:database', 'got capsule ids', { data })
         return data.map((capsule: any) => capsule.id)
     }
 }

@@ -1,6 +1,6 @@
 import styles from './MenuBar.module.css';
 import Image from 'next/image';
-import Title from '../Title/Title';
+import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
 import LabeledIconBtn from '../../primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import LabeledIcon from '../../primitives/LabeledIcon/LabeledIcon';
 import MenuBarLayout from '../MenuBarLayout/MenuBarLayout';
@@ -47,7 +47,7 @@ export default async function MenuBar({ mode, hideLabels, capsuleId }: MenuBarPr
             return (
                 <MenuBarLayout spacerPosition={3}>
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
-                    <Title initialValue="" placeholder="Session name" focusFirst={true} editable={true} />
+                    <CapsuleTitle capsuleId={capsuleId} />
                     <PlainBtn color="secondary" size="m">{t('play')}</PlainBtn>
                     <LabeledIconBtn icon={<PuzzleIcon/>}      label={t('polls')} {...styleBtnProps} />
                     <LabeledIconBtn icon={<ThreeDotsIcon/>}   label={t('more')} {...styleBtnProps} />
@@ -60,7 +60,7 @@ export default async function MenuBar({ mode, hideLabels, capsuleId }: MenuBarPr
             return (
                 <MenuBarLayout spacerPosition={3}>
                     <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
-                    <Title initialValue="My session" placeholder="Session name" focusFirst={false} editable={false} />
+                    <CapsuleTitle capsuleId={capsuleId} />
                     <PlainBtn color="secondary" size="m">Start Session</PlainBtn>
                     <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label={t('polls')}      {...styleBtnProps} />
                     <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={t('chat')}      {...styleBtnProps} />

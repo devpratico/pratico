@@ -10,6 +10,7 @@ import {
     TLEmbedShape,
     AssetRecordType,
 } from '@tldraw/tldraw'
+import logger from '../logger'
 
 
 interface DispatchArgs {
@@ -19,7 +20,7 @@ interface DispatchArgs {
 }
 
 export function dispatch({ editor, action, payload }: DispatchArgs) {
-    console.log('dispatch', action, payload)
+    logger.log('tldraw:tools', `dispatch ${action}`, payload)
 
     switch (action) {
 

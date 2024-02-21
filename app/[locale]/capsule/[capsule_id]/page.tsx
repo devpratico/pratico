@@ -4,6 +4,8 @@ import Desk from '@/components/desk/canvas/Desk/Desk'
 import { getCapsuleSnapshot } from '@/supabase/services/capsules';
 
 
+export const dynamic = 'force-dynamic'
+
 export default async function CreationPage({params}: {params: { capsule_id: string }}) {
 
   const { capsule_id } = params;
