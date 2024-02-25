@@ -58,7 +58,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
     const createPage = () => {
         const currentPageIndex = pagesIds.indexOf(currentPageId)
-        editor.createPage({ index: `${currentPageIndex + 1}` }) // index actually isn't used
+        editor.createPage({ name: `page ${currentPageIndex + 1}` }) // index actually isn't used
         // go to the new page:
         setCurrentPage(editor.getPages()[currentPageIndex + 1].id)
         // update the pagesIds:
