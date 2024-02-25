@@ -1,5 +1,5 @@
 import { TLDefaultColorStyle, TLDefaultSizeStyle, TLDefaultFontStyle } from "@tldraw/tldraw";
-import { TldrawState } from "./tldrawState";
+import { TldDrawState } from "./tldDrawState";
 
 
 export interface ToolBarState {
@@ -28,7 +28,7 @@ export interface ToolBarState {
 }
 
 
-export function toolBarStateFrom(tldState: TldrawState): ToolBarState {
+export function toolBarStateFrom(tldState: TldDrawState): ToolBarState {
 
     // Tldraw tools and our toolbar tools are not exactly the same
     let activeTool = "select";

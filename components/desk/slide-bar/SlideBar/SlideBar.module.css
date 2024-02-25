@@ -8,6 +8,7 @@
 .carouselContainer {
     flex-grow: 1;
     height: 100%;
+    overflow-x: scroll;
 }
 
 .controls {

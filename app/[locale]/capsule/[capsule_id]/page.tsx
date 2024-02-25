@@ -1,6 +1,6 @@
 import styles from './page.module.css'
 import MainLayout from '../../../../components/layouts/MainLayout/MainLayout'
-import Desk from '@/components/desk/canvas/Desk/Desk'
+import Desk from '@/components/desk/Desk/Desk'
 import { getCapsuleSnapshot } from '@/supabase/services/capsules';
 
 

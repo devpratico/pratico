@@ -1,9 +1,9 @@
 'use client'
 import styles from './TLToolbar.module.css'
 import { track, useEditor } from "@tldraw/tldraw"
-import getTldrawState from "@/utils/tldraw/tldrawState"
+import getTldrawState from "@/utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/utils/tldraw/toolBarState"
-import * as tlDispatch from '@/utils/tldraw/dispatch'
+import * as tlDispatch from '@/utils/tldraw/toolbarDispatch'
 import ToolBar from "@/components/desk/tool-bar/ToolBar/ToolBar"
 import { useKeyboardShortcuts } from "@tldraw/tldraw"
 
@@ -20,7 +20,7 @@ const  TLToolbar = track(() => {
     const tldrawState = getTldrawState(editor)
     const toolBarState = toolBarStateFrom(tldrawState)
     const dispatch = (action: string, payload: string) => {
-        tlDispatch.dispatch({editor, action, payload})
+        tlDispatch.toolbarDispatch({editor, action, payload})
     }
 
     return (

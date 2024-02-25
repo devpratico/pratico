@@ -4,8 +4,12 @@ import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIc
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
 import { IconSize } from '@/utils/icons/IconProps';
+import { useEditor } from '@tldraw/tldraw'
 
 export default function SlideNavigation() {
+
+    const editor = useEditor()
+    const pagesNb = editor.getPages().length
 
     const leftArrowBtnProps = {
         icon:       <ChevronLeftIcon />,
@@ -32,7 +36,7 @@ export default function SlideNavigation() {
             <div className={styles.counter}>
                 <p className={styles.numberLeft} >1</p>
                 <p className={styles.slash} >/</p>
-                <p className={styles.numberRight} >10</p>
+                <p className={styles.numberRight}>{pagesNb}</p>
             </div>
             <RightArrow />
         </div>

@@ -9,7 +9,7 @@ import {
 } from "@tldraw/tldraw";
 
 
-export interface TldrawState {
+export interface TldDrawState {
     activeTool: string;
     nextShape:  typeof GeoShapeGeoStyle.values[number];
     nextColor:  TLDefaultColorStyle;
@@ -19,7 +19,7 @@ export interface TldrawState {
     nextFont:   TLDefaultFontStyle;
 }
 
-export default function getTldrawState(editor: Editor): TldrawState {
+export default function getTldDrawState(editor: Editor): TldDrawState {
     const activeToolId = editor.getCurrentToolId()
     const stylesForNextShapes = editor.getInstanceState().stylesForNextShape
     const activeColor = stylesForNextShapes["tldraw:color"]

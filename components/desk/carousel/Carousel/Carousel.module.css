@@ -4,3 +4,9 @@
     padding: 0.8rem;
     height: 100%;
 }
+
+.miniatureBtn {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
