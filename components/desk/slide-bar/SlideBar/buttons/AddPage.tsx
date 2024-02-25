@@ -15,7 +15,7 @@ export default function AddPage() {
         iconSize:   "lg" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        onClick:    createPage,
+        onClick:    () => createPage(),
     }
 
     return <LabeledIconBtn {...addPageBtnProps} />

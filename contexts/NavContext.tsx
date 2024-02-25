@@ -1,7 +1,17 @@
 'use client'
 import logger from '@/utils/logger';
-import { createContext, useContext, useState } from 'react';
-import { useEditor } from '@tldraw/tldraw';
+import {
+    createContext,
+    useContext,
+    useState
+} from 'react';
+import {
+    useEditor,
+    IndexKey,
+    getIndexAbove,
+    getIndexBetween,
+    TLPageId
+} from '@tldraw/tldraw';
 
 
 type NavContextType = {
@@ -56,12 +66,41 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
-    const createPage = () => {
-        const currentPageIndex = pagesIds.indexOf(currentPageId)
-        editor.createPage({ name: `page ${currentPageIndex + 1}` }) // index actually isn't used
-        // go to the new page:
-        setCurrentPage(editor.getPages()[currentPageIndex + 1].id)
-        // update the pagesIds:
+    /**
+     * Create a new page after the current page (default), or at the end of the pages list.
+     * @param atTheEnd If true, the new page will be created at the end of the pages list.
+     */
+    const createPage = (atTheEnd?: boolean) => {
+        let i: IndexKey
+
+        if (atTheEnd) {
+            const lastPage = editor.getPages().slice(-1)[0]
+            i = getIndexAbove(lastPage.index)
+
+        } else {
+            const currentPage = editor.getCurrentPage()
+            // The page before the page we want to create:
+            const beforePageArrayIndex = pagesIds.indexOf(currentPage.id)
+            const beforePageIndex = editor.getPages()[beforePageArrayIndex].index
+            // The page after the page we want to create:
+            const afterPageArrayIndex = beforePageArrayIndex + 1
+
+            if (afterPageArrayIndex === pagesIds.length) {
+                // If there's no page after the current page, create the new page at the end of the pages list:
+                createPage(true)
+                return
+            }
+            const afterPageIndex  = editor.getPages()[afterPageArrayIndex].index            
+            // Get the index between them:
+            i = getIndexBetween(beforePageIndex, afterPageIndex)            
+        }
+
+        // Create the new page:
+        const id = `page:${i}` as TLPageId
+        editor.createPage({index: i, id: id})
+        // Set the new page as the current page:
+        setCurrentPage(id)
+        // Refresh the pages list:
         setPagesIds(editor.getPages().map(p => p.id))
     }
 

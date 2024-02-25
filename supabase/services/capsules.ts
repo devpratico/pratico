@@ -1,5 +1,5 @@
 import getSupabaseClient from "../clients/getSupabaseClient";
-import { TablesInsert } from "../types/database.types";
+import { Tables, TablesInsert } from "../types/database.types";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
 import logger from "@/utils/logger"
 
@@ -130,5 +130,23 @@ export async function getCapsuleIdsTitlesDates(userId: string): Promise<{id: str
     } else {
         logger.log('supabase:database', 'got capsule ids, titles, dates', { data })
         return data as {id: string, title: string, created_at: Date}[]
+    }
+}
+
+
+
+
+export type CapsuleData = Tables<'capsules'>
+
+export async function getCapsulesData(userId: string): Promise<CapsuleData[]> {
+    const supabase =  await getSupabaseClient()
+    logger.log('supabase:database', 'getting capsules data...', { userId })
+    const { data, error } = await supabase.from('capsules').select('*').eq('created_by', userId)
+    if (error) {
+        console.error("error getting capsules data", error)
+        throw error
+    } else {
+        logger.log('supabase:database', 'got capsules data', { data })
+        return data
     }
 }

@@ -1,25 +1,37 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from './DocumentMiniature/DocumentMiniature';
-import { getCapsuleIdsTitlesDates } from '@/supabase/services/capsules';
+import { getCapsulesData, CapsuleData } from '@/supabase/services/capsules';
 import { getUserId } from '@/supabase/services/auth';
 import Link from 'next/link';
+import Thumbnail from '@/components/Thumbnail/Thumbnail';
+import { getTranslations } from 'next-intl/server';
 
 export default async function DocumentsGrid() {
 
-    let capsules: { id: string, title: string, created_at: Date }[] = []
+    const t = await getTranslations('dashboard')
+
+    let capsules: CapsuleData[] = []
     try {
         const userId = await getUserId()
-        capsules = await getCapsuleIdsTitlesDates(userId)
+        capsules = await getCapsulesData(userId)
     } catch (error) {
         console.error('Error getting capsules', error)
     }
 
     return (
         <div className={styles.grid}>
-            {capsules.map(({ id: capsuleId, title, created_at }) => {
+            {capsules.map((cap) => {
+
+                const id = cap.id
+                const title = cap.title || t('untitled')
+                const created_at = new Date(cap.created_at)
+                const snap = JSON.parse(cap.tld_snapshot as any)
+
                 return (
-                    <Link href={`/capsule/${capsuleId}`} key={capsuleId} className={styles.link}>
-                        <DocumentMiniature title={title} createdAt={created_at} />
+                    <Link href={`/capsule/${id}`} key={id} className={styles.link}>
+                        <DocumentMiniature title={title} createdAt={created_at}>
+                            <Thumbnail snapshot={snap} />
+                        </DocumentMiniature>
                     </Link>
                 )
             })}

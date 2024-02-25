@@ -1,13 +1,17 @@
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
 import { useNav } from '@/contexts/NavContext'
-import { useEditor, TldrawImage, TLPageId } from '@tldraw/tldraw'
+import { useEditor, TldrawImage, TLPageId, Box } from '@tldraw/tldraw'
 
 
 
 export default function Carousel() {
 
     const { pagesIds, currentPageId, setCurrentPage } = useNav()
+
+    // TODO: Maybe get rid of tldraw stuff:
+    // Make the carousel component take an array of children
+    // Then make a special tldraw component that relies on editor stuff
     const editor = useEditor()
     const snapshot = editor.store.getSnapshot()
 
@@ -23,6 +27,7 @@ export default function Carousel() {
                         <TldrawImage
                             snapshot={snapshot}
                             pageId={id as TLPageId}
+                            bounds={new Box(0, 0, 1920, 1080)}
                         />
                     </Miniature>
                 </button>

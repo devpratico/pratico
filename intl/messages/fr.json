@@ -13,7 +13,8 @@
     "help": "Aide",
     "settings": "Paramètres",
     "creation": "Création",
-    "last session": "Dernière session"
+    "last session": "Dernière session",
+    "untitled": "Sans titre"
 },
 
 "menu-bar": {

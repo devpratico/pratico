@@ -5,9 +5,10 @@ import { getTranslations, getFormatter } from 'next-intl/server';
 interface DocumentMiniatureProps {
     title?: string;
     createdAt?: Date;
+    children?: React.ReactNode;
 }
 
-export default async function DocumentMiniature({ title, createdAt }: DocumentMiniatureProps) {
+export default async function DocumentMiniature({ title, createdAt, children }: DocumentMiniatureProps) {
     const t = await getTranslations("dashboard")
     const formatter = await getFormatter()
 
@@ -17,7 +18,9 @@ export default async function DocumentMiniature({ title, createdAt }: DocumentMi
     }
     return (
         <div  className={styles.container}>
-            <div className={`${styles.mini} smallShadow`}></div>
+            <div className={`${styles.mini} smallShadow`}>
+                {children}
+            </div>
 
             <h2 className={styles.title}>
                 {title || t('untitled')}
