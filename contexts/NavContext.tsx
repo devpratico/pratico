@@ -1,6 +1,6 @@
 'use client'
 import logger from '@/utils/logger';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useEditor } from '@tldraw/tldraw';
 
 
@@ -27,6 +27,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     */
     const [pagesIds, setPagesIds] = useState<string[]>(editor.getPages().map(p => p.id))
     const [currentPageId, setCurrentPageId] = useState<string>(editor.getCurrentPage().id)
+    
 
     const setCurrentPage = (id: string) => {
         const page = editor.getPages().find(p => p.id === id)

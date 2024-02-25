@@ -1,12 +1,15 @@
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
 import { useNav } from '@/contexts/NavContext'
+//import { useEditor } from '@tldraw/tldraw'
 
 
 
 export default function Carousel() {
 
     const { pagesIds, currentPageId, setCurrentPage } = useNav()
+    //const editor = useEditor()
+    //const snapshot = editor.store.getSnapshot()
 
     return (
         <div className={styles.container}>
