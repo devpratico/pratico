@@ -9,6 +9,7 @@ import {
     createShapeId,
     TLEmbedShape,
     AssetRecordType,
+    StyleProp,
 } from '@tldraw/tldraw'
 import logger from '../logger'
 
@@ -51,7 +52,7 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             break
         
         case 'CLICK_COLOR':
-            editor.setStyleForNextShapes(DefaultColorStyle, payload)
+            editor.setStyleForNextShapes(DefaultColorStyle as StyleProp<string>, payload)
             break
 
         case 'CLICK_OPTION':
@@ -74,7 +75,7 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             break
         
         case 'CLICK_DRAW_SIZE':
-            editor.setStyleForNextShapes(DefaultSizeStyle, payload)
+            editor.setStyleForNextShapes(DefaultSizeStyle as StyleProp<string>, payload)
             break
         
         case 'CLICK_DRAW_TYPE':
@@ -98,7 +99,7 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             break
 
         case 'CLICK_FONT':
-            editor.setStyleForNextShapes(DefaultFontStyle, payload)
+            editor.setStyleForNextShapes(DefaultFontStyle as StyleProp<string>, payload)
             break
 
         case 'CLICK_TEXT_TYPE':

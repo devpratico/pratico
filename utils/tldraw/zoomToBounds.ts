@@ -1,4 +1,4 @@
-import { Box2d, Editor, TLAnimationOptions } from '@tldraw/tldraw'
+import { Box, Editor, TLAnimationOptions } from '@tldraw/tldraw'
 
 
 
@@ -33,7 +33,7 @@ interface ZoomToBoundsArgs {
     /**
      * The box to fit in the viewport, i.e. the canvas (tldraw coordinates)
      */
-    box: Box2d
+    box: Box
 
     /**
      * The margin in pixels around the box.

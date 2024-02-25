@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from "react"
-import { track, useEditor, Box2d } from "@tldraw/tldraw"
+import { track, useEditor, Box } from "@tldraw/tldraw"
 import zoomToBounds from "@/utils/tldraw/zoomToBounds"
 import logger from "@/utils/logger"
 
@@ -11,7 +11,7 @@ import logger from "@/utils/logger"
  */
 const Resizer = track(() => {
     const editor = useEditor()
-    const box = new Box2d(0, 0, 1920, 1080)
+    const box = new Box(0, 0, 1920, 1080)
     const insets = {top: 56, right: 0, bottom: 70, left: 60}
     const currentPage = editor.getCurrentPage()
 
