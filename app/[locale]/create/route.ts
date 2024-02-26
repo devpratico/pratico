@@ -4,6 +4,8 @@ import { getUserId } from '@/supabase/services/auth'
 import { setCapsule } from '@/supabase/services/capsules'
 
 
+// TODO: Put this in a server action
+
 /**
  * This is the route for creating a new capsule.
  * It creates a new capsule, put it in supabase,

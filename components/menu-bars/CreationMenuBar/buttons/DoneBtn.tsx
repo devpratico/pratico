@@ -3,23 +3,30 @@ import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import { setCapsuleSnapshot } from "@/supabase/services/capsules";
 import { useEditor } from "@tldraw/tldraw";
 import logger from "@/utils/logger";
+import { useRouter } from "next/navigation";
 
 
-interface SaveBtnProps {
+interface DoneBtnProps {
     capsuleId?: string;
+    message?: string;
 }
 
 /**
- * This component is a button that saves the current tldraw snapshot to supabase.
+ * This component is a button that saves the current tldraw snapshot to supabase
+ * and navigates back to the dashboard.
  */
-export default function SaveBtn({ capsuleId }: SaveBtnProps) {
+export default function DoneBtn({ capsuleId, message }: DoneBtnProps) {
 
+    const router = useRouter()
+
+    // TODO: Maybe get rid of tldraw stuff and use a hook
     const editor = useEditor()
     const handleClick = async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
         const snapshot = editor.store.getSnapshot()
         try {
             await setCapsuleSnapshot(capsuleId!, snapshot)
+            router.push('/capsules')
             logger.log('react:component', 'Save button callback ended', { capsuleId, snapshot })
 
         } catch (error) {
@@ -34,7 +41,7 @@ export default function SaveBtn({ capsuleId }: SaveBtnProps) {
             enabled={!!capsuleId}
             onClick={handleClick}
         >
-            Save
+            {message || "Done"}
         </PlainBtn>
     )
 }

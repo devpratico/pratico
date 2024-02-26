@@ -1,5 +1,5 @@
 import getStripeClient from '@/stripe/getStripeClient'
-import { setStripeId } from '@/supabase/services/auth'
+import { setStripeId } from '@/supabase/services/user_profiles'
 
 
 const stripe = getStripeClient()

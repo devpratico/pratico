@@ -1,7 +1,8 @@
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
 import { useNav } from '@/contexts/NavContext'
-import { useEditor, TldrawImage, TLPageId, Box } from '@tldraw/tldraw'
+import { useEditor, TLPageId } from '@tldraw/tldraw'
+import Thumbnail from '@/components/Thumbnail/Thumbnail'
 
 
 
@@ -24,11 +25,7 @@ export default function Carousel() {
                     className={styles.miniatureBtn}
                 >
                     <Miniature selected={id === currentPageId}>
-                        <TldrawImage
-                            snapshot={snapshot}
-                            pageId={id as TLPageId}
-                            bounds={new Box(0, 0, 1920, 1080)}
-                        />
+                        <Thumbnail snapshot={snapshot} pageId={id as TLPageId} />
                     </Miniature>
                 </button>
             ))}

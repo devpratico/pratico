@@ -6,13 +6,18 @@ import logger from '@/utils/logger'
 
 interface TitleProps {
     capsuleId?: string;
+
+    /**
+     * If true, the input won't be editable
+     */
+    disabled?: boolean;
 }
 
 /**
  * This component is a text field that automatically resizes to fit its content.
  * It uses a hidden `span` element to measure the width of the text.
  */
-export default function CapsuleTitle({ capsuleId }: TitleProps) {
+export default function CapsuleTitle({ capsuleId, disabled }: TitleProps) {
 
     const placeholder = "Session name";
     const [inputValue, setInputValue] = useState('')
@@ -66,8 +71,9 @@ export default function CapsuleTitle({ capsuleId }: TitleProps) {
                 hiddenSubmitButtonRef.current?.click();
             }
         }
-        inputRef.current?.addEventListener('blur', handleBlur)
-        return () => { inputRef.current?.removeEventListener('blur', handleBlur)}
+        const inputEl = inputRef.current
+        inputEl?.addEventListener('blur', handleBlur)
+        return () => { inputEl?.removeEventListener('blur', handleBlur)} // Cleanup
     }, [hasChanged])
     
 
@@ -108,8 +114,9 @@ export default function CapsuleTitle({ capsuleId }: TitleProps) {
         value: inputValue,
         onChange: handleTitleChange,
         placeholder: placeholder,
-        className: `${styles.input} ${styles.textField} ${styles.inputHoverable}`,
+        className: `${styles.input} ${styles.textField} ${!disabled ? styles.inputHoverable : ''}`,
         ref: inputRef,
+        disabled: disabled
     }
 
     const spanProps = {
