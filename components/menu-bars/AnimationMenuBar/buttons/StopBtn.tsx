@@ -1,7 +1,7 @@
 'use client'
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
-import { useUi } from "@/contexts/UiContext";
+import { useUi } from "@/hooks/UiContext";
 
 
 interface StopBtnProps {

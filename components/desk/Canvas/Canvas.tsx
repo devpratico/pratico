@@ -13,6 +13,7 @@ import {
 import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
+//import useBroadcastStore from '@/hooks/useBroadcastStore'
 
 
 
@@ -39,6 +40,7 @@ export interface CanvasProps {
  * It is a client component. We use [Dask](../Desk/Desk.tsx) to load server components inside (like the toolbar).
  */
 export default function Canvas({store, initialSnapshot, children}: CanvasProps) {
+    //const bstore = useBroadcastStore()
     return (
         <Tldraw
             hideUi={true}

@@ -3,7 +3,7 @@ import styles from './TLSlidebar.module.css'
 import { track } from "@tldraw/tldraw"
 import SlideBar from '@/components/desk/slide-bar/SlideBar/SlideBar'
 import { MiniatureProps } from '@/components/desk/carousel/Miniature/Miniature'
-import { NavProvider } from '@/contexts/NavContext'
+import { NavProvider } from '@/hooks/NavContext'
 
 /**
  * This is the slide bar of the canvas.

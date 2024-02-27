@@ -1,6 +1,6 @@
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
-import { useNav } from '@/contexts/NavContext'
+import { useNav } from '@/hooks/NavContext'
 import { useEditor, TLPageId } from '@tldraw/tldraw'
 import Thumbnail from '@/components/Thumbnail/Thumbnail'
 

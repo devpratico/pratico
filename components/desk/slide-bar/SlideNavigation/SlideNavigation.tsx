@@ -4,7 +4,7 @@ import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIc
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
 import { IconSize } from '@/utils/icons/IconProps';
-import { useNav } from '@/contexts/NavContext'
+import { useNav } from '@/hooks/NavContext'
 
 
 export default function SlideNavigation() {
