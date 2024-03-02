@@ -3,10 +3,9 @@ import styles from './CapsuleTitle.module.css'
 import { useState, useEffect, useRef } from "react"
 import { getCapsuleTitle, setCapsuleTitle } from '@/supabase/services/capsules'
 import logger from '@/utils/logger'
+import { useCapsule } from '@/hooks/capsuleContext';
 
 interface TitleProps {
-    capsuleId?: string;
-
     /**
      * If true, the input won't be editable
      */
@@ -17,8 +16,10 @@ interface TitleProps {
  * This component is a text field that automatically resizes to fit its content.
  * It uses a hidden `span` element to measure the width of the text.
  */
-export default function CapsuleTitle({ capsuleId, disabled }: TitleProps) {
+export default function CapsuleTitle({ disabled }: TitleProps) {
 
+    const { capsule } = useCapsule()
+    const capsuleId = capsule?.id
     const placeholder = "Session name";
     const [inputValue, setInputValue] = useState('')
 

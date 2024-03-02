@@ -5,7 +5,7 @@ import useBroadcastStore from "@/hooks/useBroadcastStore"
 
 export default function multiPage() {
 
-    const store = useBroadcastStore()
+    const store = useBroadcastStore({roomId: 'test-room'})
     return (
         <div style={{height: '100dvh'}}>
             <Tldraw store={store} />

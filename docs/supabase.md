@@ -55,3 +55,7 @@ Le déploiement en production se fait automatiquement avec GitHub Actions. Là e
 Pour tester la création de compte, il suffit de s'inscrire en renseignant n'importe quel email factice et un mot de passe. L'environnement Supabase en local est configuré pour ne pas envoyer de mail de confirmation. L'authentification se fait donc immédiatement sans vérification de l'adresse mail.
 
 Si une fonctionnalité d'envoi de mail est activée manuellement (ce n'est pas le cas pour l'instant), l'environnement local Supabase est configuré pour envoyer les mails sur le serveur SMTP de développement. On peut donc utiliser une adresse email factice. L'outil `Inbucket` est utilisé pour visualiser les mails envoyés. L'adresse url de'`Inbucket` est affichée dans la console lors du lancement de l'environnement de développement.
+
+
+# Utilisations
+

@@ -4,10 +4,10 @@ import { setCapsuleSnapshot } from "@/supabase/services/capsules";
 import { useEditor } from "@tldraw/tldraw";
 import logger from "@/utils/logger";
 import { useRouter } from "next/navigation";
+import { useCapsule } from '@/hooks/capsuleContext';
 
 
 interface DoneBtnProps {
-    capsuleId?: string;
     message?: string;
 }
 
@@ -15,9 +15,11 @@ interface DoneBtnProps {
  * This component is a button that saves the current tldraw snapshot to supabase
  * and navigates back to the dashboard.
  */
-export default function DoneBtn({ capsuleId, message }: DoneBtnProps) {
+export default function DoneBtn({ message }: DoneBtnProps) {
 
     const router = useRouter()
+    const { capsule } = useCapsule()
+    const capsuleId = capsule?.id
 
     // TODO: Maybe get rid of tldraw stuff and use a hook
     const editor = useEditor()

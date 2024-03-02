@@ -66,6 +66,32 @@ export type Database = {
           },
         ]
       }
+      chat: {
+        Row: {
+          created_at: string
+          id: number
+          room_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          room_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          room_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cities: {
         Row: {
           created_at: string
@@ -116,6 +142,83 @@ export type Database = {
           surnom?: string | null
         }
         Relationships: []
+      }
+      room_events: {
+        Row: {
+          id: number
+          payload: Json | null
+          timestamp: string
+          type: string | null
+          use_id: string | null
+        }
+        Insert: {
+          id?: number
+          payload?: Json | null
+          timestamp?: string
+          type?: string | null
+          use_id?: string | null
+        }
+        Update: {
+          id?: number
+          payload?: Json | null
+          timestamp?: string
+          type?: string | null
+          use_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_events_use_id_fkey"
+            columns: ["use_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          capsule_id: string | null
+          capsule_snapshot: Json | null
+          created_at: string
+          created_by: string | null
+          id: number
+          name: string | null
+          params: Json | null
+        }
+        Insert: {
+          capsule_id?: string | null
+          capsule_snapshot?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          name?: string | null
+          params?: Json | null
+        }
+        Update: {
+          capsule_id?: string | null
+          capsule_snapshot?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: number
+          name?: string | null
+          params?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rooms_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rooms_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_profiles: {
         Row: {

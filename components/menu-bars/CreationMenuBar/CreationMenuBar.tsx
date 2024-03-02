@@ -12,7 +12,6 @@ import StartBtn from "./buttons/StartBtn";
 
 
 interface CreationMenuBarProps {
-    capsuleId?: string;
     messages?: {
         play: string;
         polls: string;
@@ -21,7 +20,7 @@ interface CreationMenuBarProps {
     }
 }
 
-export default function CreationMenuBar({ capsuleId, messages }: CreationMenuBarProps) {
+export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
 
     const styleBtnProps = {
         iconColor: "var(--text-on-primary)",
@@ -33,11 +32,11 @@ export default function CreationMenuBar({ capsuleId, messages }: CreationMenuBar
     return (
         <MenuBarLayout spacerPosition={3}>
             <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
-            <CapsuleTitle capsuleId={capsuleId} />
+            <CapsuleTitle />
             <StartBtn message={messages?.play || 'Play'} />
             <LabeledIconBtn icon={<PuzzleIcon/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
             <LabeledIconBtn icon={<ThreeDotsIcon/>} label={messages?.more || 'more'} {...styleBtnProps} />
-            <DoneBtn capsuleId={capsuleId} message={messages?.done || 'Done'} />
+            <DoneBtn message={messages?.done || 'Done'} />
         </MenuBarLayout>
     )
 }

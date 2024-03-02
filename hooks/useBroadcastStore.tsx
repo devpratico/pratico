@@ -6,31 +6,48 @@ import {
     defaultShapeUtils,
     TLRecord,
     RecordsDiff,
+    StoreSnapshot
 } from '@tldraw/tldraw';
 import { useEffect, useState } from "react";
+import logger from "@/utils/logger";
 
 
+interface useBroadcastStoreProps {
+    roomId: string
+    initialSnapshot?: StoreSnapshot<TLRecord>
+}
 
-export default function useBroadcastStore() {
-    const roomId = 'broadcast:public'
+
+/**
+ * This hook is used to create a realtime channel with supabase,
+ * broadcasting changes end merging them with the local store.
+ */
+export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcastStoreProps) {
     const supabase = createClient()
     const channel = supabase.channel(roomId)
     channel.subscribe((status) => {console.log(status)})
 
-    //const store = createTLStore({shapeUtils: defaultShapeUtils})
-    const [store, setStore] = useState(() => createTLStore({shapeUtils: defaultShapeUtils}))
+    // Initialize the store
+    const [store, setStore] = useState(() => {
+        const _store = createTLStore({shapeUtils: defaultShapeUtils})
+        if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
+        return _store
+    })
 
-    // Send changes to the server
+    // Subscribe to store events and send changes to the server
     useEffect(() => {
         const storeListener = store.listen(({changes}) => {
 
+            // This is just for logging to the console
             // We use object.values to get the values (most of the time, only one), as it is an object
             // with useless keys (they are the record ids, and we can get them from the record itself)
-            Object.values(changes.added).forEach((record) => {console.log("⬆️ added", record.id)})
-            Object.values(changes.removed).forEach((record) => {console.log("⬆️ removed", record.id)})
-            Object.values(changes.updated).forEach( ([from, to]) => {console.log("⬆️ updated", from.id)})
+            Object.values(changes.added).forEach((record)   => {logger.log('tldraw:collab', 'added', record.id)})
+            Object.values(changes.removed).forEach((record) => {logger.log('tldraw:collab', 'removed', record.id)})
+            //Object.values(changes.updated).forEach( ([from, to]) => {logger.log('tldraw:collab', 'updated', from.id)})
 
             channel.send({type: 'broadcast', event: 'test', payload: changes})
+            //.then(() => {logger.log('supabase:realtime', 'sent', changes)})
+
         }, { source: 'user', scope: 'document' })
 
         return () => {
@@ -39,30 +56,31 @@ export default function useBroadcastStore() {
 
     }, [store, channel])
 
-    // Receive changes from the server
+    // Receive changes from the server and merge them with the local store
     useEffect(() => {
         channel.on(
             'broadcast',
             { event: 'test' },
             (payload) => {
                 const diff = payload.payload as RecordsDiff<TLRecord>
+                //logger.log('supabase:realtime', 'received', diff)
                 setStore((prevStore) => {
                     const newStore = prevStore
                     newStore.mergeRemoteChanges(() => {
 
                         Object.values(diff.added).forEach((record) => {
-                            console.log("⬇️ added", record.id)
                             newStore.put([record])
+                            logger.log('tldraw:collab', 'added remote', record.id)
                         })
 
                         Object.values(diff.removed).forEach((record) => {
-                            console.log("⬇️ removed", record.id)
                             newStore.remove([record.id])
+                            logger.log('tldraw:collab', 'removed remote', record.id)
                         })
 
                         Object.values(diff.updated).forEach( ([from, to]) => {
-                            console.log("⬇️ updated", from.id)
                             newStore.update(from.id, () => to)
+                            //logger.log('tldraw:collab', 'updated remote', from.id)
                         })
 
                     })

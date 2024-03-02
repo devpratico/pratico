@@ -1,11 +1,11 @@
 'use client'
 import CreationMenuBar from "../CreationMenuBar/CreationMenuBar"
 import AnimationMenuBar from "../AnimationMenuBar/AnimationMenuBar"
-import { useUi } from "@/hooks/UiContext"
+import { useUi } from "@/hooks/uiContext"
+import { useCapsule } from '@/hooks/capsuleContext';
 
 
 interface DeskMenuBarProps {
-    capsuleId?: string;
     messages?: {
         play:  string;
         stop:  string;
@@ -21,14 +21,14 @@ interface DeskMenuBarProps {
 /**
  * This is the client component responsible for switching to the correct menu bar
  */
-export default function DeskMenuBar({ capsuleId, messages }: DeskMenuBarProps) {
+export default function DeskMenuBar({ messages }: DeskMenuBarProps) {
 
     const { deskMenuBarMode } = useUi()
     switch (deskMenuBarMode) {
         case "creation":
-            return <CreationMenuBar capsuleId={capsuleId} messages={messages} />
+            return <CreationMenuBar messages={messages} />
             
         case "animation":
-            return <AnimationMenuBar capsuleId={capsuleId} messages={messages} />
+            return <AnimationMenuBar messages={messages} />
     }
 }

@@ -1,7 +1,7 @@
 const logCategories = {
     react: ['page', 'component', 'hook'] as const,
-    supabase: ['auth', 'database', 'storage'] as const,
-    tldraw: ['tools', 'editor'] as const,
+    supabase: ['auth', 'database', 'storage', 'realtime'] as const,
+    tldraw: ['tools', 'editor', 'collab'] as const,
 }
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
@@ -46,7 +46,7 @@ class Logger {
     }
     
     
-    public log(category: ChildCategory, message: string, ...optionalParams: any[]): void {
+    private print(category: ChildCategory, error: boolean, message: string, ...optionalParams: any[]): void {
         
         const isCategoryDirectlyEnabled = this.options.categories.includes(category)
         const isParentCategoryEnabled   = this.options.categories.includes(category.split(':')[0] as LogCategory)
@@ -58,8 +58,20 @@ class Logger {
             isCategoryEnabled
         ) {
             const style = styles[category.split(':')[0] as ParentCategory];
-            console.debug(`%c${category}%c ${message}`, style, '', ...optionalParams);
+            if (error) {
+                console.error(`%c${category}%c ${message}`, style, '', ...optionalParams);
+            } else {
+                console.debug(`%c${category}%c ${message}`, style, '', ...optionalParams);
+            }
         }
+    }
+
+    public log(category: ChildCategory, message: string, ...optionalParams: any[]): void {
+        this.print(category, false, message, ...optionalParams);
+    }
+
+    public error(category: ChildCategory, message: string, ...optionalParams: any[]): void {
+        this.print(category, true, message, ...optionalParams);
     }
 }
     

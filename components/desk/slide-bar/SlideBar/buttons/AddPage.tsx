@@ -2,7 +2,7 @@
 import PlusSquareIcon from '@/components/icons/PlusSquareIcon'
 import LabeledIconBtn from '@/components/primitives/buttons/LabaledIconBtn/LabeledIconBtn'
 import { IconSize } from '@/utils/icons/IconProps';
-import { useNav } from '@/hooks/NavContext';
+import { useNav } from '@/hooks/navContext';
 
 
 

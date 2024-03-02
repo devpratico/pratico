@@ -3,15 +3,11 @@ import DeskMenuBar from '@/components/menu-bars/DeskMenuBar/DeskMenuBar';
 import { getTranslations } from 'next-intl/server';
 
 
-interface TLMenubarProps {
-    capsuleId?: string;
-}
-
 /**
  * This is the menu bar of the canvas.
  * It is positioned on the top of the canvas.
  */
-export default async function TLMenubar({ capsuleId }: TLMenubarProps) {
+export default async function TLMenubar() {
 
     const t = await getTranslations('menu-bar')
     const messages = {
@@ -26,7 +22,7 @@ export default async function TLMenubar({ capsuleId }: TLMenubarProps) {
 
     return (
         <div className={styles.container}>
-            <DeskMenuBar capsuleId={capsuleId} messages={messages} />
+            <DeskMenuBar messages={messages} />
         </div>
     )
 }

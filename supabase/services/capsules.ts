@@ -1,15 +1,38 @@
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
-import logger from "@/utils/logger"
+
+
+export type Capsule = Tables<'capsules'>
+export type Snapshot = TLStoreSnapshot
 
 
 /**
  * @returns Data from the `capsules` table
  */
-async function getCapsules() {
+async function getCapsules(): Promise<Capsule[]> {
     const supabase =  await getSupabaseClient()
-    return supabase.from('capsules').select('*')
+    const { data, error } = await supabase.from('capsules').select('*')
+    if (error) {
+        //logger.error('supabase:database', 'Error getting capsules', { error })
+        throw error
+    } else {
+        return data
+    }
+}
+
+/**
+ * @returns Data from the `capsules` table
+ */
+export async function getCapsule(capsuleId: string): Promise<Capsule> {
+    const supabase =  await getSupabaseClient()
+    const { data, error } = await supabase.from('capsules').select('*').eq('id', capsuleId).single()
+    if (error) {
+        //logger.error('supabase:database', 'Error getting capsule', { error })
+        throw error
+    } else {
+        return data
+    }
 }
 
 
@@ -18,14 +41,14 @@ async function getCapsules() {
  */
 export async function getCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot> {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'getting snapshot...', { capsuleId })
+    //logger.log('supabase:database', 'getting snapshot...', { capsuleId })
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) {
-        console.error("error getting capsule snapshot", error)
+        //logger.error('supabase:database', 'Error getting snapshot', { error })
         throw error
     } else {
         const result = JSON.parse(data.tld_snapshot)
-        logger.log('supabase:database', 'got snapshot', { result })
+        //logger.log('supabase:database', 'got snapshot', { result })
         return result
     }
 }
@@ -37,13 +60,13 @@ export async function getCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnap
 export async function setCapsuleSnapshot(capsuleId: string, snapshot: TLStoreSnapshot) {
     const supabase =  await getSupabaseClient()
     const _snapshot = [JSON.stringify(snapshot)]
-    logger.log('supabase:database', 'setting snapshot...', { capsuleId, _snapshot })
+    //logger.log('supabase:database', 'setting snapshot...', { capsuleId, _snapshot })
     const { data, error } = await supabase.from('capsules').update({tld_snapshot: _snapshot}).eq('id', capsuleId)
     if (error) {
-        console.error("error setting capsule snapshot", error)
+        //logger.error('supabase:database', 'Error setting snapshot', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'set snapshot', { data })
+        //logger.log('supabase:database', 'set snapshot', { data })
         return data
     }
 }
@@ -54,13 +77,13 @@ export async function setCapsuleSnapshot(capsuleId: string, snapshot: TLStoreSna
  */
 export async function getCapsuleTitle(capsuleId: string): Promise<string> {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'getting title...', { capsuleId })
+    //logger.log('supabase:database', 'getting title...', { capsuleId })
     const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
     if (error) {
-        console.error("error getting capsule title", error)
+        //logger.error('supabase:database', 'Error getting title', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'got title', { data })
+        //logger.log('supabase:database', 'got title', { data })
         return data.title || ''
     }
 }
@@ -71,13 +94,13 @@ export async function getCapsuleTitle(capsuleId: string): Promise<string> {
  */
 export async function setCapsuleTitle(capsuleId: string, title: string) {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'setting title...', { capsuleId, title })
+    //logger.log('supabase:database', 'setting title...', { capsuleId, title })
     const { data, error } = await supabase.from('capsules').update({title}).eq('id', capsuleId)
     if (error) {
-        console.error("error setting capsule title", error)
+        //logger.error('supabase:database', 'Error setting title', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'title set', { data })
+        //logger.log('supabase:database', 'title set', { data })
         return data
     }
 }
@@ -89,13 +112,13 @@ export async function setCapsuleTitle(capsuleId: string, title: string) {
  */
 export async function setCapsule(capsule: TablesInsert<'capsules'>) {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'setting capsule...', { capsule })
+    //logger.log('supabase:database', 'setting capsule...', { capsule })
     const { data, error } = await supabase.from('capsules').upsert(capsule)
     if (error) {
-        console.error("error setting capsule", error)
+        //logger.error('supabase:database', 'Error setting capsule', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'set capsule', { data })
+        //logger.log('supabase:database', 'set capsule', { data })
         return data
     }
 }
@@ -105,13 +128,13 @@ export async function setCapsule(capsule: TablesInsert<'capsules'>) {
  */
 export async function getCapsuleIdsByUserId(userId: string): Promise<string[]> {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'getting capsule ids...', { userId })
+    //logger.log('supabase:database', 'getting capsule ids...', { userId })
     const { data, error } = await supabase.from('capsules').select('id').eq('created_by', userId)
     if (error) {
-        console.error("error getting capsule id", error)
+        //logger.error('supabase:database', 'Error getting capsule ids', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'got capsule ids', { data })
+        //logger.log('supabase:database', 'got capsule ids', { data })
         return data.map((capsule: any) => capsule.id)
     }
 }
@@ -122,31 +145,27 @@ export async function getCapsuleIdsByUserId(userId: string): Promise<string[]> {
  */
 export async function getCapsuleIdsTitlesDates(userId: string): Promise<{id: string, title: string, created_at: Date}[]> {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'getting capsule ids, titles, dates...', { userId })
+    //logger.log('supabase:database', 'getting capsule ids, titles, dates...', { userId })
     const { data, error } = await supabase.from('capsules').select('id, title, created_at').eq('created_by', userId)
     if (error) {
-        console.error("error getting capsule id, title, date", error)
+        //logger.error('supabase:database', 'Error getting capsule ids, titles, dates', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'got capsule ids, titles, dates', { data })
+        //logger.log('supabase:database', 'got capsule ids, titles, dates', { data })
         return data as {id: string, title: string, created_at: Date}[]
     }
 }
 
 
-
-
-export type CapsuleData = Tables<'capsules'>
-
-export async function getCapsulesData(userId: string): Promise<CapsuleData[]> {
+export async function getCapsulesData(userId: string): Promise<Capsule[]> {
     const supabase =  await getSupabaseClient()
-    logger.log('supabase:database', 'getting capsules data...', { userId })
+    //logger.log('supabase:database', 'getting capsules data...', { userId })
     const { data, error } = await supabase.from('capsules').select('*').eq('created_by', userId)
     if (error) {
-        console.error("error getting capsules data", error)
+        //logger.error('supabase:database', 'Error getting capsules data', { error })
         throw error
     } else {
-        logger.log('supabase:database', 'got capsules data', { data })
+        //logger.log('supabase:database', 'got capsules data', { data })
         return data
     }
 }

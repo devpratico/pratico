@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Thumbnail from '@/components/Thumbnail/Thumbnail';
 import { getTranslations } from 'next-intl/server';
 
+
 export default async function DocumentsGrid() {
 
     const t = await getTranslations('dashboard')
