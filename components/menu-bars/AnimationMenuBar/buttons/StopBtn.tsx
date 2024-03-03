@@ -2,7 +2,7 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { useUi } from "@/hooks/uiContext";
-import { stopSession } from "@/actions/capsuleActions";
+import { stopRoom } from "@/actions/capsuleActions";
 import { useRoom } from "@/hooks/roomContext";
 
 
@@ -22,7 +22,7 @@ export default function StopBtn({ message }: StopBtnProps) {
         logger.log('react:component', 'Clicked stop button')
         setDeskMenuBarMode('creation')
         try {
-            await stopSession(roomId)
+            await stopRoom(roomId)
             setRoom(undefined)
             logger.log('supabase:database', 'Session stopped')
         } catch (error) {

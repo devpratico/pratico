@@ -2,7 +2,7 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { useUi } from "@/hooks/uiContext";
-import { startSession } from "@/actions/capsuleActions";
+import { createRoom } from "@/actions/capsuleActions";
 import { useCapsule } from '@/hooks/capsuleContext';
 import { useRoom } from "@/hooks/roomContext";
 
@@ -24,7 +24,7 @@ export default function StartBtn({ message }: StartBtnProps) {
         setDeskMenuBarMode('animation')
         try {
             // Start the session and get the room that is created
-            const createdRoom = await startSession(capsuleId)
+            const createdRoom = await createRoom(capsuleId)
             // Set the room in the context
             setRoom(createdRoom)
         } catch (error) {

@@ -92,57 +92,6 @@ export type Database = {
           },
         ]
       }
-      cities: {
-        Row: {
-          created_at: string
-          id: number
-          name: string | null
-          population: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          population?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          population?: number | null
-        }
-        Relationships: []
-      }
-      employees: {
-        Row: {
-          created_at: string | null
-          department: string | null
-          email: string | null
-          id: number
-          name: string | null
-          nums: string | null
-          surnom: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          department?: string | null
-          email?: string | null
-          id?: never
-          name?: string | null
-          nums?: string | null
-          surnom?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          department?: string | null
-          email?: string | null
-          id?: never
-          name?: string | null
-          nums?: string | null
-          surnom?: string | null
-        }
-        Relationships: []
-      }
       room_events: {
         Row: {
           id: number

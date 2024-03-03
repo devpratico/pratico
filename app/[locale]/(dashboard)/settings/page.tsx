@@ -1,7 +1,7 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
-import { getUser } from '@/supabase/services/auth';
-import { getProfile } from '@/supabase/services/user_profiles';
+import { fetchUser } from '@/supabase/services/auth';
+import { fetchProfile } from '@/supabase/services/user_profiles';
 import { SignOutBtn, ResetPasswordBtn, SubscribeBtn, ManageSubscriptionBtn } from './buttons';
 import { doesCustomerExist } from '@/stripe/services/customer';
 
@@ -9,12 +9,12 @@ import { doesCustomerExist } from '@/stripe/services/customer';
 export default async function AccountPage() {
     const t = await getTranslations("settings")
 
-    const { data, error } = await getUser()
+    const { data, error } = await fetchUser()
     if (error || !data?.user) {
         return <p>{error?.message ?? "error"}</p>
     }
     const user = data.user
-    const { data: profileData, error: profileError } = await getProfile(user.id)
+    const { data: profileData, error: profileError } = await fetchProfile(user.id)
     const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
 
     const customerExists = await doesCustomerExist(stripe_id)

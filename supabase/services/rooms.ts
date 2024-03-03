@@ -11,16 +11,32 @@ export type RoomInsert = TablesInsert<'rooms'>
  * @returns a room from the `rooms` table
  * @param roomId - The id of the room to get
  */
-export async function getRoom(roomId: string) {
+export async function fetchRoom(roomId: string) {
     const supabase =  await getSupabaseClient()
-    return supabase.from('rooms').select('*').eq('id', roomId).single()
+    const { data, error } = await supabase.from('rooms').select('*').eq('id', roomId).single()
+    if (error) {
+        throw error
+    } else {
+        return data as Room
+    }
+}
+
+
+export async function fetchRoomByName(roomName: string) {
+    const supabase =  await getSupabaseClient()
+    const { data, error } = await supabase.from('rooms').select('*').eq('name', roomName).single()
+    if (error) {
+        throw error
+    } else {
+        return data as Room
+    }
 }
 
 
 /**
  * Sets a room in the `rooms` table
  */
-export async function setRoom(room: TablesInsert<'rooms'>) {
+export async function saveRoom(room: TablesInsert<'rooms'>) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select()
     if (error) {
@@ -28,6 +44,16 @@ export async function setRoom(room: TablesInsert<'rooms'>) {
     } else {
         return data[0] as Room
     }
+}
+
+
+/**
+ * Sets a room snapshot in the `rooms` table
+ */
+export async function saveRoomSnapshot(roomId: number, snapshot: any) {
+    const supabase =  await getSupabaseClient()
+    const { error } = await supabase.from('rooms').update({capsule_snapshot: JSON.stringify(snapshot)}).eq('id', roomId)
+    if (error) throw error
 }
 
 /**
@@ -48,7 +74,7 @@ export async function deleteRoom(roomId: number) {
 /**
  * Get rooms related to a capsule
  */
-export async function getRoomsByCapsuleId(capsuleId: string) {
+export async function fetchRoomsByCapsuleId(capsuleId: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) {

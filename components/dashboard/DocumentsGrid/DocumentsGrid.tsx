@@ -1,7 +1,7 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from './DocumentMiniature/DocumentMiniature';
-import { getCapsulesData, Capsule } from '@/supabase/services/capsules';
-import { getUserId } from '@/supabase/services/auth';
+import { fetchCapsulesData, Capsule } from '@/supabase/services/capsules';
+import { fetchUserId } from '@/supabase/services/auth';
 import Link from 'next/link';
 import Thumbnail from '@/components/Thumbnail/Thumbnail';
 import { getTranslations } from 'next-intl/server';
@@ -13,8 +13,8 @@ export default async function DocumentsGrid() {
 
     let capsules: Capsule[] = []
     try {
-        const userId = await getUserId()
-        capsules = await getCapsulesData(userId)
+        const userId = await fetchUserId()
+        capsules = await fetchCapsulesData(userId)
     } catch (error) {
         console.error('Error getting capsules', error)
     }

@@ -4,6 +4,8 @@ import { getTranslations } from 'next-intl/server';
 import { CreateCapsuleBtn } from './buttons';
 
 
+export const revalidate = 0
+
 export default async function CapsulesPage() {
     const t = await getTranslations("dashboard")
     

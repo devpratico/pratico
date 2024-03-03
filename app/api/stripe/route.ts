@@ -1,5 +1,5 @@
 import getStripeClient from '@/stripe/getStripeClient'
-import { setStripeId } from '@/supabase/services/user_profiles'
+import { saveStripeId } from '@/supabase/services/user_profiles'
 
 
 const stripe = getStripeClient()
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
         if (clientReferenceId && customerId) {
           try {
-            await setStripeId(clientReferenceId, customerId)
+            await saveStripeId(clientReferenceId, customerId)
           } catch (error) {
             console.error(`🚨 Error setting Stripe ID: ${error}`)
           }

@@ -19,10 +19,12 @@ interface useBroadcastStoreProps {
 
 /**
  * This hook is used to create a realtime channel with supabase,
- * broadcasting changes end merging them with the local store.
+ * broadcasting changes end merging them in the store that it returns.
+ * It has been inspired by the [tldraw collaboration example](https://github.com/tldraw/tldraw-yjs-example)
+ * and [this broadcast example](https://stackblitz.com/edit/nextjs-hug4zd?file=pages%2Fsend-broadcast.tsx,pages%2Freceive-broadcast.tsx).
+ * See the [supabase documentation](https://supabase.com/docs/guides/realtime/broadcast) for more information.
  */
 export default function useBroadcastStore({roomName, initialSnapshot}: useBroadcastStoreProps) {
-    console.log('RENDERING useBroadcastStore')
     const supabase = createClient()
 
     // Initialize the store
@@ -33,14 +35,14 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
     })
 
     useEffect(() => {
-        let storeListener: () => void // Need to keep a reference to the listener to remove it in the cleanup function
+        let storeListener: () => void // Must be initialized here so that it can be returned in the cleanup function
         const channel = supabase.channel(roomName)
 
-        // Subscribe to the channel
+        // Subscribe to the channel and broaecast changes
         channel.subscribe((status, err) => {
             logger.log('supabase:realtime', 'status', status, err)
 
-            // Define a function to log the response from the server
+            // This is just for logging to the console
             const debounceLog = debounce((response: any) => {logger.log('supabase:realtime', 'sent', response)}, 1000)
 
             // Define a function to send changes to the server

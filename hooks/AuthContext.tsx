@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, getUser, onAuthStateChange, signOut } from '@/supabase/services/auth';
+import { User, fetchUser, onAuthStateChange, signOut } from '@/supabase/services/auth';
 import { Subscription } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Sets the user for the first time
         const _setUser = async () => {
             setIsUserLoading(true);
-            const { data: { user } } = await getUser();
+            const { data: { user } } = await fetchUser();
             setUser(user);
             setIsUserLoading(false);
         }

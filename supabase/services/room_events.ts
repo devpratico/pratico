@@ -6,7 +6,7 @@ import logger from "@/utils/logger"
 /**
  * Set an event in the `room_events` table
  */
-export async function setRoomEvent(event: TablesInsert<'room_events'>) {
+export async function saveRoomEvent(event: TablesInsert<'room_events'>) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('room_events').insert(event)
     if (error) {

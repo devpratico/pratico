@@ -35,6 +35,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             // TODO: Maybe keep the room open ?
             setRoom(undefined) // This will stop the session (if it's running)
             router.push('/capsules')
+            router.refresh() // This is to force the revalidation of the cache
             logger.log('react:component', 'Save button callback ended', { capsuleId, snapshot })
         } catch (error) {
             console.error("Error saving snapshot", error)

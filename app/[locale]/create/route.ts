@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { randomUUID } from 'crypto'
-import { getUserId } from '@/supabase/services/auth'
-import { setCapsule } from '@/supabase/services/capsules'
+import { fetchUserId } from '@/supabase/services/auth'
+import { saveCapsule } from '@/supabase/services/capsules'
 
 
 // TODO: Put this in a server action
@@ -13,7 +13,7 @@ import { setCapsule } from '@/supabase/services/capsules'
  * The snapshot is not created here, but in the RemoteCanvas component.
  */
 export async function GET() {
-    const user_id = await getUserId()
+    const user_id = await fetchUserId()
     const capsule_id = randomUUID()
 
     const capsule = {
@@ -22,7 +22,7 @@ export async function GET() {
     }
 
     try {
-        await setCapsule(capsule)
+        await saveCapsule(capsule)
     } catch (error) {
         console.error("Error creating capsule", error)
         return new Response("Error creating capsule", { status: 500 })

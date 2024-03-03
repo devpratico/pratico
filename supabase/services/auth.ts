@@ -10,13 +10,13 @@ export async function signOut() {
     await supabase.auth.signOut()
 }
 
-export async function getUser() {
+export async function fetchUser() {
     const supabase =  await getSupabaseClient()
     return supabase.auth.getUser()
 }
 
-export async function getUserId() {
-    const res = await getUser()
+export async function fetchUserId() {
+    const res = await fetchUser()
     const { data, error } = res
     if (error || !data?.user.id) {
         console.error("error getting user id", error)

@@ -1,7 +1,7 @@
 'use client'
 import styles from './CapsuleTitle.module.css'
 import { useState, useEffect, useRef } from "react"
-import { getCapsuleTitle, setCapsuleTitle } from '@/supabase/services/capsules'
+import { fetchCapsuleTitle, saveCapsuleTitle } from '@/supabase/services/capsules'
 import logger from '@/utils/logger'
 import { useCapsule } from '@/hooks/capsuleContext';
 
@@ -36,7 +36,7 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
         async function getTitle() {
             if (!capsuleId) return
             try {
-                const title = await getCapsuleTitle(capsuleId)
+                const title = await fetchCapsuleTitle(capsuleId)
                 setInputValue(title)
                 // Focus if title empty
                 if (title === '') {
@@ -90,7 +90,7 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
         if (capsuleId && hasChanged) {
             try {
                 logger.log('react:component', 'setting capsule title', { capsuleId, inputValue })
-                await setCapsuleTitle(capsuleId, inputValue)
+                await saveCapsuleTitle(capsuleId, inputValue)
                 logger.log('react:component', 'capsule title set', { capsuleId, inputValue })
                 setHasChanged(false)
             } catch (error) {
