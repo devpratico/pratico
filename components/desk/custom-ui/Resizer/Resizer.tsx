@@ -17,7 +17,7 @@ const Resizer = track(() => {
 
     const updateSize = () => {
         logger.log('tldraw:editor', 'Resize canvas')
-        zoomToBounds({ editor, box, margin: 10,  insets, animation: { duration: 200 } })
+        zoomToBounds({ editor, box, margin: 10,  insets })
     }
 
     let timeout: NodeJS.Timeout

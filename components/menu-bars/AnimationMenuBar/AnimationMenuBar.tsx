@@ -11,6 +11,7 @@ import ChatSquareDotIcon from '@/components/icons/ChatSquareDotIcon';
 import PeopleIcon from '@/components/icons/PeopleIcon';
 import { IconSize } from '@/utils/icons/IconProps';
 import StopBtn from "./buttons/StopBtn";
+import RoomLink from "../components/RoomLink/RoomLink";
 
 
 
@@ -37,7 +38,8 @@ export default function AnimationMenuBar({ capsuleId, messages }: AnimationMenuB
     return (
         <MenuBarLayout spacerPosition={3}>
             <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
-            <CapsuleTitle capsuleId={capsuleId} disabled={true} />
+            <CapsuleTitle disabled={true} />
+            <RoomLink />
             <StopBtn message={messages?.stop || 'Stop Session'} />
             <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
             <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={messages?.chat || 'chat'} {...styleBtnProps} />

@@ -1,6 +1,6 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from './DocumentMiniature/DocumentMiniature';
-import { getCapsulesData, CapsuleData } from '@/supabase/services/capsules';
+import { getCapsulesData, Capsule } from '@/supabase/services/capsules';
 import { getUserId } from '@/supabase/services/auth';
 import Link from 'next/link';
 import Thumbnail from '@/components/Thumbnail/Thumbnail';
@@ -11,7 +11,7 @@ export default async function DocumentsGrid() {
 
     const t = await getTranslations('dashboard')
 
-    let capsules: CapsuleData[] = []
+    let capsules: Capsule[] = []
     try {
         const userId = await getUserId()
         capsules = await getCapsulesData(userId)

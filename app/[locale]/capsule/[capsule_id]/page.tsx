@@ -6,6 +6,11 @@ import { SupabaseError } from '@/supabase/types/errors';
 import { CapsuleProvider } from '@/hooks/capsuleContext';
 import { RoomProvider } from '@/hooks/roomContext';
 import { Room, getRoomsByCapsuleId } from '@/supabase/services/rooms';
+import TLMenubar from '@/components/desk/custom-ui/TLMenubar/TLMenubar';
+import Resizer from '@/components/desk/custom-ui/Resizer/Resizer';
+import EmbedHint from '@/components/desk/custom-ui/EmbedHint/EmbedHint';
+import TLToolbar from '@/components/desk/custom-ui/TLToolbar/TLToolbar';
+import TLSlidebar from '@/components/desk/custom-ui/TLSlidebar/TLSlidebar';
 
 
 export const dynamic = 'force-dynamic'
@@ -22,11 +27,21 @@ export default async function CapsulePage({params}: {params: { capsule_id: strin
         return <div>{(error as SupabaseError).message}</div>
     }
 
+    const deskComponent = (
+        <Desk>
+            <Resizer/>
+            <EmbedHint/>
+            <TLMenubar/>
+            <TLToolbar/>
+            <TLSlidebar/>
+        </Desk>
+    )
+
     return (
         <main className={styles.main}>
             <CapsuleProvider value={{ capsule }}>
-                <RoomProvider value={{ room: rooms[0] }}>
-                    <MainLayout content={<Desk/>} />
+                <RoomProvider initialRoom={rooms[0]}>
+                    <MainLayout content={deskComponent}/>
                 </RoomProvider>
             </CapsuleProvider>
         </main>

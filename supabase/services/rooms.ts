@@ -1,7 +1,8 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, QueryData } from "@supabase/supabase-js";
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 
+// TODO; rename functions to clearly say it happens in the database
 
 export type Room = Tables<'rooms'>
 export type RoomInsert = TablesInsert<'rooms'>
@@ -21,13 +22,11 @@ export async function getRoom(roomId: string) {
  */
 export async function setRoom(room: TablesInsert<'rooms'>) {
     const supabase =  await getSupabaseClient()
-    const { data, error } = await supabase.from('rooms').upsert(room)
+    const { data, error } = await supabase.from('rooms').upsert(room).select()
     if (error) {
-        //logger.error('supabase:database', 'error setting room', error.message)
         throw error
     } else {
-        //logger.log('supabase:database', 'set room', { data })
-        return data
+        return data[0] as Room
     }
 }
 
