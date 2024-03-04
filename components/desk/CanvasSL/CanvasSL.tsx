@@ -1,6 +1,6 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
-import { useCapsule } from "@/hooks/capsuleContext";
+import { useCapsule } from "@/hooks_i/capsuleContext";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import AutoSaver from "../AutoSaver/AutoSaver";
 

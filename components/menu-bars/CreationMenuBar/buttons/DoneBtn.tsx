@@ -4,9 +4,9 @@ import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import { useEditor } from "@tldraw/tldraw";
 import logger from "@/utils/logger";
 import { useRouter } from "next/navigation";
-import { useCapsule } from '@/hooks/capsuleContext';
+import { useCapsule } from '@/hooks_i/capsuleContext';
 import { saveCapsuleSnapshot } from "@/actions/capsuleActions";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks_i/roomContext";
 
 
 interface DoneBtnProps {

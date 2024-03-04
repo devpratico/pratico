@@ -1,10 +1,10 @@
 'use client'
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
-import { useUi } from "@/hooks/uiContext";
+import { useUi } from "@/hooks_i/uiContext";
 import { createRoom } from "@/actions/capsuleActions";
-import { useCapsule } from '@/hooks/capsuleContext';
-import { useRoom } from "@/hooks/roomContext";
+import { useCapsule } from '@/hooks_i/capsuleContext';
+import { useRoom } from "@/hooks_i/roomContext";
 
 
 interface StartBtnProps {

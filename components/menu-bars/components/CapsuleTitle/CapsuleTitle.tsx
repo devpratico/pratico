@@ -3,7 +3,7 @@ import styles from './CapsuleTitle.module.css'
 import { useState, useEffect, useRef } from "react"
 import { fetchCapsuleTitle, saveCapsuleTitle } from '@/supabase/services/capsules'
 import logger from '@/utils/logger'
-import { useCapsule } from '@/hooks/capsuleContext';
+import { useCapsule } from '@/hooks_i/capsuleContext';
 
 interface TitleProps {
     /**

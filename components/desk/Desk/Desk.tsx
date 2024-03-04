@@ -1,7 +1,7 @@
 'use client'
 import CanvasRT from "../CanvasRT/CanvasRT";
 import CanvasSL from "../CanvasSL/CanvasSL";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks_i/roomContext";
 
 
 /**

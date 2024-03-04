@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import { RoomProvider } from "@/hooks/roomContext";
+import { RoomProvider } from "@/hooks_i/roomContext";
 import { Room, fetchRoomByName } from "@/supabase/services/rooms";
 import logger from "@/utils/logger";
 import CanvasST from "@/components/desk/CanvasST/CanvasST";

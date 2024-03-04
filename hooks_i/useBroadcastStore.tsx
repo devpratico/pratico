@@ -48,9 +48,7 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
             // Define a function to send changes to the server
             const broadcast = async (changes: RecordsDiff<TLRecord>) => {
                 if (status !== 'SUBSCRIBED') return
-                await channel.send({type: 'broadcast', event: 'test', payload: changes}).then((response) => {
-                    debounceLog(response)
-                })
+                await channel.send({type: 'broadcast', event: 'test', payload: changes}).then((response) => {debounceLog(response)})
             }
             // Listen to changes in the store and broadcast them
             storeListener = store.listen(({changes}) => {

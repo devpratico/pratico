@@ -1,10 +1,10 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
-import useBroadcastStore from "@/hooks/useBroadcastStore";
-import { useCapsule } from "@/hooks/capsuleContext";
+import useBroadcastStore from "@/hooks_i/useBroadcastStore";
+import { useCapsule } from "@/hooks_i/capsuleContext";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
 import  AutoSaver from "../AutoSaver/AutoSaver";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks_i/roomContext";
 
 
 interface CanvasRTProps {

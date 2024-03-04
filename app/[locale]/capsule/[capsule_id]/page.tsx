@@ -3,8 +3,8 @@ import MainLayout from '../../../../components/layouts/MainLayout/MainLayout'
 import Desk from '@/components/desk/Desk/Desk'
 import { Capsule, fetchCapsule } from '@/supabase/services/capsules';
 import { SupabaseError } from '@/supabase/types/errors';
-import { CapsuleProvider } from '@/hooks/capsuleContext';
-import { RoomProvider } from '@/hooks/roomContext';
+import { CapsuleProvider } from '@/hooks_i/capsuleContext';
+import { RoomProvider } from '@/hooks_i/roomContext';
 import { Room, fetchRoomsByCapsuleId } from '@/supabase/services/rooms';
 import TLMenubar from '@/components/desk/custom-ui/TLMenubar/TLMenubar';
 import Resizer from '@/components/desk/custom-ui/Resizer/Resizer';

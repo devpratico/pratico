@@ -1,8 +1,8 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
-import useBroadcastStore from "@/hooks/useBroadcastStore";
+import useBroadcastStore from "@/hooks_i/useBroadcastStore";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks_i/roomContext";
 import AutoSaver from "../AutoSaver/AutoSaver";
 
 

@@ -1,8 +1,8 @@
 'use client'
 import CreationMenuBar from "../CreationMenuBar/CreationMenuBar"
 import AnimationMenuBar from "../AnimationMenuBar/AnimationMenuBar"
-import { useUi } from "@/hooks/uiContext"
-import { useCapsule } from '@/hooks/capsuleContext';
+import { useUi } from "@/hooks_i/uiContext"
+import { useCapsule } from '@/hooks_i/capsuleContext';
 
 
 interface DeskMenuBarProps {
