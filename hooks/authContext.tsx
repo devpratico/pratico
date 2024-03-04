@@ -40,7 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 const user = session?.user ?? null;
                 setUser(user);
                 setIsUserLoading(false);
-                router.refresh();
+                // TODO: SHOULD WE REFRESH ?
+                //router.refresh();
             })
             // Set the onAuthChange method
             onAuthChange = _onAuthChange.data.subscription;

@@ -1,8 +1,8 @@
 'use client'
 import CreationMenuBar from "../CreationMenuBar/CreationMenuBar"
 import AnimationMenuBar from "../AnimationMenuBar/AnimationMenuBar"
-import { useUi } from "@/hooks_i/uiContext"
-import { useCapsule } from '@/hooks_i/capsuleContext';
+//import { useUi } from "@/hooks/uiContext"
+import { useRoom } from "@/hooks/roomContext"
 
 
 interface DeskMenuBarProps {
@@ -23,6 +23,9 @@ interface DeskMenuBarProps {
  */
 export default function DeskMenuBar({ messages }: DeskMenuBarProps) {
 
+    const { room } = useRoom()
+
+    /*
     const { deskMenuBarMode } = useUi()
     switch (deskMenuBarMode) {
         case "creation":
@@ -30,5 +33,11 @@ export default function DeskMenuBar({ messages }: DeskMenuBarProps) {
             
         case "animation":
             return <AnimationMenuBar messages={messages} />
+    }*/
+
+    if (room) {
+        return <AnimationMenuBar messages={messages} />
+    } else {
+        return <CreationMenuBar messages={messages} />
     }
 }

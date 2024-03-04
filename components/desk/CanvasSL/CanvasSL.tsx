@@ -1,6 +1,6 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
-import { useCapsule } from "@/hooks_i/capsuleContext";
+import { useCapsule } from "@/hooks/capsuleContext";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import AutoSaver from "../AutoSaver/AutoSaver";
 
@@ -14,7 +14,6 @@ interface CanvasSLProps {
  * `SL` stands for "solo".
  */
 export default function CanvasSL({children}: CanvasSLProps) {
-
     // Get the capsule we're in
     const { capsule } = useCapsule()
     const capsuleId = capsule?.id

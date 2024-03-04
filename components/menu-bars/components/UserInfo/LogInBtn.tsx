@@ -1,6 +1,6 @@
 'use client'
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
-import { useUi } from "@/hooks_i/uiContext";
+import { useUi } from "@/hooks/uiContext";
 
 export default function LogInBtn({children}: {children: React.ReactNode}) {
 

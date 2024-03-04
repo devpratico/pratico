@@ -15,21 +15,25 @@ const Resizer = track(() => {
     const insets = {top: 56, right: 0, bottom: 70, left: 60}
     const currentPage = editor.getCurrentPage()
 
-    const updateSize = () => {
-        logger.log('tldraw:editor', 'Resize canvas')
-        zoomToBounds({ editor, box, margin: 10,  insets })
-    }
-
-    let timeout: NodeJS.Timeout
-    const debouncedUpdateSize = () => {
-        clearTimeout(timeout)
-        timeout = setTimeout(updateSize, 200)
-    }
-    
     useEffect(() => {
+
+        const updateSize = () => {
+            logger.log('tldraw:editor', 'Resize canvas')
+            zoomToBounds({ editor, box, margin: 10,  insets })
+        }
+    
+        let timeout: NodeJS.Timeout
+        const debouncedUpdateSize = () => {
+            clearTimeout(timeout)
+            timeout = setTimeout(updateSize, 200)
+        }
+
         updateSize()
         window.addEventListener('resize', debouncedUpdateSize);
-        return () => window.removeEventListener('resize', debouncedUpdateSize)
+        return () => {
+            window.removeEventListener('resize', debouncedUpdateSize)
+            clearTimeout(timeout)
+        }
     }, [currentPage]) // TODO: there's a dependency array warning here
 
     return null

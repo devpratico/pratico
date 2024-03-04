@@ -3,8 +3,9 @@ import { createContext, useContext, } from 'react';
 import type { Capsule } from '@/supabase/services/capsules';
 
 export type CapsuleContext = {
+    // TODO: I suspect we only need capsule_id
     capsule: Capsule;
-    // May not need this as it is available in all children components through useEditor()
+    // May not need this as it is available in all children components through useEditor():
     //currentSnapshot: Snapshot;
 }
 

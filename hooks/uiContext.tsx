@@ -2,7 +2,7 @@
 import { createContext, useContext, useState } from 'react';
 
 
-export type MenuBarMode = 'creation' | 'animation';
+//export type MenuBarMode = 'creation' | 'animation';
 
 type UiContextType = {
 
@@ -15,8 +15,8 @@ type UiContextType = {
     setAuthDialogOpen: (open: boolean) => void;
 
     // Menu bar mode
-    deskMenuBarMode: MenuBarMode;
-    setDeskMenuBarMode: (mode: MenuBarMode) => void;
+    //deskMenuBarMode: MenuBarMode;
+    //setDeskMenuBarMode: (mode: MenuBarMode) => void;
 };
 
 
@@ -26,7 +26,7 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
     const [isDark, setIsDark] = useState(false);
     const [authDialogOpen, setAuthDialogOpen] = useState(false);
     const toggleDark = () => setIsDark(!isDark);
-    const [deskMenuBarMode, setDeskMenuBarMode] = useState<MenuBarMode>('creation');
+    //const [deskMenuBarMode, setDeskMenuBarMode] = useState<MenuBarMode>('creation');
 
     return (
         <UiContext.Provider value={{
@@ -34,8 +34,8 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
             toggleDark,
             authDialogOpen,
             setAuthDialogOpen,
-            deskMenuBarMode,
-            setDeskMenuBarMode,
+            //deskMenuBarMode,
+            //setDeskMenuBarMode,
         }}>
             {children}
         </UiContext.Provider>

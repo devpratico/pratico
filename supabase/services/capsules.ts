@@ -1,3 +1,4 @@
+import logger from "@/utils/logger";
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
@@ -30,6 +31,7 @@ export async function fetchCapsule(capsuleId: string): Promise<Capsule> {
         //logger.error('supabase:database', 'Error getting capsule', { error })
         throw error
     } else {
+        logger.log('supabase:database', 'got capsule', (data as Capsule).title)
         return data
     }
 }

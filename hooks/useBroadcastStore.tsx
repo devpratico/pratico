@@ -13,7 +13,7 @@ import debounce from "@/utils/debounce";
 
 
 interface useBroadcastStoreProps {
-    roomName: string
+    roomName?: string
     initialSnapshot?: StoreSnapshot<TLRecord>
 }
 
@@ -33,6 +33,11 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
         if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
         return _store
     })
+
+    // Check if roomName is defined
+    if (!roomName) {
+        throw new Error(`Missing roomName: ${roomName}`)
+    }
 
     useEffect(() => {
         let storeListener: () => void // Must be initialized here so that it can be returned in the cleanup function
@@ -80,7 +85,7 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
             supabase.removeChannel(channel) // Removes the channel
             storeListener() // Removes the listener (returned from store.listen())
         }
-    }, [roomName, store])
+    }, [roomName])
     
     return store
     

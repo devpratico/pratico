@@ -1,5 +1,5 @@
 'use client'
-import { useRoom } from '@/hooks_i/roomContext';
+import { useRoom } from '@/hooks/roomContext';
 
 
 export default function RoomLink() {

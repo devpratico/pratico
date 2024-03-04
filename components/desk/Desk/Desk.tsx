@@ -1,14 +1,14 @@
 'use client'
 import CanvasRT from "../CanvasRT/CanvasRT";
 import CanvasSL from "../CanvasSL/CanvasSL";
-import { useRoom } from "@/hooks_i/roomContext";
+import { useRoom } from "@/hooks/roomContext";
 
 
 /**
  * This is the Canvas but server side, allowing for custom UI
  * with internationalization and other server side features.
  */
-export default function Desk({children}: {children: React.ReactNode}) {
+export default function Desk({children}: {children?: React.ReactNode}) {
     const { room } = useRoom()
 
     if (room) {
