@@ -35,7 +35,7 @@ export default function AnimationMenuBar({ capsuleId, messages }: AnimationMenuB
     }
 
     return (
-        <MenuBarLayout spacerPosition={3}>
+        <MenuBarLayout spacerPosition={2}>
             <div className={styles.link}>
                 <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                 <RoomLink />

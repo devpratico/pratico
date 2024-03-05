@@ -13,6 +13,7 @@ import {
 import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
+import { generateRandomCode } from '@/utils/codeGen'
 
 
 
@@ -21,7 +22,13 @@ import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
  * It's used to set some initial preferences.
  */
 const handleMount = (editor: Editor) => {
-    setUserPreferences({ id: 'tldraw', edgeScrollSpeed: 0 })
+    // TODO: This uses LocalStorage. We should use data from the database.
+    setUserPreferences({
+        id: 'ID_' + generateRandomCode(),
+        color: 'blue',
+        name: 'Tom D',
+        edgeScrollSpeed: 0
+    })
     editor.updateInstanceState({ canMoveCamera: false })
     editor.setStyleForNextShapes(DefaultColorStyle, "black");
     editor.setStyleForNextShapes(DefaultSizeStyle , "m");

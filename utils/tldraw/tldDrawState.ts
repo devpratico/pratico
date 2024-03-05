@@ -19,6 +19,7 @@ export interface TldDrawState {
     nextFont:   TLDefaultFontStyle;
 }
 
+// TODO: maybe use the `computed` function from tldraw, to use a more reactive approach
 export default function getTldDrawState(editor: Editor): TldDrawState {
     const activeToolId = editor.getCurrentToolId()
     const stylesForNextShapes = editor.getInstanceState().stylesForNextShape
