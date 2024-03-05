@@ -27,7 +27,7 @@ interface useBroadcastStoreProps {
 /**
  * This hook is used to create a realtime channel with supabase,
  * broadcasting changes end merging them in the store that it returns.
- * It has been inspired by the [tldraw collaboration example](https://github.com/tldraw/tldraw-yjs-example)
+ * It has been inspired by the [tldraw collaboration example](https://tldraw.dev/examples/collaboration/yjs) and [use presence example](https://tldraw.dev/examples/collaboration/user-presence).
  * and [this broadcast example](https://stackblitz.com/edit/nextjs-hug4zd?file=pages%2Fsend-broadcast.tsx,pages%2Freceive-broadcast.tsx).
  * See the [supabase documentation](https://supabase.com/docs/guides/realtime/broadcast) for more information.
  */
@@ -71,7 +71,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 })
             }
 
-            // DOCUMENT CHANGES
+            // DOCUMENT CHANGES (drawing, adding shapes...)
             // Listen to tldraw store and broadcast changes
             storeListener = store.listen(({changes}) => {
                 logChanges(changes, 'local')
@@ -79,9 +79,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }, { source: 'user', scope: 'document' })
 
 
-            // PRESENCE CHANGES
-            // Listen to presence changes (mouse position, color, name...) and broadcast them
-
+            // PRESENCE CHANGES (mouse position, color, name...)
             // This complicated thing is just getting the id, color and name in a reactive way
             // from `getUserPreferences` (which is a LocalStorage thing from tldraw)
             const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
