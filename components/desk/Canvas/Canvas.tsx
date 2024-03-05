@@ -13,7 +13,7 @@ import {
 import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
-import { generateRandomCode } from '@/utils/codeGen'
+import { generateRandomCode, getRandomColor } from '@/utils/codeGen'
 
 
 
@@ -25,7 +25,7 @@ const handleMount = (editor: Editor) => {
     // TODO: This uses LocalStorage. We should use data from the database.
     setUserPreferences({
         id: 'ID_' + generateRandomCode(),
-        color: 'blue',
+        color: getRandomColor(),
         name: 'Tom D',
         edgeScrollSpeed: 0
     })

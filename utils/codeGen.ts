@@ -15,3 +15,21 @@ export function encodeStringForURL(str: string): string {
         return '%' + c.charCodeAt(0).toString(16);
     });
 }
+
+
+const colors = [
+    'cadetblue',
+    'coral',
+    'cornflowerblue',
+    'darkgreen',
+    'darkviolet',
+    'dodgerblue',
+    'tomato'
+]
+
+/**
+ * Returns a random color from the list of colors
+ */
+export function getRandomColor(): string {
+    return colors[Math.floor(Math.random() * colors.length)];
+}

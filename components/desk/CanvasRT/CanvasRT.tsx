@@ -4,6 +4,7 @@ import useBroadcastStore from "@/hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
 import  AutoSaver from "../AutoSaver/AutoSaver";
 import { useRoom } from "@/hooks/roomContext";
+import { useEffect } from "react";
 
 
 interface CanvasRTProps {
@@ -20,9 +21,11 @@ export default function CanvasRT({children}: CanvasRTProps) {
     const { room } = useRoom()
     const roomId = room?.id?.toString()
     const initialSnapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined
+    
+    
     const store = useBroadcastStore({roomId, initialSnapshot})
 
-    if (!room || !roomId || !roomId) {
+    if (!room || !roomId) {
         return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}, roomId: ${roomId}}`}</div>
     }
 

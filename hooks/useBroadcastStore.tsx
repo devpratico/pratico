@@ -26,9 +26,8 @@ interface useBroadcastStoreProps {
 
 /**
  * This hook is used to create a realtime channel with supabase,
- * broadcasting changes end merging them in the store that it returns.
+ * broadcasting changes and merging them in the store that it returns.
  * It has been inspired by the [tldraw collaboration example](https://tldraw.dev/examples/collaboration/yjs) and [use presence example](https://tldraw.dev/examples/collaboration/user-presence).
- * and [this broadcast example](https://stackblitz.com/edit/nextjs-hug4zd?file=pages%2Fsend-broadcast.tsx,pages%2Freceive-broadcast.tsx).
  * See the [supabase documentation](https://supabase.com/docs/guides/realtime/broadcast) for more information.
  */
 export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcastStoreProps) {
@@ -38,19 +37,20 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         throw new Error(`Missing roomId: ${roomId}`)
     }
 
-    // Initialize the store that we will return
+    // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
         const _store = createTLStore({shapeUtils: defaultShapeUtils})
         if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
         return _store
     })
 
-    // Everything happens in this useEffect
     useEffect(() => {
-
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
-        const channel = supabase.channel(roomId)
+        const channel = supabase.channel(roomId,
+            // We use the tldraw user id as the supabase presence key id to identify the user:
+            {config:{ presence: { key: getUserPreferences().id } }}
+        )
 
         // Initialize the listeners in the body of the useEffect so that we can unsubscribe in the cleanup function
         let storeListener: () => void
@@ -78,10 +78,17 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 broadcast({eventName: 'document', payload: changes})
             }, { source: 'user', scope: 'document' })
 
+            // PRESENCE CHANGES - Connexion status of participants
+            // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
+            // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
+            const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
+            async function sendConnexionStatus() {
+                await channel.track(connexionStatus).then((response) => {debounceLog(response)})
+            }
+            sendConnexionStatus()
 
-            // PRESENCE CHANGES (mouse position, color, name...)
-            // This complicated thing is just getting the id, color and name in a reactive way
-            // from `getUserPreferences` (which is a LocalStorage thing from tldraw)
+            // PRESENCE CHANGES - Mouse position, name, color...
+            // Broadcast your tldraw's TLInstancePresence to everyone
             const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
 				const user = getUserPreferences()
 				return {
@@ -100,7 +107,10 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // React to changes in the presence object
             presenceListener = react('when presence changes', () => {
                 const presence = presenceSignal.get()
-                if (!presence) return
+                if (!presence) {
+                    logger.log('tldraw:collab', 'empty presence')
+                    return
+                }
                 // `requestAnimationFrame` is used in the example, not sure why not used for the document changes too
                 requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
             })
@@ -118,9 +128,9 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 setStore((prevStore) => {
                     const newStore = prevStore
                     newStore.mergeRemoteChanges(() => {
-                        Object.values(diff.added).forEach((record) => {newStore.put([record])})
-                        Object.values(diff.removed).forEach((record) => {newStore.remove([record.id])})
-                        Object.values(diff.updated).forEach( ([from, to]) => {newStore.update(from.id, () => to)})
+                        Object.values(diff.added  ).forEach((record)     => {newStore.put([record])})
+                        Object.values(diff.removed).forEach((record)     => {newStore.remove([record.id])})
+                        Object.values(diff.updated).forEach(([from, to]) => {newStore.update(from.id, () => to)})
                     })
                     return newStore
                 })
@@ -128,6 +138,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         )
 
         // LISTEN TO THE CHANNEL 'PRESENCE' EVENTS - MERGE REMOTE CHANGES IN THE STORE
+        // This is the mouse positions, names, colors...
         channel.on(
             'broadcast',
             { event: 'presence' },
@@ -143,16 +154,30 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }
         )
 
+        // LISTEN TO THE CHANNEL 'CONNEXIONS' EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
+        channel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+            // `leftPresences` corresponds to the connexion status we sent above
+            // Get the ids and turn them into the special Instance type
+            const leftPresencesIds = leftPresences.map(p => InstancePresenceRecordType.createId(p.id))
+            logger.log('supabase:realtime', 'presences leave', leftPresencesIds)
+            setStore((prevStore) => {
+                const newStore = prevStore
+                newStore.remove(leftPresencesIds)
+                return newStore
+            })
+        })
+
         return () => {
-            supabase.removeChannel(channel)
+            logger.log('react:hook', 'useBroadcastStore cleanup')
+            supabase.removeChannel(channel).then((res) => {logger.log('supabase:realtime', 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
             presenceListener()
+            channel.untrack()
         }
     }, [roomId])
     
     return store
-    
 }
 
 
@@ -162,7 +187,7 @@ function logChanges(changes: RecordsDiff<TLRecord>, source: 'local' | 'remote') 
     // This is just for logging to the console
     // We use object.values to get the values (most of the time, only one), as it is an object
     // with useless keys (they are the record ids, and we can get them from the record itself)
-    Object.values(changes.added).forEach((record)   => {logger.log('tldraw:collab', source + ' added', record.id)})
-    Object.values(changes.removed).forEach((record) => {logger.log('tldraw:collab', source + ' removed', record.id)})
-    Object.values(changes.updated).forEach( ([from, to]) => {debounceLog(source + ' updated', from.id)})
+    Object.values(changes.added  ).forEach((record)     => {logger.log('tldraw:collab', source + ' added', record.id)})
+    Object.values(changes.removed).forEach((record)     => {logger.log('tldraw:collab', source + ' removed', record.id)})
+    Object.values(changes.updated).forEach(([from, to]) => {debounceLog(source + ' updated', from.id)})
 }
