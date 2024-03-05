@@ -3,16 +3,13 @@ import { useEditor, track } from '@tldraw/tldraw'
 import { saveCapsuleSnapshot } from '@/actions/capsuleActions'
 import { saveRoomSnapshot } from '@/supabase/services/rooms';
 import logger from '@/utils/logger'
-import debounce from '@/utils/debounce';
+//import debounce from '@/utils/debounce';
 import { useEffect } from 'react';
 
 
 type AutoSaverProps = {
-    destination: 'capsule'
+    destination: 'capsule' | 'room';
     id: string;
-} | {
-    destination: 'room'
-    id: number;
 }
 
 
@@ -32,7 +29,7 @@ const AutoSaver = track(({destination, id}: AutoSaverProps) => {
                 if (destination === 'capsule') {
                     await saveCapsuleSnapshot(id, snapshot)
                 } else {
-                    await saveRoomSnapshot(id, snapshot)
+                    await saveRoomSnapshot(parseInt(id), snapshot)
                 }
                 logger.log('supabase:database', `Saved snapshot to ${destination} ${id}`)
             } catch (error) {

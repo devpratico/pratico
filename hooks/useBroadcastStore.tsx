@@ -13,7 +13,7 @@ import debounce from "@/utils/debounce";
 
 
 interface useBroadcastStoreProps {
-    roomName?: string
+    roomId?: string
     initialSnapshot?: StoreSnapshot<TLRecord>
 }
 
@@ -24,7 +24,7 @@ interface useBroadcastStoreProps {
  * and [this broadcast example](https://stackblitz.com/edit/nextjs-hug4zd?file=pages%2Fsend-broadcast.tsx,pages%2Freceive-broadcast.tsx).
  * See the [supabase documentation](https://supabase.com/docs/guides/realtime/broadcast) for more information.
  */
-export default function useBroadcastStore({roomName, initialSnapshot}: useBroadcastStoreProps) {
+export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcastStoreProps) {
     const supabase = createClient()
 
     // Initialize the store
@@ -34,14 +34,14 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
         return _store
     })
 
-    // Check if roomName is defined
-    if (!roomName) {
-        throw new Error(`Missing roomName: ${roomName}`)
+    // Check if roomId is defined
+    if (!roomId) {
+        throw new Error(`Missing roomId: ${roomId}`)
     }
 
     useEffect(() => {
         let storeListener: () => void // Must be initialized here so that it can be returned in the cleanup function
-        const channel = supabase.channel(roomName)
+        const channel = supabase.channel(roomId)
 
         // Subscribe to the channel and broaecast changes
         channel.subscribe((status, err) => {
@@ -85,7 +85,7 @@ export default function useBroadcastStore({roomName, initialSnapshot}: useBroadc
             supabase.removeChannel(channel) // Removes the channel
             storeListener() // Removes the listener (returned from store.listen())
         }
-    }, [roomName])
+    }, [roomId])
     
     return store
     

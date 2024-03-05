@@ -1,8 +1,7 @@
+import styles from './AnimationMenuBar.module.css';
 import MenuBarLayout from "../components/MenuBarLayout/MenuBarLayout";
 import Image from 'next/image';
-import CapsuleTitle from '../components/CapsuleTitle/CapsuleTitle';
 import LabeledIconBtn from '../../primitives/buttons/LabaledIconBtn/LabeledIconBtn';
-import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 import LabeledIcon from '../../primitives/LabeledIcon/LabeledIcon';
 import praticoLogo from '../../../public/images/pratico.svg';
 import PuzzleIcon from '@/components/icons/PuzzleIcon';
@@ -37,9 +36,10 @@ export default function AnimationMenuBar({ capsuleId, messages }: AnimationMenuB
 
     return (
         <MenuBarLayout spacerPosition={3}>
-            <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
-            <CapsuleTitle disabled={true} />
-            <RoomLink />
+            <div className={styles.link}>
+                <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
+                <RoomLink />
+            </div>
             <StopBtn message={messages?.stop || 'Stop Session'} />
             <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
             <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={messages?.chat || 'chat'} {...styleBtnProps} />

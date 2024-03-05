@@ -128,28 +128,28 @@ export type Database = {
         Row: {
           capsule_id: string | null
           capsule_snapshot: Json | null
+          code: string | null
           created_at: string
           created_by: string | null
           id: number
-          name: string | null
           params: Json | null
         }
         Insert: {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
+          code?: string | null
           created_at?: string
           created_by?: string | null
           id?: number
-          name?: string | null
           params?: Json | null
         }
         Update: {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
+          code?: string | null
           created_at?: string
           created_by?: string | null
           id?: number
-          name?: string | null
           params?: Json | null
         }
         Relationships: [

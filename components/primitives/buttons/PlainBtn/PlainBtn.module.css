@@ -9,6 +9,8 @@
 
 .text {
     padding-top: 0.2rem;
+    text-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .disabled {

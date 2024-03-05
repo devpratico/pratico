@@ -1,27 +1,24 @@
 'use server'
-import { fetchCapsuleSnapshot, fetchCapsuleTitle, saveSnapshotToCapsules } from '@/supabase/services/capsules'
-import { saveRoom, deleteRoom, RoomInsert } from '@/supabase/services/rooms'
-import { revalidatePath } from 'next/cache'
-//import type { SupabaseError } from '@/supabase/types/errors'
+import { fetchCapsuleSnapshot, saveSnapshotToCapsules } from '@/supabase/services/capsules'
+import { saveRoom, deleteRoom, RoomInsert, fetchRoomsCodes } from '@/supabase/services/rooms'
+import { generateRandomCode } from '@/utils/codeGen';
 
 
-/**
- * Encodes a string for use in a URL (removes spaces and special characters)
- */
-function encodeStringForURL(str: string): string {
-    return encodeURIComponent(str.replace(/ /g, '')).replace(/[!'()*]/g, function(c) {
-        return '%' + c.charCodeAt(0).toString(16);
-    });
-}
 
 
 export async function createRoom(capsuleId: string): Promise<RoomInsert> {
     if (!capsuleId) throw new Error('No capsule id provided for start button')
 
     const snapshot = await fetchCapsuleSnapshot(capsuleId)
-    const name     = await fetchCapsuleTitle(capsuleId)
-    const encodedName = encodeStringForURL(name)
-    const room: RoomInsert = { name: encodedName, capsule_id: capsuleId, capsule_snapshot: JSON.stringify(snapshot) }
+    let code = generateRandomCode()
+    
+    // Ensure the code is unique
+    const existingCodes = await fetchRoomsCodes()
+    while (existingCodes.includes(code)) {
+        code = generateRandomCode()
+    }
+
+    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: JSON.stringify(snapshot) }
 
     try {
         // Set the room in the database, and get the room that is created
@@ -45,7 +42,6 @@ export async function stopRoom(roomId: number) {
 export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
     try {
         await saveSnapshotToCapsules(capsuleId, snapshot)
-        //revalidatePath('/capsules') // So that the router cache is refreshed (new capsule is shown in the list)
     } catch (error) {
         throw error
     }

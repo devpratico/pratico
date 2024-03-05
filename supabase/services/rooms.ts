@@ -1,8 +1,6 @@
-import { PostgrestError, QueryData } from "@supabase/supabase-js";
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 
-// TODO; rename functions to clearly say it happens in the database
 
 export type Room = Tables<'rooms'>
 export type RoomInsert = TablesInsert<'rooms'>
@@ -22,13 +20,25 @@ export async function fetchRoom(roomId: string) {
 }
 
 
-export async function fetchRoomByName(roomName: string) {
+export async function fetchRoomByCode(code: string) {
     const supabase =  await getSupabaseClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('name', roomName).single()
+    const { data, error } = await supabase.from('rooms').select('*').eq('code', code).single()
     if (error) {
         throw error
     } else {
         return data as Room
+    }
+}
+
+
+export async function fetchRoomsCodes() {
+    const supabase =  await getSupabaseClient()
+    const { data, error } = await supabase.from('rooms').select('code')
+    if (error) {
+        throw error
+    } else {
+        const codesArray = data.map((e: {code: string}) => e.code)
+        return codesArray
     }
 }
 
@@ -63,10 +73,8 @@ export async function deleteRoom(roomId: number) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
     if (error) {
-        //console.error("error deleting room", error)
         throw error
     } else {
-        //logger.log('supabase:database', 'deleted room', roomId)
         return data
     }
 }
@@ -78,11 +86,9 @@ export async function fetchRoomsByCapsuleId(capsuleId: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) {
-        //console.error("error getting rooms by capsule id", error.message)
         throw error
     } else {
         const result = data as Room[]
-        //logger.log('supabase:database', 'got rooms by capsule id', result.map(r => r.name))
         return result
     }
 }

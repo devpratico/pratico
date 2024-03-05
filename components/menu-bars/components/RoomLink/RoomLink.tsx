@@ -1,12 +1,16 @@
 'use client'
+import styles from './RoomLink.module.css'
 import { useRoom } from '@/hooks/roomContext';
 
 
 export default function RoomLink() {
     const { room } = useRoom()
-    const roomName = room?.name
+    const roomName = room?.code
 
     return (
-        <span>{'path/' + roomName}</span>
+        <div className={styles.link}>
+            <span className={styles.path}>{'.live/'}</span>
+            <span className={styles.code}>{roomName}</span>
+        </div>
     )
 }

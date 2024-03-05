@@ -8,7 +8,6 @@ import { useRoom } from "@/hooks/roomContext";
 
 interface CanvasRTProps {
     children: React.ReactNode;
-    //roomName: string;
 }
 
 /**
@@ -19,13 +18,12 @@ export default function CanvasRT({children}: CanvasRTProps) {
 
     // Get the room we're in
     const { room } = useRoom()
-    const roomName = room?.name || undefined
+    const roomId = room?.id?.toString()
     const initialSnapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined
-    const store = useBroadcastStore({roomName, initialSnapshot})
+    const store = useBroadcastStore({roomId, initialSnapshot})
 
-    const roomId = room?.id
-    if (!room || !roomName || !roomId) {
-        return <div>{`Missing Room data: {room: ${room}, roomName: ${roomName}, roomId: ${roomId}}`}</div>
+    if (!room || !roomId || !roomId) {
+        return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}, roomId: ${roomId}}`}</div>
     }
 
     return (
