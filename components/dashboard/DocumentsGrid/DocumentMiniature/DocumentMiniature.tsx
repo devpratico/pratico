@@ -16,6 +16,7 @@ export default async function DocumentMiniature({ title, createdAt, children }: 
     if (createdAt) {
         localeDate = formatter.dateTime(new Date(createdAt), { day: 'numeric', month: 'long', year: 'numeric' })
     }
+    
     return (
         <div  className={styles.container}>
             <div className={`${styles.mini} smallShadow`}>

@@ -14,19 +14,24 @@ type UiContextType = {
     authDialogOpen: boolean;
     setAuthDialogOpen: (open: boolean) => void;
 
-    // Menu bar mode
-    //deskMenuBarMode: MenuBarMode;
-    //setDeskMenuBarMode: (mode: MenuBarMode) => void;
+    // Desk menus
+    openDeskMenu: undefined | 'polls' | 'participants' | 'chat' | 'more' | 'add';
+    setOpenDeskMenu: (menu: undefined | 'polls' | 'participants' | 'chat' | 'more' | 'add') => void;
 };
 
 
 const UiContext = createContext<UiContextType | undefined>(undefined);
 
 export function UiProvider({ children }: { children: React.ReactNode }) {
+    // Dark mode
     const [isDark, setIsDark] = useState(false);
-    const [authDialogOpen, setAuthDialogOpen] = useState(false);
     const toggleDark = () => setIsDark(!isDark);
-    //const [deskMenuBarMode, setDeskMenuBarMode] = useState<MenuBarMode>('creation');
+
+    // Auth dialog
+    const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
+    // Desk menus
+    const [openDeskMenu, setOpenDeskMenu] = useState<undefined | 'polls' | 'participants' | 'chat' | 'more' | 'add'>(undefined);
 
     return (
         <UiContext.Provider value={{
@@ -34,8 +39,8 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
             toggleDark,
             authDialogOpen,
             setAuthDialogOpen,
-            //deskMenuBarMode,
-            //setDeskMenuBarMode,
+            openDeskMenu,
+            setOpenDeskMenu
         }}>
             {children}
         </UiContext.Provider>

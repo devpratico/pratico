@@ -11,6 +11,7 @@ import Resizer from '@/components/desk/custom-ui/Resizer/Resizer';
 import EmbedHint from '@/components/desk/custom-ui/EmbedHint/EmbedHint';
 import TLToolbar from '@/components/desk/custom-ui/TLToolbar/TLToolbar';
 import TLSlidebar from '@/components/desk/custom-ui/TLSlidebar/TLSlidebar';
+import DeskMenus from '@/components/menus/DeskMenus/DeskMenus';
 
 
 export const revalidate = 0
@@ -38,6 +39,7 @@ export default async function CapsulePage({params}: {params: { capsule_id: strin
             <TLMenubar/>
             <TLToolbar/>
             <TLSlidebar/>
+            <DeskMenus/>
         </Desk>
     )
 
