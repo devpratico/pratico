@@ -11,7 +11,6 @@ import PeopleIcon from '@/components/icons/PeopleIcon';
 import { IconSize } from '@/utils/icons/IconProps';
 import StopBtn from "./buttons/StopBtn";
 import RoomLink from "../components/RoomLink/RoomLink";
-import Presence from '../components/Presence/Presence';
 
 
 
@@ -42,7 +41,6 @@ export default function AnimationMenuBar({ capsuleId, messages }: AnimationMenuB
                 <RoomLink />
             </div>
             <StopBtn message={messages?.stop || 'Stop Session'} />
-            <Presence />
             <LabeledIcon    icon={<PuzzleIcon        fill={true}/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
             <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={messages?.chat || 'chat'} {...styleBtnProps} />
             <LabeledIconBtn icon={<PeopleIcon        fill={true}/>} label={messages?.participants || 'participants'} {...styleBtnProps} />

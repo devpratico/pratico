@@ -26,12 +26,15 @@ export default function AuthDialog({ title }: AuthDialogProps) {
     const [firstRender, setFirstRender] = useState(true);
 
     // Dialog opens on first render, after loading and if no user is logged in
+    // TODO: Make a better system, a login page with route interception (Next.js)
+    /*
     useEffect(() => {
         if (firstRender && !isUserLoading) {
             setFirstRender(false)
             setAuthDialogOpen(true)
         }
     }, [firstRender, isUserLoading, setAuthDialogOpen]);
+    */
 
     // Dialog is never open if user is logged in (or if loading)
     useEffect(() => {

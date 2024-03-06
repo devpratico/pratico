@@ -107,10 +107,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // React to changes in the presence object
             presenceListener = react('when presence changes', () => {
                 const presence = presenceSignal.get()
-                if (!presence) {
-                    logger.log('tldraw:collab', 'empty presence')
-                    return
-                }
+                if (!presence) return
                 // `requestAnimationFrame` is used in the example, not sure why not used for the document changes too
                 requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
             })
@@ -159,7 +156,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // `leftPresences` corresponds to the connexion status we sent above
             // Get the ids and turn them into the special Instance type
             const leftPresencesIds = leftPresences.map(p => InstancePresenceRecordType.createId(p.id))
-            logger.log('supabase:realtime', 'presences leave', leftPresencesIds)
+            logger.log('supabase:realtime', 'presences leave', leftPresencesIds, (`key: ${key}, myKey: ${getUserPreferences().id}`))
             setStore((prevStore) => {
                 const newStore = prevStore
                 newStore.remove(leftPresencesIds)
@@ -173,7 +170,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
             presenceListener()
-            channel.untrack()
+            //channel.untrack()
         }
     }, [roomId])
     
