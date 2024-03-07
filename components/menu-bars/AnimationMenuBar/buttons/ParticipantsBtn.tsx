@@ -8,7 +8,7 @@ import { useUi } from "@/hooks/uiContext";
 
 export default function ParticipantsBtn({message}: {message?: string}) {
 
-    const { setOpenDeskMenu } = useUi()
+    const { toggleDeskMenu } = useUi()
 
     const styleBtnProps = {
         iconColor: "var(--text-on-primary)",
@@ -21,7 +21,7 @@ export default function ParticipantsBtn({message}: {message?: string}) {
         <LabeledIconBtn
             icon={<PeopleIcon fill={true}/>}
             label={message || 'participants'}
-            onClick={() => setOpenDeskMenu('participants')}
+            onClick={() => toggleDeskMenu('participants')}
             {...styleBtnProps}
         />
     )

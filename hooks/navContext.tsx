@@ -25,7 +25,7 @@ type NavContextType = {
 
 const NavContext = createContext<NavContextType | undefined>(undefined);
 
-
+// TODO: use `computed` and `react` for reactivity
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const editor = useEditor()
     if (!editor) throw new Error('Tldraw editor context not found in NavProvider');

@@ -81,6 +81,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // PRESENCE CHANGES - Connexion status of participants
             // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
             // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
+            // TODO: Make a usePresence generally available in the app
             const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
             async function sendConnexionStatus() {
                 await channel.track(connexionStatus).then((response) => {debounceLog(response)})

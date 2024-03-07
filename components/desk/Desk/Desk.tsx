@@ -2,6 +2,7 @@
 import CanvasRT from "../CanvasRT/CanvasRT";
 import CanvasSL from "../CanvasSL/CanvasSL";
 import { useRoom } from "@/hooks/roomContext";
+import { useMemo } from "react";
 
 
 /**
@@ -10,8 +11,9 @@ import { useRoom } from "@/hooks/roomContext";
  */
 export default function Desk({children}: {children?: React.ReactNode}) {
     const { room } = useRoom()
+    const haveRoom = useMemo(() => !!room, [room])
 
-    if (room) {
+    if (haveRoom) {
         // If we have a room, we use the real time canvas
         return (
             <CanvasRT>

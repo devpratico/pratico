@@ -1,4 +1,3 @@
-import styles from './TLMenubar.module.css'
 import DeskMenuBar from '@/components/menu-bars/DeskMenuBar/DeskMenuBar';
 import { getTranslations } from 'next-intl/server';
 
@@ -20,9 +19,5 @@ export default async function TLMenubar() {
         done: t('done'),
     }
 
-    return (
-        <div className={styles.container}>
-            <DeskMenuBar messages={messages} />
-        </div>
-    )
+    return <DeskMenuBar messages={messages} />
 }

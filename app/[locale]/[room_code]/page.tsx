@@ -7,7 +7,7 @@ import Resizer from "@/components/desk/custom-ui/Resizer/Resizer";
 import TLToolbar from "@/components/desk/custom-ui/TLToolbar/TLToolbar";
 
 
-
+// TODO: use intercepting routes or something to handle if the connected user is the owner of the room
 
 export default async function RoomPage({params}: {params: { room_code: string }}) {
     const { room_code } = params;

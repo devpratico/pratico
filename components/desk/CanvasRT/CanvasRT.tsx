@@ -4,7 +4,7 @@ import useBroadcastStore from "@/hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "@tldraw/tldraw";
 import  AutoSaver from "../AutoSaver/AutoSaver";
 import { useRoom } from "@/hooks/roomContext";
-import { useEffect } from "react";
+import { useMemo } from "react";
 
 
 interface CanvasRTProps {
@@ -19,10 +19,12 @@ export default function CanvasRT({children}: CanvasRTProps) {
 
     // Get the room we're in
     const { room } = useRoom()
-    const roomId = room?.id?.toString()
-    const initialSnapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined
+
+    // Compute some values
+    const roomId = useMemo(() => room?.id?.toString(), [room])
+    const initialSnapshot = useMemo(() => room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined, [room])
     
-    
+    // Create a store for the canvas
     const store = useBroadcastStore({roomId, initialSnapshot})
 
     if (!room || !roomId) {

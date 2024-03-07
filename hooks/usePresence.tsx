@@ -1,10 +1,6 @@
-import {
-    useEditor,
-    computed,
-    react,
-    TLInstancePresence
-} from "@tldraw/tldraw";
+import { useEditor, react } from "@tldraw/tldraw";
 import { useState, useEffect } from "react";
+import debounce from "@/utils/debounce";
 
 
 interface Presence {
@@ -13,36 +9,40 @@ interface Presence {
     color: string;
 }
 
-
-/**
- * This hook returns an array of presences based on tldraw's editor store.
- * If the tldraw editor has some remote presences, for example from the useBroadcastStore hook,
- * this hook will return them.
- * We use `compute` and `react` to listen to changes in the editor store, as explained in [the tldraw guide](../docs/tldraw.md).
- */
+// TODO: I use debounce to limit the amount of updates (the hook fires on every cursor movement).
+// Should find a way to react only to presence changes. Maybe use the Supabase Presence feature.
 export default function usePresence() {
     const editor = useEditor()
-    const [presences, setPresences] = useState<Presence[]>([])
+    const [presences, setPresences] = useState<Presence[]>( () =>
+        editor.store.query.records('instance_presence').get().map(p => {
+            return {
+                id: p.id,
+                userName: p.userName,
+                color: p.color
+            }
+        })
+    )
 
     useEffect(() => {
-        const participantsSignal = computed<Presence[]>('presences', () => {
-            const tldrawPresences =  editor.store.allRecords().filter(record => record.typeName === 'instance_presence') as TLInstancePresence[]
-            const _presences = tldrawPresences.map(p => {
+		const $presences =  editor.store.query.records('instance_presence')
+
+        const debounceUpdate = debounce((presences: Presence[]) => {
+            setPresences(presences)
+        }, 1000)
+
+        const cleanup = react('when participants change', () => {
+            const _presences = $presences.get().map(p => {
                 return {
                     id: p.id,
                     userName: p.userName,
                     color: p.color
                 }
             })
-            return _presences
-        })
-
-        const cleanup = react('when participants change', () => {
-            setPresences(participantsSignal.get())
+            debounceUpdate(_presences)
         })
 
         return () => cleanup()
-    }, [editor])
-    
+	}, [editor])
+
     return presences
 }

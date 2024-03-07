@@ -1,4 +1,4 @@
-import Participants from "../Participants/Participants";
+import Participants from "../participants/Participants/Participants";
 
 /**
  * This groups all the menus we need for the desk.
@@ -7,8 +7,8 @@ import Participants from "../Participants/Participants";
  */
 export default function DeskMenus() {
     return (
-        <div>
+        <>
             <Participants />
-        </div>
+        </>
     )
 }

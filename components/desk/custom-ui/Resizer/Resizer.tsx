@@ -12,7 +12,7 @@ import logger from "@/utils/logger"
 const Resizer = track(() => {
     const editor = useEditor()
     const box = new Box(0, 0, 1920, 1080)
-    const insets = {top: 56, right: 0, bottom: 70, left: 60}
+    const insets = {top: 60, right: 0, bottom: 70, left: 60}
     const currentPage = editor.getCurrentPage()
 
     useEffect(() => {

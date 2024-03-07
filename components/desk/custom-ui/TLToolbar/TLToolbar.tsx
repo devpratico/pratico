@@ -1,5 +1,4 @@
 'use client'
-import styles from './TLToolbar.module.css'
 import { track, useEditor } from "@tldraw/tldraw"
 import getTldrawState from "@/utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/utils/tldraw/toolBarState"
@@ -10,9 +9,8 @@ import { useKeyboardShortcuts } from "@tldraw/tldraw"
 /**
  * This is the toolbar of the canvas.
  * It takes the ToolBar component and wrap it inside `track` which is useful for tldraw.
- * It also positions the toolbar on the left of the canvas,
- * And provides the props using tldraw's editor.
  */
+// TODO: don't use track and improve the code
 const  TLToolbar = track(() => {
     const editor = useEditor() // This is provided by the parent Tldraw component
     useKeyboardShortcuts()
@@ -23,11 +21,7 @@ const  TLToolbar = track(() => {
         tlDispatch.toolbarDispatch({editor, action, payload})
     }
 
-    return (
-        <div className={styles.container}>
-            <ToolBar state={toolBarState} dispatch={dispatch}/>
-        </div>
-    )
+    return <ToolBar state={toolBarState} dispatch={dispatch}/>
 })
 
 

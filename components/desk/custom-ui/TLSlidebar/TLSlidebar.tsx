@@ -1,8 +1,6 @@
 'use client'
-import styles from './TLSlidebar.module.css'
 import { track } from "@tldraw/tldraw"
 import SlideBar from '@/components/desk/slide-bar/SlideBar/SlideBar'
-import { MiniatureProps } from '@/components/desk/carousel/Miniature/Miniature'
 import { NavProvider } from '@/hooks/navContext'
 
 /**
@@ -13,11 +11,9 @@ import { NavProvider } from '@/hooks/navContext'
  */
 const TLSlidebar = track(() => {
     return (
-        <div className={styles.container}>
-            <NavProvider>
-                <SlideBar/>
-            </NavProvider>
-        </div>
+        <NavProvider>
+            <SlideBar/>
+        </NavProvider>
     )
 })
 

@@ -21,6 +21,7 @@ interface RootLayoutProps {
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
 
     const t = await getTranslations("auth")
+    // TODO: Maybe we don't need the UiProvider for the whole app
     
     return (
         <html lang={locale} data-theme="pratico">

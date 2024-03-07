@@ -12,7 +12,10 @@ import EmbedHint from '@/components/desk/custom-ui/EmbedHint/EmbedHint';
 import TLToolbar from '@/components/desk/custom-ui/TLToolbar/TLToolbar';
 import TLSlidebar from '@/components/desk/custom-ui/TLSlidebar/TLSlidebar';
 import DeskMenus from '@/components/menus/DeskMenus/DeskMenus';
+import DeskLayout from '@/components/layouts/DeskLayout/DeskLayout';
 
+
+// TODO: use intercepting routes to handle between a creation page and a room page
 
 export const revalidate = 0
 
@@ -36,10 +39,12 @@ export default async function CapsulePage({params}: {params: { capsule_id: strin
         <Desk>
             <Resizer/>
             <EmbedHint/>
-            <TLMenubar/>
-            <TLToolbar/>
-            <TLSlidebar/>
-            <DeskMenus/>
+            <DeskLayout
+                menuBar={<TLMenubar/>}
+                toolBar={<TLToolbar/>}
+                slideBar={<TLSlidebar/>}
+                menu={<DeskMenus/>}
+            />
         </Desk>
     )
 
