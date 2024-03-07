@@ -48,15 +48,15 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
 
             <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
-                <DialogContent closeBtn>
+                <DialogContent showCloseBtn>
                     <form onSubmit={handleVideoSubmit} className={styles.videoForm}>
                         <YoutubeIcon className={styles.ytIcon}/>
                         <h2 className={styles.title}>Embed a YouTube video</h2>
                         <label htmlFor="video-url" className={styles.label}>URL</label>
                         <TextField  id="video-url" name="video-url" placeholder='https://www.youtube.com...' required className={styles.textfield}/>
                         <div className={styles.btns}>
-                            <PlainBtn type="button" color="secondary" onClick={() => setOpenVideoModal(false)} className={styles.cancelBtn}>Cancel</PlainBtn>
-                            <PlainBtn type="submit" className={styles.submitBtn}>Embed</PlainBtn>
+                            <PlainBtn message={'Cancel'} type="button" color="secondary" onClick={() => setOpenVideoModal(false)} className={styles.cancelBtn}/>
+                            <PlainBtn message={'OK'} type="submit" className={styles.submitBtn}/>
                         </div>
                     </form>
                 </DialogContent>

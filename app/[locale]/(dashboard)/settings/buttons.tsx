@@ -15,9 +15,9 @@ export function SignOutBtn({message}: {message: string}) {
             color={"red"}
             style={"soft"}
             size={"m"}
-            onClick={handleSignOut}>
-                {message}
-        </PlainBtn>
+            onClick={handleSignOut}
+            message={message}
+        />
     )
 }
 
@@ -28,9 +28,9 @@ export function ResetPasswordBtn({message}: {message: string}) {
         <PlainBtn
             enabled={false}
             color={"secondary"}
-            onClick={() => console.log("reset password")}>
-                {message}
-        </PlainBtn>
+            onClick={() => console.log("reset password")}
+            message={message}
+        />
     )
 }
 
@@ -43,9 +43,9 @@ export function SubscribeBtn({message}: {message: string}) {
 
     return (
         <PlainBtn
-            onClick={handleSubscribe}>
-                {message}
-        </PlainBtn>
+            onClick={handleSubscribe}
+            message={message}
+        />
     )
 }
 
@@ -62,8 +62,8 @@ export function ManageSubscriptionBtn({message}: {message: string}) {
     return (
         <PlainBtn
             color={"secondary"}
-            onClick={handleManageSubscription}>
-                {message}
-        </PlainBtn>
+            onClick={handleManageSubscription}
+            message={message}
+        />
     )
 }

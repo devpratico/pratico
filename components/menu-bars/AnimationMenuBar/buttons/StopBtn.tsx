@@ -32,8 +32,6 @@ export default function StopBtn({ message }: StopBtnProps) {
 
 
     return (
-        <PlainBtn color="secondary" size="m" onClick={handleClick}>
-            {message || "Stop Session"}    
-        </PlainBtn>
+        <PlainBtn color="secondary" size="m" onClick={handleClick} message={message || "Stop Session"} />
     )
 }

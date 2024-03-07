@@ -1,7 +1,8 @@
 'use client'
 import {
     Tldraw,
-    Editor, 
+    Editor,
+    getUserPreferences,
     setUserPreferences, 
     DefaultColorStyle, 
     DefaultSizeStyle,
@@ -13,7 +14,7 @@ import {
 import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
-import { generateRandomCode, getRandomColor } from '@/utils/codeGen'
+import { getRandomColor } from '@/utils/codeGen'
 
 
 
@@ -22,13 +23,17 @@ import { generateRandomCode, getRandomColor } from '@/utils/codeGen'
  * It's used to set some initial preferences.
  */
 const handleMount = (editor: Editor) => {
-    // TODO: This uses LocalStorage. We should use data from the database.
+
+    // Set the user preferences
+    // Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
+    // This is useful if the user has already set its `name` before - we don't redirect him to the student-form page
+    const userPref = getUserPreferences()
     setUserPreferences({
-        id: 'ID_' + generateRandomCode(),
+        ...userPref,
         color: getRandomColor(),
-        name: 'Tom D',
         edgeScrollSpeed: 0
     })
+
     editor.updateInstanceState({ canMoveCamera: false })
     editor.setStyleForNextShapes(DefaultColorStyle, "black");
     editor.setStyleForNextShapes(DefaultSizeStyle , "m");

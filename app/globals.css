@@ -18,6 +18,10 @@ button {
 }
 */
 
+h2 {
+  margin-bottom: 0.5rem;
+}
+
 input::selection {
   background-color: var(--violet);
 }

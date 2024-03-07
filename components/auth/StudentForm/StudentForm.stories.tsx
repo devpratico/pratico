@@ -12,6 +12,5 @@ type Story = StoryObj<typeof meta>;
 
 export const StudentForm_: Story = {
     args: {
-        children: 'SlideBar',
     },
 };

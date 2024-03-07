@@ -28,9 +28,5 @@ export default function StartBtn({ message }: StartBtnProps) {
         }
     }
 
-    return (
-        <PlainBtn color="secondary" size="m" onClick={handleClick}>
-            {message || "Start Session"}    
-        </PlainBtn>
-    )
+    return <PlainBtn color="secondary" size="m" onClick={handleClick} message={message || "Start Session"} />
 }

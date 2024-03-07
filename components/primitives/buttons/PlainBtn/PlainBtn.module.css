@@ -7,6 +7,15 @@
     font-family: inherit;
 }
 
+.container:hover {
+    filter: brightness(1.1);
+}
+
+.container:focus {
+    outline: 2px solid var(--primary-border);
+    outline-offset: 2px;
+}
+
 .text {
     padding-top: 0.2rem;
     text-wrap: nowrap;

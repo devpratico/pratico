@@ -13,8 +13,8 @@ export function CreateCapsuleBtn() {
     return (
         <PlainBtn
             onClick={handleClick}
+            message="Create"
         >
-            Create
         </PlainBtn>
     )
 }

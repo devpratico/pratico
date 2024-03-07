@@ -1,8 +1,14 @@
+'use client'
 import Form from "@/components/primitives/Form/Form"
 import { Field } from "@/components/primitives/Form/Form"
 
 
-export default function StudentForm() {
+interface StudentFormProps {
+    onSubmit: (firstName: string, lastName: string) => void;
+}
+
+
+export default function StudentForm({ onSubmit }: StudentFormProps) {
 
 
     const fields: Field[] = [
@@ -23,11 +29,19 @@ export default function StudentForm() {
     ]
 
 
+    const handleSubmit = (event: React.FormEvent) => {
+        const form = event.target as HTMLFormElement;
+        const firstName = form.firstName.value;
+        const lastName = form.lastName.value;
+        onSubmit(firstName, lastName);
+    }
+
+
 
     return (
         <div>
             <h2>Entrez votre Prénom et Nom</h2>
-            <Form fields={fields}/>
+            <Form fields={fields} onSubmit={handleSubmit} />
         </div>
     )
 }

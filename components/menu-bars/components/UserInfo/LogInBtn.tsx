@@ -10,8 +10,8 @@ export default function LogInBtn({children}: {children: React.ReactNode}) {
         <PlainBtn
             color={"secondary"}
             style={"solid"}
-            onClick={() => setAuthDialogOpen(true)}>
-                {children}
-        </PlainBtn>
+            onClick={() => setAuthDialogOpen(true)}
+            message={children as string}
+        />
     )
 }

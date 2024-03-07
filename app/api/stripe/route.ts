@@ -2,11 +2,10 @@ import getStripeClient from '@/stripe/getStripeClient'
 import { saveStripeId } from '@/supabase/services/user_profiles'
 
 
-const stripe = getStripeClient()
-
-
 // Respond to a POST request sent to the /api/stripe endpoint by a Stripe webhook
 export async function POST(request: Request) {
+  const stripe = await getStripeClient()
+  
     try {
       const body = await request.text()
       const header = request.headers.get('stripe-signature') || ''

@@ -48,8 +48,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             style="soft"
             enabled={!!capsuleId}
             onClick={handleClick}
-        >
-            {message || "Done"}
-        </PlainBtn>
+            message={message || "Done"}
+        />
     )
 }

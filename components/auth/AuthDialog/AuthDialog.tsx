@@ -47,7 +47,7 @@ export default function AuthDialog({ title }: AuthDialogProps) {
     return (
         <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
 
-            <DialogContent closeBtn={false}>
+            <DialogContent showCloseBtn={false}>
                 <div className={styles.container}>
                     <h1>{title}</h1>
                     <div className={styles.formContainer}>
@@ -75,7 +75,8 @@ export default function AuthDialog({ title }: AuthDialogProps) {
                             //setIsAnonymous(true)
                             setAuthDialogOpen(false)
                         }}
-                    >Try pratico without an account</PlainBtn>
+                        message="Skip"
+                    />
                     {/*<Image src={loginImage} alt="Login" height={400} />*/}
                 </div>
 
