@@ -1,12 +1,11 @@
 import getStripeClient from '@/stripe/getStripeClient'
-import { setStripeId } from '@/supabase/services/user'
-
-
-const stripe = getStripeClient()
+import { saveStripeId } from '@/supabase/services/user_profiles'
 
 
 // Respond to a POST request sent to the /api/stripe endpoint by a Stripe webhook
 export async function POST(request: Request) {
+  const stripe = await getStripeClient()
+  
     try {
       const body = await request.text()
       const header = request.headers.get('stripe-signature') || ''
@@ -21,7 +20,7 @@ export async function POST(request: Request) {
 
         if (clientReferenceId && customerId) {
           try {
-            await setStripeId(clientReferenceId, customerId)
+            await saveStripeId(clientReferenceId, customerId)
           } catch (error) {
             console.error(`🚨 Error setting Stripe ID: ${error}`)
           }

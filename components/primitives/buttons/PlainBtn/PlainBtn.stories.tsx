@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>;
 
 export const AllStyles: Story = {
   args: {
-    children: "Button",
-    icon: <StopwatchIcon />,
+    children: <StopwatchIcon />,
+    message: "Stop",
     size: "m",
     style: "solid",
     color: "primary",

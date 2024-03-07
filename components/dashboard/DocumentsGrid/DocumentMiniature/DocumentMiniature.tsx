@@ -1,23 +1,37 @@
 import styles from './DocumentMiniature.module.css';
-import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getFormatter } from 'next-intl/server';
 
 
-export default async function DocumentMiniature() {
+interface DocumentMiniatureProps {
+    title?: string;
+    createdAt?: Date;
+    children?: React.ReactNode;
+}
+
+export default async function DocumentMiniature({ title, createdAt, children }: DocumentMiniatureProps) {
     const t = await getTranslations("dashboard")
+    const formatter = await getFormatter()
+
+    let localeDate: string = '?'
+    if (createdAt) {
+        localeDate = formatter.dateTime(new Date(createdAt), { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+    
     return (
-        <Link href={'/creation'}   className={styles.container}>
-            <div className={`${styles.mini} smallShadow`}></div>
+        <div  className={styles.container}>
+            <div className={`${styles.mini} smallShadow`}>
+                {children}
+            </div>
 
             <h2 className={styles.title}>
-                Titre de la présentation
+                {title || t('untitled')}
             </h2>
 
             <legend className={styles.legend}>
-                <p>{`${t('creation')} : 01/01/2021`}</p>
-                <p>{`${t('last session')} : 02/02/2023`}</p>
+                <p>{`${t('creation')} : ${localeDate}`}</p>
+                {/*<p>{`${t('last session')} : 02/02/2023`}</p>*/}
             </legend>
 
-        </Link>
+        </div>
     )
 }

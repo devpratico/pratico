@@ -13,7 +13,8 @@
     "help": "Aide",
     "settings": "Paramètres",
     "creation": "Création",
-    "last session": "Dernière session"
+    "last session": "Dernière session",
+    "untitled": "Sans titre"
 },
 
 "menu-bar": {
@@ -22,7 +23,11 @@
     "polls": "Activités",
     "more": "Plus",
     "chat": "Chat",
-    "participants": "Participants"
+    "participants": "Participants",
+    "save": "Sauvegarder",
+    "done": "Terminé",
+    "quit": "Quitter",
+    "stop session": "Arrêter la session"
 },
 
 "settings": {
@@ -41,7 +46,8 @@
     "subscribe": "S'abonner",
     "unsubscribe": "Se désabonner",
     "subscription status": "Statut de l'abonnement",
-    "subscription end": "Fin de l'abonnement"
+    "subscription end": "Fin de l'abonnement",
+    "manage subscription": "Gérer l'abonnement"
 },
 
 "subscribe": {

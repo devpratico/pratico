@@ -16,6 +16,7 @@
 .numberLeft {
     font-size: 1rem;
     color: var(--text);
+    font-variant-numeric: tabular-nums;
 }
 
 .numberRight {

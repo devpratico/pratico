@@ -1,13 +1,15 @@
 .container {
     background-color: var(--background);
     display:flex;
-    height: 70px;
+    height: 100%;
     /*overflow: hidden;*/
+    border-top: 1px solid var(--secondary);
 }
 
 .carouselContainer {
     flex-grow: 1;
     height: 100%;
+    overflow-x: scroll;
 }
 
 .controls {
@@ -16,4 +18,5 @@
     align-items: center;
     padding: 0 1rem;
     gap: 1rem;
+    border-left: 1px solid var(--secondary);
 }

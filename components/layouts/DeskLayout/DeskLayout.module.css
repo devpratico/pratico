@@ -1,0 +1,46 @@
+.container {
+    position: absolute;
+    z-index: 300;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+    grid-template-areas: "menuBar" "content" "slideBar";
+    pointer-events: none;
+}
+
+
+.menuBar {
+    height: 60px;
+    width: 100%;
+    grid-area: menuBar;
+    pointer-events: auto;
+}
+
+
+.toolBar {
+    grid-area: content;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translate(0, -50%);
+    pointer-events: auto;
+}
+
+
+.slideBar {
+    height: 70px;
+    width: 100%;
+    grid-area: slideBar;
+    pointer-events: auto;
+}
+
+
+.menu {
+    grid-area: content;
+    width: 350px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+}

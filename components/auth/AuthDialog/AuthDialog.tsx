@@ -6,8 +6,8 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'
 //import loginImage from '@/public/illustrations/login.svg'
 //import Image from 'next/image';
-import { useUi } from '@/contexts/UiContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useUi } from '@/hooks/uiContext';
+import { useAuth } from '@/hooks/authContext';
 import { useState, useEffect } from 'react';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 
@@ -26,12 +26,15 @@ export default function AuthDialog({ title }: AuthDialogProps) {
     const [firstRender, setFirstRender] = useState(true);
 
     // Dialog opens on first render, after loading and if no user is logged in
+    // TODO: Make a better system, a login page with route interception (Next.js)
+    /*
     useEffect(() => {
         if (firstRender && !isUserLoading) {
             setFirstRender(false)
             setAuthDialogOpen(true)
         }
     }, [firstRender, isUserLoading, setAuthDialogOpen]);
+    */
 
     // Dialog is never open if user is logged in (or if loading)
     useEffect(() => {
@@ -44,7 +47,7 @@ export default function AuthDialog({ title }: AuthDialogProps) {
     return (
         <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
 
-            <DialogContent closeBtn={false}>
+            <DialogContent showCloseBtn={false}>
                 <div className={styles.container}>
                     <h1>{title}</h1>
                     <div className={styles.formContainer}>
@@ -72,7 +75,8 @@ export default function AuthDialog({ title }: AuthDialogProps) {
                             //setIsAnonymous(true)
                             setAuthDialogOpen(false)
                         }}
-                    >Try pratico without an account</PlainBtn>
+                        message="Skip"
+                    />
                     {/*<Image src={loginImage} alt="Login" height={400} />*/}
                 </div>
 

@@ -1,6 +1,6 @@
 import styles from './layout.module.css'
 import MainLayout from '../../../components/layouts/MainLayout/MainLayout'
-import MenuBar from '../../../components/menu-bar/MenuBar/MenuBar'
+import DashboardMenuBar from '@/components/menu-bars/DasboardMenuBar/DashboardMenuBar'
 import DashboardLeftBar from '../../../components/dashboard/left-bar/DashboardLeftBar/DashboardLeftBar'
 
 
@@ -12,7 +12,7 @@ export default async function DashboardLayout({children }: RootLayoutProps) {
     return (
         <div className={styles.container}>
             <MainLayout
-                menuBar={<MenuBar mode="dashboard"/>}
+                menuBar={<DashboardMenuBar/>}
                 content={children}
                 leftBar={<DashboardLeftBar/>}
             />

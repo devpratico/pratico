@@ -1,0 +1,125 @@
+'use client'
+import logger from '@/utils/logger';
+import {
+    createContext,
+    useContext,
+    useState
+} from 'react';
+import {
+    useEditor,
+    IndexKey,
+    getIndexAbove,
+    getIndexBetween,
+    TLPageId
+} from '@tldraw/tldraw';
+
+
+type NavContextType = {
+    pagesIds: string[];
+    currentPageId: string;
+    setCurrentPage: (id: string) => void;
+    incrementCurrentPageIndex: () => void;
+    decrementCurrentPageIndex: () => void;
+    createPage: () => void;
+};
+
+const NavContext = createContext<NavContextType | undefined>(undefined);
+
+// TODO: use `computed` and `react` for reactivity
+export function NavProvider({ children }: { children: React.ReactNode }) {
+    const editor = useEditor()
+    if (!editor) throw new Error('Tldraw editor context not found in NavProvider');
+
+    /* editor.getPages() or editor.getCurrentPage() are not reactive.
+       That means they won't update even when editor changes.
+       So we need to use state to make them reactive.
+       We could avoid that by using tldraw's `track` function, but it doesn't work with context providers.
+    */
+    const [pagesIds, setPagesIds] = useState<string[]>(editor.getPages().map(p => p.id))
+    const [currentPageId, setCurrentPageId] = useState<string>(editor.getCurrentPage().id)
+    
+
+    const setCurrentPage = (id: string) => {
+        const page = editor.getPages().find(p => p.id === id)
+        if (page) {
+            editor.setCurrentPage(page)
+            setPagesIds(editor.getPages().map(p => p.id))
+            setCurrentPageId(id)
+            logger.log('tldraw:editor', `Current page set to id`, currentPageId)
+
+        } else {
+            console.warn('Page not found', id)
+        }
+    }
+
+    const incrementCurrentPageIndex = () => {
+        const currentPageIndex = pagesIds.indexOf(currentPageId)
+        if (currentPageIndex < pagesIds.length - 1) {
+            setCurrentPage(pagesIds[currentPageIndex + 1])
+        }
+    }
+
+    const decrementCurrentPageIndex = () => {
+        const currentPageIndex = pagesIds.indexOf(currentPageId)
+        if (currentPageIndex > 0) {
+            setCurrentPage(pagesIds[currentPageIndex - 1])
+        }
+    }
+
+    /**
+     * Create a new page after the current page (default), or at the end of the pages list.
+     * @param atTheEnd If true, the new page will be created at the end of the pages list.
+     */
+    const createPage = (atTheEnd?: boolean) => {
+        let i: IndexKey
+
+        if (atTheEnd) {
+            const lastPage = editor.getPages().slice(-1)[0]
+            i = getIndexAbove(lastPage.index)
+
+        } else {
+            const currentPage = editor.getCurrentPage()
+            // The page before the page we want to create:
+            const beforePageArrayIndex = pagesIds.indexOf(currentPage.id)
+            const beforePageIndex = editor.getPages()[beforePageArrayIndex].index
+            // The page after the page we want to create:
+            const afterPageArrayIndex = beforePageArrayIndex + 1
+
+            if (afterPageArrayIndex === pagesIds.length) {
+                // If there's no page after the current page, create the new page at the end of the pages list:
+                createPage(true)
+                return
+            }
+            const afterPageIndex  = editor.getPages()[afterPageArrayIndex].index            
+            // Get the index between them:
+            i = getIndexBetween(beforePageIndex, afterPageIndex)            
+        }
+
+        // Create the new page:
+        const id = `page:${i}` as TLPageId
+        editor.createPage({index: i, id: id})
+        // Set the new page as the current page:
+        setCurrentPage(id)
+        // Refresh the pages list:
+        setPagesIds(editor.getPages().map(p => p.id))
+    }
+
+    return (
+        <NavContext.Provider value={{
+            pagesIds,
+            currentPageId,
+            setCurrentPage,
+            incrementCurrentPageIndex,
+            decrementCurrentPageIndex,
+            createPage
+            }}>
+            {children}
+        </NavContext.Provider>
+    );
+}
+
+export function useNav() {
+    const context = useContext(NavContext);
+    if (!context) throw new Error('useNav must be used within a NavProvider');
+    return context;
+}

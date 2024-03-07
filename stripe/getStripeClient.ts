@@ -1,7 +1,7 @@
 'use server'
 import stripe from 'stripe';
 
-const getStripeClient = () => {
+const getStripeClient = async () => {
   return new stripe(process.env.STRIPE_SECRET_KEY!);
 };
 
