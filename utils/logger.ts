@@ -2,14 +2,16 @@ const logCategories = {
     react: ['page', 'component', 'hook'] as const,
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
     tldraw: ['tools', 'editor', 'collab'] as const,
+    system: ['file', 'network', 'memory'] as const,
 }
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 
 const styles: { [key in keyof typeof logCategories]: string } = {
-    react: 'background-color: dodgerblue; ' + sharedStyles,
-    supabase: 'background-color: forestgreen; ' + sharedStyles,
-    tldraw: 'background-color: darkslategray; ' + sharedStyles,
+    react:    'background-color: dodgerblue;'    + sharedStyles,
+    supabase: 'background-color: forestgreen;'   + sharedStyles,
+    tldraw:   'background-color: darkslategray;' + sharedStyles,
+    system:   'background-color: darkorange;'    + sharedStyles,
 };
 
 

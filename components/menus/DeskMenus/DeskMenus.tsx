@@ -1,4 +1,5 @@
 import Participants from "../participants/Participants/Participants";
+import Add from "../add/Add/Add";
 
 /**
  * This groups all the menus we need for the desk.
@@ -9,6 +10,7 @@ export default function DeskMenus() {
     return (
         <>
             <Participants />
+            <Add />
         </>
     )
 }

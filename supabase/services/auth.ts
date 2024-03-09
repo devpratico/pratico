@@ -18,8 +18,7 @@ export async function fetchUser() {
 export async function fetchUserId() {
     const res = await fetchUser()
     const { data, error } = res
-    if (error || !data?.user.id) {
-        console.error("error getting user id", error)
+    if (error ) {
         throw error
     }
     return data.user.id

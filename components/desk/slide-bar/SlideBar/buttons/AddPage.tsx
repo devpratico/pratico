@@ -2,20 +2,19 @@
 import PlusSquareIcon from '@/components/icons/PlusSquareIcon'
 import LabeledIconBtn from '@/components/primitives/buttons/LabaledIconBtn/LabeledIconBtn'
 import { IconSize } from '@/utils/icons/IconProps';
-import { useNav } from '@/hooks/navContext';
-
+import { useUi } from '@/hooks/uiContext';
 
 
 export default function AddPage() {
 
-    const { createPage } = useNav()
+    const { toggleDeskMenu } = useUi()
 
     const addPageBtnProps = {
         icon:       <PlusSquareIcon />,
         iconSize:   "lg" as IconSize,
         iconColor:  "var(--primary)",
         labelColor: "var(--primary-text)",
-        onClick:    () => createPage(),
+        onClick:    () => toggleDeskMenu('add'),
     }
 
     return <LabeledIconBtn {...addPageBtnProps} />

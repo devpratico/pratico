@@ -6,3 +6,8 @@
     z-index: 999999;
     user-select: none;
 }
+
+.arrow {
+    width: 20px;
+    height: 20px;
+}

@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react';
 
 
 //export type MenuBarMode = 'creation' | 'animation';
-type DeskMenu = 'polls' | 'participants' | 'chat' | 'more' | 'add';
+export type DeskMenu = 'polls' | 'participants' | 'chat' | 'more' | 'add';
 
 type UiContextType = {
 
@@ -16,7 +16,7 @@ type UiContextType = {
     setAuthDialogOpen: (open: boolean) => void;
 
     // Desk menus
-    openDeskMenu: DeskMenu | undefined;
+    openedDeskMenu: DeskMenu | undefined;
     setOpenDeskMenu: (menu: DeskMenu | undefined) => void;
     toggleDeskMenu: (menu: DeskMenu | undefined) => void;
 };
@@ -33,7 +33,7 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
     const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
     // Desk menus
-    const [openDeskMenu, setOpenDeskMenu] = useState<DeskMenu | undefined>(undefined);
+    const [openedDeskMenu, setOpenDeskMenu] = useState<DeskMenu | undefined>(undefined);
     const toggleDeskMenu = (menu: DeskMenu | undefined) => {
         setOpenDeskMenu((prev) => prev === menu ? undefined : menu);
     };
@@ -44,7 +44,7 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
             toggleDark,
             authDialogOpen,
             setAuthDialogOpen,
-            openDeskMenu,
+            openedDeskMenu,
             setOpenDeskMenu,
             toggleDeskMenu,
         }}>
