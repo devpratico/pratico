@@ -31,40 +31,6 @@ const CustomUi = () => {
         // Get individual pages
         const pages = await getPdfFilePages(file)
 
-        /*
-        // Convert each page to bitmap
-        let images: { bitmap: string, width: number, height: number }[] = []
-        pages.forEach(async (page, index) => {
-            const { bitmap, width, height } = await convertPDFPageToBitmap(page)
-            images.push({ bitmap, width, height })
-            logger.log('system:file', 'Converted to bitmap page ' + index)
-        })
-
-        // Convert each bitmap to Blob
-        let blobs: Blob[] = []
-        images.forEach((image, i) => {
-            blobs.push(dataURLToBlob(image.bitmap))
-            logger.log('system:file', 'Converted to Blob page ' + i)
-        })
-
-        // Upload each Blob to Supabase
-        let urls: string[] = []
-        blobs.forEach(async (blob, index) => {
-            try {
-                const path = await uploadCapsuleFile({
-                    file: blob,
-                    name: file.name + '-' + index,
-                    capsuleId: 'CAP_THOMAS'
-                })
-                const url = await createSignedUrl(path)
-                urls.push(url)
-                logger.log('supabase:storage', 'Uploaded page ' + index)
-            } catch (error) {
-                logger.error('supabase:storage', 'Error uploading file', (error as Error).message)
-            }
-        })
-        */
-
         // Convert each page to bitmap
         let images: { bitmap: string; width: number; height: number }[] = [];
         for (let index = 0; index < pages.length; index++) {
@@ -80,10 +46,12 @@ const CustomUi = () => {
             logger.log('system:file', `Converted to Blob page ${index}`);
 
             try {
-                // For the image file name, remove the extension, add the page number and new extension, and encode the name
-                const fileName = file.name.split('.').slice(0, -1).join('.') + `-${index}.png`
+                // Take the name of the file and remove what's after the first '.' (the extension) if there is one.
+                // Truncate the name to 50 characters max.
+                const cleanName = file.name.split('.')[0].substring(0, 50);
+                const fileName = cleanName + '-' + index + '.png';
                 logger.log('system:file', `Uploading file ${fileName}`);
-                const path = await uploadCapsuleFile({file: blob, name: fileName, capsuleId: 'CAP_THOMAS'});
+                const path = await uploadCapsuleFile({file: blob, name: fileName, capsuleId: 'CAP_THOMAS', folder: cleanName});
                 const url = await createSignedUrl(path);
                 urls.push(url);
                 logger.log('supabase:storage', `Uploaded page ${index}`);
@@ -159,7 +127,7 @@ async function getPdfFilePages(file: File) {
  * @returns A bitmap of the PDF page as a base64 string, and the width and height of the bitmap
  */
 async function convertPDFPageToBitmap(page: any): Promise<{ bitmap: string, width: number, height: number }> {
-    const viewport = page.getViewport({ scale: 1 })
+    const viewport = page.getViewport({ scale: 2 })
     const canvas   = document.createElement('canvas')
     const context  = canvas.getContext('2d')
     if (!context) {
