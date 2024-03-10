@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import ImportPDFButton from "@/components/menus/add/ImportPdfBtn/ImportPdfBtn";
 import { uploadCapsuleFile, createSignedUrl } from '@/supabase/services/capsules_files';
 import logger from '@/utils/logger';
-import { Tldraw, useEditor, Editor, uniqueId, AssetRecordType, getHashForString } from '@tldraw/tldraw';
+import { Tldraw, useEditor, Editor, uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';
 import '@tldraw/tldraw/tldraw.css';
 
 
@@ -32,19 +32,14 @@ const CustomUi = () => {
         const pages = await getPdfFilePages(file)
 
         // Convert each page to bitmap
-        /*
-        let images: { bitmap: string; width: number; height: number }[] = [];
-        for (let index = 0; index < pages.length; index++) {
-            const { bitmap, width, height } = await convertPDFPageToBitmap(pages[index]);
-            images.push({ bitmap, width, height });
-            logger.log('system:file', `Converted to bitmap page ${index}`);
-        }*/
         const imagePromises = pages.map(convertPDFPageToBitmap);
         const images = await Promise.all(imagePromises);
         images.forEach((_, index) => logger.log('system:file', `Converted to bitmap page ${index}`));
 
         // Convert each bitmap to Blob and upload
+        // TODO: optimize this
         let urls: string[] = [];
+        let assetNames: string[] = [];
         for (let index = 0; index < images.length; index++) {
             const blob = dataURLToBlob(images[index].bitmap);
             logger.log('system:file', `Converted to Blob page ${index}`);
@@ -54,6 +49,7 @@ const CustomUi = () => {
                 // Truncate the name to 50 characters max.
                 const cleanName = file.name.split('.')[0].substring(0, 50);
                 const fileName = cleanName + '-' + index + '.png';
+                assetNames.push(fileName);
                 logger.log('system:file', `Uploading file ${fileName}`);
                 const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: 'CAP_THOMAS', folder: cleanName});
                 const url = await createSignedUrl(path);
@@ -75,7 +71,7 @@ const CustomUi = () => {
                     type: 'image',
                     typeName: 'asset',
                     props: {
-                        name: 'pdfToSvgBackground',
+                        name: assetNames[index],
                         src: url,
                         w: images[index].width,
                         h: images[index].height,
@@ -87,9 +83,27 @@ const CustomUi = () => {
             ])
         })
 
-        // Create tldraw shapes with the assets
+
+        // Check if current page is empty
+        const currentPageIsEmpty = editor.getPageShapeIds(editor.getCurrentPage()).size === 0
+        const currentPage = editor.getCurrentPage() // Save the current page to restore it later
+
         assetIds.forEach((assetId, index) => {
+
+            // Create a new page for each image
+            // No need to create a new page for the first image if the current page is empty
+            if ((index === 0 && !currentPageIsEmpty) || index > 0) {
+                const pageId = 'page:' + uniqueId() as TLPageId
+                editor.createPage({
+                    id: pageId,
+                    name: `Page ${index + 1}`
+                })
+                editor.setCurrentPage(pageId)
+            }
+
+            const id = createShapeId()
             editor.createShape({
+                id: id,
                 type: 'image',
                 x: (window.innerWidth - images[index].width) / 2,
                 y: (window.innerHeight - images[index].height) / 2,
@@ -99,11 +113,16 @@ const CustomUi = () => {
                     h: images[index].height,
                 },
             })
+
+            editor.toggleLock([id])
         })
+
+        // Restore the current page
+        editor.setCurrentPage(currentPage)
     }
 
     return (
-        <div style={{zIndex: 1000, position: 'absolute', top: 0, left: 0, right: 0}}>
+        <div style={{zIndex: 1000, position: 'absolute', top: 50, right: 50}}>
             <h1>Import PDF</h1>
             <ImportPDFButton onImport={onImport}>Import PDF</ImportPDFButton>
         </div>
