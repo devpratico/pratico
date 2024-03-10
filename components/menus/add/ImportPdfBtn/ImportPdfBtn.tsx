@@ -9,7 +9,7 @@ import logger from '@/utils/logger';
 interface ImportPDFButtonProps {
     className?: string
     children: React.ReactNode
-    onImport?: (file: File) => void
+    onImport: (file: File) => void
 }
 
 export default function ImportPDFButton({ children, className, onImport }: ImportPDFButtonProps) {
@@ -19,13 +19,13 @@ export default function ImportPDFButton({ children, className, onImport }: Impor
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files ? event.target.files[0] : null;
         if (file && file.type === "application/pdf") {
-            logger.log('system:file', 'File received', file.name, file.type)
-            //await addPdf({ file, editor });
-            onImport?.(file);
+            logger.log('system:file', 'File received 1', file.name, file.type)
+            onImport(file);
         } else {
             logger.log('system:file', 'File is not a PDF', file?.type)
             alert('Please select a PDF file.');
         }
+        fileInputRef.current!.value = '';
     };
     
     const handleClick = () => {
