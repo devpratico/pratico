@@ -32,12 +32,16 @@ const CustomUi = () => {
         const pages = await getPdfFilePages(file)
 
         // Convert each page to bitmap
+        /*
         let images: { bitmap: string; width: number; height: number }[] = [];
         for (let index = 0; index < pages.length; index++) {
             const { bitmap, width, height } = await convertPDFPageToBitmap(pages[index]);
             images.push({ bitmap, width, height });
             logger.log('system:file', `Converted to bitmap page ${index}`);
-        }
+        }*/
+        const imagePromises = pages.map(convertPDFPageToBitmap);
+        const images = await Promise.all(imagePromises);
+        images.forEach((_, index) => logger.log('system:file', `Converted to bitmap page ${index}`));
 
         // Convert each bitmap to Blob and upload
         let urls: string[] = [];
@@ -51,7 +55,7 @@ const CustomUi = () => {
                 const cleanName = file.name.split('.')[0].substring(0, 50);
                 const fileName = cleanName + '-' + index + '.png';
                 logger.log('system:file', `Uploading file ${fileName}`);
-                const path = await uploadCapsuleFile({file: blob, name: fileName, capsuleId: 'CAP_THOMAS', folder: cleanName});
+                const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: 'CAP_THOMAS', folder: cleanName});
                 const url = await createSignedUrl(path);
                 urls.push(url);
                 logger.log('supabase:storage', `Uploaded page ${index}`);

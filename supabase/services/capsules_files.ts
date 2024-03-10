@@ -6,7 +6,7 @@ type UploadCapsuleFileArgs = {
     capsuleId: string
     folder?: string
 } | {
-    file: Blob
+    blob: Blob
     name: string
     capsuleId: string
     folder?: string
@@ -37,7 +37,7 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
 
     const userId = res.data.user.id
     const path = `${userId}/${args.capsuleId}/${folderName ? folderName + '/' : ''}${fileName}`
-    const { data, error } = await supabase.storage.from('capsules_files').upload(path, args.file)
+    const { data, error } = await supabase.storage.from('capsules_files').upload(path, 'file' in args ? args.file : args.blob)
 
     if (error) {
         // For example, when the file name already exists
