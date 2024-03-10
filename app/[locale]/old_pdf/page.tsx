@@ -4,8 +4,9 @@ import { useCallback, useState } from 'react';
 import ImportPDFButton from "@/components/menus/add/ImportPdfBtn/ImportPdfBtn";
 import { uploadCapsuleFile, createSignedUrl } from '@/supabase/services/capsules_files';
 import logger from '@/utils/logger';
-import { Tldraw, useEditor, Editor, uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';
+import { Tldraw, useEditor, Editor, useTLStore , uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';
 import '@tldraw/tldraw/tldraw.css';
+import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 
 
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -88,43 +89,62 @@ const CustomUi = () => {
         const currentPageIsEmpty = editor.getPageShapeIds(editor.getCurrentPage()).size === 0
         const currentPage = editor.getCurrentPage() // Save the current page to restore it later
 
-        assetIds.forEach((assetId, index) => {
+        // Batch all the following operations
+        editor.batch(() => {
+            assetIds.forEach((assetId, index) => {
+                // Create a new page for each image, except the first image if the current page is empty
+                if ((index === 0 && !currentPageIsEmpty) || index > 0) {
+                    const pageId = 'page:' + uniqueId() as TLPageId
+                    editor.createPage({
+                        id: pageId,
+                        name: `Page ${index + 1}`
+                    })
+                    // Set the current page to the new page so that we can create the shape on it
+                    editor.setCurrentPage(pageId)
+                }
 
-            // Create a new page for each image
-            // No need to create a new page for the first image if the current page is empty
-            if ((index === 0 && !currentPageIsEmpty) || index > 0) {
-                const pageId = 'page:' + uniqueId() as TLPageId
-                editor.createPage({
-                    id: pageId,
-                    name: `Page ${index + 1}`
+                // Calculate the dimensions of the image to fit in inside 1920x1080
+                const aspectRatio = images[index].width / images[index].height
+                const maxWidth = 1920
+                const maxHeight = 1080
+                let width = images[index].width
+                let height = images[index].height
+                if (width > maxWidth) {
+                    width = maxWidth
+                    height = width / aspectRatio
+                }
+                if (height > maxHeight) {
+                    height = maxHeight
+                    width = height * aspectRatio
+                }
+
+
+                // Create a new shape using the asset
+                const id = createShapeId()
+                editor.createShape({
+                    id: id,
+                    type: 'image',
+                    x: (1920 - width) / 2,
+                    y: (1080 - height) / 2,
+                    props: {
+                        assetId, // Use the asset we created earlier
+                        w: width,
+                        h: height,
+                    },
                 })
-                editor.setCurrentPage(pageId)
-            }
-
-            const id = createShapeId()
-            editor.createShape({
-                id: id,
-                type: 'image',
-                x: (window.innerWidth - images[index].width) / 2,
-                y: (window.innerHeight - images[index].height) / 2,
-                props: {
-                    assetId,
-                    w: images[index].width,
-                    h: images[index].height,
-                },
+                // Lock the image
+                editor.toggleLock([id])
             })
-
-            editor.toggleLock([id])
+            // Return to the original page
+            editor.setCurrentPage(currentPage)
         })
-
-        // Restore the current page
-        editor.setCurrentPage(currentPage)
     }
 
     return (
-        <div style={{zIndex: 1000, position: 'absolute', top: 50, right: 50}}>
-            <h1>Import PDF</h1>
-            <ImportPDFButton onImport={onImport}>Import PDF</ImportPDFButton>
+        <div style={{zIndex: 1000, position: 'absolute', top: 50, left: '50%'}}>
+            <ImportPDFButton onImport={onImport}>
+                <PlainBtn message={'Importer un PDF'} />
+            </ImportPDFButton>
         </div>
     )
 }

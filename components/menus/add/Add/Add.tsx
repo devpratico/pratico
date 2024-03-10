@@ -1,16 +1,29 @@
+'use client'
 import styles from "./Add.module.css"
 import DeskMenuLayout from "../../DeskMenuLayout/DeskMenuLayout"
 import ImportPDFButton from "../ImportPdfBtn/ImportPdfBtn"
+import importPdfBackground from "@/utils/tldraw/importPdfBackground"
+import { useEditor } from "@tldraw/tldraw"
+import { useCapsule } from "@/hooks/capsuleContext"
 
 
 export default function Add() {
+
+    const editor = useEditor()
+    const { capsule } = useCapsule()
+
     return (
         <DeskMenuLayout menu="add">
             <div>
                 <h2>Document</h2>
                 <div className={styles.optionsContainer}>
 
-                    <ImportPDFButton className={styles.option}>
+                    <ImportPDFButton
+                        onImport={(file) => {
+                            importPdfBackground({ file, editor: editor, capsuleId: capsule.id })}
+                        }
+                        className={styles.option}
+                    >
                         <div className={styles.pdf}>
                             PDF
                         </div>

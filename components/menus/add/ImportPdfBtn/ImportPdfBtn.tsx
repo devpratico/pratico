@@ -1,8 +1,6 @@
 'use client'
 import { useRef } from 'react';
 import styles from './ImportPdfBtn.module.css';
-import { useEditor } from '@tldraw/tldraw';
-import addPdf from '@/utils/tldraw/addPdf';
 import logger from '@/utils/logger';
 
 
@@ -19,7 +17,7 @@ export default function ImportPDFButton({ children, className, onImport }: Impor
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files ? event.target.files[0] : null;
         if (file && file.type === "application/pdf") {
-            logger.log('system:file', 'File received 1', file.name, file.type)
+            logger.log('system:file', 'File received', file.name, file.type)
             onImport(file);
         } else {
             logger.log('system:file', 'File is not a PDF', file?.type)
