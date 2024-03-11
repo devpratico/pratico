@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/utils/logger';
 import { pdfjs } from 'react-pdf';
-import { uploadCapsuleFile, createSignedUrl } from '@/supabase/services/capsules_files';
+import { uploadCapsuleFile, getPublicUrl } from '@/supabase/services/capsules_files';
 import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';
 import '@tldraw/tldraw/tldraw.css';
 
@@ -45,7 +45,7 @@ export default async function importPdfBackground({ file, editor, capsuleId }: I
             assetNames.push(fileName);
             logger.log('system:file', `Uploading file ${fileName}`);
             const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: capsuleId, folder: cleanName});
-            const url = await createSignedUrl(path);
+            const url = await getPublicUrl(path);
             urls.push(url);
             logger.log('supabase:storage', `Uploaded page ${index}`);
         } catch (error) {

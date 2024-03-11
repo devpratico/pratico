@@ -72,3 +72,13 @@ export async function createSignedUrl(fileUrl: string) {
         return data.signedUrl
     }
 }
+
+
+/**
+ * Get the public URL of a file in the `capsules_files` bucket (the bucket must be public)
+ */
+export async function getPublicUrl(path: string) {
+    const supabase =  await getSupabaseClient()
+    const { data } = supabase.storage.from('capsules_files').getPublicUrl(path)
+    return data.publicUrl
+}
