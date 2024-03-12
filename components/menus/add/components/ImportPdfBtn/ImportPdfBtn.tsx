@@ -11,7 +11,7 @@ interface ImportPDFButtonProps {
 }
 
 export default function ImportPDFButton({ children, className, onImport }: ImportPDFButtonProps) {
-    //const editor = useEditor();
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {

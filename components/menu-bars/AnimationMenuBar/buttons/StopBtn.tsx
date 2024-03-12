@@ -2,7 +2,7 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { stopRoom } from "@/actions/capsuleActions";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks/useRoom";
 import { useRouter } from "next/navigation";
 
 

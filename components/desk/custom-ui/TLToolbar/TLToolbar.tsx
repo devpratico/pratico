@@ -1,10 +1,11 @@
 'use client'
-import { track, useEditor } from "@tldraw/tldraw"
+import { track } from "@tldraw/tldraw"
 import getTldrawState from "@/utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/utils/tldraw/toolBarState"
 import * as tlDispatch from '@/utils/tldraw/toolbarDispatch'
 import ToolBar from "@/components/desk/tool-bar/ToolBar/ToolBar"
 import { useKeyboardShortcuts } from "@tldraw/tldraw"
+import { useTLEditor } from "@/hooks/useTLEditor"
 
 /**
  * This is the toolbar of the canvas.
@@ -12,7 +13,7 @@ import { useKeyboardShortcuts } from "@tldraw/tldraw"
  */
 // TODO: don't use track and improve the code
 const  TLToolbar = track(() => {
-    const editor = useEditor() // This is provided by the parent Tldraw component
+    const { editor } = useTLEditor()
     useKeyboardShortcuts()
 
     const tldrawState = getTldrawState(editor)

@@ -1,10 +1,10 @@
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
-//import { useNav } from '@/hooks/navContext'
-import { useEditor, TLPageId, track } from '@tldraw/tldraw'
+import { track } from '@tldraw/tldraw'
 import Thumbnail from '@/components/Thumbnail/Thumbnail'
 import { useMemo } from 'react'
-import { useNavNew } from '@/hooks/navContextNew'
+import { useNav } from '@/hooks/useNav'
+import { useTLEditor } from '@/hooks/useTLEditor'
 
 
 
@@ -12,11 +12,15 @@ function Carousel() {
     // TODO: Get rid of tldraw stuff:
     // Make the carousel component take an array of children
     // Then make a special tldraw component for children, that relies on editor stuff
-    const editor = useEditor()
-    const { pageIds, currentPageId, setCurrentPage } = useNavNew()
+    const { editor } = useTLEditor()
+    const { pageIds, currentPageId, setCurrentPage } = useNav()
 
     // TODO: Update the thumbnail when new object added
-    const snapshot = useMemo(() => editor.store.getSnapshot(), [editor, currentPageId]) // currentPageId so that it updates when the current page changes
+    const snapshot = useMemo(() => {
+        // TODO: have an empty snapshot for when editor not ready
+        if (!editor) return undefined
+        editor.store.getSnapshot()}
+    , [editor, currentPageId]) // currentPageId so that it updates when the current page changes
     
     // TODO: When the selected page is not visible, scroll to it
     return (
@@ -28,7 +32,7 @@ function Carousel() {
                     className={styles.miniatureBtn}
                 >
                     <Miniature selected={id === currentPageId}>
-                        <Thumbnail snapshot={snapshot} pageId={id} />
+                        {snapshot && <Thumbnail snapshot={snapshot} pageId={id} />}
                     </Miniature>
                 </div>
             ))}

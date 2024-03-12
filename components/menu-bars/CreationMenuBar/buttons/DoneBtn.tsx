@@ -1,12 +1,11 @@
 'use client'
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
-//import { setCapsuleSnapshot } from "@/supabase/services/capsules";
-import { useEditor } from "@tldraw/tldraw";
 import logger from "@/utils/logger";
 import { useRouter } from "next/navigation";
-import { useCapsule } from '@/hooks/capsuleContext';
+import { useCapsule } from '@/hooks/useCapsule';
 import { saveCapsuleSnapshot } from "@/actions/capsuleActions";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks/useRoom";
+import { useTLEditor } from "@/hooks/useTLEditor";
 
 
 interface DoneBtnProps {
@@ -26,7 +25,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     const { setRoom } = useRoom()
 
     // TODO: Maybe get rid of tldraw stuff and use a hook
-    const editor = useEditor()
+    const { editor } = useTLEditor()
     const handleClick = async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
         const snapshot = editor.store.getSnapshot()

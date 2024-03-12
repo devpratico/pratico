@@ -4,8 +4,7 @@ import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIc
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
 import { IconSize } from '@/utils/icons/IconProps';
-//import { useNav } from '@/hooks/navContext'
-import { useNavNew } from '@/hooks/navContextNew'
+import { useNav } from '@/hooks/useNav'
 
 
 export default function SlideNavigation() {
@@ -24,7 +23,7 @@ export default function SlideNavigation() {
         currentPageId,
         goNextPage,
         goPrevPage,
-    } = useNavNew()
+    } = useNav()
 
     const leftArrowBtnProps = {
         icon:       <ChevronLeftIcon />,

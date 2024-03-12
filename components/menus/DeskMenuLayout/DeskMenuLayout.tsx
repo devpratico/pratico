@@ -1,8 +1,8 @@
 'use client'
 import styles from './DeskMenuLayout.module.css'
-import { useUi } from '@/hooks/uiContext'
+import { useUi } from '@/hooks/useUi'
 import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'
-import type { DeskMenu } from '@/hooks/uiContext'
+import type { DeskMenu } from '@/hooks/useUi'
 
 
 interface DeskMenuLayoutProps {

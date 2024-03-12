@@ -1,6 +1,6 @@
 'use client'
 import styles from './RoomLink.module.css'
-import { useRoom } from '@/hooks/roomContext';
+import { useRoom } from '@/hooks/useRoom';
 
 
 export default function RoomLink() {

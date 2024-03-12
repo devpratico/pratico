@@ -6,8 +6,8 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog'
 //import loginImage from '@/public/illustrations/login.svg'
 //import Image from 'next/image';
-import { useUi } from '@/hooks/uiContext';
-import { useAuth } from '@/hooks/authContext';
+import { useUi } from '@/hooks/useUi';
+import { useAuth } from '@/hooks/useAuth';
 import { useState, useEffect } from 'react';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 

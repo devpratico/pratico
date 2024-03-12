@@ -1,7 +1,7 @@
 'use client'
 import CreationMenuBar from "../CreationMenuBar/CreationMenuBar"
 import AnimationMenuBar from "../AnimationMenuBar/AnimationMenuBar"
-import { useRoom } from "@/hooks/roomContext"
+import { useRoom } from "@/hooks/useRoom"
 
 
 interface DeskMenuBarProps {

@@ -1,6 +1,7 @@
-import { useEditor, react } from "@tldraw/tldraw";
+import { react } from "@tldraw/tldraw";
 import { useState, useEffect } from "react";
 import debounce from "@/utils/debounce";
+import { useTLEditor } from "./useTLEditor";
 
 
 interface Presence {
@@ -11,7 +12,7 @@ interface Presence {
 
 // TODO: Use https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
 export default function usePresence() {
-    const editor = useEditor()
+    const { editor } = useTLEditor()
     const [presences, setPresences] = useState<Presence[]>( () =>
         editor.store.query.records('instance_presence').get().map(p => {
             return {

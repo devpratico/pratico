@@ -13,9 +13,10 @@ export default async function DashboardLayout({children }: RootLayoutProps) {
         <div className={styles.container}>
             <MainLayout
                 menuBar={<DashboardMenuBar/>}
-                content={children}
                 leftBar={<DashboardLeftBar/>}
-            />
+            >
+                {children}
+            </MainLayout>
         </div>
     )
 }

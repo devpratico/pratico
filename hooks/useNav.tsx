@@ -1,18 +1,8 @@
 'use client'
 import logger from '@/utils/logger';
-import {
-    createContext,
-    useContext,
-} from 'react';
-import {
-    useEditor,
-    getIndexBetween,
-    TLPageId,
-    useValue,
-    useComputed,
-    uniqueId,
-} from '@tldraw/tldraw';
-import { get } from 'http';
+import { createContext, useContext} from 'react';
+import { getIndexBetween, TLPageId, useValue, uniqueId } from '@tldraw/tldraw';
+import { useTLEditor } from './useTLEditor';
 
 
 type NavContextType = {
@@ -24,7 +14,7 @@ type NavContextType = {
     newPage: (position?: 'next' | 'last') => void;
 };
 
-const NavContextNew = createContext<NavContextType | undefined>(undefined);
+const NavContext = createContext<NavContextType | undefined>(undefined);
 
 
 /**
@@ -32,16 +22,12 @@ const NavContextNew = createContext<NavContextType | undefined>(undefined);
  * It uses [signia](https://signia.tldraw.dev/docs/react-bindings)
  * And [fractionnal indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing).
  */
-export function NavProviderNew({ children }: { children: React.ReactNode }) {
-    const editor = useEditor()
+export function NavProvider({ children }: { children: React.ReactNode }) {
+    const { editor } = useTLEditor()
     if (!editor) throw new Error('Tldraw editor context not found in NavProvider');
 
-    //const $pageIds = editor.store.query.ids('page')
-    //const pageIds = useValue($pageIds)
-    const pageIds = useValue('Page ids', () => editor.getPages().map(p => p.id), [editor])
-
-    const $currentPageId = useComputed('Current page ID',() => editor.getCurrentPage().id, [editor])
-    const currentPageId = useValue($currentPageId)
+    const pageIds       = useValue('Page ids',       () => editor.getPages().map(p => p.id), [editor])
+    const currentPageId = useValue('Current page ID',() => editor.getCurrentPage().id, [editor])
 
     const setCurrentPage = (id: TLPageId) => {
         try {
@@ -82,6 +68,7 @@ export function NavProviderNew({ children }: { children: React.ReactNode }) {
 
         if (position === 'last') {
             editor.createPage({ id: newPageId })
+            
         } else {
             const pages = editor.getPages()
             const currentPage = editor.getCurrentPage()
@@ -115,7 +102,7 @@ export function NavProviderNew({ children }: { children: React.ReactNode }) {
 
 
     return (
-        <NavContextNew.Provider value={{
+        <NavContext.Provider value={{
             pageIds,
             currentPageId,
             setCurrentPage,
@@ -124,12 +111,12 @@ export function NavProviderNew({ children }: { children: React.ReactNode }) {
             newPage
         }}>
             {children}
-        </NavContextNew.Provider>
+        </NavContext.Provider>
     );
 }
 
-export function useNavNew() {
-    const context = useContext(NavContextNew);
+export function useNav() {
+    const context = useContext(NavContext);
     if (!context) throw new Error('useNavNew must be used within a NavProviderNew');
     return context;
 }

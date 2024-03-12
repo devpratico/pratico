@@ -15,30 +15,11 @@ import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
 import { getRandomColor } from '@/utils/codeGen'
-import { NavProviderNew } from '@/hooks/navContextNew'
-
-
-
-/**
- * This function is called when the tldraw editor is mounted.
- * It's used to set some initial preferences.
- */
-const handleMount = (editor: Editor) => {
-
-    // Set the user preferences
-    // Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
-    // This is useful if the user has already set its `name` before - we don't redirect him to the student-form page
-    const userPref = getUserPreferences()
-    setUserPreferences({
-        ...userPref,
-        color: getRandomColor(),
-        edgeScrollSpeed: 0
-    })
-
-    editor.updateInstanceState({ canMoveCamera: false })
-    editor.setStyleForNextShapes(DefaultColorStyle, "black");
-    editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-}
+import { NavProvider } from '@/hooks/useNav'
+import { useTLEditor } from '@/hooks/useTLEditor'
+import { useCallback } from 'react'
+import Resizer from '../custom-ui/Resizer/Resizer'
+import EmbedHint from '../custom-ui/EmbedHint/EmbedHint'
 
 
 export interface CanvasProps {
@@ -55,6 +36,33 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, children}: CanvasProps) {
+
+    const { setEditor } = useTLEditor()
+
+    /**
+     * This function is called when the tldraw editor is mounted.
+     * It's used to set some initial preferences.
+     */
+    const handleMount = useCallback((editor: Editor) => {
+
+        // Expose the editor to the outside world (`useTLEditor` hook)
+        setEditor(editor)
+
+        // Set the user preferences
+        // Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
+        // This is useful if the user has already set its `name` before - we don't redirect him to the student-form page
+        const userPref = getUserPreferences()
+        setUserPreferences({
+            ...userPref,
+            color: getRandomColor(),
+            edgeScrollSpeed: 0
+        })
+
+        editor.updateInstanceState({ canMoveCamera: false })
+        editor.setStyleForNextShapes(DefaultColorStyle, "black");
+        editor.setStyleForNextShapes(DefaultSizeStyle , "m");
+    }, [setEditor])
+
     return (
         <Tldraw
             hideUi={true}
@@ -63,10 +71,9 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
             store={store}
             snapshot={ store ? undefined : initialSnapshot }
         >
-            {/** TODO: Not sure if this is the right place to put that provider*/}
-            <NavProviderNew>
-                {children}
-            </NavProviderNew>
+            {children}
+            <Resizer/>
+            <EmbedHint/>
         </Tldraw>
     )
 }

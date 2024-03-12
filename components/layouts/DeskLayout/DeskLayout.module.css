@@ -12,6 +12,7 @@
 
 
 .menuBar {
+    background-color: blue;
     height: 60px;
     width: 100%;
     grid-area: menuBar;
@@ -20,6 +21,9 @@
 
 
 .toolBar {
+    background-color: green;
+    height: 100%;
+    width:  60px;
     grid-area: content;
     position: absolute;
     left: 10px;
@@ -30,6 +34,7 @@
 
 
 .slideBar {
+    background-color: red;
     height: 70px;
     width: 100%;
     grid-area: slideBar;
@@ -38,6 +43,7 @@
 
 
 .menu {
+    background-color: yellow;
     grid-area: content;
     width: 350px;
     height: 100%;

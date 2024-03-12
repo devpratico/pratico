@@ -4,15 +4,15 @@ import DeskMenuLayout from "../../DeskMenuLayout/DeskMenuLayout"
 import ImportPDFButton from "../components/ImportPdfBtn/ImportPdfBtn"
 import importPdfBackground from "@/utils/tldraw/importPdfBackground"
 import CreatePageBtn from "../components/CreatePageBtn/CreatePageBtn"
-import { useEditor } from "@tldraw/tldraw"
-import { useCapsule } from "@/hooks/capsuleContext"
+import { useTLEditor } from "@/hooks/useTLEditor"
+import { useCapsule } from "@/hooks/useCapsule"
 //import { NavProvider } from "@/hooks/navContext"
 
 
 
 export default function Add() {
 
-    const editor = useEditor()
+    const { editor } = useTLEditor()
     const { capsule } = useCapsule()
 
     // TODO: NavProvider is provided at different places, maybe it should be provided at a higher level

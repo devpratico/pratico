@@ -2,7 +2,7 @@
 import Canvas from "../Canvas/Canvas";
 import useBroadcastStore from "@/hooks/useBroadcastStore";
 import { TLStoreSnapshot, getUserPreferences } from "@tldraw/tldraw";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks/useRoom";
 import AutoSaver from "../AutoSaver/AutoSaver";
 import { useRouter } from "next/navigation";
 

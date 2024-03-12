@@ -1,10 +1,10 @@
 'use client'
-import { useNavNew } from "@/hooks/navContextNew"
+import { useNav } from "@/hooks/useNav"
 
 
 export default function CreatePageBtn() {
 
-    const { newPage } = useNavNew()
+    const { newPage } = useNav()
 
     return (
         <button onClick={() => newPage()}>

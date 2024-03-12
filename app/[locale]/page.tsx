@@ -1,6 +1,8 @@
 import styles from './page.module.css'
 import Link from "next/link"
 
+// TODO: Put all folders inside app directory (with private folders) https://nextjs.org/docs/app/building-your-application/routing/colocation
+// Or use a src directory.
 
 export default function HomePage() {
     return (
