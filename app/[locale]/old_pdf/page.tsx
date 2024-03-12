@@ -1,7 +1,7 @@
 'use client'
 import { pdfjs } from 'react-pdf';
 import { useCallback, useState } from 'react';
-import ImportPDFButton from "@/components/menus/add/ImportPdfBtn/ImportPdfBtn";
+import ImportPDFButton from "@/components/menus/add/components/ImportPdfBtn/ImportPdfBtn";
 import { uploadCapsuleFile, createSignedUrl } from '@/supabase/services/capsules_files';
 import logger from '@/utils/logger';
 import { Tldraw, useEditor, Editor, useTLStore , uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';

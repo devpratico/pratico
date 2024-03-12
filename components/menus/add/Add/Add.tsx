@@ -1,10 +1,13 @@
 'use client'
 import styles from "./Add.module.css"
 import DeskMenuLayout from "../../DeskMenuLayout/DeskMenuLayout"
-import ImportPDFButton from "../ImportPdfBtn/ImportPdfBtn"
+import ImportPDFButton from "../components/ImportPdfBtn/ImportPdfBtn"
 import importPdfBackground from "@/utils/tldraw/importPdfBackground"
+import CreatePageBtn from "../components/CreatePageBtn/CreatePageBtn"
 import { useEditor } from "@tldraw/tldraw"
 import { useCapsule } from "@/hooks/capsuleContext"
+//import { NavProvider } from "@/hooks/navContext"
+
 
 
 export default function Add() {
@@ -12,6 +15,7 @@ export default function Add() {
     const editor = useEditor()
     const { capsule } = useCapsule()
 
+    // TODO: NavProvider is provided at different places, maybe it should be provided at a higher level
     return (
         <DeskMenuLayout menu="add">
             <div>
@@ -29,19 +33,16 @@ export default function Add() {
                         </div>
                     </ImportPDFButton>
 
-                    <div className={styles.option}>
-                        Image
-                    </div>
 
                 </div>
             </div>
 
             <div>
-                <h2>Page</h2>
+                <h2>Templates</h2>
                 <div className={styles.optionsContainer}>
 
                     <div className={styles.option}>
-                        Page blanche
+                        <CreatePageBtn />
                     </div>
 
                     <div className={styles.option}>

@@ -45,7 +45,7 @@ export default async function importPdfBackground({ file, editor, capsuleId }: I
             assetNames.push(fileName);
             logger.log('system:file', `Uploading file ${fileName}`);
             const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: capsuleId, folder: cleanName});
-            const url = await getPublicUrl(path);
+            const url  = await getPublicUrl(path);
             urls.push(url);
             logger.log('supabase:storage', `Uploaded page ${index}`);
         } catch (error) {
@@ -90,9 +90,7 @@ export default async function importPdfBackground({ file, editor, capsuleId }: I
                 editor.createPage({
                     id: pageId,
                     name: `Page ${index + 1}`
-                })
-                // Set the current page to the new page so that we can create the shape on it
-                editor.setCurrentPage(pageId)
+                }).setCurrentPage(pageId) // Set the current page to the new page so that we can create the shape on it
             }
 
             // Calculate the dimensions of the image to fit in inside 1920x1080
@@ -169,6 +167,7 @@ async function convertPDFPageToBitmap(page: any): Promise<{ bitmap: string, widt
     const bitmap = canvas.toDataURL('image/png')
     return { bitmap, width: viewport.width, height: viewport.height }
 }
+
 
 /**
  * Converts a data URL to a Blob, that can be uploaded to Supabase

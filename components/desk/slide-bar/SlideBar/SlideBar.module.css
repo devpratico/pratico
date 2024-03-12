@@ -1,22 +1,31 @@
 .container {
     background-color: var(--background);
-    display:flex;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    grid-template-rows: 1fr;
+    grid-template-areas: "carousel controls";
     height: 100%;
+    width:  100%;
     /*overflow: hidden;*/
     border-top: 1px solid var(--secondary);
 }
 
 .carouselContainer {
-    flex-grow: 1;
+    grid-area: carousel;
     height: 100%;
-    overflow-x: scroll;
+    width:  100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .controls {
+    height: 100%;
+    width: 100%;
+    grid-area: controls;
     background-color: var(--background);
     display: flex;
     align-items: center;
+    justify-content: space-around;
     padding: 0 1rem;
-    gap: 1rem;
     border-left: 1px solid var(--secondary);
 }

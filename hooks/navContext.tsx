@@ -25,7 +25,7 @@ type NavContextType = {
 
 const NavContext = createContext<NavContextType | undefined>(undefined);
 
-// TODO: use `computed` and `react` for reactivity
+// TODO: use signia https://signia.tldraw.dev/docs/react-bindings
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const editor = useEditor()
     if (!editor) throw new Error('Tldraw editor context not found in NavProvider');
@@ -45,10 +45,10 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             editor.setCurrentPage(page)
             setPagesIds(editor.getPages().map(p => p.id))
             setCurrentPageId(id)
-            logger.log('tldraw:editor', `Current page set to id`, currentPageId)
+            logger.log('tldraw:editor', `Current page set to ${id}.`, 'Pages ids:', pagesIds)
 
         } else {
-            console.warn('Page not found', id)
+            logger.error('tldraw:editor', `Page with id ${id} not found`)
         }
     }
 

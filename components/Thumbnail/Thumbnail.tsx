@@ -23,8 +23,11 @@ export default function Thumbnail({ snapshot, pageId }: ThumbnailProps) {
   return (
     <TldrawImage
         snapshot={snapshot}
+        format='png'
+        scale={0.05}
         pageId={pageId}
         bounds={new Box(0, 0, 1920, 1080)}
+        preserveAspectRatio={'true'}
     />
   );
 }

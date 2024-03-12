@@ -4,24 +4,35 @@ import LabeledIconBtn from '../../../primitives/buttons/LabaledIconBtn/LabeledIc
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon'
 import { IconSize } from '@/utils/icons/IconProps';
-import { useNav } from '@/hooks/navContext'
+//import { useNav } from '@/hooks/navContext'
+import { useNavNew } from '@/hooks/navContextNew'
 
 
 export default function SlideNavigation() {
 
+    /*
     const {
         pagesIds,
         currentPageId,
         incrementCurrentPageIndex,
         decrementCurrentPageIndex,
     } = useNav()
+    */
+
+    const {
+        pageIds,
+        currentPageId,
+        goNextPage,
+        goPrevPage,
+    } = useNavNew()
 
     const leftArrowBtnProps = {
         icon:       <ChevronLeftIcon />,
         iconSize:   "md" as IconSize,
         label:      undefined,
         iconColor:  "var(--primary)",
-        onClick:    decrementCurrentPageIndex,
+        //onClick:    decrementCurrentPageIndex,
+        onClick:    goPrevPage,
     }
     const LeftArrow = () => <LabeledIconBtn {...leftArrowBtnProps} />
 
@@ -30,7 +41,7 @@ export default function SlideNavigation() {
         iconSize:   "md" as IconSize,
         label:      undefined,
         iconColor:  "var(--primary)",
-        onClick:    incrementCurrentPageIndex,
+        onClick:    goNextPage,
     }
     const RightArrow = () => <LabeledIconBtn {...rightArrowBtnProps} />
 
@@ -39,9 +50,9 @@ export default function SlideNavigation() {
         <div className={styles.container}>
             <LeftArrow />
             <div className={styles.counter}>
-                <p className={styles.numberLeft}>{pagesIds.indexOf(currentPageId) + 1}</p>
+                <p className={styles.numberLeft}>{Array.from(pageIds).indexOf(currentPageId) + 1}</p>
                 <p className={styles.slash} >/</p>
-                <p className={styles.numberRight}>{pagesIds.length}</p>
+                <p className={styles.numberRight}>{Array.from(pageIds).length}</p>
             </div>
             <RightArrow />
         </div>

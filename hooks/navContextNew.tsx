@@ -1,0 +1,135 @@
+'use client'
+import logger from '@/utils/logger';
+import {
+    createContext,
+    useContext,
+} from 'react';
+import {
+    useEditor,
+    getIndexBetween,
+    TLPageId,
+    useValue,
+    useComputed,
+    uniqueId,
+} from '@tldraw/tldraw';
+import { get } from 'http';
+
+
+type NavContextType = {
+    pageIds: TLPageId[];
+    currentPageId: TLPageId;
+    setCurrentPage: (id: TLPageId) => void;
+    goNextPage: () => void;
+    goPrevPage: () => void;
+    newPage: (position?: 'next' | 'last') => void;
+};
+
+const NavContextNew = createContext<NavContextType | undefined>(undefined);
+
+
+/**
+ * Provides values and functions to manipulate the pages of the editor.
+ * It uses [signia](https://signia.tldraw.dev/docs/react-bindings)
+ * And [fractionnal indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing).
+ */
+export function NavProviderNew({ children }: { children: React.ReactNode }) {
+    const editor = useEditor()
+    if (!editor) throw new Error('Tldraw editor context not found in NavProvider');
+
+    //const $pageIds = editor.store.query.ids('page')
+    //const pageIds = useValue($pageIds)
+    const pageIds = useValue('Page ids', () => editor.getPages().map(p => p.id), [editor])
+
+    const $currentPageId = useComputed('Current page ID',() => editor.getCurrentPage().id, [editor])
+    const currentPageId = useValue($currentPageId)
+
+    const setCurrentPage = (id: TLPageId) => {
+        try {
+            editor.setCurrentPage(id)
+            const index = editor.getCurrentPage().index
+            logger.log('tldraw:editor', `Set current page to index: ${index} - id:${id}`)
+        } catch (error) {
+            logger.error('tldraw:editor', `Page ${id} not found`, (error as Error).message)
+        }
+    }
+
+    const goNextPage = () => {
+        const pages = editor.getPages()
+        const currentPageIdx = pages.indexOf(editor.getCurrentPage())
+        const nextPageIdx = currentPageIdx + 1
+        if (nextPageIdx < pages.length) {
+            setCurrentPage(pages[nextPageIdx].id)
+        } else {
+            logger.log('tldraw:editor', `No next page`)
+        }
+    }
+
+    const goPrevPage = () => {
+        const pages = editor.getPages()
+        const currentPageIdx = pages.indexOf(editor.getCurrentPage())
+        const prevPageIdx = currentPageIdx - 1
+        if (prevPageIdx >= 0) {
+            setCurrentPage(pages[prevPageIdx].id)
+        } else {
+            logger.log('tldraw:editor', `No previous page`)
+        }
+    }
+
+    const newPage = (position: 'next' | 'last' = 'next') => {
+
+        const newPageId = 'page:' + uniqueId() as TLPageId
+        logger.log('tldraw:editor', `Creating new page with id: ${newPageId}`)
+
+        if (position === 'last') {
+            editor.createPage({ id: newPageId })
+        } else {
+            const pages = editor.getPages()
+            const currentPage = editor.getCurrentPage()
+
+            const currentPageIndex = {
+                inArray: pages.indexOf(currentPage),
+                inFract: currentPage.index
+            }
+
+            // If the current page is the last page, create a new page at the end of the pages list:
+            if (currentPageIndex.inArray === pages.length - 1) {
+                newPage('last')
+                return
+            }
+
+            const nextPageIndex = {
+                inArray: currentPageIndex.inArray + 1,
+                inFract: pages[currentPageIndex.inArray + 1].index // We know for sure that there's a page after the current page
+            }
+
+            const newPageIndex = {
+                inFract: getIndexBetween(currentPageIndex.inFract, nextPageIndex.inFract)
+            }
+
+            editor.createPage({ id: newPageId, index: newPageIndex.inFract })
+
+            logger.log('tldraw:editor', `Created page at ${newPageIndex.inFract} in between ${currentPageIndex.inFract} and ${nextPageIndex.inFract}`, editor.getPages().map(p => p.index))
+        }
+        setCurrentPage(newPageId)
+    }
+
+
+    return (
+        <NavContextNew.Provider value={{
+            pageIds,
+            currentPageId,
+            setCurrentPage,
+            goNextPage,
+            goPrevPage,
+            newPage
+        }}>
+            {children}
+        </NavContextNew.Provider>
+    );
+}
+
+export function useNavNew() {
+    const context = useContext(NavContextNew);
+    if (!context) throw new Error('useNavNew must be used within a NavProviderNew');
+    return context;
+}

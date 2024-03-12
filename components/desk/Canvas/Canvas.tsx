@@ -15,6 +15,7 @@ import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
 import { getRandomColor } from '@/utils/codeGen'
+import { NavProviderNew } from '@/hooks/navContextNew'
 
 
 
@@ -62,7 +63,10 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
             store={store}
             snapshot={ store ? undefined : initialSnapshot }
         >
-            {children}
+            {/** TODO: Not sure if this is the right place to put that provider*/}
+            <NavProviderNew>
+                {children}
+            </NavProviderNew>
         </Tldraw>
     )
 }

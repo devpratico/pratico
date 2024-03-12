@@ -1,7 +1,6 @@
 'use client'
 import { track } from "@tldraw/tldraw"
 import SlideBar from '@/components/desk/slide-bar/SlideBar/SlideBar'
-import { NavProvider } from '@/hooks/navContext'
 
 /**
  * This is the slide bar of the canvas.
@@ -10,11 +9,7 @@ import { NavProvider } from '@/hooks/navContext'
  * And provides the provider for hooks.
  */
 const TLSlidebar = track(() => {
-    return (
-        <NavProvider>
-            <SlideBar/>
-        </NavProvider>
-    )
+    return <SlideBar/>
 })
 
 export default TLSlidebar

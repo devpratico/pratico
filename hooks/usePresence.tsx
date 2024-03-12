@@ -9,8 +9,7 @@ interface Presence {
     color: string;
 }
 
-// TODO: I use debounce to limit the amount of updates (the hook fires on every cursor movement).
-// Should find a way to react only to presence changes. Maybe use the Supabase Presence feature.
+// TODO: Use https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
 export default function usePresence() {
     const editor = useEditor()
     const [presences, setPresences] = useState<Presence[]>( () =>
