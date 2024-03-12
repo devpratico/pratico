@@ -27,7 +27,7 @@ export default function SlideBar() {
 
             <div className={styles.controls}>
                 <AddPage />
-                <SlideNavigation />
+                    <SlideNavigation />
                 <Expand />
             </div>
         </div>

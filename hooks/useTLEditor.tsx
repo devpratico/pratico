@@ -1,10 +1,10 @@
 'use client'
-import { Editor, TldrawEditor, createTLStore } from '@tldraw/tldraw';
+import { Editor, createTLStore, defaultShapeUtils } from '@tldraw/tldraw';
 import { createContext, useContext, useState } from 'react';
 
 
 type TLEditorContextType = {
-    editor: Editor;
+    editor: Editor | undefined; // There is no editor until tldraw is ready
     setEditor: (editor: Editor) => void;
 };
 
@@ -14,15 +14,16 @@ const TLEditorContext = createContext<TLEditorContextType | undefined>(undefined
 
 export function TLEditorProvider({ children }: { children: React.ReactNode }) {
 
-    // TODO: Maybe there's a better way to create a blank editor
+    /*
     const blankEditor = new Editor({
         store: createTLStore({}),
         shapeUtils: [],
         tools: [],
         getContainer: () => document.createElement('div'),
     })
+    */
 
-    const [editor, setEditor] = useState<Editor>(blankEditor);
+    const [editor, setEditor] = useState<Editor | undefined>(undefined);
 
     return (
         <TLEditorContext.Provider value={{ editor, setEditor }}>

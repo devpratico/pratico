@@ -1,3 +1,4 @@
+'use client'
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
 import { track } from '@tldraw/tldraw'
@@ -16,11 +17,12 @@ function Carousel() {
     const { pageIds, currentPageId, setCurrentPage } = useNav()
 
     // TODO: Update the thumbnail when new object added
-    const snapshot = useMemo(() => {
-        // TODO: have an empty snapshot for when editor not ready
-        if (!editor) return undefined
-        editor.store.getSnapshot()}
-    , [editor, currentPageId]) // currentPageId so that it updates when the current page changes
+    const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor, currentPageId]) // currentPageId so that it updates when the current page changes
+
+    if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
+        return <span>loading...</span>
+    }
+
     
     // TODO: When the selected page is not visible, scroll to it
     return (
@@ -32,7 +34,7 @@ function Carousel() {
                     className={styles.miniatureBtn}
                 >
                     <Miniature selected={id === currentPageId}>
-                        {snapshot && <Thumbnail snapshot={snapshot} pageId={id} />}
+                        <Thumbnail snapshot={snapshot} pageId={id} />
                     </Miniature>
                 </div>
             ))}

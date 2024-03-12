@@ -1,20 +1,35 @@
-'use client'
 import styles from './page.module.css'
-import CanvasRT from "@/components/desk/CanvasRT/CanvasRT";
-import CanvasSL from "@/components/desk/CanvasSL/CanvasSL";
-import { useRoom } from "@/hooks/useRoom";
-import { useMemo } from "react";
+import CanvasSwitcher from './_components/CanvasSwitcher';
+import DeskLayout from '@/components/layouts/DeskLayout/DeskLayout';
+import { getTranslations } from 'next-intl/server';
+import DeskMenuBar from '@/components/menu-bars/DeskMenuBar/DeskMenuBar';
+import SlideBar from '@/components/desk/slide-bar/SlideBar/SlideBar';
+import TLToolbar from '@/components/desk/custom-ui/TLToolbar/TLToolbar';
+import DeskMenus from '@/components/menus/DeskMenus/DeskMenus';
 
 
-// TODO: use intercepting routes to handle between a creation page and a room page?
 export default async function CapsulePage() {
 
-    const { room } = useRoom()
-    const haveRoom = useMemo(() => !!room, [room])
+    const t = await getTranslations('menu-bar')
+    const messages = {
+        play: t('play'),
+        stop: t('stop session'),
+        polls: t('polls'),
+        chat: t('chat'),
+        participants: t('participants'),
+        more: t('more'),
+        done: t('done'),
+    }
 
     return (
         <main className={styles.main}>
-            {haveRoom ? <CanvasRT/> : <CanvasSL/>}
+            <CanvasSwitcher />
+            <DeskLayout
+                menuBar={<DeskMenuBar messages={messages} />}
+                slideBar={<SlideBar />}
+                toolBar={<TLToolbar />}
+                menu={<DeskMenus />}
+            />
         </main>
     )
 }

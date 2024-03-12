@@ -9,13 +9,13 @@ import {
     TLStoreWithStatus,
     TLStore,
     StoreSnapshot,
-    TLRecord
+    TLRecord,
+    useKeyboardShortcuts
 } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
 import { getRandomColor } from '@/utils/codeGen'
-import { NavProvider } from '@/hooks/useNav'
 import { useTLEditor } from '@/hooks/useTLEditor'
 import { useCallback } from 'react'
 import Resizer from '../custom-ui/Resizer/Resizer'
@@ -74,6 +74,13 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
             {children}
             <Resizer/>
             <EmbedHint/>
+            <KeyboardShortcuts/>
         </Tldraw>
     )
+}
+
+
+const KeyboardShortcuts = () => {
+    useKeyboardShortcuts()
+    return null
 }

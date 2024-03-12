@@ -6,12 +6,12 @@ import { useTLEditor } from './useTLEditor';
 
 
 type NavContextType = {
-    pageIds: TLPageId[];
-    currentPageId: TLPageId;
-    setCurrentPage: (id: TLPageId) => void;
-    goNextPage: () => void;
-    goPrevPage: () => void;
-    newPage: (position?: 'next' | 'last') => void;
+    pageIds?: TLPageId[];
+    currentPageId?: TLPageId;
+    setCurrentPage?: (id: TLPageId) => void;
+    goNextPage?: () => void;
+    goPrevPage?: () => void;
+    newPage?: (position?: 'next' | 'last') => void;
 };
 
 const NavContext = createContext<NavContextType | undefined>(undefined);
@@ -24,7 +24,22 @@ const NavContext = createContext<NavContextType | undefined>(undefined);
  */
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
-    if (!editor) throw new Error('Tldraw editor context not found in NavProvider');
+
+    // If no editor, it means tldraw is not ready yet
+    if (!editor) {
+        return (
+            <NavContext.Provider value={{
+                pageIds:        undefined,
+                currentPageId:  undefined,
+                setCurrentPage: undefined,
+                goNextPage:     undefined,
+                goPrevPage:     undefined,
+                newPage:        undefined
+            }}>
+                {children}
+            </NavContext.Provider>
+        );
+    }
 
     const pageIds       = useValue('Page ids',       () => editor.getPages().map(p => p.id), [editor])
     const currentPageId = useValue('Current page ID',() => editor.getCurrentPage().id, [editor])

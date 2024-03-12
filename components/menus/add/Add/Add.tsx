@@ -15,6 +15,8 @@ export default function Add() {
     const { editor } = useTLEditor()
     const { capsule } = useCapsule()
 
+    if (!editor) return <span>loading...</span>
+
     // TODO: NavProvider is provided at different places, maybe it should be provided at a higher level
     return (
         <DeskMenuLayout menu="add">

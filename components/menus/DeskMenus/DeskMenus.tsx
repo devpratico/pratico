@@ -9,9 +9,9 @@ import Add from "../add/Add/Add";
  */
 export default function DeskMenus() {
     return (
-        <>
+        <div>
             <Participants />
             <Add />
-        </>
+        </div>
     )
 }

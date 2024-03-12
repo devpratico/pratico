@@ -1,3 +1,4 @@
+'use server'
 import styles from './DeskLayout.module.css'
 
 
@@ -11,7 +12,7 @@ interface DeskLayoutProps {
 /**
  * This layout is used to position the custom ui components of the desk.
  */
-export default function DeskLayout({menuBar, toolBar, slideBar, menu}: DeskLayoutProps) {
+export default async function DeskLayout({menuBar, toolBar, slideBar, menu}: DeskLayoutProps) {
     return (
         <div className={styles.container}>
 

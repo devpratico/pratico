@@ -17,15 +17,17 @@ interface DoneBtnProps {
  * and navigates back to the dashboard.
  */
 export default function DoneBtn({ message }: DoneBtnProps) {
+    // TODO: Maybe get rid of tldraw stuff and use a hook
 
     const router = useRouter()
     const { capsule } = useCapsule()
+    const { setRoom } = useRoom()
+    const { editor } = useTLEditor()
+
+    if (!editor) return <span>loading...</span>
+    
     const capsuleId = capsule?.id
 
-    const { setRoom } = useRoom()
-
-    // TODO: Maybe get rid of tldraw stuff and use a hook
-    const { editor } = useTLEditor()
     const handleClick = async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
         const snapshot = editor.store.getSnapshot()
