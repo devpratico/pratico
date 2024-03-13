@@ -42,4 +42,4 @@ function Carousel() {
     )
 }
 
-export default track(Carousel)
+export default Carousel

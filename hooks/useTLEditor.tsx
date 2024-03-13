@@ -1,5 +1,5 @@
 'use client'
-import { Editor, createTLStore, defaultShapeUtils } from '@tldraw/tldraw';
+import { Editor } from '@tldraw/tldraw';
 import { createContext, useContext, useState } from 'react';
 
 
@@ -13,15 +13,6 @@ const TLEditorContext = createContext<TLEditorContextType | undefined>(undefined
 
 
 export function TLEditorProvider({ children }: { children: React.ReactNode }) {
-
-    /*
-    const blankEditor = new Editor({
-        store: createTLStore({}),
-        shapeUtils: [],
-        tools: [],
-        getContainer: () => document.createElement('div'),
-    })
-    */
 
     const [editor, setEditor] = useState<Editor | undefined>(undefined);
 

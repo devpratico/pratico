@@ -10,7 +10,7 @@
     grid-template-areas:
         "menuBar  menuBar  menuBar"
         "toolBar content  menu"
-        "slideBar slideBar controls";
+        "carousel carousel controls";
     pointer-events: none;
 }
 
@@ -39,11 +39,11 @@
 }
 
 
-.slideBar {
+.carousel {
     background-color: var(--background);
     height: 70px;
     width: 100%;
-    grid-area: slideBar;
+    grid-area: carousel;
     pointer-events: auto;
 }
 
@@ -71,7 +71,7 @@
         grid-template-areas: "toolBar content menu controls"
     }
 
-    .slideBar {
+    .carousel {
         display: none;
     }
 

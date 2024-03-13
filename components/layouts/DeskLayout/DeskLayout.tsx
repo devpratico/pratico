@@ -5,7 +5,7 @@ import styles from './DeskLayout.module.css'
 interface DeskLayoutProps {
     menuBar?: React.ReactNode;
     toolBar?: React.ReactNode;
-    slideBar?: React.ReactNode;
+    carousel?: React.ReactNode;
     controls?: React.ReactNode;
     menu?: React.ReactNode;
 }
@@ -13,7 +13,7 @@ interface DeskLayoutProps {
 /**
  * This layout is used to position the custom ui components of the desk.
  */
-export default async function DeskLayout({menuBar, toolBar, slideBar, controls, menu}: DeskLayoutProps) {
+export default async function DeskLayout({menuBar, toolBar, carousel, controls, menu}: DeskLayoutProps) {
     return (
         <div className={styles.container}>
 
@@ -25,8 +25,8 @@ export default async function DeskLayout({menuBar, toolBar, slideBar, controls, 
                 {toolBar}
             </div>
 
-            <div className={styles.slideBar}>
-                {slideBar}
+            <div className={styles.carousel}>
+                {carousel}
             </div>
 
             <div className={styles.controls}>

@@ -27,7 +27,7 @@ export default async function CapsulePage() {
             <CanvasSwitcher />
             <DeskLayout
                 menuBar={<DeskMenuBar messages={messages} />}
-                slideBar={<Carousel />}
+                carousel={<Carousel />}
                 controls={<Controls />}
                 toolBar={<TLToolbar />}
                 menu={<DeskMenus />}

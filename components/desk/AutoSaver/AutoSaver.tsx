@@ -21,7 +21,6 @@ const AutoSaver = track(({destination, id}: AutoSaverProps) => {
     const { store } = useEditor()
 
     useEffect(() => {
-        console.log("New editor")
         const save = async () => {
             const snapshot = store.getSnapshot()
 
