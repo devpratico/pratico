@@ -25,6 +25,18 @@ const NavContext = createContext<NavContextType | undefined>(undefined);
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
 
+
+    const pageIds = useValue('Page ids', () => {
+        if (!editor) return []
+        return editor.getPages().map(p => p.id)
+    }, [editor])
+
+    const currentPageId = useValue('Current page ID', () => {
+        if (!editor) return undefined
+        return editor.getCurrentPage().id
+    }, [editor])
+
+
     // If no editor, it means tldraw is not ready yet
     if (!editor) {
         return (
@@ -41,8 +53,6 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         );
     }
 
-    const pageIds       = useValue('Page ids',       () => editor.getPages().map(p => p.id), [editor])
-    const currentPageId = useValue('Current page ID',() => editor.getCurrentPage().id, [editor])
 
     const setCurrentPage = (id: TLPageId) => {
         try {

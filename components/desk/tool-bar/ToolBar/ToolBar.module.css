@@ -1,14 +1,26 @@
 .container {
     background-color: var(--background);
+    /*
     display: grid;
     --toolBar-cell-size: 2.7rem;
     grid-template-columns: var(--toolBar-cell-size);
     grid-auto-rows: var(--toolBar-cell-size);
+    */
+    display: flex;
+    flex-direction: column;
 
     width:fit-content;
     gap: 0.1rem;
     padding: 0.2rem;
     border-radius: 0.5rem;
+    box-shadow: var(--big-shadow);
     /*border: 0.5px solid var(--secondary-border);*/
 }
 
+
+@media (max-height: 500px) {
+    .container {
+        height: 100%;
+        box-shadow:none;
+    }
+}

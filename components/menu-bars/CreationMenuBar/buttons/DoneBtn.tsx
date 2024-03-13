@@ -6,6 +6,7 @@ import { useCapsule } from '@/hooks/useCapsule';
 import { saveCapsuleSnapshot } from "@/actions/capsuleActions";
 import { useRoom } from "@/hooks/useRoom";
 import { useTLEditor } from "@/hooks/useTLEditor";
+import { useMemo, useCallback, use } from "react";
 
 
 interface DoneBtnProps {
@@ -23,13 +24,12 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     const { capsule } = useCapsule()
     const { setRoom } = useRoom()
     const { editor } = useTLEditor()
-
-    if (!editor) return <span>loading...</span>
+    const capsuleId = useMemo(() => capsule?.id, [capsule])
     
-    const capsuleId = capsule?.id
 
-    const handleClick = async () => {
+    const handleClick = useCallback(async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
+        if (!capsuleId || !editor) return
         const snapshot = editor.store.getSnapshot()
         try {
             await saveCapsuleSnapshot(capsuleId!, snapshot)
@@ -41,7 +41,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
         } catch (error) {
             console.error("Error saving snapshot", error)
         }
-    }
+    }, [capsuleId, editor, router, setRoom])
 
     return (
         <PlainBtn

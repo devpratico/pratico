@@ -10,6 +10,7 @@ interface DialogContentProps {
     * Wether to portal the dialog to the body or not
     */
     portal?: boolean;
+    className?: string;
 }
 
 /**
@@ -21,6 +22,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
         children,
         showCloseBtn=false ,
         portal=true,
+        className,
     }, forwardedRef) {
 
     const CloseBtn = () => (
@@ -30,7 +32,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
     )
 
     const Content = () => (
-        <DialogPrimitive.Content ref={forwardedRef} className={styles.DialogContent}>
+        <DialogPrimitive.Content ref={forwardedRef} className={styles.DialogContent + " " + className}>
             {showCloseBtn && <CloseBtn/>}
             {children}
         </DialogPrimitive.Content>

@@ -1,5 +1,6 @@
 'use client'
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import useWindowSize from './useWindowSize';
 
 
 //export type MenuBarMode = 'creation' | 'animation';
@@ -10,6 +11,10 @@ type UiContextType = {
     // Dark mode
     isDark: boolean;
     toggleDark: () => void;
+
+    // Mobile
+    isMobile: boolean;
+    orientation: 'landscape' | 'portrait';
 
     // Auth dialog
     authDialogOpen: boolean;
@@ -29,6 +34,18 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
     const [isDark, setIsDark] = useState(false);
     const toggleDark = () => setIsDark(!isDark);
 
+    // Mobile
+    const { width, height } = useWindowSize();
+    const [isMobile, setIsMobile] = useState(false);
+    const [orientation, setOrientation] = useState<'landscape' | 'portrait'>('portrait');
+
+    useEffect(() => {
+        const checkIsMobile = !!width && !!height && (width < 500 || height < 500);
+        const checkOrientation = width && height && width > height ? 'landscape' : 'portrait';
+        setIsMobile(checkIsMobile);
+        setOrientation(checkOrientation);
+    }, [width, height]);
+
     // Auth dialog
     const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
@@ -41,6 +58,8 @@ export function UiProvider({ children }: { children: React.ReactNode }) {
     return (
         <UiContext.Provider value={{
             isDark,
+            isMobile,
+            orientation,
             toggleDark,
             authDialogOpen,
             setAuthDialogOpen,

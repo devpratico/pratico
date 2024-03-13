@@ -18,10 +18,8 @@ export default function DeskMenuLayout({ menu, children }: DeskMenuLayoutProps) 
             open={openedDeskMenu === menu}
             onOpenChange={open => setOpenDeskMenu(open ? 'participants' : undefined)}
         >
-            <DialogContent portal={false}>
-                <div className={styles.container}>
-                    {children}
-                </div>
+            <DialogContent portal={false} className={styles.container}>
+                {children}
             </DialogContent>
         </Dialog>
     )

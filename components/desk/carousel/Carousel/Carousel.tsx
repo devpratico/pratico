@@ -20,7 +20,7 @@ function Carousel() {
     const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor, currentPageId]) // currentPageId so that it updates when the current page changes
 
     if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
-        return <span>loading...</span>
+        return <></> // TODO: Make a loading animation
     }
 
     

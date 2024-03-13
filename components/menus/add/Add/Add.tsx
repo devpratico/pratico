@@ -15,13 +15,13 @@ export default function Add() {
     const { editor } = useTLEditor()
     const { capsule } = useCapsule()
 
-    if (!editor) return <span>loading...</span>
+    if (!editor) return null
 
     // TODO: NavProvider is provided at different places, maybe it should be provided at a higher level
     return (
         <DeskMenuLayout menu="add">
             <div>
-                <h2>Document</h2>
+                <h3>Document</h3>
                 <div className={styles.optionsContainer}>
 
                     <ImportPDFButton
@@ -40,7 +40,7 @@ export default function Add() {
             </div>
 
             <div>
-                <h2>Templates</h2>
+                <h3>Templates</h3>
                 <div className={styles.optionsContainer}>
 
                     <div className={styles.option}>

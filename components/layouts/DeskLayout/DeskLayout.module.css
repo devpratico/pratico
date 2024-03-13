@@ -2,12 +2,15 @@
     position: absolute;
     top: 0;
     z-index: 300;
-    height: 100%;
-    width: 100%;
+    height: 100dvh;
+    width:  100dvw;
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr;
-    grid-template-areas: "menuBar" "content" "slideBar";
+    grid-template-rows:    auto 1fr auto;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "menuBar  menuBar  menuBar"
+        "toolBar content  menu"
+        "slideBar slideBar controls";
     pointer-events: none;
 }
 
@@ -22,32 +25,68 @@
 
 
 .toolBar {
-    background-color: green;
+    /*background-color: green;*/
     height: 100%;
     width:  60px;
-    grid-area: content;
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translate(0, -50%);
+    grid-area: toolBar;
     pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding-left: 10px;
 }
 
 
 .slideBar {
-    background-color: red;
+    background-color: var(--background);
     height: 70px;
     width: 100%;
     grid-area: slideBar;
     pointer-events: auto;
 }
 
+.controls {
+    height: 70px;
+    width: 100%;
+    grid-area: controls;
+    pointer-events: auto;
+}
+
 
 .menu {
-    background-color: yellow;
-    grid-area: content;
+    /*background-color: yellow;*/
+    grid-area: menu;
+    display: flex;
     width: 350px;
     height: 100%;
-    position: absolute;
-    right: 0;
+}
+
+@media (max-height: 500px) {
+
+    .container {
+        grid-template-rows:    1fr;
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-areas: "toolBar content menu controls"
+    }
+
+    .slideBar {
+        display: none;
+    }
+
+    .menuBar {
+        display: none;
+    }
+
+    .toolBar {
+        padding: 3px;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .controls {
+        height: 100%;
+        width: 60px;
+    }
 }

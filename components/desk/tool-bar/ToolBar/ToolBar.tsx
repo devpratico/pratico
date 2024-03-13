@@ -10,14 +10,15 @@ import { ToolBarState } from '@/utils/tldraw/toolBarState';
 
 interface ToolBarProps {
     className?: string;
-    state: ToolBarState;
+    state?: ToolBarState;
     dispatch: (action: string, payload: string) => void;
 }
 
-export default function ToolBar({className, state, dispatch}: ToolBarProps) {
+export default function ToolBar({className, state = blankState, dispatch}: ToolBarProps) {
+
 
     return (
-        <div className={`${styles.container} bigShadow ${className}`}>
+        <div className={`${styles.container} ${className}`}>
             <SelectTool active={state.activeTool == "select"} dispatch={dispatch}/>
             <DrawTool   active={state.activeTool == "draw"} state={state.drawOptions} dispatch={dispatch}/>
             <TextTool   active={state.activeTool == "text"} state={state.textOptions} dispatch={dispatch}/>
@@ -26,4 +27,24 @@ export default function ToolBar({className, state, dispatch}: ToolBarProps) {
             <EraserTool active={state.activeTool == "eraser"} dispatch={dispatch}/>
         </div>
     )
+}
+
+
+const blankState: ToolBarState = {
+    activeTool: "select",
+    drawOptions: {
+        color: "black",
+        size: "m",
+        type: "normal",
+    },
+    textOptions: {
+        color: "black",
+        font: "draw",
+        type: "normal",
+    },
+    shapeOptions: {
+        color: "black",
+        shape: "rectangle",
+        style: "empty",
+    }
 }
