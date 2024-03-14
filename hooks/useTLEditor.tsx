@@ -1,5 +1,5 @@
 'use client'
-import { Editor } from '@tldraw/tldraw';
+import { Editor } from 'tldraw';
 import { createContext, useContext, useState } from 'react';
 
 

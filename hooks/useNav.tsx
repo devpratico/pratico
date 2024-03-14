@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/utils/logger';
 import { createContext, useContext } from 'react';
-import { getIndexBetween, TLPageId, useValue, uniqueId } from '@tldraw/tldraw';
+import { getIndexBetween, TLPageId, useValue, uniqueId } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
 

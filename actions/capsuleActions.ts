@@ -1,6 +1,7 @@
 'use server'
+import { fetchUserId } from '@/supabase/services/auth';
 import { fetchCapsuleSnapshot, saveSnapshotToCapsules } from '@/supabase/services/capsules'
-import { saveRoom, deleteRoom, RoomInsert, fetchRoomsCodes } from '@/supabase/services/rooms'
+import { saveRoom, deleteRoom, RoomInsert, fetchRoomsCodes, roomParams } from '@/supabase/services/rooms'
 import { generateRandomCode } from '@/utils/codeGen';
 
 
@@ -18,7 +19,12 @@ export async function createRoom(capsuleId: string): Promise<RoomInsert> {
         code = generateRandomCode()
     }
 
-    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: JSON.stringify(snapshot) }
+    // generate room params
+    const userId = await fetchUserId()
+    const params: roomParams = { navigation: { type: 'animateur', follow: userId } }
+
+    // Generate the room object
+    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: JSON.stringify(snapshot), params: JSON.stringify(params) }
 
     try {
         // Set the room in the database, and get the room that is created

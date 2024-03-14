@@ -28,5 +28,5 @@ export async function GET() {
         return new Response("Error creating capsule", { status: 500 })
     }
 
-    return redirect('capsule/' + capsule_id)
+    return redirect('/capsule/' + capsule_id)
 }

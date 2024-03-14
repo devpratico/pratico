@@ -1,4 +1,4 @@
-import { react } from "@tldraw/tldraw";
+import { react } from "tldraw";
 import { useState, useEffect } from "react";
 import debounce from "@/utils/debounce";
 import { useTLEditor } from "./useTLEditor";

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useMemo, useCallback } from "react"
-import { useEditor, Box } from "@tldraw/tldraw"
+import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/utils/tldraw/zoomToBounds"
 import logger from "@/utils/logger"
 import useWindow from "@/hooks/useWindow"

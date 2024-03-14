@@ -1,5 +1,5 @@
 'use client'
-import { useEditor, track } from '@tldraw/tldraw'
+import { useEditor, track } from 'tldraw'
 import { saveCapsuleSnapshot } from '@/actions/capsuleActions'
 import { saveRoomSnapshot } from '@/supabase/services/rooms';
 import logger from '@/utils/logger'

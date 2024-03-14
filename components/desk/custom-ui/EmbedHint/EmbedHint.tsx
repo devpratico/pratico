@@ -1,5 +1,5 @@
 'use client'
-import { useEditor, track } from "@tldraw/tldraw";
+import { useEditor, track } from "tldraw";
 import styles from './EmbedHint.module.css'
 
 

@@ -11,8 +11,8 @@ import {
     StoreSnapshot,
     TLRecord,
     useKeyboardShortcuts
-} from '@tldraw/tldraw'
-import '@tldraw/tldraw/tldraw.css'
+} from 'tldraw'
+import 'tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
 import CanvasArea from '../custom-ui/CanvasArea/CanvasArea'
 import { getRandomColor } from '@/utils/codeGen'
@@ -20,6 +20,8 @@ import { useTLEditor } from '@/hooks/useTLEditor'
 import { useCallback } from 'react'
 import Resizer from '../custom-ui/Resizer/Resizer'
 import EmbedHint from '../custom-ui/EmbedHint/EmbedHint'
+import { useAuth } from '@/hooks/useAuth'
+import logger from '@/utils/logger'
 
 
 export interface CanvasProps {
@@ -38,6 +40,7 @@ export interface CanvasProps {
 export default function Canvas({store, initialSnapshot, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
+    const { user } = useAuth()
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -48,15 +51,21 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
 
-        // Set the user preferences
-        // Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
-        // This is useful if the user has already set its `name` before - we don't redirect him to the student-form page
+        /**
+         * Set the user preferences
+         * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
+         * This is useful if the user has already set its `name` before - we don't redirect him to the student-form page.
+         * For the user id, we take the supabase user id (if it exists) or the already existing id (if it exists - if not, tldraw will generate a new one)
+         */
         const userPref = getUserPreferences()
+        const userId = user?.id
         setUserPreferences({
             ...userPref,
+            id: userId || userPref.id,
             color: getRandomColor(),
             edgeScrollSpeed: 0
         })
+        logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
 
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");

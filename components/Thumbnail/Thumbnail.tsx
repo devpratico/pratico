@@ -5,7 +5,7 @@ import {
   TLPageId,
   StoreSnapshot,
   TLRecord,
-} from "@tldraw/tldraw";
+} from "tldraw";
 
 
 interface ThumbnailProps {

@@ -64,6 +64,7 @@
     display: flex;
     width: 350px;
     height: 100%;
+    overflow-x: hidden;
 }
 
 .canvas {

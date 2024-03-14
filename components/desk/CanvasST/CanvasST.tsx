@@ -1,10 +1,12 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
 import useBroadcastStore from "@/hooks/useBroadcastStore";
-import { TLStoreSnapshot, getUserPreferences } from "@tldraw/tldraw";
+import { TLStoreSnapshot, getUserPreferences } from "tldraw";
 import { useRoom } from "@/hooks/useRoom";
-import AutoSaver from "../AutoSaver/AutoSaver";
+import AutoSaver from "../custom-ui/AutoSaver/AutoSaver";
 import { useRouter } from "next/navigation";
+import NavigatorSync from "../custom-ui/NavigatorSync/NavigatorSync";
+import logger from "@/utils/logger";
 
 
 interface CanvasSTProps {
@@ -22,7 +24,9 @@ export default function CanvasST({children}: CanvasSTProps) {
     const { room } = useRoom()
     const roomId = room?.id?.toString()
     if (!room || !roomId) {
-        throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
+        //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
+        logger.error('react:hook', `Missing Room data: {room: ${room}, roomId: ${roomId}}`)
+        return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}}`}</div>
     }
 
     // If there is no student name, redirect to the student form
@@ -42,6 +46,7 @@ export default function CanvasST({children}: CanvasSTProps) {
         <Canvas store={store}>
             {children}
             <AutoSaver destination='room' id={roomId} />
+            <NavigatorSync />
         </Canvas>
     )
 }

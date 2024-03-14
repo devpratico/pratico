@@ -9,11 +9,16 @@ import { doesCustomerExist } from '@/stripe/services/customer';
 export default async function AccountPage() {
     const t = await getTranslations("settings")
 
-    const { data, error } = await fetchUser()
-    if (error || !data?.user) {
-        return <p>{error?.message ?? "error"}</p>
+    let user
+    try {
+        user = await fetchUser()
+        if (!user) {
+            return <p>{t("error")}</p>
+        }
+    } catch (error) {
+        return <p>{(error as Error).message}</p>
     }
-    const user = data.user
+    
     const { data: profileData, error: profileError } = await fetchProfile(user.id)
     const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
 

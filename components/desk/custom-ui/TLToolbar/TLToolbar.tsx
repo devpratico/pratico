@@ -1,5 +1,5 @@
 'use client'
-import { track } from "@tldraw/tldraw"
+import { track } from "tldraw"
 import getTldrawState from "@/utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/utils/tldraw/toolBarState"
 import * as tlDispatch from '@/utils/tldraw/toolbarDispatch'

@@ -12,16 +12,22 @@ export async function signOut() {
 
 export async function fetchUser() {
     const supabase =  await getSupabaseClient()
-    return supabase.auth.getUser()
+    //return supabase.auth.getUser()
+    const { data, error } = await supabase.auth.getUser()
+    if (error) {
+        throw error
+    } else {
+        return data.user
+    }
 }
 
 export async function fetchUserId() {
-    const res = await fetchUser()
-    const { data, error } = res
-    if (error ) {
+    try {
+        const user = await fetchUser()
+        return user.id
+    } catch (error) {
         throw error
     }
-    return data.user.id
 }
 
 export async function onAuthStateChange(callback: (event: string, session: any) => void) {

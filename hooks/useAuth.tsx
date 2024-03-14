@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User, fetchUser, onAuthStateChange, signOut } from '@/supabase/services/auth';
 import { Subscription } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
+import logger from '@/utils/logger';
 
 interface AuthContextProps {
     user: User | null;
@@ -16,7 +17,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isUserLoading, setIsUserLoading] = useState(true);
-    const router = useRouter();
+    //const router = useRouter();
 
     // This useEffect runs once when the component mounts
     // It sets the user for the first time (null if not logged in)
@@ -25,9 +26,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Sets the user for the first time
         const _setUser = async () => {
             setIsUserLoading(true);
-            const { data: { user } } = await fetchUser();
-            setUser(user);
-            setIsUserLoading(false);
+            //const { data: { user } } = await fetchUser();
+            try {
+                const user = await fetchUser();
+                setUser(user);
+                setIsUserLoading(false);
+                logger.log('supabase:auth', 'Authenticated user -', user);
+            } catch (error) {
+                logger.log('supabase:auth', 'No authenticated user -', (error as Error).message);
+            }
+
+            
         }
         _setUser();
 
