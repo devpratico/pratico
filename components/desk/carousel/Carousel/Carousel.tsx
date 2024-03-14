@@ -1,7 +1,6 @@
 'use client'
 import styles from './Carousel.module.css'
 import Miniature from '../Miniature/Miniature'
-import { track } from '@tldraw/tldraw'
 import Thumbnail from '@/components/Thumbnail/Thumbnail'
 import { useMemo } from 'react'
 import { useNav } from '@/hooks/useNav'

@@ -9,14 +9,14 @@
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
         "menuBar  menuBar  menuBar"
-        "toolBar content  menu"
+        "toolBar none  menu"
         "carousel carousel controls";
     pointer-events: none;
 }
 
 
 .menuBar {
-    background-color: blue;
+    /*background-color: blue;*/
     height: 60px;
     width: 100%;
     grid-area: menuBar;
@@ -41,13 +41,16 @@
 
 .carousel {
     background-color: var(--background);
+    /*background-color: aquamarine;*/
     height: 70px;
     width: 100%;
     grid-area: carousel;
     pointer-events: auto;
+    overflow: hidden;
 }
 
 .controls {
+    /*background-color: red;*/
     height: 70px;
     width: 100%;
     grid-area: controls;
@@ -63,12 +66,23 @@
     height: 100%;
 }
 
+.canvas {
+    /*background-color: pink;*/
+    height: 100%;
+    width: 100%;
+    grid-area: 1 / 1 / 4 / 4;
+    z-index: -1;
+    pointer-events: auto;
+}
+
+
+/* Mobile landscape */
 @media (max-height: 500px) {
 
     .container {
         grid-template-rows:    1fr;
         grid-template-columns: auto 1fr auto auto;
-        grid-template-areas: "toolBar content menu controls"
+        grid-template-areas: "toolBar canvas menu controls"
     }
 
     .carousel {
@@ -88,5 +102,56 @@
     .controls {
         height: 100%;
         width: 60px;
+    }
+}
+
+
+/* Mobile portrait */
+@media (max-width: 500px) {
+
+    .container {
+        /*grid-template-rows:    1fr 10% 30%;*/
+        grid-template-rows:    auto 10% 1fr;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "canvas"
+            "carousel"
+            "controls";
+    }
+
+    .carousel {
+        height: 100%;
+        width: 100%;
+    }
+
+    .controls {
+        height: 100%;
+        width: 100%;
+    }
+
+    .menuBar {
+        display: none;
+    }
+
+    .carousel {
+        display:block;
+    }
+
+    .toolBar {
+        display: none;
+        /*
+        width: 100%;
+        padding-left: 0;
+        display: block;*/
+    }
+
+    .menu {
+        display: none;
+    }
+
+    .canvas {
+        grid-area: canvas;
+        width: 100%;
+        aspect-ratio: 16 / 9;
     }
 }

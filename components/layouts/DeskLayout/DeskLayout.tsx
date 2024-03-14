@@ -8,14 +8,19 @@ interface DeskLayoutProps {
     carousel?: React.ReactNode;
     controls?: React.ReactNode;
     menu?: React.ReactNode;
+    canvas?: React.ReactNode;
 }
 
 /**
  * This layout is used to position the custom ui components of the desk.
  */
-export default async function DeskLayout({menuBar, toolBar, carousel, controls, menu}: DeskLayoutProps) {
+export default async function DeskLayout({menuBar, toolBar, carousel, controls, menu, canvas}: DeskLayoutProps) {
     return (
         <div className={styles.container}>
+
+            <div className={styles.canvas}>
+                {canvas}
+            </div>
 
             <div className={styles.menuBar}>
                 {menuBar}
@@ -36,6 +41,9 @@ export default async function DeskLayout({menuBar, toolBar, carousel, controls, 
             <div className={styles.menu}>
                 {menu}
             </div>
+
+            
+
         </div>
     )
 }

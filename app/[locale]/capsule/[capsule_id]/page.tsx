@@ -1,4 +1,3 @@
-import styles from './page.module.css'
 import CanvasSwitcher from './_components/CanvasSwitcher';
 import DeskLayout from '@/components/layouts/DeskLayout/DeskLayout';
 import { getTranslations } from 'next-intl/server';
@@ -23,15 +22,13 @@ export default async function CapsulePage() {
     }
 
     return (
-        <main className={styles.main}>
-            <CanvasSwitcher />
             <DeskLayout
+                canvas={<CanvasSwitcher />}
                 menuBar={<DeskMenuBar messages={messages} />}
                 carousel={<Carousel />}
                 controls={<Controls />}
                 toolBar={<TLToolbar />}
                 menu={<DeskMenus />}
             />
-        </main>
     )
 }

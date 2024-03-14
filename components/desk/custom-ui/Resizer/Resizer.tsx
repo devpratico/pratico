@@ -13,14 +13,16 @@ import { useNav } from "@/hooks/useNav"
  */
 const Resizer = () => {
     const editor = useEditor()
-    const { isMobile } = useWindow()
+    const { isMobile, orientation } = useWindow()
     const { currentPageId } = useNav()
 
     const box = new Box(0, 0, 1920, 1080)
 
     const insets = useMemo(() => {
-        if (isMobile) {
+        if (isMobile && orientation === 'landscape') {
             return {top: 0, right: 50, bottom: 0, left: 50}
+        } else if (isMobile && orientation === 'portrait') {
+            return {top: 0, right: 0, bottom: 0, left: 0}
         } else {
             return {top: 60, right: 0, bottom: 70, left: 60}
         }
@@ -29,7 +31,7 @@ const Resizer = () => {
 
     const updateSize = useCallback(() => {
         zoomToBounds({ editor, box, margin: 10,  insets })
-        logger.log('tldraw:editor', 'Resised')
+        logger.log('tldraw:editor', 'Resized')
     }, [editor, insets, isMobile])
 
 
@@ -37,7 +39,7 @@ const Resizer = () => {
         let timeout: NodeJS.Timeout
         const debouncedUpdateSize = () => {
             clearTimeout(timeout)
-            timeout = setTimeout(updateSize, 200)
+            timeout = setTimeout(updateSize, 10)
         }
 
         updateSize()
