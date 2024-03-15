@@ -62,16 +62,16 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         channel.subscribe((status, err) => {
             logger.log('supabase:realtime', 'status', status, err)
             // Define the logging function outside of the loop to allow debouncing
+            // TODO: Get rid of debounce and use throttle
             const debounceLog = debounce((response: any) => {logger.log('supabase:realtime', 'sent', response)}, 1000)
 
             // Define a function to send changes to the server
-            // TODO: Get rid of debouncs and use throttle
-            const broadcast = throttle(async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {
+            const broadcast = async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {
                 if (status !== 'SUBSCRIBED') return
                 await channel.send({type: 'broadcast', event: eventName, payload}).then((response) => {
                     if(eventName == 'document')  debounceLog(response) // Only log document changes (presence would be annoying)
                 })
-            }, 1/60 * 1000)
+            }
 
             // DOCUMENT CHANGES (drawing, adding shapes...)
             // Listen to tldraw store and broadcast changes

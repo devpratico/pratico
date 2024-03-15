@@ -1,4 +1,4 @@
-import { Box, Editor, TLAnimationOptions } from '@tldraw/tldraw'
+import { Box, Editor, TLAnimationOptions } from 'tldraw'
 
 
 

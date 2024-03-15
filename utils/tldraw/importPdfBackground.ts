@@ -2,8 +2,8 @@
 import logger from '@/utils/logger';
 import { pdfjs } from 'react-pdf';
 import { uploadCapsuleFile, getPublicUrl } from '@/supabase/services/capsules_files';
-import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from '@tldraw/tldraw';
-import '@tldraw/tldraw/tldraw.css';
+import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from 'tldraw';
+import 'tldraw/tldraw.css';
 
 
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;

@@ -1,5 +1,5 @@
 'use client'
-import { Editor, AssetRecordType } from "@tldraw/tldraw"
+import { Editor, AssetRecordType } from "tldraw"
 
 import logger from "../logger"
 

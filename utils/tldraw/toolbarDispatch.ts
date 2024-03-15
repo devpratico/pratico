@@ -10,7 +10,7 @@ import {
     TLEmbedShape,
     AssetRecordType,
     StyleProp,
-} from '@tldraw/tldraw'
+} from 'tldraw'
 import logger from '../logger'
 
 

@@ -20,34 +20,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     //const router = useRouter();
 
     // This useEffect runs once when the component mounts
-    // It sets the user for the first time (null if not logged in)
-    // And subscribes to changes in the auth state to update state accordingly
+    // It subscribes to changes in the auth state to update state accordingly
     useEffect(() => {
-        // Sets the user for the first time
-        const _setUser = async () => {
-            setIsUserLoading(true);
-            //const { data: { user } } = await fetchUser();
-            try {
-                const user = await fetchUser();
-                setUser(user);
-                setIsUserLoading(false);
-                logger.log('supabase:auth', 'Authenticated user -', user);
-            } catch (error) {
-                logger.log('supabase:auth', 'No authenticated user -', (error as Error).message);
-            }
-
-            
-        }
-        _setUser();
-
         // Subscribes to changes in the auth state
+        // No need to set the user manually on mount, onAuthStateChange will do it for us
+        setIsUserLoading(true);
         let onAuthChange: Subscription;
         const _subscribeToAuthChange = async () => {
             // Get the _onAuthChange method
             const _onAuthChange = await onAuthStateChange((event, session) => {
-                //console.log('🔐','event', event, 'session', session);
-                const user = session?.user ?? null;
-                setUser(user);
+                logger.log('supabase:auth', 'event', event, 'session', session);
+                setUser(session?.user ?? null);
                 setIsUserLoading(false);
                 // TODO: SHOULD WE REFRESH ?
                 //router.refresh();
@@ -56,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             onAuthChange = _onAuthChange.data.subscription;
         }
         _subscribeToAuthChange();
-
+        
         // Cleanup (unsubscribe when component unmounts)
         return () => {
             if (onAuthChange) onAuthChange.unsubscribe();

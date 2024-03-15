@@ -1,4 +1,4 @@
-import { TLDefaultColorStyle, TLDefaultSizeStyle, TLDefaultFontStyle } from "@tldraw/tldraw";
+import { TLDefaultColorStyle, TLDefaultSizeStyle, TLDefaultFontStyle } from "tldraw";
 import { TldDrawState } from "./tldDrawState";
 
 

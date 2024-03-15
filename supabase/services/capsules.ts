@@ -1,12 +1,14 @@
 import logger from "@/utils/logger";
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
-import { TLStoreSnapshot } from "@tldraw/tldraw";
+import { TLStoreSnapshot } from "tldraw";
 
 
 export type Capsule = Tables<'capsules'>
 export type Snapshot = TLStoreSnapshot
 
+
+// TODO: Go to https://supabase.com/docs/guides/platform/going-into-prod
 
 /**
  * @returns Data from the `capsules` table
