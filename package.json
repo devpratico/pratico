@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "./scripts/dev.sh",
+    "dev":   "./scripts/dev.sh",
     "build": "next build",
     "start": "./scripts/start.sh",
-    "lint": "next lint",
-    "storybook:dev": "storybook dev -p 6006",
+    "lint":  "next lint",
+    "storybook:dev":   "storybook dev -p 6006",
     "storybook:build": "storybook build -o .storybook/static",
-    "supabase:reset": "./scripts/supabase-db-reset.sh"
+    "supabase:reset":  "./scripts/supabase-db-reset.sh"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",

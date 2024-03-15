@@ -2,12 +2,12 @@ import styles from './DeskLayout.module.css'
 
 
 interface DeskLayoutProps {
-    menuBar?: React.ReactNode;
-    toolBar?: React.ReactNode;
+    menuBar?:  React.ReactNode;
+    toolBar?:  React.ReactNode;
     carousel?: React.ReactNode;
     controls?: React.ReactNode;
-    menu?: React.ReactNode;
-    canvas?: React.ReactNode;
+    menu?:     React.ReactNode;
+    canvas?:   React.ReactNode;
 }
 
 /**
@@ -21,25 +21,36 @@ export default function DeskLayout({menuBar, toolBar, carousel, controls, menu, 
                 {canvas}
             </div>
 
-            <div className={styles.menuBar}>
-                {menuBar}
-            </div>
+            { menuBar &&
+                <div className={styles.menuBar}>
+                    {menuBar}
+                </div>
+            }
 
-            <div className={styles.toolBar}>
-                {toolBar}
-            </div>
+            { toolBar &&
+                <div className={styles.toolBar}>
+                    {toolBar}
+                </div>
+            }
 
-            <div className={styles.carousel}>
-                {carousel}
-            </div>
+            { carousel &&
+                <div className={styles.carousel}>
+                    {carousel}
+                </div>
+            }
 
-            <div className={styles.controls}>
-                {controls}
-            </div>
+            { controls &&
+                <div className={styles.controls}>
+                    {controls}
+                </div>
+            }
 
-            <div className={styles.menu}>
-                {menu}
-            </div>
+            { menu &&
+                <div className={styles.menu}>
+                    {menu}
+                </div>
+            }
+
         </div>
     )
 }

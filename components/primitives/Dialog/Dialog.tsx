@@ -16,7 +16,6 @@ interface DialogContentProps {
 /**
  * A [Radix library dialog](https://www.radix-ui.com/primitives/docs/components/dialog)
  */
-// TODO: See React 18 improvements for forwardRef
 export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
     function DialogContentF({
         children,
@@ -25,29 +24,13 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
         className,
     }, forwardedRef) {
 
-    const CloseBtn = () => (
-        <DialogPrimitive.Close aria-label="Close" className={styles.DialogClose}>
-            <CloseIcon />
-        </DialogPrimitive.Close>
-    )
-
-    const Content = () => (
-        <DialogPrimitive.Content ref={forwardedRef} className={styles.DialogContent + " " + className}>
-            {showCloseBtn && <CloseBtn/>}
+    const content = (
+        <Content ref={forwardedRef} className={className} showCloseBtn={showCloseBtn}>
             {children}
-        </DialogPrimitive.Content>
-    )
+        </Content>
+    );
 
-    if (!portal) {
-        return <Content />
-
-    } else {
-        return (
-            <DialogPrimitive.Portal>
-                <Content />
-            </DialogPrimitive.Portal>
-        );
-    }
+    return portal ? <DialogPrimitive.Portal>{content}</DialogPrimitive.Portal> : content;
 });
 
 
@@ -56,6 +39,20 @@ export const DialogOverlay = () => (
         <DialogPrimitive.Overlay className={styles.DialogOverlay} />
     </DialogPrimitive.Portal>
 );
+
+const CloseBtn = () => (
+    <DialogPrimitive.Close aria-label="Close" className={styles.DialogClose}>
+        <CloseIcon />
+    </DialogPrimitive.Close>
+);
+
+// Refactor Content to support ref forwarding
+const Content = forwardRef<HTMLDivElement, { className?: string; children: React.ReactNode; showCloseBtn?: boolean }>(({ className, children, showCloseBtn }, ref) => (
+    <DialogPrimitive.Content ref={ref} className={`${styles.DialogContent} ${className}`}>
+        {showCloseBtn && <CloseBtn />}
+        {children}
+    </DialogPrimitive.Content>
+));
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
