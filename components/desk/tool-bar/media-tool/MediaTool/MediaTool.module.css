@@ -46,4 +46,5 @@
     transform: translate(-50%, -50%);
     border-radius: 1rem;
     box-shadow: var(--big-shadow);
+    padding: 1rem;
 }

@@ -1,6 +1,6 @@
 'use client'
 import styles from './MediaTool.module.css';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import ToolButton, {ToolId} from '../../ToolButton/ToolButton'
 import MediaOptions from '../../tools-options/MediaOptions/MediaOptions';
 import FileInputBtn from '../FileInputBtn/FileInputBtn';
@@ -19,10 +19,6 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
 
     const [openVideoModal, setOpenVideoModal] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        console.log('🎥 Video modal:', openVideoModal);
-    }, [openVideoModal]);
 
     const handleImageClick = () => {
         dispatch("CLICK_TOOL", "media");
@@ -52,7 +48,7 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
 
             <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
-                {/*<DialogOverlay/>*/}
+                <DialogOverlay/>
                 <DialogContent showCloseBtn className={styles.dialogContent}>
 
                     <form onSubmit={handleVideoSubmit} className={styles.videoForm}>
