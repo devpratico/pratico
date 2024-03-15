@@ -1,9 +1,11 @@
 const logCategories = {
-    react: ['page', 'component', 'hook'] as const,
+    react: ['layout', 'page', 'component', 'hook'] as const,
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
     tldraw: ['tools', 'editor', 'collab'] as const,
     system: ['file', 'network', 'memory'] as const,
 }
+
+// TODO: style it also for when it prints in the server console.
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 

@@ -13,7 +13,15 @@ import { saveCapsule } from '@/supabase/services/capsules'
  * The snapshot is not created here, but in the RemoteCanvas component.
  */
 export async function GET() {
-    const user_id = await fetchUserId()
+
+    let user_id: string
+    try {
+         user_id = await fetchUserId()
+    } catch (error) {
+        console.error("Error fetching user", error)
+        return new Response("Error fetching user", { status: 500 })
+    }
+
     const capsule_id = randomUUID()
 
     const capsule = {

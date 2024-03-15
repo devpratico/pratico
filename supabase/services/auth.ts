@@ -24,7 +24,7 @@ export async function fetchUser() {
     }
 }
 
-export async function fetchUserId() {
+export async function fetchUserId(): Promise<string> {
     try {
         const user = await fetchUser()
         return user.id

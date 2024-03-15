@@ -1,3 +1,4 @@
+'use server'
 import CanvasST from "@/components/desk/CanvasST/CanvasST";
 import TLToolbar from "@/components/desk/custom-ui/TLToolbar/TLToolbar";
 import DeskLayout from "@/components/layouts/DeskLayout/DeskLayout";
@@ -8,8 +9,8 @@ import DeskLayout from "@/components/layouts/DeskLayout/DeskLayout";
 export default async function RoomPage() {
     return (
         <DeskLayout
-            toolBar={<TLToolbar />}
-            canvas={<CanvasST />}
+            toolBar={<TLToolbar />} // Client component
+            canvas={<CanvasST />}   // Client component
         />
     )
 

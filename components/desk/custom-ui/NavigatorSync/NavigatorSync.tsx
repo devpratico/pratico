@@ -10,6 +10,7 @@ const NavigatorSync = () => {
     const editor  = useEditor()
     const { room } = useRoom()
 
+    
     const idToFollow = useMemo(() => {
         const params = room?.params
         const paramsObject = params ? JSON.parse(String(params)) as roomParams : null
@@ -17,6 +18,8 @@ const NavigatorSync = () => {
         logger.log('tldraw:editor', 'Id to follow:', follow)
         return follow
     }, [room])
+
+    
 
     const $pageToBeOn = useComputed( 'presence to follow', () => {
             if (!idToFollow) return undefined
@@ -26,15 +29,18 @@ const NavigatorSync = () => {
         [idToFollow, editor]
     )
 
+    
     const pageToBeOn = useValue($pageToBeOn)
+    
     
     useEffect(() => {
         if (pageToBeOn) {
             logger.log('tldraw:editor', 'Following page:', pageToBeOn)
             editor.setCurrentPage(pageToBeOn)
         }
-        return () => stop()
     }, [editor, pageToBeOn])
+    
+    
     
     return null
 }

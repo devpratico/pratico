@@ -56,13 +56,9 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
     try {
         const {data:{user}, error} = await supabase.auth.getUser()
         if (error) throw error
-        if (!user) throw new Error('No authenticated user')
+        if (!user) throw new Error('Supabase returned null')
     } catch (error) {
-        if ((error as Error).message === 'No authenticated user') {
-            console.log('supabase:auth', 'No user authenticated')
-        } else {
-            console.error('supabase:auth', 'Error getting user:', error)
-        }
+            console.error('supabase:auth', '(Middleware) No user:', (error as Error).message)
         //decision = NextResponse.redirect('/login')
     }
     

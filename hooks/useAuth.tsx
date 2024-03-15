@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, fetchUser, onAuthStateChange, signOut } from '@/supabase/services/auth';
 import { Subscription } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import logger from '@/utils/logger';
 
 interface AuthContextProps {
