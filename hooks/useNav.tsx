@@ -147,6 +147,6 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
 export function useNav() {
     const context = useContext(NavContext);
-    if (!context) throw new Error('useNavNew must be used within a NavProviderNew');
+    if (!context) throw new Error('useNav must be used within a NavProvider');
     return context;
 }
