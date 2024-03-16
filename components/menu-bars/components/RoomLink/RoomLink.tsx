@@ -1,6 +1,7 @@
 'use client'
 import styles from './RoomLink.module.css'
 import { useRoom } from '@/hooks/useRoom';
+import QRCodeModal from '@/app/[locale]/capsule/[capsule_id]/_components/QRCodeModal';
 
 
 export default function RoomLink() {
@@ -9,8 +10,10 @@ export default function RoomLink() {
 
     return (
         <div className={styles.link}>
-            <span className={styles.path}>{'.live/'}</span>
-            <span className={styles.code}>{roomName}</span>
+            <QRCodeModal>
+                <span className={styles.path}>{'.live/'}</span>
+                <span className={styles.code}>{roomName}</span>
+            </QRCodeModal>
         </div>
     )
 }
