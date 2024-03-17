@@ -140,7 +140,7 @@ function ControlsMobile() {
             </div>
 
             <div style={plusStyle}>
-                <Plus color="white" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
+                <Plus color="white" size={40} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
             </div>
 
             <div style={buttonStyle}>

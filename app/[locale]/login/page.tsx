@@ -15,18 +15,28 @@ export default function Page() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        height: '100dvh',
+        width: '100dvw',
         backgroundColor: 'var(--secondary)',
         gap: '1rem',
+        padding: '1rem',
     };
 
     const formContainerStyle: React.CSSProperties = {
         backgroundColor: 'var(--background)',
         width: '100%',
-        maxWidth: '300px',
+        //maxWidth: '300px',
         padding: '2rem',
         borderRadius: '1rem',
         boxShadow: 'var(--smallShadow)',
+    };
+
+    const buttonRowStyle: React.CSSProperties = {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '1rem',
+        alignSelf: 'flex-end',
     };
 
 
@@ -53,24 +63,25 @@ export default function Page() {
                     }}
                 />
             </div>
-            <PlainBtn
-                color="secondary"
-                size="m"
-                onClick={() => {
-                    //setIsAnonymous(true)
-                    //setAuthDialogOpen(false)
-                }}
-                message="Essayer sans compte"
-            />
-            <PlainBtn
-                color="primary"
-                size="m"
-                onClick={() => {
-                    router.push('/capsules')
-                }}
-                message="OK"
-            />
-            {/*<Image src={loginImage} alt="Login" height={400} />*/}
+            <div style={buttonRowStyle}>
+                <PlainBtn
+                    color="secondary"
+                    size="m"
+                    onClick={() => {
+                        //setIsAnonymous(true)
+                        //setAuthDialogOpen(false)
+                    }}
+                    message="Essayer sans compte"
+                />
+                <PlainBtn
+                    color="primary"
+                    size="m"
+                    onClick={() => {
+                        router.push('/capsules')
+                    }}
+                    message="OK"
+                />
+            </div>
         </div>
     );
 }
