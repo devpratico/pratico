@@ -1,0 +1,26 @@
+.optionsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+}
+
+.option {
+    box-shadow: var(--small-shadow);
+    background-color: white;
+    flex-basis: calc(50% - 0.5rem);
+    aspect-ratio: 16/9;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.pdf {
+    color: var(--text-on-secondary);
+    background-color: var(--secondary);
+    font-size: 1.5rem;
+    font-weight: bold;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

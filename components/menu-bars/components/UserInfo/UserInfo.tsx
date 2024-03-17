@@ -11,11 +11,16 @@ export default async function UserInfo() {
 
     const t = await getTranslations("auth")
 
-    const {data, error} = await fetchUser()
-    if (error || !data?.user) {
+    //const {data, error} = await fetchUser()
+
+    let user
+    try {
+        user = await fetchUser()
+    } catch (error) {
         return <LogInBtn>{t("sign in")}</LogInBtn>
     }
-    const { data: profileData, error: profileError } = await fetchProfile(data?.user?.id)
+
+    const { data: profileData, error: profileError } = await fetchProfile(user.id)
     const name = profileData?.[0]?.name ?? "no name"
     const surname = profileData?.[0]?.surname ?? "no surname"
     const letters = name[0] + surname[0]

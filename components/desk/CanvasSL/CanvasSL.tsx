@@ -1,12 +1,12 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
-import { useCapsule } from "@/hooks/capsuleContext";
-import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
-import AutoSaver from "../AutoSaver/AutoSaver";
+import { useCapsule } from "@/hooks/useCapsule";
+import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
+import AutoSaver from "../custom-ui/AutoSaver/AutoSaver";
 
 
 interface CanvasSLProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 /**

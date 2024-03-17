@@ -2,11 +2,19 @@ import styles from "./MainLayout.module.css";
 
 
 interface MainLayoutProps {
+    /**
+     * The main content of the page.
+     */
+    children: React.ReactNode;
+
     banner?: React.ReactNode;
+
     menuBar?: React.ReactNode;
+
     leftBar?: React.ReactNode;
-    content?: React.ReactNode;
+
     rightBar?: React.ReactNode;
+
     footer?: React.ReactNode;
 };
 
@@ -15,7 +23,7 @@ interface MainLayoutProps {
  * It is made of a grid with 6 areas.
  * @param props Objects containing the components to display in each area.
  */
-export default function MainLayout({banner, menuBar, leftBar, content, rightBar, footer}: MainLayoutProps) {
+export default function MainLayout({children, banner, menuBar, leftBar, rightBar, footer}: MainLayoutProps) {
 
     const layoutState = {
         bannerVisible: true,
@@ -29,7 +37,7 @@ export default function MainLayout({banner, menuBar, leftBar, content, rightBar,
     const bannerStyle   = styles.banner   + (banner   && layoutState.bannerVisible   ? "" : " " + styles.collapsed);
     const menuBarStyle  = styles.menuBar  + (menuBar  && layoutState.menuBarVisible  ? "" : " " + styles.collapsed);
     const leftBarStyle  = styles.leftBar  + (leftBar  && layoutState.leftBarVisible  ? "" : " " + styles.collapsed);
-    const contentStyle  = styles.content  + (content  && layoutState.contentVisible  ? "" : " " + styles.collapsed);
+    const contentStyle  = styles.content  + (children && layoutState.contentVisible  ? "" : " " + styles.collapsed);
     const rightBarStyle = styles.rightBar + (rightBar && layoutState.rightBarVisible ? "" : " " + styles.collapsed);
     const footerStyle   = styles.footer   + (footer   && layoutState.footerVisible   ? "" : " " + styles.collapsed);
 
@@ -44,7 +52,7 @@ export default function MainLayout({banner, menuBar, leftBar, content, rightBar,
                 <div className={styles.leftBarContent}>{leftBar}</div>
             </div>
 
-            <div className={contentStyle}>{content}</div>
+            <div className={contentStyle}>{children}</div>
 
             <div className={rightBarStyle}>
                 <div className={styles.rightBarContent}>{rightBar}</div>

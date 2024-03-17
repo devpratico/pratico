@@ -52,16 +52,13 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
             },
         }}
     )
-        
-    const {data:{user}, error} = await supabase.auth.getUser()
-    //console.log("🔐",user?.email || error?.message || "no user")
-    
-    /**
-    * Conditionnaly do things
-    * @see https://www.notion.so/praticolive/Middleware-62e7436f171d401d8e3cfb4678d19804?pvs=4
-    */
-    if (error || !user) {
-        //console.error('Error getting user:', error)
+       
+    try {
+        const {data:{user}, error} = await supabase.auth.getUser()
+        if (error) throw error
+        if (!user) throw new Error('Supabase returned null')
+    } catch (error) {
+            console.error('supabase:auth', '(Middleware) No user:', (error as Error).message)
         //decision = NextResponse.redirect('/login')
     }
     

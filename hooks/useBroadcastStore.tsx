@@ -12,8 +12,9 @@ import {
     InstancePresenceRecordType,
     createPresenceStateDerivation,
     react,
-    TLInstancePresence
-} from '@tldraw/tldraw';
+    TLInstancePresence,
+    throttle
+} from 'tldraw';
 import { useEffect, useState } from "react";
 import logger from "@/utils/logger";
 import debounce from "@/utils/debounce";
@@ -56,15 +57,16 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         let storeListener: () => void
         let presenceListener: () => void
 
-        // LISTEN TO TLDRAW CHANGES - BROADCAST THEM
+        // LISTEN TO LOCAL TLDRAW CHANGES - BROADCAST THEM
         // In order to broadcast stuff, we need to be in the `subscribe` callback
         channel.subscribe((status, err) => {
             logger.log('supabase:realtime', 'status', status, err)
             // Define the logging function outside of the loop to allow debouncing
+            // TODO: Get rid of debounce and use throttle
             const debounceLog = debounce((response: any) => {logger.log('supabase:realtime', 'sent', response)}, 1000)
 
             // Define a function to send changes to the server
-            async function broadcast({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) {
+            const broadcast = async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {
                 if (status !== 'SUBSCRIBED') return
                 await channel.send({type: 'broadcast', event: eventName, payload}).then((response) => {
                     if(eventName == 'document')  debounceLog(response) // Only log document changes (presence would be annoying)
@@ -81,7 +83,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // PRESENCE CHANGES - Connexion status of participants
             // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
             // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
-            // TODO: Make a usePresence generally available in the app
+            // TODO: Make a usePresence generally available in the app?
             const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
             async function sendConnexionStatus() {
                 await channel.track(connexionStatus).then((response) => {debounceLog(response)})
@@ -110,7 +112,8 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 const presence = presenceSignal.get()
                 if (!presence) return
                 // `requestAnimationFrame` is used in the example, not sure why not used for the document changes too
-                requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
+                //requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
+                broadcast({eventName: 'presence', payload: presence})
             })
 
 
@@ -135,7 +138,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }
         )
 
-        // LISTEN TO THE CHANNEL 'PRESENCE' EVENTS - MERGE REMOTE CHANGES IN THE STORE
+        // LISTEN TO THE CHANNEL 'PRESENCE' REMOTE EVENTS - MERGE REMOTE CHANGES IN THE STORE
         // This is the mouse positions, names, colors...
         channel.on(
             'broadcast',
@@ -152,7 +155,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }
         )
 
-        // LISTEN TO THE CHANNEL 'CONNEXIONS' EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
+        // LISTEN TO THE CHANNEL 'CONNEXIONS' REMOTE EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
         channel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
             // `leftPresences` corresponds to the connexion status we sent above
             // Get the ids and turn them into the special Instance type

@@ -2,7 +2,7 @@
 import React from 'react';
 import styles from './PlainBtn.module.css';
 
-
+// TODO: make it accept the standard HTML button props
 export interface PlainBtnProps {
     /**
      * Usually an icon
@@ -16,6 +16,7 @@ export interface PlainBtnProps {
     enabled?: boolean;
     type?: "button" | "submit" | "reset";
     className?: string;
+    autofocus?: boolean;
 }
 
 export default function PlainBtn({
@@ -27,7 +28,8 @@ export default function PlainBtn({
     onClick=() => {},
     enabled=true,
     type="button",
-    className
+    className,
+    autofocus=false
 }: PlainBtnProps) {
     
     // Set the styles
@@ -44,7 +46,7 @@ export default function PlainBtn({
     const _icon = children && React.cloneElement(children, {className: styles.icon})
     
     return (
-        <button className={btnStyle} onClick={onClick} type={type} disabled={enabled === false} tabIndex={0}>
+        <button className={btnStyle} onClick={onClick} type={type} disabled={enabled === false} tabIndex={0} autoFocus={autofocus}>
             {_icon}
             <p className={styles.text}>{message}</p>
         </button>

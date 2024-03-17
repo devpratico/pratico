@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import ToolButton, {ToolId} from '../../ToolButton/ToolButton'
 import MediaOptions from '../../tools-options/MediaOptions/MediaOptions';
 import FileInputBtn from '../FileInputBtn/FileInputBtn';
-import {Dialog, DialogContent } from '@/components/primitives/Dialog/Dialog';
+import {Dialog, DialogContent, DialogOverlay } from '@/components/primitives/Dialog/Dialog';
 import PlainBtn from '@/components/primitives/buttons/PlainBtn/PlainBtn';
 import TextField from '@/components/primitives/TextField/TextField';
 import YoutubeIcon from '@/components/icons/YoutubeIcon';
@@ -17,7 +17,7 @@ interface MediaToolProps {
 
 export default function MediaTool({active, dispatch}: MediaToolProps) {
 
-    const [openVideoModal, setOpenVideoModal] = useState<boolean | undefined>(false);
+    const [openVideoModal, setOpenVideoModal] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageClick = () => {
@@ -42,13 +42,15 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
 
     // TODO: Put dialog in its own component
     return (
-        <>
+        <div>
             <ToolButton {...mediaButtonProps}/>
 
             <FileInputBtn dispatch={dispatch} ref={fileInputRef}/>
 
             <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
-                <DialogContent showCloseBtn>
+                <DialogOverlay/>
+                <DialogContent showCloseBtn className={styles.dialogContent}>
+
                     <form onSubmit={handleVideoSubmit} className={styles.videoForm}>
                         <YoutubeIcon className={styles.ytIcon}/>
                         <h2 className={styles.title}>Embed a YouTube video</h2>
@@ -59,9 +61,10 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
                             <PlainBtn message={'OK'} type="submit" className={styles.submitBtn}/>
                         </div>
                     </form>
+
                 </DialogContent>
             </Dialog>
 
-        </>
+        </div>
     )
 }

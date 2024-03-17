@@ -19,3 +19,5 @@ export default function debounce(func: Function, wait: number) {
         }, wait);
     }
 }
+
+// TODO: Maybe use the `throttle` function from Tldraw ?

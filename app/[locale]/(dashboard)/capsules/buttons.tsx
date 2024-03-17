@@ -8,7 +8,7 @@ export function CreateCapsuleBtn() {
     const router = useRouter()
 
     const handleClick = () => {
-        router.push('/create')
+        router.push('/capsule/create')
     }
     return (
         <PlainBtn

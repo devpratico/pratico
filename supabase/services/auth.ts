@@ -1,5 +1,5 @@
 import getSupabaseClient from "../clients/getSupabaseClient";
-import { User as SupabaseUser} from "@supabase/supabase-js";
+import { User as SupabaseUser, AuthChangeEvent, Session} from "@supabase/supabase-js";
 
 //const supabase =  await getSupabaseClient()
 export type User = SupabaseUser // TODO : ideally abstract away this type, front-end shouldn't know about supabase stuff
@@ -12,20 +12,28 @@ export async function signOut() {
 
 export async function fetchUser() {
     const supabase =  await getSupabaseClient()
-    return supabase.auth.getUser()
-}
-
-export async function fetchUserId() {
-    const res = await fetchUser()
-    const { data, error } = res
-    if (error || !data?.user.id) {
-        console.error("error getting user id", error)
+    try {
+        const { data, error } = await supabase.auth.getUser()
+        if (error) {
+            throw error
+        } else {
+            return data.user
+        }
+    } catch (error) {
         throw error
     }
-    return data.user.id
 }
 
-export async function onAuthStateChange(callback: (event: string, session: any) => void) {
+export async function fetchUserId(): Promise<string> {
+    try {
+        const user = await fetchUser()
+        return user.id
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     const supabase =  await getSupabaseClient()
     return supabase.auth.onAuthStateChange(callback)
 }

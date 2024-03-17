@@ -1,0 +1,35 @@
+.container {
+    height: 100dvh;
+    width: 100dvw;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 70px 1fr 70px;
+    grid-template-areas: 
+        "canvas"
+        "toolBar"
+        "controls"
+        "menuBar";
+    gap: 8px;
+    background-color: var(--secondary);
+}
+
+.canvas {
+    grid-area: canvas;
+    margin: 8px 8px 0 8px;
+    aspect-ratio: 16/9;
+}
+
+.toolBar {
+    grid-area: toolBar;
+    margin: 0 8px;
+}
+
+.controls {
+    grid-area: controls;
+    margin: 0 8px;
+}
+
+.menuBar {
+    grid-area: menuBar;
+    background-color: var(--primary);
+}

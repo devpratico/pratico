@@ -1,42 +1,58 @@
 'use client'
-import { useEffect } from "react"
-import { track, useEditor, Box } from "@tldraw/tldraw"
+import { useEffect, useMemo, useCallback } from "react"
+import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/utils/tldraw/zoomToBounds"
 import logger from "@/utils/logger"
+import useWindow from "@/hooks/useWindow"
+import { useNav } from "@/hooks/useNav"
 
 
 /**
  * This element is responsible for resizing the canvas to fit the window.
  * It doesn't actually render anything.
  */
-const Resizer = track(() => {
+const Resizer = () => {
     const editor = useEditor()
+    const { isMobile, orientation } = useWindow()
+    const { currentPageId } = useNav()
+
     const box = new Box(0, 0, 1920, 1080)
-    const insets = {top: 60, right: 0, bottom: 70, left: 60}
-    const currentPage = editor.getCurrentPage()
+
+    const insets = useMemo(() => {
+        if (isMobile && orientation === 'landscape') {
+            return {top: 0, right: 50, bottom: 0, left: 50}
+        } else if (isMobile && orientation === 'portrait') {
+            return {top: 0, right: 0, bottom: 0, left: 0}
+        } else {
+            return {top: 60, right: 0, bottom: 70, left: 60}
+        }
+    }, [isMobile])
+
+
+    const updateSize = useCallback(() => {
+        zoomToBounds({ editor, box, margin: 10,  insets })
+        logger.log('tldraw:editor', 'Resized')
+    }, [editor, insets, isMobile])
+
 
     useEffect(() => {
-
-        const updateSize = () => {
-            logger.log('tldraw:editor', 'Resize canvas')
-            zoomToBounds({ editor, box, margin: 10,  insets })
-        }
-    
         let timeout: NodeJS.Timeout
         const debouncedUpdateSize = () => {
             clearTimeout(timeout)
-            timeout = setTimeout(updateSize, 200)
+            timeout = setTimeout(updateSize, 10)
         }
 
         updateSize()
         window.addEventListener('resize', debouncedUpdateSize);
+        //window.addEventListener('resize', updateSize)
         return () => {
             window.removeEventListener('resize', debouncedUpdateSize)
             clearTimeout(timeout)
+            //window.removeEventListener('resize', updateSize)
         }
-    }, [currentPage]) // TODO: there's a dependency array warning here
+    }, [currentPageId, insets]) // TODO: there's a dependency array warning here
 
     return null
-})
+}
 
 export default Resizer

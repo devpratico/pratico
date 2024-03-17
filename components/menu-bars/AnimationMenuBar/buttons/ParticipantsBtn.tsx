@@ -2,7 +2,7 @@
 import LabeledIconBtn from "@/components/primitives/buttons/LabaledIconBtn/LabeledIconBtn";
 import PeopleIcon from "@/components/icons/PeopleIcon";
 import { IconSize } from "@/utils/icons/IconProps";
-import { useUi } from "@/hooks/uiContext";
+import { useUi } from "@/hooks/useUi";
 
 
 

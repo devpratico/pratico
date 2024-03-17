@@ -1,12 +1,12 @@
 'use client'
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
-//import { setCapsuleSnapshot } from "@/supabase/services/capsules";
-import { useEditor } from "@tldraw/tldraw";
 import logger from "@/utils/logger";
 import { useRouter } from "next/navigation";
-import { useCapsule } from '@/hooks/capsuleContext';
+import { useCapsule } from '@/hooks/useCapsule';
 import { saveCapsuleSnapshot } from "@/actions/capsuleActions";
-import { useRoom } from "@/hooks/roomContext";
+import { useRoom } from "@/hooks/useRoom";
+import { useTLEditor } from "@/hooks/useTLEditor";
+import { useMemo, useCallback, use } from "react";
 
 
 interface DoneBtnProps {
@@ -18,17 +18,18 @@ interface DoneBtnProps {
  * and navigates back to the dashboard.
  */
 export default function DoneBtn({ message }: DoneBtnProps) {
+    // TODO: Maybe get rid of tldraw stuff and use a hook
 
     const router = useRouter()
     const { capsule } = useCapsule()
-    const capsuleId = capsule?.id
-
     const { setRoom } = useRoom()
+    const { editor } = useTLEditor()
+    const capsuleId = useMemo(() => capsule?.id, [capsule])
+    
 
-    // TODO: Maybe get rid of tldraw stuff and use a hook
-    const editor = useEditor()
-    const handleClick = async () => {
+    const handleClick = useCallback(async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
+        if (!capsuleId || !editor) return
         const snapshot = editor.store.getSnapshot()
         try {
             await saveCapsuleSnapshot(capsuleId!, snapshot)
@@ -40,7 +41,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
         } catch (error) {
             console.error("Error saving snapshot", error)
         }
-    }
+    }, [capsuleId, editor, router, setRoom])
 
     return (
         <PlainBtn

@@ -1,14 +1,14 @@
 'use client'
 import Canvas from "../Canvas/Canvas";
 import useBroadcastStore from "@/hooks/useBroadcastStore";
-import { TLStoreSnapshot } from "@tldraw/tldraw";
-import  AutoSaver from "../AutoSaver/AutoSaver";
-import { useRoom } from "@/hooks/roomContext";
+import { TLStoreSnapshot } from "tldraw";
+import  AutoSaver from "../custom-ui/AutoSaver/AutoSaver";
+import { useRoom } from "@/hooks/useRoom";
 import { useMemo } from "react";
 
 
 interface CanvasRTProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 /**

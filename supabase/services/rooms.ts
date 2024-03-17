@@ -92,3 +92,21 @@ export async function fetchRoomsByCapsuleId(capsuleId: string) {
         return result
     }
 }
+
+
+export interface roomParams {
+    navigation: {
+        type: 'pratico' | 'animateur' | 'libre'
+        follow: string
+    }
+}
+
+export async function saveRoomParams(roomId: number, params: roomParams) {
+    const supabase =  await getSupabaseClient()
+    const { data, error } = await supabase.from('rooms').update(params).eq('id', roomId)
+    if (error) {
+        throw error
+    } else {
+        return data
+    }
+}

@@ -10,7 +10,7 @@ import {
     TLEmbedShape,
     AssetRecordType,
     StyleProp,
-} from '@tldraw/tldraw'
+} from 'tldraw'
 import logger from '../logger'
 
 
@@ -180,15 +180,15 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
         case 'CLICK_SUBMIT_IMAGE':
             const imageSrc = payload as string
 
-                // We could directly create an image using imageSrc, but we want to get the image size first
-                // To get the size, we need to create an Image element to access its width and height
-                // But width and height are only available after the image is loaded
-                // So we need to continue in the onload handler
-                const image = new Image()
-                const assetId = AssetRecordType.createId()
+            // We could directly create an image using imageSrc, but we want to get the image size first
+            // To get the size, we need to create an Image element to access its width and height
+            // But width and height are only available after the image is loaded
+            // So we need to continue in the onload handler
+            const image = new Image()
+            const assetId = AssetRecordType.createId()
 
-                // This handler will be called when the image is done loading
-                image.onload = () => {
+            // This handler will be called when the image is done loading
+            image.onload = () => {
                 const imageWidth  = image.width
                 const imageHeight = image.height
                 const aspectRatio = imageWidth / imageHeight

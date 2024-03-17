@@ -9,7 +9,7 @@ export default async function DashboardLeftBar() {
     return (
         <div className={styles.container}>
             <DashboardNavBtn title={t('capsules')} href="/capsules"/>
-            <DashboardNavBtn title={t('quizzes and surveys')} href="/"/>
+            <DashboardNavBtn title={t('quizes and surveys')} href="/"/>
             <DashboardNavBtn title={t('reports')} href="/"/>
             <div className={styles.spacer}></div>
             <DashboardNavBtn title={t('help')} href="/"/>

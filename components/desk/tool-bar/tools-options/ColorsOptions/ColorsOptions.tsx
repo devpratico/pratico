@@ -1,5 +1,5 @@
 import styles from './ColorsOptions.module.css'
-import { DefaultColorStyle, DefaultColorThemePalette } from '@tldraw/tldraw';
+import { DefaultColorStyle, DefaultColorThemePalette } from 'tldraw';
 
 
 const colors = DefaultColorStyle.values // Get colors from tldraw ("black", "red", etc.)

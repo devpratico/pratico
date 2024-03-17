@@ -3,6 +3,16 @@
 }
 
 .content {
-    z-index: 999999;
+    z-index: 999;
     user-select: none;
+}
+
+.content:focus {
+    outline: none;
+}
+
+.arrow {
+    fill: var(--background);
+    width: 20px;
+    height: 15px;
 }

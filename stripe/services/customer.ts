@@ -6,7 +6,7 @@ import getStripeClient from "../getStripeClient";
 export async function doesCustomerExist(id: string): Promise<boolean>{
   const stripe = await getStripeClient();
   try {
-     const customer = stripe.customers.retrieve(id);
+      const response = await stripe.customers.retrieve(id);
       return true;
   } catch (error) {
     if (error instanceof Stripe.errors.StripeError) {

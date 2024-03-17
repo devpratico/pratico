@@ -1,15 +1,28 @@
 const logCategories = {
-    react: ['page', 'component', 'hook'] as const,
+    react: ['layout', 'page', 'component', 'hook'] as const,
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
     tldraw: ['tools', 'editor', 'collab'] as const,
+    system: ['file', 'network', 'memory'] as const,
 }
+
+// TODO: style it also for when it prints in the server console.
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 
 const styles: { [key in keyof typeof logCategories]: string } = {
-    react: 'background-color: dodgerblue; ' + sharedStyles,
-    supabase: 'background-color: forestgreen; ' + sharedStyles,
-    tldraw: 'background-color: darkslategray; ' + sharedStyles,
+    react:    'background-color: dodgerblue;'    + sharedStyles,
+    supabase: 'background-color: forestgreen;'   + sharedStyles,
+    tldraw:   'background-color: darkslategray;' + sharedStyles,
+    system:   'background-color: darkorange;'    + sharedStyles,
+};
+
+type ConsoleType = 'log' | 'debug' | 'warn' | 'error';
+type ConsoleFunction = (message?: any, ...optionalParams: any[]) => void;
+const consoleFunctions: { [key in ConsoleType]: ConsoleFunction } = {
+    log:   console.log.bind(console),
+    debug: console.debug.bind(console),
+    warn:  console.warn.bind(console),
+    error: console.error.bind(console),
 };
 
 
@@ -44,9 +57,11 @@ class Logger {
     public configure(options: Partial<LoggerOptions>): void {
         this.options = { ...this.options, ...options };
     }
+
+
     
     
-    private print(category: ChildCategory, error: boolean, message: string, ...optionalParams: any[]): void {
+    private print(category: ChildCategory, type: ConsoleType, message: string, ...optionalParams: any[]): void {
         
         const isCategoryDirectlyEnabled = this.options.categories.includes(category)
         const isParentCategoryEnabled   = this.options.categories.includes(category.split(':')[0] as LogCategory)
@@ -58,20 +73,24 @@ class Logger {
             isCategoryEnabled
         ) {
             const style = styles[category.split(':')[0] as ParentCategory];
-            if (error) {
-                console.error(`%c${category}%c ${message}`, style, '', ...optionalParams);
-            } else {
-                console.debug(`%c${category}%c ${message}`, style, '', ...optionalParams);
-            }
+            consoleFunctions[type](`%c${category}%c ${message}`, style, '', ...optionalParams);
         }
     }
 
     public log(category: ChildCategory, message: string, ...optionalParams: any[]): void {
-        this.print(category, false, message, ...optionalParams);
+        this.print(category, 'log', message, ...optionalParams);
+    }
+
+    public debug(category: ChildCategory, message: string, ...optionalParams: any[]): void {
+        this.print(category, 'debug', message, ...optionalParams);
+    }
+
+    public warn(category: ChildCategory, message: string, ...optionalParams: any[]): void {
+        this.print(category, 'warn', message, ...optionalParams);
     }
 
     public error(category: ChildCategory, message: string, ...optionalParams: any[]): void {
-        this.print(category, true, message, ...optionalParams);
+        this.print(category, 'error', message, ...optionalParams);
     }
 }
     

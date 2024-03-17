@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import '../colors.css'
 import '../globals.css'
 import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
-import { UiProvider } from '@/hooks/uiContext'
-import { AuthProvider } from '@/hooks/authContext'
+import { UiProvider } from '@/hooks/useUi'
+import { AuthProvider } from '@/hooks/useAuth'
 import { getTranslations } from 'next-intl/server'
 import { luciole } from '../Fonts'
 
@@ -21,7 +21,7 @@ interface RootLayoutProps {
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
 
     const t = await getTranslations("auth")
-    // TODO: Maybe we don't need the UiProvider for the whole app
+    // TODO: Make a Ui provider for each page
     
     return (
         <html lang={locale} data-theme="pratico">

@@ -6,7 +6,7 @@ import {
     TLDefaultFontStyle,
     TLDefaultFillStyle,
     GeoShapeGeoStyle,
-} from "@tldraw/tldraw";
+} from "tldraw";
 
 
 export interface TldDrawState {

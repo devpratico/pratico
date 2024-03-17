@@ -12,7 +12,7 @@ echo
 run_services() {
     concurrently \
         --prefix "{name}" \
-        -n "$,▲" \
+        -n "Stripe," \
         "./scripts/forward-stripe-events.sh" \
         "next dev -H 0.0.0.0"
 }

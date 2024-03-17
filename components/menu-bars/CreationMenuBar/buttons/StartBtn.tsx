@@ -2,8 +2,8 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { createRoom } from "@/actions/capsuleActions";
-import { useCapsule } from '@/hooks/capsuleContext';
-import { useRoom } from "@/hooks/roomContext";
+import { useCapsule } from '@/hooks/useCapsule';
+import { useRoom } from "@/hooks/useRoom";
 
 
 interface StartBtnProps {

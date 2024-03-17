@@ -1,4 +1,6 @@
 import Participants from "../participants/Participants/Participants";
+import Add from "../add/Add/Add";
+
 
 /**
  * This groups all the menus we need for the desk.
@@ -7,8 +9,9 @@ import Participants from "../participants/Participants/Participants";
  */
 export default function DeskMenus() {
     return (
-        <>
+        <div style={{width: '100%', height: '100%'}}>
             <Participants />
-        </>
+            <Add />
+        </div>
     )
 }
