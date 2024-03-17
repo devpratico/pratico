@@ -47,12 +47,16 @@ const CloseBtn = () => (
 );
 
 // Refactor Content to support ref forwarding
-const Content = forwardRef<HTMLDivElement, { className?: string; children: React.ReactNode; showCloseBtn?: boolean }>(({ className, children, showCloseBtn }, ref) => (
-    <DialogPrimitive.Content ref={ref} className={`${styles.DialogContent} ${className}`}>
-        {showCloseBtn && <CloseBtn />}
-        {children}
-    </DialogPrimitive.Content>
-));
+const Content = forwardRef<HTMLDivElement, { className?: string; children: React.ReactNode; showCloseBtn?: boolean }>(
+    function ContentF({ className, children, showCloseBtn }, ref) {
+        return (
+            <DialogPrimitive.Content ref={ref} className={`${styles.DialogContent} ${className}`}>
+                {showCloseBtn && <CloseBtn />}
+                {children}
+            </DialogPrimitive.Content>
+        );
+    }
+);
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;

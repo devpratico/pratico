@@ -70,7 +70,7 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor])
+    }, [setEditor, user])
 
     return (
         <Tldraw

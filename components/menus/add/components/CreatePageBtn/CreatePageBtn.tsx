@@ -7,7 +7,7 @@ export default function CreatePageBtn() {
     const { newPage } = useNav()
 
     return (
-        <button onClick={() => newPage()}>
+        <button onClick={() => newPage?.()}>
             Page blanche
         </button>
     )

@@ -26,11 +26,7 @@ export default function CanvasST({children}: CanvasSTProps) {
     const { room } = useRoom()
     const roomId = useMemo(() => room?.id?.toString(), [room])
 
-    if (!room || !roomId || !room.code) {
-        //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
-        logger.error('react:hook', `Missing Room data: {room: ${room}, roomId: ${roomId}}`)
-        return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}}`}</div>
-    }
+    
 
     let initialSnapshot;
     if (room?.capsule_snapshot) {
@@ -40,13 +36,20 @@ export default function CanvasST({children}: CanvasSTProps) {
     // If there is no student name, redirect to the student form
     const userPref = getUserPreferences()
     useEffect(() => {
-        if (!userPref.name) {
+        if (!userPref.name && room?.code) {
             router.push(`/${room.code}/student-form`)
         }
-    }, [userPref.name, router, room.code])
+    }, [userPref.name, router, room?.code])
     
     const store = useBroadcastStore({roomId, initialSnapshot})
 
+
+
+    if (!room || !roomId || !room.code) {
+        //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
+        logger.error('react:hook', `Missing Room data: {room: ${room}, roomId: ${roomId}}`)
+        return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}}`}</div>
+    }
 
     return (
         <Canvas store={store}>
