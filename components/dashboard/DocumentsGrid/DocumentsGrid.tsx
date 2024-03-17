@@ -31,7 +31,7 @@ export default async function DocumentsGrid() {
                 return (
                     <Link href={`/capsule/${id}`} key={id} className={styles.link}>
                         <DocumentMiniature title={title} createdAt={created_at}>
-                            <Thumbnail snapshot={snap} />
+                            <Thumbnail snapshot={snap} scale={0.2} />
                         </DocumentMiniature>
                     </Link>
                 )

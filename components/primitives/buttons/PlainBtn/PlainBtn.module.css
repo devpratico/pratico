@@ -8,7 +8,7 @@
 }
 
 .container:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.05);
 }
 
 .container:focus {
