@@ -1,6 +1,6 @@
 .container {
-    height: 100dvh;
-    width: 100dvw;
+    height: 100svh;
+    width:  100dvw;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 70px 1fr 70px;
@@ -11,6 +11,9 @@
         "menuBar";
     gap: 8px;
     background-color: var(--secondary);
+    -webkit-overflow-scrolling: touch;
+    height: -webkit-fill-available;
+    overflow: hidden;
 }
 
 .canvas {

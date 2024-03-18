@@ -15,7 +15,6 @@ interface LayoutProps {
     params: { capsule_id: string };
 }
 
-const revalidate = 0
 
 export default async function Layout({ children, params: { capsule_id } }: LayoutProps) {
 

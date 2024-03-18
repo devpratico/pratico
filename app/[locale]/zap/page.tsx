@@ -10,17 +10,16 @@ import {
     Pen,
     Type,
     Shapes,
-    Image,
+    Image as ImageIcon,
     Eraser,
     Timer,
     Plus,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react"
-import { useRoom } from "@/hooks/useRoom"
-import { TLStoreSnapshot } from "tldraw"
-import Thumbnail from "@/components/Thumbnail/Thumbnail"
-import { useNav } from "@/hooks/useNav"
+import Image from "next/image"
+import zapSlide1 from "@/public/images/zapSlide1.png"
+import zapSlide2 from "@/public/images/zapSlide2.png"
 
 
 export default function ZapettePage() {
@@ -76,7 +75,7 @@ function ToolBarMobile() {
             <Pen color="black" size={30} />
             <Type color="black" size={30} />
             <Shapes color="black" size={30} />
-            <Image color="black" size={30} />
+            <ImageIcon color="black" size={30} />
             <Eraser color="black" size={30} />
         </div>
     )
@@ -84,12 +83,6 @@ function ToolBarMobile() {
 
 
 function ControlsMobile() {
-
-    const { room } = useRoom()
-    const { pageIds } = useNav()
-    const snapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined
-
-
 
     const containerStyle: React.CSSProperties = {
         display: 'grid',
@@ -121,6 +114,7 @@ function ControlsMobile() {
         width: '100%',
         aspectRatio: '16/9',
         overflow: 'hidden',
+        position: 'relative',
     }
 
     const counterStyle: React.CSSProperties = {
@@ -136,27 +130,27 @@ function ControlsMobile() {
         <div style={containerStyle}>
 
             <div style={buttonStyle}>
-                <p style={counterStyle}>1/10</p>
+                <p style={counterStyle}>4/4</p>
             </div>
 
             <div style={plusStyle}>
-                <Plus color="white" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
+                <Plus color="white" size={40} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
             </div>
 
             <div style={buttonStyle}>
-                <ChevronLeft color="black" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
+                <ChevronLeft color="var(--primary)" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
             </div>
 
             <div style={buttonStyle}>
-                <ChevronRight color="black" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
+                <ChevronRight color="var(--primary)" size={iconSize} strokeWidth={iconStrokeWidth} absoluteStrokeWidth />
             </div>
 
             <div style={miniatureStyle}>
-                {snapshot && pageIds ? <Thumbnail snapshot={snapshot} pageId={pageIds[0]} scale={0.2}/> : <div>no snapshot</div>}
+                <Image src={zapSlide2} objectFit="cover" alt={'pratico'} fill/>
             </div>
 
             <div style={miniatureStyle}>
-                {snapshot && pageIds ? <Thumbnail snapshot={snapshot} pageId={pageIds[1]} scale={0.2}/> : <div>no snapshot</div>}
+                <Image src={zapSlide1} objectFit="cover" alt={'pratico'} fill/>
             </div>
 
         </div>
@@ -164,20 +158,18 @@ function ControlsMobile() {
 }
 
 function CanvasMiniatureMobile() {
-    const { room } = useRoom()
-    const { currentPageId } = useNav()
-    const snapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined
 
     const containerStyle: React.CSSProperties = {
         width: '100%',
         height: '100%',
         borderRadius: '10px',
         overflow: 'hidden',
+        position: 'relative',
     }
 
     return (
         <div style={containerStyle}>
-            {snapshot ? <Thumbnail snapshot={snapshot} pageId={currentPageId} scale={0.2}/> : <div>no snapshot</div>}
+            <Image src={zapSlide1} objectFit="cover" alt={'pratico'} fill/>
         </div>
     )
 }

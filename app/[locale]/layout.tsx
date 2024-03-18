@@ -22,6 +22,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
 
     const t = await getTranslations("auth")
     // TODO: Make a Ui provider for each page
+    // TODO : get rid of that auth dialog and make an intercepting route
     
     return (
         <html lang={locale} data-theme="pratico">

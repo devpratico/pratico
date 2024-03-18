@@ -169,7 +169,6 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         })
 
         return () => {
-            logger.log('react:hook', 'useBroadcastStore cleanup')
             supabase.removeChannel(channel).then((res) => {logger.log('supabase:realtime', 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()

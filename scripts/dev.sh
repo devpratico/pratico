@@ -6,6 +6,10 @@
 
 echo
 
+
+# Dynamically find the machine's IP address
+#IP_ADDRESS=$(ipconfig getifaddr en0)
+
 # Concurrently (at the same time):
 # * Start your Next.js dev server
 # * Listen to Stripe events
@@ -14,7 +18,7 @@ run_services() {
         --prefix "{name}" \
         -n "Stripe," \
         "./scripts/forward-stripe-events.sh" \
-        "next dev -H 0.0.0.0"
+        "next dev"
 }
 
 # Function to run on script exit
