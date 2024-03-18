@@ -1,0 +1,1 @@
+INSERT INTO storage.buckets(id, name, public) VALUES ('capsules_files', 'capsules_files', TRUE);
