@@ -36,7 +36,7 @@ export default function Popover({ children, content, side="right", align="center
             </PopoverPrimitive.Trigger>
 
 
-            <PopoverPrimitive.Portal container={document.body}>
+            <PopoverPrimitive.Portal>
                 <PopoverPrimitive.Content
                     side={side}
                     className={styles.content}
