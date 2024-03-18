@@ -22,6 +22,7 @@ run_services() {
 }
 
 # Function to run on script exit
+# `supabase stop --no-backup` stops Supabase without creating a backup
 cleanup() {
     echo
     echo "Stopping Supabase..."
