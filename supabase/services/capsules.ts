@@ -115,11 +115,11 @@ export async function saveCapsuleTitle(capsuleId: string, title: string) {
  */
 export async function saveCapsule(capsule: TablesInsert<'capsules'>) {
     const supabase =  await getSupabaseClient()
-    const { data, error } = await supabase.from('capsules').upsert(capsule).select()
+    const { data, error } = await supabase.from('capsules').upsert(capsule).select().single()
     if (error || !data) {
         throw error
     } else {
-        return data[0] as Capsule // TODO: not sure about this
+        return data as Capsule // TODO: not sure about this
     }
 }
 

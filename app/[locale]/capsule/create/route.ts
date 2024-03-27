@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { fetchUserId } from '@/supabase/services/auth'
 import { saveCapsule } from '@/supabase/services/capsules'
 
@@ -16,17 +15,17 @@ export async function GET() {
     let user_id: string
     try {
          user_id = await fetchUserId()
+
     } catch (error) {
         console.error("Error fetching user", error)
         return new Response("Error fetching user", { status: 500 })
     }
 
-    const capsuleData = { created_by: user_id}
-
     try {
-        const capsuleReturn = await saveCapsule(capsuleData)
+        const capsuleReturn = await saveCapsule({ created_by: user_id })
         const capsule_id = capsuleReturn.id
-        return redirect('/capsule/' + capsule_id)
+        return new Response(null, { status: 302, headers: { Location: '/capsule/' + capsule_id } })
+
     } catch (error) {
         console.error("Error creating capsule", error)
         return new Response("Error creating capsule", { status: 500 })
