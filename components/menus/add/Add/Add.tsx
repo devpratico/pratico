@@ -5,15 +5,17 @@ import ImportPDFButton from "../components/ImportPdfBtn/ImportPdfBtn"
 import importPdfBackground from "@/utils/tldraw/importPdfBackground"
 import CreatePageBtn from "../components/CreatePageBtn/CreatePageBtn"
 import { useTLEditor } from "@/hooks/useTLEditor"
-import { useCapsule } from "@/hooks/useCapsule"
+//import { useCapsule } from "@/hooks/useCapsule"
 //import { NavProvider } from "@/hooks/navContext"
+import { useParams } from "next/navigation"
 
 
 
 export default function Add() {
 
     const { editor } = useTLEditor()
-    const { capsule } = useCapsule()
+    //const { capsule } = useCapsule()
+    const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
 
     if (!editor) return null
 
@@ -26,7 +28,7 @@ export default function Add() {
 
                     <ImportPDFButton
                         onImport={(file) => {
-                            importPdfBackground({ file, editor: editor, capsuleId: capsule.id })}
+                            importPdfBackground({ file, editor, capsuleId})}
                         }
                         className={styles.option}
                     >

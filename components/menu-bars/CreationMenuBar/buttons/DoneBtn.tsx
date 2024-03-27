@@ -2,11 +2,12 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { useRouter } from "next/navigation";
-import { useCapsule } from '@/hooks/useCapsule';
+import { useCapsule } from '@/hooks/old_useCapsule';
 import { saveCapsuleSnapshot } from "@/actions/capsuleActions";
 import { useRoom } from "@/hooks/useRoom";
 import { useTLEditor } from "@/hooks/useTLEditor";
-import { useMemo, useCallback, use } from "react";
+import { useMemo, useCallback } from "react";
+import { useParams } from "next/navigation";
 
 
 interface DoneBtnProps {
@@ -21,10 +22,11 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     // TODO: Maybe get rid of tldraw stuff and use a hook
 
     const router = useRouter()
-    const { capsule } = useCapsule()
+    //const { capsule } = useCapsule()
     const { setRoom } = useRoom()
     const { editor } = useTLEditor()
-    const capsuleId = useMemo(() => capsule?.id, [capsule])
+    //const capsuleId = useMemo(() => capsule?.id, [capsule])
+    const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     
 
     const handleClick = useCallback(async () => {

@@ -3,7 +3,8 @@ import styles from './CapsuleTitle.module.css'
 import { useState, useEffect, useRef } from "react"
 import { fetchCapsuleTitle, saveCapsuleTitle } from '@/supabase/services/capsules'
 import logger from '@/utils/logger'
-import { useCapsule } from '@/hooks/useCapsule';
+//import { useCapsule } from '@/hooks/useCapsule';
+import { useParams } from 'next/navigation';
 
 interface TitleProps {
     /**
@@ -18,8 +19,9 @@ interface TitleProps {
  */
 export default function CapsuleTitle({ disabled }: TitleProps) {
 
-    const { capsule } = useCapsule()
-    const capsuleId = capsule?.id
+    //const { capsule } = useCapsule()
+    //const capsuleId = capsule?.id
+    const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const placeholder = "Session name";
     const [inputValue, setInputValue] = useState('')
 
@@ -63,19 +65,6 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
             inputRef.current.style.width = `${width + border + cursorWidth}px`;
         }
     }, [inputValue, placeholder]);
-
-    // Submit the form when the input loses focus
-    useEffect(() => {
-        const handleBlur = (e: FocusEvent) => {
-            if (hasChanged) {
-                logger.log('react:component', 'input blurred')
-                hiddenSubmitButtonRef.current?.click();
-            }
-        }
-        const inputEl = inputRef.current
-        inputEl?.addEventListener('blur', handleBlur)
-        return () => { inputEl?.removeEventListener('blur', handleBlur)} // Cleanup
-    }, [hasChanged])
     
 
     // Update the state when the input changes
@@ -109,6 +98,20 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
           //hiddenSubmitButtonRef.current?.click();
         }
     };
+
+    // Submit the form when the input loses focus
+    useEffect(() => {
+        const handleBlur = (e: FocusEvent) => {
+            if (hasChanged) {
+                logger.log('react:component', 'input blurred')
+                hiddenSubmitButtonRef.current?.click();
+            }
+        }
+        const inputEl = inputRef.current
+        inputEl?.addEventListener('blur', handleBlur)
+        return () => { inputEl?.removeEventListener('blur', handleBlur)} // Cleanup
+    }, [hasChanged])
+
 
     const inputProps = {
         type: "text",

@@ -2,8 +2,9 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { createRoom } from "@/actions/capsuleActions";
-import { useCapsule } from '@/hooks/useCapsule';
+import { useCapsule } from '@/hooks/old_useCapsule';
 import { useRoom } from "@/hooks/useRoom";
+import { useParams } from "next/navigation";
 
 
 interface StartBtnProps {
@@ -11,8 +12,9 @@ interface StartBtnProps {
 }
 
 export default function StartBtn({ message }: StartBtnProps) {
-    const { capsule } = useCapsule()
-    const capsuleId = capsule?.id
+    //const { capsule } = useCapsule()
+    //const capsuleId = capsule?.id
+    const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const { setRoom } = useRoom()
 
     const handleClick = async () => {
