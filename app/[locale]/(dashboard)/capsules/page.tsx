@@ -1,7 +1,7 @@
 import styles from './page.module.css'
-import DocumentsGrid from '@/components/dashboard/DocumentsGrid/DocumentsGrid';
+import DocumentsGrid from '@/app/[locale]/(dashboard)/capsules/_components/DocumentsGrid/DocumentsGrid';
 import { getTranslations } from 'next-intl/server';
-import { CreateCapsuleBtn } from './buttons';
+import { CreateCapsuleBtn } from './_components/buttons';
 
 
 export const revalidate = 0

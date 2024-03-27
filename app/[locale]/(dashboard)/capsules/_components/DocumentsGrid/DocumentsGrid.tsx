@@ -1,5 +1,5 @@
 import styles from './DocumentsGrid.module.css';
-import DocumentMiniature from './DocumentMiniature/DocumentMiniature';
+import DocumentMiniature from '../DocumentMiniature/DocumentMiniature';
 import { fetchCapsulesData, Capsule } from '@/supabase/services/capsules';
 import { fetchUserId } from '@/supabase/services/auth';
 import Link from 'next/link';
