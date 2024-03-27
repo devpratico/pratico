@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { randomUUID } from 'crypto'
 import { fetchUserId } from '@/supabase/services/auth'
 import { saveCapsule } from '@/supabase/services/capsules'
 
@@ -22,19 +21,14 @@ export async function GET() {
         return new Response("Error fetching user", { status: 500 })
     }
 
-    const capsule_id = randomUUID()
-
-    const capsule = {
-        id: capsule_id,
-        created_by: user_id,
-    }
+    const capsuleData = { created_by: user_id}
 
     try {
-        await saveCapsule(capsule)
+        const capsuleReturn = await saveCapsule(capsuleData)
+        const capsule_id = capsuleReturn.id
+        return redirect('/capsule/' + capsule_id)
     } catch (error) {
         console.error("Error creating capsule", error)
         return new Response("Error creating capsule", { status: 500 })
     }
-
-    return redirect('/capsule/' + capsule_id)
 }
