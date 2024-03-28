@@ -15,7 +15,7 @@ export default async function CapsulesPage() {
             <div className={styles.buttons}>
                 <CreateCapsuleBtn />
             </div>
-            <DocumentsGrid/>
+            <DocumentsGrid messages={{ untitled: t('untitled') }} />
         </div>
     )
 }

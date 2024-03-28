@@ -2,36 +2,32 @@
 import Canvas from "../Canvas/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
 import AutoSaver from "../custom-ui/AutoSaver/AutoSaver";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { fetchCapsuleSnapshot } from "@/supabase/services/capsules";
 import { useEffect, useState } from "react";
 
 
-export const dynamic = 'force-dynamic'
-
-interface CanvasSLProps {
-    children?: React.ReactNode;
-}
-
 /**
- * This is a solo canvas (no real time collaboration).
- * `SL` stands for "solo".
+ * This is a solo canvas (no real time collaboration). `SL` stands for "solo".
+ * It can either fetch the remote snapshot from database (if `local=false`)
+ * or use the local storage (if `local=true`) for loginless users.
  */
-export default function CanvasSL({children}: CanvasSLProps) {
+export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
+    const searchParams = useSearchParams()
+    const local = searchParams.get('local') === 'true'
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function fetchSnapshot() {
-            if (capsuleId) {
-                //initialSnapshot = await fetchCapsuleSnapshot(capsuleId)
+            if (capsuleId && !local) {
                 const snapshot = await fetchCapsuleSnapshot(capsuleId)
                 setInitialSnapshot(snapshot)
             }
         }
         fetchSnapshot()
-    }, [capsuleId])
+    }, [capsuleId, local])
 
 
     // Create the store
@@ -43,13 +39,20 @@ export default function CanvasSL({children}: CanvasSLProps) {
             setStore(_store)
         }
     }, [initialSnapshot])
+
     
-    return (
-        <Canvas store={store}>
-            <AutoSaver destination='capsule' id={capsuleId} />
-            {children}
-        </Canvas>
-    )
+    if (local) {
+        // If local, we will use the local storage (see https://tldraw.dev/docs/persistence)
+        return <Canvas persistenceKey={capsuleId}/>
+        
+    } else {
+        // If not local, we will use the AutoSaver to save the snapshot to the capsule
+        return (
+            <Canvas store={store}>
+                <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
+            </Canvas>
+        )
+    }
 }
 
 

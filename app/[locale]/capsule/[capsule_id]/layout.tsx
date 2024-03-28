@@ -1,12 +1,10 @@
-import { Capsule } from "@/supabase/services/capsules";
 import { Room } from "@/supabase/services/rooms";
-import { fetchCapsule } from "@/supabase/services/capsules";
 import { fetchRoomsByCapsuleId } from "@/supabase/services/rooms";
 import { SupabaseError } from "@/supabase/types/errors";
 import { TLEditorProvider } from '@/hooks/useTLEditor';
 import { NavProvider } from '@/hooks/useNav';
-import { CapsuleProvider } from '@/hooks/old_useCapsule';
 import { RoomProvider } from '@/hooks/useRoom';
+import logger from "@/utils/logger";
 
 
 
@@ -18,26 +16,25 @@ interface LayoutProps {
 
 export default async function Layout({ children, params: { capsule_id } }: LayoutProps) {
 
-    //let capsule: Capsule
-    let rooms: Room[] // TODO: handle the case where there are several rooms (or none)
+    // TODO: handle the case where there are several rooms (or none)
+    let rooms: Room[] | undefined = undefined
     
     try {
-        //capsule = await fetchCapsule(capsule_id)
-        rooms   = await fetchRoomsByCapsuleId(capsule_id)
+        rooms = await fetchRoomsByCapsuleId(capsule_id)
     } catch (error) {
-        // TODO: figure out how errors work with Next.js
-        return <div>{(error as SupabaseError).message}</div>
+        logger.log('react:layout', 'No rooms fetched', (error as SupabaseError).message)
     }
 
+
+    // TODO: Remove RoomProvider and use the url to determine the room code
+    // Or redirect to the room page instead of staying on the capsule page
     return (
         <TLEditorProvider>
-            {/*<CapsuleProvider value={{ capsule }}>*/}
-                <RoomProvider initialRoom={rooms[0]}>
-                    <NavProvider>
-                        { children }
-                    </NavProvider>
-                </RoomProvider>
-            {/*</CapsuleProvider>*/}
+            <RoomProvider initialRoom={rooms?.[0]}>
+                <NavProvider>
+                    { children }
+                </NavProvider>
+            </RoomProvider>
         </TLEditorProvider>
     )
 }

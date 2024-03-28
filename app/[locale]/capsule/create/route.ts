@@ -17,10 +17,7 @@ export async function GET() {
     try {
          user_id = await fetchUserId()
 
-    } catch (error) {
-        //console.error("Error fetching user", error)
-        //return new Response("Error fetching user", { status: 500 })
-        
+    } catch (error) {        
         // If the user is not logged in, we'll use a local storage capsule 
         const capsule_id = randomUUID()
         const url = '/capsule/' + capsule_id + '?local=true'
@@ -33,7 +30,6 @@ export async function GET() {
         return new Response(null, { status: 302, headers: { Location: '/capsule/' + capsule_id } })
 
     } catch (error) {
-        console.error("Error creating capsule", error)
         return new Response("Error creating capsule", { status: 500 })
     }
 }
