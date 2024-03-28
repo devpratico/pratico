@@ -45,7 +45,7 @@ export default function CanvasST({children}: CanvasSTProps) {
 
 
 
-    if (!room || !roomId || !room.code) {
+    if (!room || !room.id || !roomId || !room.code) {
         //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
         logger.error('react:hook', `Missing Room data: {room: ${room}, roomId: ${roomId}}`)
         return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}}`}</div>
@@ -54,7 +54,7 @@ export default function CanvasST({children}: CanvasSTProps) {
     return (
         <Canvas store={store}>
             {children}
-            <AutoSaver destination='room' id={roomId} />
+            <AutoSaver saveTo={{destination: 'remote room', roomId: room.id}}/>
             <NavigatorSync />
         </Canvas>
     )
