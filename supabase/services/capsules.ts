@@ -41,13 +41,13 @@ export async function fetchCapsule(capsuleId: string): Promise<Capsule> {
 /**
  * @returns tld_snapshot from the `capsules` table
  */
-export async function fetchCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot> {
+export async function fetchCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot | undefined> {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) {
         throw error
     } else {
-        return data.tld_snapshot?.[0] as TLStoreSnapshot || null
+        return data.tld_snapshot?.[0] as TLStoreSnapshot || undefined
     }
 }
 
