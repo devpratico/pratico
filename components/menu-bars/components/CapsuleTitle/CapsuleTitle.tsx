@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react"
 import { fetchCapsuleTitle, saveCapsuleTitle } from '@/supabase/services/capsules'
 import logger from '@/utils/logger'
 //import { useCapsule } from '@/hooks/useCapsule';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
+import { useTLEditor } from '@/hooks/useTLEditor'
 
 interface TitleProps {
     /**
@@ -22,8 +23,11 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
     //const { capsule } = useCapsule()
     //const capsuleId = capsule?.id
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
+    const searchParams = useSearchParams()
+    const local = searchParams.get('local') === 'true'
     const placeholder = "Session name";
     const [inputValue, setInputValue] = useState('')
+    const { editor } = useTLEditor()
 
     // hasChanged is true as soon as the input value changes, and until the form is submitted
     // We use it to only submit the form when the input has changed
@@ -37,6 +41,15 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
     useEffect(() => {
         async function getTitle() {
             if (!capsuleId) return
+
+            // FOR LOCAL DOCUMENTS
+            if (local) {
+                const localTitle = editor?.getDocumentSettings().name
+                setInputValue(localTitle || '')
+                return
+            }
+
+            // FOR DATABASE DOCUMENTS
             try {
                 const title = await fetchCapsuleTitle(capsuleId)
                 setInputValue(title)
@@ -45,11 +58,11 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
                     inputRef.current?.focus();
                 }
             } catch (error) {
-                console.error('Error getting capsule title', error)
+                logger.error('react:component', 'Error getting capsule title', error)
             }
         }
         getTitle()
-    }, [capsuleId])
+    }, [capsuleId, local, editor])
 
     // Resize the input to fit the content
     useEffect(() => {
@@ -73,9 +86,19 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
         setHasChanged(true)
     }
 
-    // Save title to database when form is submitted
+    // Save title when form is submitted
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
+        // FOR LOCAL DOCUMENTS
+        if (local) {
+            editor?.updateDocumentSettings({ name: inputValue })
+            setHasChanged(false)
+            logger.log('react:component', 'local capsule title set', { inputValue })
+            return
+        }
+
+        // FOR DATABASE DOCUMENTS
         if (capsuleId && hasChanged) {
             try {
                 logger.log('react:component', 'setting capsule title', { capsuleId, inputValue })

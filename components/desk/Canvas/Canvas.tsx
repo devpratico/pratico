@@ -51,7 +51,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, children
 
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
-
+        
         /**
          * Set the user preferences
          * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them

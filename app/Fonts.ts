@@ -23,4 +23,6 @@ export const luciole = localFont({
             style: 'italic',
         },
     ],
+    variable: '--font-luciole',
+    display: 'swap',
 })
