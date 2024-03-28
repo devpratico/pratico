@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/utils/logger';
 import { createContext, useContext } from 'react';
-import { getIndexBetween, TLPageId, useValue, uniqueId } from 'tldraw';
+import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
 
@@ -33,8 +33,23 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     }, [editor])
     */
 
-    // FIXME: This improves performance but the pages are not in the correct order https://discord.com/channels/859816885297741824/1217575088065609728
-    const pageIds = editor ? Array.from(editor.store.query.ids('page').get()) : []
+    // See https://discord.com/channels/859816885297741824/1217575088065609728
+    // SOLUTION 1
+    //const pageIds = editor ? Array.from(editor.store.query.ids('page').get()) : []
+    // SOLUTION 2
+    /*const pageIds = useValue('Page ids', () => {
+        if (!editor) return []
+        return editor.getPages().map(p => p.id)
+    }, [editor])*/
+    // SOLUTION 3
+    const pageIds$ = useComputed('Page ids', () => {
+        if (!editor) return []
+        return editor.getPages().map((p) => p.id)
+    }, {
+        isEqual: (a: any[], b: any[]) => a.length === b.length && a.every((id, i) => id === b[i])
+    },[editor])
+
+    const pageIds = useValue(pageIds$)
 
     const currentPageId = useValue('Current page ID', () => {
         if (!editor) return undefined

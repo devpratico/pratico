@@ -12,6 +12,7 @@ interface Presence {
 
 // TODO: Use https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
 export default function usePresence() {
+    /*
     const { editor } = useTLEditor()
     if (!editor) return []
     
@@ -47,4 +48,7 @@ export default function usePresence() {
 	}, [editor])
 
     return presences
+    */
+
+    return []
 }

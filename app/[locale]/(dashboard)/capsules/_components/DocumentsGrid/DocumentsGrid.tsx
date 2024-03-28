@@ -10,7 +10,8 @@ import logger from '@/utils/logger';
 import { IconButton, DropdownMenu, Badge } from '@radix-ui/themes';
 import { Ellipsis } from 'lucide-react';
 import { Trash2, Copy, TextCursor, CloudOff } from 'lucide-react';
-import { deleteLocalTLDrawDB } from '@/utils/tldraw/localDBManager';
+import { deleteLocalTLDrawDB, getLocalTLDrawDocName } from '@/utils/tldraw/localDBManager';
+import type { TLStoreSnapshot } from 'tldraw';
 
 
 interface DocumentsGridProps {
@@ -19,6 +20,12 @@ interface DocumentsGridProps {
     }
 }
 
+
+// TODO: Remove capsule name from Supabase, as it is stored inside the tldraw document. Same with created_at.
+
+/**
+ * This grid displays the capsules from the database and the local storage.
+ */
 export default function DocumentsGrid({ messages }: DocumentsGridProps) {
 
     //const t = await getTranslations('dashboard')
@@ -29,25 +36,37 @@ export default function DocumentsGrid({ messages }: DocumentsGridProps) {
     // Get the capsules from the local storage
     const [localCapsules, setLocalCapsules] = useState<Capsule[]>([])
     useEffect(() => {
-        const localCapsulesIndex = localStorage.getItem('TLDRAW_DB_NAME_INDEX_v2')
+        // Have to put this in a function because useEffect can't be async
+        const _setLocalCapsules = async () => {
+            // Get the list of tldraw documents set by TLDraw into localStorage. The list is managed automatically by tldraw when mounting an editor witha persistence key.
+            const localCapsulesIndex = localStorage.getItem('TLDRAW_DB_NAME_INDEX_v2')
+            if (localCapsulesIndex) {
+                // The list is a stringified array of keys. Let's transform it into a real array of strings.
+                let localCapsulesKeys = JSON.parse(localCapsulesIndex) as string[]
+                localCapsulesKeys = localCapsulesKeys.map((key) => key.replace('TLDRAW_DOCUMENT_v2', '')) // Remove the `TLDRAW_DOCUMENT_v2` prefix
+                logger.log('system:file', `Found ${localCapsulesKeys.length} local storage capsules`)
 
-        if (localCapsulesIndex) {
-            
-            let localCapsulesKeys = JSON.parse(localCapsulesIndex) as string[]
-            // Remove the `TLDRAW_DOCUMENT_v2` prefix
-            localCapsulesKeys = localCapsulesKeys.map((key) => key.replace('TLDRAW_DOCUMENT_v2', ''))
-
-            logger.log('system:file', `Found ${localCapsulesKeys.length} local storage capsules`)
-            const localCapsules = localCapsulesKeys.map((key) => ({
-                id: key,
-                created_at: 'no date',
-                created_by: 'local',
-                title: key,
-                tld_snapshot: null,
-            }))
-            setLocalCapsules(localCapsules)
+                // Now that we have the keys, we can get the document names from the local IndexedDB containing the whole tldraw documents.
+                // This indexedDB is also managed by tldraw.
+                const localCapsules = await Promise.all(localCapsulesKeys.map(async (key) => {
+                    const name = await getLocalTLDrawDocName(key)
+                    //logger.log('system:file', `Local names: ${name}`)
+                    return ({
+                        id: key,
+                        created_at: 'no date',
+                        created_by: 'local',
+                        title: name,
+                        tld_snapshot: null,
+                    })
+                }))
+                logger.log('system:file', 'Local capsules found', localCapsules.map((c) => c.title))
+                setLocalCapsules(localCapsules)
+            }
         }
-    }, [capsules])
+
+        _setLocalCapsules()
+
+    }, [])
 
 
 
@@ -58,7 +77,7 @@ export default function DocumentsGrid({ messages }: DocumentsGridProps) {
                 const id = cap.id
                 const title = cap.title || messages.untitled
                 const created_at = new Date(cap.created_at)
-                const snap = JSON.parse(cap.tld_snapshot as any)
+                const snap = cap.tld_snapshot?.[0] as TLStoreSnapshot | undefined
 
                 let url = `/capsule/${id}`
                 if (localCapsules.includes(cap)) {
@@ -82,7 +101,7 @@ export default function DocumentsGrid({ messages }: DocumentsGridProps) {
                     <div key={id} style={{ position: 'relative' }}>
                         <Link href={url} className={styles.link}>
                             <DocumentMiniature title={title} createdAt={created_at}>
-                                <Thumbnail snapshot={snap} scale={0.2} />
+                                {snap &&  <Thumbnail snapshot={snap} scale={0.2} />}
                             </DocumentMiniature>
                         </Link>
 

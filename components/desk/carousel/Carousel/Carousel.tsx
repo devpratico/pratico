@@ -9,14 +9,11 @@ import { useTLEditor } from '@/hooks/useTLEditor'
 
 
 function Carousel() {
-    // TODO: Get rid of tldraw stuff:
-    // Make the carousel component take an array of children
-    // Then make a special tldraw component for children, that relies on editor stuff
     const { editor } = useTLEditor()
     const { pageIds, currentPageId, setCurrentPage } = useNav()
 
     // TODO: Update the thumbnail when new object added
-    const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor, currentPageId]) // currentPageId so that it updates when the current page changes
+    const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor]) // currentPageId so that it updates when the current page changes
 
     if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
         return <></> // TODO: Make a loading animation

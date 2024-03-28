@@ -5,6 +5,7 @@ import AutoSaver from "../custom-ui/AutoSaver/AutoSaver";
 import { useParams, useSearchParams } from "next/navigation";
 import { fetchCapsuleSnapshot } from "@/supabase/services/capsules";
 import { useEffect, useState } from "react";
+import useIsLocalDoc from "@/hooks/useIsLocalDoc";
 
 
 /**
@@ -14,8 +15,7 @@ import { useEffect, useState } from "react";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const searchParams = useSearchParams()
-    const local = searchParams.get('local') === 'true'
+    const local = useIsLocalDoc()
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)

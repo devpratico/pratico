@@ -17,12 +17,6 @@ export default function DocumentMiniature({ title, createdAt, children }: Docume
         //localeDate = new Intl.DateTimeFormat('default', { day: 'numeric', month: 'long', year: 'numeric' }).format(createdAt)
         //formatter.dateTime(new Date(createdAt), { day: 'numeric', month: 'long', year: 'numeric' })
     }
-
-    const handleEllipsisClick = (e: React.MouseEvent) => {
-        //e.preventDefault()
-        //e.stopPropagation()
-    }
-    // onClick={handleEllipsisClick}
     
     return (
         <div  className={styles.container}>

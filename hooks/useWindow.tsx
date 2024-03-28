@@ -38,7 +38,7 @@ function useWindow(): WindowHookType {
       setIsMobile(mobile); // Only update if it changes to improve performance
       logger.log('react:hook', `Mobile: ${mobile}`);
     }
-  }, [windowSize]);
+  }, [windowSize, isMobile]);
 
 
   const [orientation, setOrientation] = useState<'landscape' | 'portrait'>('landscape');
@@ -51,7 +51,7 @@ function useWindow(): WindowHookType {
         setOrientation(newOrientation);
       }
     }
-  }, [windowSize]);
+  }, [windowSize, isMobile, orientation]);
 
   return { ...windowSize, isMobile, orientation };
 }
