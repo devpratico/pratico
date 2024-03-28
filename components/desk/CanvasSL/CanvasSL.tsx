@@ -64,7 +64,9 @@ export default function CanvasSL() {
                 // A local capsule with a default snapshot to load
                 case JSON.stringify({local: true, withloadDefault: true}): {
                     // Load the default snapshot
-                    logger.log('react:component', 'CanvasSL', 'Init a local capsule with a default snapshot to load (not implemented yet)')
+                    const demoSnapshot = await fetchCapsuleSnapshot('1c5fff8e-64fb-4540-9e0e-10120e163b77')
+                    setInitialSnapshot(demoSnapshot)
+                    logger.log('react:component', 'CanvasSL', 'Init a local capsule with a default snapshot to load')
                     break
                 }
             }
@@ -86,7 +88,7 @@ export default function CanvasSL() {
     
     if (local) {
         // If local, we will use the local storage (see https://tldraw.dev/docs/persistence)
-        return <Canvas persistenceKey={capsuleId}/>
+        return <Canvas persistenceKey={capsuleId} initialSnapshot={initialSnapshot}/>
         
     } else {
         // If not local, we will use the AutoSaver to save the snapshot to the capsule

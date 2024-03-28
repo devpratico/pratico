@@ -50,7 +50,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
         <PlainBtn
             color="secondary"
             style="soft"
-            enabled={!!capsuleId}
+            enabled={!local}
             onClick={handleClick}
             message={message || "Done"}
         />
