@@ -2,8 +2,9 @@
 import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/utils/logger";
 import { createRoom } from "@/actions/capsuleActions";
-import { useCapsule } from '@/hooks/useCapsule';
 import { useRoom } from "@/hooks/useRoom";
+import { useParams } from "next/navigation";
+import useIsLocalDoc from "@/hooks/useIsLocalDoc";
 
 
 interface StartBtnProps {
@@ -11,9 +12,10 @@ interface StartBtnProps {
 }
 
 export default function StartBtn({ message }: StartBtnProps) {
-    const { capsule } = useCapsule()
-    const capsuleId = capsule?.id
+    const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const { setRoom } = useRoom()
+    const local = useIsLocalDoc()
+    
 
     const handleClick = async () => {
         logger.log('react:component', 'Clicked start button')
@@ -28,5 +30,13 @@ export default function StartBtn({ message }: StartBtnProps) {
         }
     }
 
-    return <PlainBtn color="secondary" size="m" onClick={handleClick} message={message || "Start Session"} />
+    return (
+        <PlainBtn
+            color="secondary"
+            size="m"
+            onClick={handleClick}
+            message={message || "Start Session"}
+            enabled={!local}
+        />
+    )
 }

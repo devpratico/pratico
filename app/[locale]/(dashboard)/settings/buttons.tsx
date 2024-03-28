@@ -6,8 +6,12 @@ import config from "@/stripe/stripe.config";
 
 
 export function SignOutBtn({message}: {message: string}) {
+    const router = useRouter()
+
     const handleSignOut = async () => {
         await signOut()
+        router.push('/login')
+        router.refresh()
     }
 
     return (

@@ -175,7 +175,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             presenceListener()
             //channel.untrack()
         }
-    }, [roomId])
+    }, [roomId, store])
     
     return store
 }

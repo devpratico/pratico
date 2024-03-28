@@ -16,7 +16,7 @@ const Resizer = () => {
     const { isMobile, orientation } = useWindow()
     const { currentPageId } = useNav()
 
-    const box = new Box(0, 0, 1920, 1080)
+    
 
     const insets = useMemo(() => {
         if (isMobile && orientation === 'landscape') {
@@ -26,13 +26,14 @@ const Resizer = () => {
         } else {
             return {top: 60, right: 0, bottom: 70, left: 60}
         }
-    }, [isMobile])
+    }, [isMobile, orientation])
 
 
     const updateSize = useCallback(() => {
+        const box = new Box(0, 0, 1920, 1080)
         zoomToBounds({ editor, box, margin: 10,  insets })
         logger.log('tldraw:editor', 'Resized')
-    }, [editor, insets, isMobile])
+    }, [editor, insets])
 
 
     useEffect(() => {
@@ -50,7 +51,7 @@ const Resizer = () => {
             clearTimeout(timeout)
             //window.removeEventListener('resize', updateSize)
         }
-    }, [currentPageId, insets]) // TODO: there's a dependency array warning here
+    }, [currentPageId, insets, updateSize]) // TODO: there's a dependency array warning here
 
     return null
 }

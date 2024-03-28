@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import '@radix-ui/themes/styles.css';
 import '../colors.css'
 import '../globals.css'
-import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
+//import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
 import { UiProvider } from '@/hooks/useUi'
 import { AuthProvider } from '@/hooks/useAuth'
 import { getTranslations } from 'next-intl/server'
 import { luciole } from '../Fonts'
+import { Theme } from '@radix-ui/themes'
 
 
 export const metadata: Metadata = {
@@ -28,8 +30,14 @@ export default async function RootLayout({children, params: { locale }}: RootLay
         <html lang={locale} data-theme="pratico">
             <AuthProvider>
                 <UiProvider>
-                    <body className={luciole.className}>{children}</body>
-                    <AuthDialog title={t('sign in')} />
+
+                    <body className={luciole.className}>
+                        <Theme accentColor="violet">
+                            {children}
+                        </Theme>
+                    </body>
+
+                    {/*<AuthDialog title={t('sign in')} />*/}
                 </UiProvider>
             </AuthProvider>
         </html>

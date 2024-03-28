@@ -27,14 +27,15 @@ export default function CanvasRT({children}: CanvasRTProps) {
     // Create a store for the canvas
     const store = useBroadcastStore({roomId, initialSnapshot})
 
-    if (!room || !roomId) {
+    // TODO: clean up that number or string roomId
+    if (!room || !room.id || !roomId) {
         return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}, roomId: ${roomId}}`}</div>
     }
 
     return (
         <Canvas store={store}>
             {children}
-            <AutoSaver destination='room' id={roomId} />
+            <AutoSaver saveTo={{destination: 'remote room', roomId: room.id}}/>
         </Canvas>
     )
 }

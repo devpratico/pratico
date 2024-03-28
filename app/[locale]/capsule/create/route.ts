@@ -1,40 +1,49 @@
-import { redirect } from 'next/navigation'
-import { randomUUID } from 'crypto'
 import { fetchUserId } from '@/supabase/services/auth'
 import { saveCapsule } from '@/supabase/services/capsules'
+import { randomUUID } from 'crypto'
 
 
 // TODO: Put this in a server action?
 
 /**
  * This is the route for creating a new capsule.
- * It creates a new capsule, put it in supabase,
- * and redirects to the new capsule's page.
- * The snapshot is not created here, but in the RemoteCanvas component.
+ * It creates a new empty capsule, and redirects to the new capsule's page.
  */
-export async function GET() {
+export async function GET(request: Request) {
 
-    let user_id: string
-    try {
-         user_id = await fetchUserId()
+    // Check if we called this route with a query parameter to load a default capsule
+    // For example, we can call capsule/create?loadDefault=demo1 to create a new capsule with the demo1 content
+    const { searchParams } = new URL(request.url)
+    const loadDefault = searchParams.get('loadDefault')
+
+    // Check if the user is logged in
+    let user_id: string | null = null
+    try { 
+        user_id = await fetchUserId()
     } catch (error) {
-        console.error("Error fetching user", error)
-        return new Response("Error fetching user", { status: 500 })
+        // No user found
     }
 
-    const capsule_id = randomUUID()
+    // If the user is logged in, we'll create a new capsule in the database
+    if (user_id) {
+        try {
+            const newCapsule = await saveCapsule({ created_by: user_id })
+            let url = '/capsule/' + newCapsule.id
+            url += loadDefault ? '?loadDefault=' + loadDefault : '' // Pass the loadDefault query parameter to the redirection
 
-    const capsule = {
-        id: capsule_id,
-        created_by: user_id,
-    }
+            return new Response(null, { status: 302, headers: { Location: url } })
 
-    try {
-        await saveCapsule(capsule)
-    } catch (error) {
-        console.error("Error creating capsule", error)
-        return new Response("Error creating capsule", { status: 500 })
-    }
+        } catch (error) {
+            return new Response("Error creating capsule", { status: 500 })
+        }
 
-    return redirect('/capsule/' + capsule_id)
+    } else {        
+        // The user is not logged in, we'll use a local storage capsule 
+        const capsule_id = randomUUID()
+        let url = '/capsule/' + capsule_id 
+        url += '?local=true' // Tell the capsule page that this is a local capsule (so it won't try to fetch things)
+        url += loadDefault ? '&loadDefault=' + loadDefault : '' // Pass the loadDefault query parameter to the redirection
+
+        return new Response(null, { status: 302, headers: { Location: url } })
+    }   
 }

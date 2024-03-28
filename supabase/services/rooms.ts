@@ -52,7 +52,7 @@ export async function saveRoom(room: TablesInsert<'rooms'>) {
     if (error) {
         throw error
     } else {
-        return data[0] as Room
+        return data[0] as Room // TODO: not sure about this
     }
 }
 

@@ -10,7 +10,7 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts
+    useKeyboardShortcuts,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from '../custom-ui/Background/Background'
@@ -30,6 +30,8 @@ export interface CanvasProps {
      * The initial snapshot of the store. Should not be used if the store is provided.
      */
     initialSnapshot?: StoreSnapshot<TLRecord>
+    persistenceKey?: string
+    onMount?: (editor: Editor) => void
     children?: React.ReactNode
 }
 
@@ -37,7 +39,7 @@ export interface CanvasProps {
  * This is the canvas component provided by tldraw.
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
-export default function Canvas({store, initialSnapshot, children}: CanvasProps) {
+export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
     const { user } = useAuth()
@@ -51,6 +53,12 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
 
+        // Call the provided onMount function
+        if (onMount) {
+            onMount(editor)
+        }
+
+        
         /**
          * Set the user preferences
          * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
@@ -70,7 +78,7 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor, user])
+    }, [setEditor, user, onMount])
 
     return (
         <Tldraw
@@ -79,6 +87,7 @@ export default function Canvas({store, initialSnapshot, children}: CanvasProps) 
             components={{Background: Background, OnTheCanvas: CanvasArea}}
             store={store}
             snapshot={ store ? undefined : initialSnapshot }
+            persistenceKey={persistenceKey}
         >
             {children}
             <Resizer/>

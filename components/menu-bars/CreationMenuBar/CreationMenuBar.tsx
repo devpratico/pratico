@@ -27,6 +27,7 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
         iconSize: "md" as IconSize,
         labelColor: "var(--secondary)",
         hideLabel: false,
+        disabled: true,
     }
 
     return (

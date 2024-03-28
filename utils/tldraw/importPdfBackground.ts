@@ -10,16 +10,17 @@ import 'tldraw/tldraw.css';
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).toString();
 
 
-interface ImportPdfBackgroundArgs {
+export interface ImportPdfBackgroundArgs {
     file: File,
     editor: Editor
-    capsuleId: string
+    //capsuleId: string
+    destination: { saveTo: 'supabase', capsuleId: string } | { saveTo: 'local' }
 }
 
 /**
  * Creates pages from a PDF file
  */
-export default async function importPdfBackground({ file, editor, capsuleId }: ImportPdfBackgroundArgs) {
+export default async function importPdfBackground({ file, editor, destination }: ImportPdfBackgroundArgs) {
 
     // Get individual pages
     const pages = await getPdfFilePages(file)
@@ -31,25 +32,38 @@ export default async function importPdfBackground({ file, editor, capsuleId }: I
 
     // Convert each bitmap to Blob and upload
     // TODO: optimize this
-    let urls: string[] = [];
+    let urls: string[] = []; // This will be the URLs to the supabase images, or the encoded strings for local images
     let assetNames: string[] = [];
-    for (let index = 0; index < images.length; index++) {
-        const blob = dataURLToBlob(images[index].bitmap);
-        logger.log('system:file', `Converted to Blob page ${index}`);
 
-        try {
-            // Take the name of the file and remove what's after the first '.' (the extension) if there is one.
-            // Truncate the name to 50 characters max.
-            const cleanName = file.name.split('.')[0].substring(0, 50);
-            const fileName = cleanName + '-' + index + '.png';
-            assetNames.push(fileName);
-            logger.log('system:file', `Uploading file ${fileName}`);
-            const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: capsuleId, folder: cleanName});
-            const url  = await getPublicUrl(path);
+    // If destination is supabase, upload the images to supabase and put the public URLs in the urls array
+    if (destination.saveTo === 'supabase') {
+        for (let index = 0; index < images.length; index++) {
+            const blob = dataURLToBlob(images[index].bitmap);
+            logger.log('system:file', `Converted to Blob page ${index}`);
+
+            try {
+                // Take the name of the file and remove what's after the first '.' (the extension) if there is one.
+                // Truncate the name to 50 characters max.
+                const cleanName = file.name.split('.')[0].substring(0, 50);
+                const fileName = cleanName + '-' + index + '.png';
+                assetNames.push(fileName);
+                logger.log('system:file', `Uploading file ${fileName} to supabase`);
+                const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: destination.capsuleId, folder: cleanName});
+                const url  = await getPublicUrl(path);
+                urls.push(url);
+                logger.log('supabase:storage', `Uploaded page ${index}`);
+            } catch (error) {
+                logger.error('supabase:storage', 'Error uploading file', (error as Error).message);
+            }
+        }
+    
+    // If destination is local, put the images encoded strings in the urls array
+    } else if (destination.saveTo === 'local') {
+        for (let index = 0; index < images.length; index++) {
+            const url = images[index].bitmap;
             urls.push(url);
-            logger.log('supabase:storage', `Uploaded page ${index}`);
-        } catch (error) {
-            logger.error('supabase:storage', 'Error uploading file', (error as Error).message);
+            assetNames.push(file.name.split('.')[0] + '-' + index + '.png');
+            logger.log('system:file', `Saved page ${index} locally`);
         }
     }
 

@@ -10,14 +10,23 @@ export default function Page() {
 
     const router = useRouter();
 
-    const containerStyle: React.CSSProperties = {
+    const mainStyle: React.CSSProperties = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         height: '100dvh',
-        width: '100dvw',
+        width: '100vw',
         backgroundColor: 'var(--secondary)',
+    };
+
+    const containerStyle: React.CSSProperties = {
+        width: '100%',
+        maxWidth: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: '1rem',
         padding: '1rem',
     };
@@ -28,7 +37,7 @@ export default function Page() {
         //maxWidth: '300px',
         padding: '2rem',
         borderRadius: '1rem',
-        boxShadow: 'var(--smallShadow)',
+        boxShadow: 'var(--small-shadow)',
     };
 
     const buttonRowStyle: React.CSSProperties = {
@@ -42,46 +51,48 @@ export default function Page() {
 
 
     return (
-        <div style={containerStyle}>
-            <h1>Se connecter</h1>
-            <div style={formContainerStyle}>
-                <Auth
-                    supabaseClient={createClient()}
-                    //redirectTo="http://localhost:3000/"
-                    providers={[]}
-                    socialLayout='horizontal'
-                    appearance={{
-                        theme: ThemeSupa,
-                        variables: {
-                            default: {
-                                colors: {
-                                    brand: 'var(--primary)',
-                                    brandAccent: 'var(--primary-border)',
+        <main style={mainStyle}>
+            <div style={containerStyle}>
+                <h1>Se connecter</h1>
+                <div style={formContainerStyle}>
+                    <Auth
+                        supabaseClient={createClient()}
+                        redirectTo="http://localhost:3000/"
+                        providers={[]}
+                        socialLayout='horizontal'
+                        appearance={{
+                            theme: ThemeSupa,
+                            variables: {
+                                default: {
+                                    colors: {
+                                        brand: 'var(--primary)',
+                                        brandAccent: 'var(--primary-border)',
+                                    },
                                 },
                             },
-                        },
-                    }}
-                />
+                        }}
+                    />
+                </div>
+                <div style={buttonRowStyle}>
+                    <PlainBtn
+                        color="secondary"
+                        size="m"
+                        onClick={() => {
+                            //setIsAnonymous(true)
+                            //setAuthDialogOpen(false)
+                        }}
+                        message="Essayer sans compte"
+                    />
+                    <PlainBtn
+                        color="primary"
+                        size="m"
+                        onClick={() => {
+                            router.push('/capsules')
+                        }}
+                        message="OK"
+                    />
+                </div>
             </div>
-            <div style={buttonRowStyle}>
-                <PlainBtn
-                    color="secondary"
-                    size="m"
-                    onClick={() => {
-                        //setIsAnonymous(true)
-                        //setAuthDialogOpen(false)
-                    }}
-                    message="Essayer sans compte"
-                />
-                <PlainBtn
-                    color="primary"
-                    size="m"
-                    onClick={() => {
-                        router.push('/capsules')
-                    }}
-                    message="OK"
-                />
-            </div>
-        </div>
+        </main>
     );
 }
