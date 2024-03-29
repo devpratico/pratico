@@ -64,7 +64,11 @@ export default function CanvasSL() {
                 // A local capsule with a default snapshot to load
                 case JSON.stringify({local: true, withloadDefault: true}): {
                     // Load the default snapshot
-                    const demoSnapshot = await fetchCapsuleSnapshot('1c5fff8e-64fb-4540-9e0e-10120e163b77')
+                    
+                    const isProduction = process.env.NODE_ENV === 'production';
+                    // TODO: Remove hard coded capsule id
+                    const demoCapsuleId = isProduction ? '40b2ea17-97b4-4cb6-b630-6db76b00a27d' : '1c5fff8e-64fb-4540-9e0e-10120e163b77';
+                    const demoSnapshot = await fetchCapsuleSnapshot(demoCapsuleId)
                     setInitialSnapshot(demoSnapshot)
                     logger.log('react:component', 'CanvasSL', 'Init a local capsule with a default snapshot to load')
                     break
