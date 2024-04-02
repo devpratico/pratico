@@ -1,28 +1,12 @@
-name: Comment Vercel Preview URL on PR
+name: Log Vercel Deployment URL
 
 on:
   deployment_status:
 
 jobs:
-  comment-preview-url:
+  log-url:
     runs-on: ubuntu-latest
     if: github.event.deployment_status.state == 'success'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Comment on PR
-        uses: actions/github-script@v5
-        env:
-          VERCEL_DEPLOYMENT_URL: ${{ github.event.deployment_status.target_url }}
-        with:
-          script: |
-            const issue_number = context.payload.deployment.pull_request_urls[0].split('/').pop();
-            const message = `Vercel preview deployment successful! View it here: ${process.env.VERCEL_DEPLOYMENT_URL}`;
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: message,
-            });
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log Vercel Deployment URL
+        run: echo "Vercel Deployment URL is ${{ github.event.deployment_status.target_url }}"
