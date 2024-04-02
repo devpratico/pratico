@@ -8,5 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.deployment_status.state == 'success'
     steps:
+      - name: Show content of github.event.deployment_status
+        run: echo "${{ toJson(github.event.deployment_status) }}"
+
       - name: Log Vercel Deployment URL
         run: echo "Vercel Deployment URL is ${{ github.event.deployment_status.target_url }}"
