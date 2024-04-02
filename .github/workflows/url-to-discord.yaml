@@ -27,7 +27,7 @@ jobs:
           echo "::set-output name=webhook_token::$WEBHOOK_TOKEN"
 
       - name: Send Discord Message
-        uses: appleboy/discord-action@v1
+        uses: appleboy/discord-action@master
         with:
           webhook_id: ${{ steps.extract_webhook.outputs.webhook_id }}
           webhook_token: ${{ steps.extract_webhook.outputs.webhook_token }}
