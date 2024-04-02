@@ -25,7 +25,9 @@ pnpm supabase login
 
 ## Lancer l'environnement de développement
 
-Lancer Docker Desktop, puis exécuter la commande suivante :
+L'environnement de développement Supabase se lance automatiquement lors du lancement du server de développement avec `pnpm dev`.
+
+Pour le lancer manuellement, lancer Docker Desktop, puis exécuter la commande suivante :
 ```bash
 pnpm supabase:start
 ```
