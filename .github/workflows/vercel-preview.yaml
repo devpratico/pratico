@@ -6,10 +6,15 @@ on:
 jobs:
   log-url:
     runs-on: ubuntu-latest
-    if: github.event.deployment_status.state == 'success'
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Preview – pratico'
     steps:
+
+      - name: Show event payload
+        run: echo "${{ toJson(github.event) }}"
+
       - name: Show content of github.event.deployment_status
         run: echo "${{ toJson(github.event.deployment_status) }}"
 
       - name: Log Vercel Deployment URL
         run: echo "Vercel Deployment URL is ${{ github.event.deployment_status.target_url }}"
+
