@@ -49,7 +49,7 @@ export default function LeftBar({ messages, ...props }: DashboardLeftBarProps) {
 
 
     return (
-        <div style={containerStyle}>
+        <nav style={containerStyle}>
             <Link href="/capsules" style={pathname === '/capsules' ? activeButtonStyle : buttonStyle}>
                 <Rocket size={24} style={{marginRight: '0.5rem'}}/>
                 {messages['capsules']}
@@ -76,6 +76,6 @@ export default function LeftBar({ messages, ...props }: DashboardLeftBarProps) {
                 <Cog size={24} style={{marginRight: '0.5rem'}}/>
                 {messages['settings']}
             </Link>
-        </div>
+        </nav>
     )
 }

@@ -2,7 +2,7 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import createClient from "@/supabase/clients/client";
-import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
+import PlainBtn from "@/app/_components/primitives/buttons/PlainBtn/PlainBtn";
 import { useRouter } from "next/navigation";
 
 

@@ -1,4 +1,4 @@
-import getStripeClient from '@/stripe/getStripeClient'
+import getStripeClient from '@/app/_stripe/getStripeClient'
 import { saveStripeId } from '@/supabase/services/user_profiles'
 
 

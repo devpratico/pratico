@@ -37,3 +37,14 @@ export async function onAuthStateChange(callback: (event: AuthChangeEvent, sessi
     const supabase =  await getSupabaseClient()
     return supabase.auth.onAuthStateChange(callback)
 }
+
+
+export async function signInAnonymously() {
+    const supabase =  await getSupabaseClient()
+    const { data, error } = await supabase.auth.signInAnonymously()
+    if (error) {
+        throw error
+    } else {
+        return data
+    }
+}

@@ -31,5 +31,5 @@ jobs:
         with:
           webhook_id: ${{ steps.extract_webhook.outputs.webhook_id }}
           webhook_token: ${{ steps.extract_webhook.outputs.webhook_token }}
-          message: "A deployment is available at ${{ github.event.deployment_status.target_url }}"
+          message: "Nouveau lien de prévisualisation : ${{ github.event.deployment_status.target_url }}"
 

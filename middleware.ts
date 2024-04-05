@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
-import config from './intl/intl.config'
+import config from './app/_intl/intl.config'
     
 /**
  * Prevent middleware from running on those specific paths:

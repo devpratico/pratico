@@ -1,57 +1,95 @@
-import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/supabase/services/auth';
 import { fetchProfile } from '@/supabase/services/user_profiles';
-import { SignOutBtn, ResetPasswordBtn, SubscribeBtn, ManageSubscriptionBtn } from './buttons';
-import { doesCustomerExist } from '@/stripe/services/customer';
+import { SignOutBtn } from './_buttons/SignOutBtn';
+import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
+import { SubscribeBtn } from './_buttons/SubscribeBtn';
+import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
+import { doesCustomerExist } from '@/app/_stripe/services/customer';
+import { Container, Section, Heading, DataList, Button, Separator, Flex, Badge } from '@radix-ui/themes';
 
 
 export default async function AccountPage() {
     const t = await getTranslations("settings")
-
-    let user
-    try {
-        user = await fetchUser()
-        if (!user) {
-            return <p>{t("error")}</p>
-        }
-    } catch (error) {
-        return <p>{(error as Error).message}</p>
-    }
     
+    const user = await fetchUser()
     const { data: profileData, error: profileError } = await fetchProfile(user.id)
     const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
-
     const customerExists = await doesCustomerExist(stripe_id)
 
+    const cardStyle: React.CSSProperties = {
+        backgroundColor: 'var(--background)',
+        padding: '2rem',
+        borderRadius: '1rem',
+    }
+
     return (
-        <div className={styles.container}>
-            <div className={styles.card}>
-                <h2 className={styles.title}>{t('information')}</h2>
+        <Container size="3">
 
-                <p>{t("nickname") + ": " + nickname}</p>
-                <p>{t("name") + ": " + name}</p>
-                <p>{t("surname") + ": " + surname}</p>
-                <p>{t("email") + ": " + user?.email}</p>
-                <p>{t("id") + ": " + user?.id}</p>
-                <div className={styles.buttons}>
-                    <ResetPasswordBtn message={t("change password")}/>
-                    <SignOutBtn message={t("sign out")}/>
-                </div>
+            <Container size="3">
 
-            </div>
+                <Section size='1'>
+                    <Flex direction='column' gap='4' style={cardStyle}>
+                        <Heading>{t('information')}</Heading>
 
-            <div className={styles.card}>
+                        <DataList.Root>
+                            <DataList.Item>
+                                <DataList.Label>{t("nickname")}</DataList.Label>
+                                <DataList.Value>{nickname}</DataList.Value>
+                            </DataList.Item>
+                            <DataList.Item>
+                                <DataList.Label>{t("name")}</DataList.Label>
+                                <DataList.Value>{name}</DataList.Value>
+                            </DataList.Item>
+                            <DataList.Item>
+                                <DataList.Label>{t("surname")}</DataList.Label>
+                                <DataList.Value>{surname}</DataList.Value>
+                            </DataList.Item>
+                            <DataList.Item>
+                                <DataList.Label>{t("email")}</DataList.Label>
+                                <DataList.Value>{user?.email}</DataList.Value>
+                            </DataList.Item>
+                            <DataList.Item>
+                                <DataList.Label>{t("id")}</DataList.Label>
+                                <DataList.Value>{user?.id}</DataList.Value>
+                            </DataList.Item>
+                        </DataList.Root>
 
-            <h2 className={styles.title}>{t('subscription')}</h2>
-            <p>{"Customer exists: " + customerExists}</p>
-            <p>{t("stripe id") +": " + stripe_id}</p>
-            <div className={styles.buttons}>
-                <SubscribeBtn message={t("subscribe")}/>
-                <ManageSubscriptionBtn message={t("manage subscription")}/>
-            </div>
-            </div>
-            
-        </div>
+                        <Separator size='4'/>
+
+                        <Flex gap='4'>
+                            <ResetPasswordBtn message={t("change password")}/>
+                            <SignOutBtn message={t("sign out")}/>
+                        </Flex>
+                    </Flex>
+                </Section>
+
+                <Section size='1'>
+                    <Flex direction='column' gap='4' style={cardStyle}>
+                        <Heading>{t('subscription')}</Heading>
+
+                        <DataList.Root>
+                            <DataList.Item>
+                                <DataList.Label>{t("customer exists")}</DataList.Label>
+                                <DataList.Value>{customerExists ? <Badge color='green' radius='full'>yes</Badge> : <Badge color='red' radius='full'>no</Badge>}</DataList.Value>
+                            </DataList.Item>
+                            <DataList.Item>
+                                <DataList.Label>{t("stripe id")}</DataList.Label>
+                                <DataList.Value>{stripe_id}</DataList.Value>
+                            </DataList.Item>
+                        </DataList.Root>
+
+                        <Separator size='4'/>
+
+                        <Flex gap='4'>
+                            <SubscribeBtn message={t("subscribe")}/>
+                            <ManageSubscriptionBtn message={t("manage subscription")}/>
+                        </Flex>
+                    </Flex>
+                </Section>
+
+            </Container>
+
+        </Container>
     )
 }

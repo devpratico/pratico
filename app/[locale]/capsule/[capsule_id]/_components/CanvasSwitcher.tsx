@@ -1,7 +1,7 @@
 'use client'
-import CanvasRT from "@/components/desk/CanvasRT/CanvasRT";
-import CanvasSL from "@/components/desk/CanvasSL/CanvasSL";
-import { useRoom } from "@/hooks/useRoom";
+import CanvasRT from "@/app/_components/desk/CanvasRT/CanvasRT";
+import CanvasSL from "@/app/_components/desk/CanvasSL/CanvasSL";
+import { useRoom } from "@/app/_hooks/useRoom";
 import { useMemo } from "react";
 
 // TODO: Maybe we'll fuse CanvasRT, CanvasSL and Canvas ST

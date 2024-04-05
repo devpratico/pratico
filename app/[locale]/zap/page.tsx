@@ -1,5 +1,5 @@
 'use client'
-import ZapetteLayout from "@/components/layouts/ZapetteLayout/ZapetteLayout"
+import ZapetteLayout from "@/app/_components/layouts/ZapetteLayout/ZapetteLayout"
 import { 
     ArrowRightLeft,
     Gamepad2,

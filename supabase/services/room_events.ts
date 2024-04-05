@@ -1,6 +1,6 @@
 import getSupabaseClient from "../clients/getSupabaseClient";
 import { TablesInsert } from "../types/database.types";
-import logger from "@/utils/logger"
+import logger from "@/app/_utils/logger"
 
 
 /**

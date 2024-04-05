@@ -1,4 +1,4 @@
-import Avatar from "@/components/primitives/Avatar/Avatar";;
+import Avatar from "@/app/_components/primitives/Avatar/Avatar";;
 import { fetchProfile } from '@/supabase/services/user_profiles';
 import { fetchUser } from '@/supabase/services/auth';
 import Link from 'next/link';

@@ -18,6 +18,10 @@ button {
 }
 */
 
+main {
+    background-color: var(--secondary);
+}
+
 h3 {
   margin-bottom: 0.5rem;
 }

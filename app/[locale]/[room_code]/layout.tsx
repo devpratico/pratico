@@ -1,10 +1,10 @@
 import { Room } from "@/supabase/services/rooms";
 import { fetchRoomByCode } from "@/supabase/services/rooms";
 import { SupabaseError } from "@/supabase/types/errors";
-import { TLEditorProvider } from '@/hooks/useTLEditor';
-import { NavProvider } from '@/hooks/useNav';
-import { RoomProvider } from '@/hooks/useRoom';
-import logger from "@/utils/logger";
+import { TLEditorProvider } from '@/app/_hooks/useTLEditor';
+import { NavProvider } from '@/app/_hooks/useNav';
+import { RoomProvider } from '@/app/_hooks/useRoom';
+import logger from "@/app/_utils/logger";
 
 
 interface LayoutProps {
