@@ -2,7 +2,7 @@
 # Don't forget to make the script executable with chmod +x ./scripts/start.sh
 
 # Start Supabase in the background
-./scripts/start-docker.sh && supabase start
+./scripts/start-docker.sh && pnpm supabase start
 
 echo
 
@@ -21,7 +21,7 @@ run_services() {
 cleanup() {
     echo
     echo "Stopping Supabase..."
-    supabase stop
+    pnpm supabase stop
     ./scripts/stop-docker.sh
 }
 

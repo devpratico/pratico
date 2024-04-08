@@ -15,7 +15,7 @@ fi
 
 # Forward Stripe events to the local server
 echo "Forwarding Stripe events to localhost:3000/api/stripe"
-stripe listen --forward-to http://localhost:3000/api/stripe --forward-connect-to http://localhost:3000/api/stripe
+pnpm stripe listen --forward-to http://localhost:3000/api/stripe --forward-connect-to http://localhost:3000/api/stripe
 
 
 echo

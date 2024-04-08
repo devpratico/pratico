@@ -3,7 +3,7 @@
 
 # Check if Docker is running
 if ! docker info >/dev/null 2>&1; then
-  echo "🐋Starting Docker..."
+  echo "Starting Docker..."
   open -a Docker
   # Wait for Docker to start
   while ! docker info >/dev/null 2>&1; do

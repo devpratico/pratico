@@ -26,7 +26,7 @@ run_services() {
 cleanup() {
     echo
     echo "Stopping Supabase..."
-    supabase stop
+    pnpm supabase stop
     ./app/_scripts/stop-docker.sh
 }
 
