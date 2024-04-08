@@ -40,12 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     setUser(session.user);
                     setIsUserLoading(false);
                 } else {
+                    /*
                     try {
                         signInAnonymously()
                         logger.log('supabase:auth', 'Signed in anonymously', session?.user.id);
                     } catch (error) {
                         logger.error('supabase:auth', 'Error signing in anonymously', (error as Error).message);
-                    }
+                    }*/
                 }
 
             })

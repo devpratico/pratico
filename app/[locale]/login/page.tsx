@@ -6,7 +6,7 @@ import PlainBtn from "@/app/_components/primitives/buttons/PlainBtn/PlainBtn";
 import { useRouter } from "next/navigation";
 
 
-export default function Page() {
+export default function Login() {
 
     const router = useRouter();
 
