@@ -58,7 +58,7 @@ export default async function Login() {
                 {/* Tablet and desktop view */}
                 <Box asChild width='400px' display={{initial: 'none', sm:'block'}} >
                     <Card size='5'>
-                        <Heading as='h1' align='center' mb='4' >{t('sign_in.button_label')}</Heading>
+                        <Heading as='h1' align='center' mb='4' >{t('sign_up.button_label')}</Heading>
                         <Separator orientation='horizontal' size='4'/>
                         <AuthUi messages={messages} />
                     </Card>
@@ -68,7 +68,7 @@ export default async function Login() {
                 {/* Mobile view */}
                 <Box p='5'  width='100%' height='100dvh' display={{initial: 'block', sm:'none'}} style={{backgroundColor:'var(--background)'}}>
                     <Flex direction='column' height='100%' justify='between' >
-                        <Heading as='h1' align='center' mb='4' >{t('sign_in.button_label')}</Heading>
+                        <Heading as='h1' align='center' mb='4' >{t('sign_up.button_label')}</Heading>
                         <Box width='100%' height='40%'   style={{position: 'relative'}}>
                             <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
                         </Box>

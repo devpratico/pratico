@@ -26,6 +26,12 @@ export default function AuthUi({ messages }: { messages: typeof en.Login }) {
                         },
                     },
                 },
+                style: {
+                    input: {
+                        fontSize: '1rem',
+                        backgroundColor: 'var(--background)',
+                    },
+                }
             }}
         />
     )
