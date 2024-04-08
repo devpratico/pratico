@@ -2,7 +2,7 @@
 import AuthUi from "./_components/AuthUi"
 import { getTranslations } from 'next-intl/server';
 import en from '@/app/_intl/messages/en.json';
-import { Card, Heading, Separator, Box, Flex } from "@radix-ui/themes";
+import { Card, Heading, Box, Flex } from "@radix-ui/themes";
 import Image from "next/image";
 import loginImage from '@/public/illustrations/login.svg';
 
@@ -14,6 +14,7 @@ export default async function Login() {
     const t = await getTranslations("Login");
 
     const messages: typeof en.Login = {
+        title: t("title"),
         sign_up: {
             email_label: t("sign_up.email_label"),
             password_label: t("sign_up.password_label"),
@@ -58,8 +59,8 @@ export default async function Login() {
                 {/* Tablet and desktop view */}
                 <Box asChild width='400px' display={{initial: 'none', sm:'block'}} >
                     <Card size='5'>
-                        <Heading as='h1' align='center' mb='4' >{t('sign_up.button_label')}</Heading>
-                        <Separator orientation='horizontal' size='4'/>
+                        <Heading as='h1' align='center' mb='4' >{t('title')}</Heading>
+                        {/*<Separator orientation='horizontal' size='4'/>*/}
                         <AuthUi messages={messages} />
                     </Card>
                 </Box>
@@ -68,7 +69,7 @@ export default async function Login() {
                 {/* Mobile view */}
                 <Box p='5'  width='100%' height='100dvh' display={{initial: 'block', sm:'none'}} style={{backgroundColor:'var(--background)'}}>
                     <Flex direction='column' height='100%' justify='between' >
-                        <Heading as='h1' align='center' mb='4' >{t('sign_up.button_label')}</Heading>
+                        <Heading as='h1' align='center' mb='4' >{t('title')}</Heading>
                         <Box width='100%' height='40%'   style={{position: 'relative'}}>
                             <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
                         </Box>

@@ -12,7 +12,7 @@ export default function AuthUi({ messages }: { messages: typeof en.Login }) {
             supabaseClient={createClient()}
             view= 'sign_up'
             redirectTo="http://localhost:3000/fr/capsules"
-            providers={[]}
+            providers={['apple', 'google']}
             socialLayout='horizontal'
             localization={{variables: messages}}
             showLinks={true}
@@ -28,8 +28,20 @@ export default function AuthUi({ messages }: { messages: typeof en.Login }) {
                 },
                 style: {
                     input: {
+                        fontFamily: 'inherit',
                         fontSize: '1rem',
                         backgroundColor: 'var(--background)',
+                    },
+                    button: {
+                        fontFamily: 'inherit',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                    },
+                    label: {
+                        fontFamily: 'inherit',
+                    },
+                    message: {
+                        fontFamily: 'inherit',
                     },
                 }
             }}

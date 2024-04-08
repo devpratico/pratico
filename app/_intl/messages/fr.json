@@ -1,5 +1,6 @@
 {
     "Login": {
+        "title": "Connexion",
         "sign_up": {
             "email_label": "Adresse email",
             "password_label": "Mot de passe",
