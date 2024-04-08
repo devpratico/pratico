@@ -22,31 +22,13 @@ export default async function DashboardLayout({children }: RootLayoutProps) {
         'settings': t('settings'),
     }
 
-    /*
-    return (
-        <div style={containerStyle}>
-            <MenuBar style={{gridArea: 'menuBar'}}/>
-            <DashboardLeftBar messages={leftbarMessages} style={{gridArea: 'leftBar'}}/>
-            <main>
-                {children}
-            </main>
-        </div>
-    )*/
-
-    /*
-    <DashboardLeftBar messages={leftbarMessages}/>
-                <ScrollArea>
-                    {children}
-                </ScrollArea>
-                */
-
     return (
         <Grid rows='auto 1fr' style={{height: '100dvh'}}>
             <MenuBar/>
 
-            <Grid columns='auto 1fr' height='100%'>
+            <Grid columns='auto 1fr' maxHeight='100%' overflow='hidden'>
                 <DashboardLeftBar messages={leftbarMessages}/>
-                <ScrollArea type="always" scrollbars="vertical" style={{ height: '100%' }}>
+                <ScrollArea scrollbars="vertical" type='auto' style={{backgroundColor: 'var(--secondary)'}}>
                     {children}
                 </ScrollArea>
             </Grid>

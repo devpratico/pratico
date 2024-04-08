@@ -2,7 +2,7 @@
 # Don't forget to make the script executable with chmod +x ./scripts/dev.sh
 
 # Start Supabase in the background
-./scripts/start-docker.sh && supabase start
+./app/_scripts/start-docker.sh && supabase start
 
 echo
 
@@ -17,7 +17,7 @@ run_services() {
     concurrently \
         --prefix "{name}" \
         -n "Stripe," \
-        "./app/scripts/forward-stripe-events.sh" \
+        "./app/_scripts/forward-stripe-events.sh" \
         "next dev"
 }
 
@@ -27,7 +27,7 @@ cleanup() {
     echo
     echo "Stopping Supabase..."
     supabase stop
-    ./scripts/stop-docker.sh
+    ./app/_scripts/stop-docker.sh
 }
 
 # Trap script exit signal
