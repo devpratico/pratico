@@ -9,7 +9,7 @@ export function SignOutBtn({message}: {message: string}) {
 
     const handleSignOut = async () => {
         await signOut()
-        router.push('/login')
+        //router.push('/login')
         router.refresh()
     }
 

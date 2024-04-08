@@ -1,7 +1,7 @@
 import Avatar from "@/app/_components/primitives/Avatar/Avatar";;
 import { fetchProfile } from '@/supabase/services/user_profiles';
 import { fetchUser } from '@/supabase/services/auth';
-import Link from 'next/link';
+import { Link } from "@/app/_intl/intlNavigation";
 import LogInBtn from './LogInBtn';
 import { getTranslations } from 'next-intl/server';
 

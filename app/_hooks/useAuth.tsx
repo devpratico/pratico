@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, fetchUser, onAuthStateChange, signOut, signInAnonymously } from '@/supabase/services/auth';
 import { Subscription } from '@supabase/supabase-js';
-//import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import logger from '@/app/_utils/logger';
 
 interface AuthContextProps {
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isUserLoading, setIsUserLoading] = useState(true);
-    //const router = useRouter();
+    const router = useRouter();
 
     // This useEffect runs once when the component mounts
     // It subscribes to changes in the auth state to update state accordingly
@@ -30,15 +30,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // Get the _onAuthChange method
             const _onAuthChange = await onAuthStateChange((event, session) => {
                 logger.log('supabase:auth', 'event', event);
-                //setUser(session?.user ?? null);
-                //setIsUserLoading(false);
-                // TODO: SHOULD WE REFRESH ?
-                //router.refresh();
-
                 if (session?.user) {
                     logger.log('supabase:auth', 'Setting user', session.user.email, session.user.id);
                     setUser(session.user);
                     setIsUserLoading(false);
+                    router.refresh();
                 } else {
                     /*
                     try {
@@ -59,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return () => {
             if (onAuthChange) onAuthChange.unsubscribe();
         };
-    }, []);
+    }, [router]);
 
     return (
         <AuthContext.Provider value={{ user, signOut, isUserLoading}}>

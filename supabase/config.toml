@@ -48,7 +48,8 @@ enabled = true
 # Port to use for Supabase Studio.
 port = 54323
 # External URL of the API server that frontend connects to.
-api_url = "http://127.0.0.1"
+#api_url = "http://127.0.0.1"
+api_url = "http://localhost"
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
 # are monitored, and you can view the emails that would have been sent from the web interface.
@@ -72,8 +73,7 @@ enabled = true
 #site_url = "http://127.0.0.1:3000"
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-#additional_redirect_urls = ["https://127.0.0.1:3000", "http://localhost:3000/"]
-additional_redirect_urls = ["https://localhost:3000", "http://localhost:3000/**"]
+additional_redirect_urls = ["http://localhost:3000", "http://localhost:3000/**", "http://localhost:3000/"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.
@@ -86,6 +86,7 @@ enable_signup = true
 # Allow/disallow testing manual linking of accounts
 enable_manual_linking = false
 
+
 [auth.email]
 # Allow/disallow new user signups via email to your project.
 enable_signup = true
@@ -93,8 +94,6 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
-
-
 enable_confirmations = false
 
 # Uncomment to customize email template
@@ -129,13 +128,6 @@ message_service_sid = ""
 auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
 
 
-
-
-
-
-
-
-
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `slack`, `spotify`, `workos`, `zoom`.
@@ -155,8 +147,6 @@ url = ""
 enabled = true
 client_id = "anonymous_users_client_id"
 secret = "anonymous_users_secret"
-
-
 
 
 [analytics]
