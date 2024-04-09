@@ -1,8 +1,12 @@
 #!/bin/bash
 # Don't forget to make the script executable with chmod +x ./scripts/dev.sh
 
+
+# Load environment variables from .env.local
+source ./app/_scripts/load-env.sh
+
 # Start Supabase in the background
-./app/_scripts/start-docker.sh && supabase start
+./app/_scripts/start-docker.sh && pnpm supabase start --debug
 
 echo
 
@@ -16,13 +20,13 @@ echo
 run_services() {
     concurrently \
         --prefix "{name}" \
-        -n "Stripe," \
+        -n "[stripe]," \
         "./app/_scripts/forward-stripe-events.sh" \
         "next dev"
 }
 
 # Function to run on script exit
-# `supabase stop --no-backup` stops Supabase without creating a backup
+# `pnpm supabase stop --no-backup` stops Supabase without creating a backup
 cleanup() {
     echo
     echo "Stopping Supabase..."

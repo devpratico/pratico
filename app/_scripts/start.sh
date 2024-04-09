@@ -1,8 +1,12 @@
 #!/bin/bash
-# Don't forget to make the script executable with chmod +x ./scripts/start.sh
+# Don't forget to make the script executable with chmod +x ./app/_scripts/start.sh
+
+
+# Load environment variables from .env.local
+./app/_scripts/load-env.sh
 
 # Start Supabase in the background
-./scripts/start-docker.sh && pnpm supabase start
+./app/_scripts/start-docker.sh && pnpm supabase start
 
 echo
 
@@ -22,7 +26,7 @@ cleanup() {
     echo
     echo "Stopping Supabase..."
     pnpm supabase stop
-    ./scripts/stop-docker.sh
+    ./app/_scripts/stop-docker.sh
 }
 
 # Trap script exit signal

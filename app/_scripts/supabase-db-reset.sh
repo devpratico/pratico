@@ -1,7 +1,10 @@
 #!/bin/bash
-# Don't forget to make the script executable with chmod +x ./scripts/supabase-db-reset.sh
+# Don't forget to make the script executable with chmod +x ./app/_scripts/supabase-db-reset.sh
 # this script is used to reset the local supabase database and apply the migration files and the seed file.
 
+
+# Load environment variables from .env.local
+./app/_scripts/load-env.sh
 
 # Reset the database
 echo "🔄 Resetting the database..."
