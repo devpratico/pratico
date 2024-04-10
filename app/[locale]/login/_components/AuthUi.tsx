@@ -11,7 +11,7 @@ export default function AuthUi({ messages }: { messages: typeof en.Login }) {
         <Auth
             supabaseClient={createClient()}
             view= 'sign_up'
-            redirectTo="http://localhost:3000/api/auth/callback"
+            redirectTo={ window.location.origin + '/api/auth/callback' }
             providers={['google']}
             queryParams={{
                 access_type: 'offline',
