@@ -3,15 +3,22 @@ import { Auth } from "@supabase/auth-ui-react";
 import createClient from "@/supabase/clients/client";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import en from '@/app/_intl/messages/en.json'
+import { useState, useEffect } from "react";
 
 
 export default function AuthUi({ messages }: { messages: typeof en.Login }) {
+
+    const [basePath, setBasePath] = useState<string>('')
+
+    useEffect(() => {
+        setBasePath(window.location.origin)
+    }, [])
 
     return (
         <Auth
             supabaseClient={createClient()}
             view= 'sign_up'
-            redirectTo={ window.location.origin + '/api/auth/callback' }
+            redirectTo={ basePath + '/api/auth/callback' }
             providers={['google']}
             queryParams={{
                 access_type: 'offline',

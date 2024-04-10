@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     logger.log('supabase:auth', 'Setting user', session.user.email, session.user.id);
                     setUser(session.user);
                     setIsUserLoading(false);
-                    //router.refresh();
+                    router.refresh();
                     //router.push('/capsules');
                 } else {
                     /*
