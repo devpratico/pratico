@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     setUser(session.user);
                     setIsUserLoading(false);
                     //router.refresh();
-                    router.push('/capsules');
+                    //router.push('/capsules');
                 } else {
                     /*
                     try {

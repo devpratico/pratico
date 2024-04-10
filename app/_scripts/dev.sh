@@ -6,7 +6,7 @@
 source ./app/_scripts/load-env.sh
 
 # Start Supabase in the background
-./app/_scripts/start-docker.sh && pnpm supabase start --debug
+./app/_scripts/start-docker.sh && pnpm supabase start
 
 echo
 
@@ -30,7 +30,7 @@ run_services() {
 cleanup() {
     echo
     echo "Stopping Supabase..."
-    pnpm supabase stop
+    pnpm supabase stop --no-backup
     ./app/_scripts/stop-docker.sh
 }
 

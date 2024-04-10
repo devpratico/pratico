@@ -73,9 +73,9 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
         if (error) throw error
         if (!user) throw new Error('Supabase returned null')
     } catch (error) {
-        console.warn('supabase:auth', '(Middleware) No user:', (error as Error).message)
+        console.warn('supabase:auth', 'Middleware - no user', `(${(error as Error).message})`)
         const url = request.nextUrl.clone()
-        url.pathname = 'fr/login'
+        url.pathname = 'login'
         decision = NextResponse.redirect(url)
     }
     

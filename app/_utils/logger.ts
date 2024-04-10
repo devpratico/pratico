@@ -9,12 +9,21 @@ const logCategories = {
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 
-const styles: { [key in keyof typeof logCategories]: string } = {
+const browserConsoleStyles: { [key in keyof typeof logCategories]: string } = {
     react:    'background-color: dodgerblue;'    + sharedStyles,
     supabase: 'background-color: forestgreen;'   + sharedStyles,
     tldraw:   'background-color: darkslategray;' + sharedStyles,
     system:   'background-color: darkorange;'    + sharedStyles,
 };
+
+const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
+        react:    '\x1b[34m', // Blue
+        supabase: '\x1b[32m', // Green
+        tldraw:   '\x1b[36m', // Cyan
+        system:   '\x1b[33m', // Yellow
+};
+
+
 
 type ConsoleType = 'log' | 'debug' | 'warn' | 'error';
 type ConsoleFunction = (message?: any, ...optionalParams: any[]) => void;
@@ -58,8 +67,9 @@ class Logger {
         this.options = { ...this.options, ...options };
     }
 
-
-    
+    private isBrowser(): boolean {
+        return typeof window !== 'undefined' && typeof window.document !== 'undefined';
+    }
     
     private print(category: ChildCategory, type: ConsoleType, message: string, ...optionalParams: any[]): void {
         
@@ -72,8 +82,14 @@ class Logger {
             this.options.enable &&
             isCategoryEnabled
         ) {
-            const style = styles[category.split(':')[0] as ParentCategory];
-            consoleFunctions[type](`%c${category}%c ${message}`, style, '', ...optionalParams);
+            if (this.isBrowser()) {
+                const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
+                consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
+            } else {
+                const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
+                consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
+
+            }
         }
     }
 

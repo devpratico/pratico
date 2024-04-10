@@ -54,10 +54,25 @@ Le déploiement en production se fait automatiquement avec GitHub Actions. Là e
 
 ## Authentification
 
+### Email
+
+#### Tester en local
+
 Pour tester la création de compte, il suffit de s'inscrire en renseignant n'importe quel email factice et un mot de passe. L'environnement Supabase en local est configuré pour ne pas envoyer de mail de confirmation. L'authentification se fait donc immédiatement sans vérification de l'adresse mail.
 
 Si une fonctionnalité d'envoi de mail est activée manuellement (ce n'est pas le cas pour l'instant), l'environnement local Supabase est configuré pour envoyer les mails sur le serveur SMTP de développement. On peut donc utiliser une adresse email factice. L'outil `Inbucket` est utilisé pour visualiser les mails envoyés. L'adresse url de'`Inbucket` est affichée dans la console lors du lancement de l'environnement de développement.
 
 
-# Utilisations
+### Google
+
+#### Configuration
+
+Pour se connecter avec Google, des clés OAuth ont été générées dans la [console Google](https://console.cloud.google.com/apis/credentials?project=pratico-refonte-prod) sous le nom 'Pratico V2'.
+Les urls d'origine et de redirection y ont été renseignées.
+Des clés ont été générées et sont enregistrée dans les variables d'environnement dans `.env.local` et sur Vercel.
+
+#### Tester en local
+
+Pour le développement en local, l'URL de redirection est renseigné dans le fichier de configuration de l'instance de Supabase `config.toml` dans le dossier `.supabase`.
+
 

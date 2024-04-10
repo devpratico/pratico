@@ -11,8 +11,12 @@ export default function AuthUi({ messages }: { messages: typeof en.Login }) {
         <Auth
             supabaseClient={createClient()}
             view= 'sign_up'
-            redirectTo="http://localhost:3000/fr/capsules"
-            providers={['apple', 'google']}
+            redirectTo="http://localhost:3000/api/auth/callback"
+            providers={['google']}
+            queryParams={{
+                access_type: 'offline',
+                prompt: 'consent',
+            }}
             socialLayout='horizontal'
             localization={{variables: messages}}
             showLinks={true}

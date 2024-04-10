@@ -150,7 +150,7 @@ client_id = "707959631375-1oig0oiemv0ve0h4te3umariu1me1891.apps.googleuserconten
 # instead:
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 # Overrides the default auth redirectUrl.
-redirect_uri = ""
+redirect_uri = "http://localhost:54321/auth/v1/callback"
 
 
 
