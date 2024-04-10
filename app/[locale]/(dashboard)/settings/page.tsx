@@ -6,7 +6,7 @@ import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
 import { doesCustomerExist } from '@/app/_stripe/services/customer';
-import { Container, Section, Heading, DataList, Button, Separator, Flex, Badge } from '@radix-ui/themes';
+import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code } from '@radix-ui/themes';
 
 
 export default async function AccountPage() {
@@ -51,7 +51,7 @@ export default async function AccountPage() {
                             </DataList.Item>
                             <DataList.Item>
                                 <DataList.Label>{t("id")}</DataList.Label>
-                                <DataList.Value>{user?.id}</DataList.Value>
+                                <DataList.Value><Code>{user?.id}</Code></DataList.Value>
                             </DataList.Item>
                         </DataList.Root>
 
@@ -75,7 +75,7 @@ export default async function AccountPage() {
                             </DataList.Item>
                             <DataList.Item>
                                 <DataList.Label>{t("stripe id")}</DataList.Label>
-                                <DataList.Value>{stripe_id}</DataList.Value>
+                                <DataList.Value><Code>{stripe_id}</Code></DataList.Value>
                             </DataList.Item>
                         </DataList.Root>
 
@@ -85,6 +85,20 @@ export default async function AccountPage() {
                             <SubscribeBtn message={t("subscribe")}/>
                             <ManageSubscriptionBtn message={t("manage subscription")}/>
                         </Flex>
+                    </Flex>
+                </Section>
+
+                <Section size='1'>
+                    <Flex direction='column' gap='4' style={cardStyle}>
+                        <Heading>{'Software'}</Heading>
+
+                        <DataList.Root>
+                            <DataList.Item>
+                                <DataList.Label>{"Supabase URL"}</DataList.Label>
+                                <DataList.Value>{process.env.NEXT_PUBLIC_SUPABASE_URL}</DataList.Value>
+                            </DataList.Item>
+                        </DataList.Root>
+
                     </Flex>
                 </Section>
 
