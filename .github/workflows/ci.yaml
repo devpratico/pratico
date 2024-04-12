@@ -7,13 +7,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v3
 
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+
+      - name: Get Google Secret
+        env: 
+            SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET }}
+        run: echo "Google Secret is set"
 
       - name: Start Supabase local development setup
         run: supabase start
