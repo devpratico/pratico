@@ -3,11 +3,12 @@ import '@radix-ui/themes/styles.css';
 import '../colors.css'
 import '../globals.css'
 //import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
-import { UiProvider } from '@/app/_hooks/useUi'
-import { AuthProvider } from '@/app/_hooks/useAuth'
+import { UiProvider } from '@/app/[locale]/_hooks/useUi'
+import { AuthProvider } from '@/app/[locale]/_hooks/useAuth'
 import { getTranslations } from 'next-intl/server'
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
+import AdminInfo from './_components/AdminInfo';
 
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
                     <body className={luciole.className}>
                         <Theme accentColor="violet">
                             {children}
+                            <AdminInfo />
                         </Theme>
                     </body>
 

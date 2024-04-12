@@ -1,9 +1,9 @@
 import { Room } from "@/supabase/services/rooms";
 import { fetchRoomsByCapsuleId } from "@/supabase/services/rooms";
 import { SupabaseError } from "@/supabase/types/errors";
-import { TLEditorProvider } from '@/app/_hooks/useTLEditor';
-import { NavProvider } from '@/app/_hooks/useNav';
-import { RoomProvider } from '@/app/_hooks/useRoom';
+import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
+import { NavProvider } from '@/app/[locale]/_hooks/useNav';
+import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import logger from "@/app/_utils/logger";
 
 

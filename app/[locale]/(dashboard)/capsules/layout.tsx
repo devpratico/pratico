@@ -1,6 +1,6 @@
 import { fetchCapsulesData, Capsule } from '@/supabase/services/capsules';
 import { fetchUserId } from '@/supabase/services/auth';
-import { CapsulesProvider } from '@/app/_hooks/useCapsules';
+import { CapsulesProvider } from '@/app/[locale]/_hooks/useCapsules';
 import logger from '@/app/_utils/logger';
 
 

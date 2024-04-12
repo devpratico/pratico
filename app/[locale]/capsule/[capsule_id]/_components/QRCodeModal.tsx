@@ -1,8 +1,8 @@
 'use client'
-import Popover from "@/app/_components/primitives/Popover/Popover"
+import Popover from "@/app/[locale]/_components/primitives/Popover/Popover"
 import Image from "next/image";
 import QRCodeImage from "@/public/images/QRCode.png";
-import PlainBtn from "@/app/_components/primitives/buttons/PlainBtn/PlainBtn";
+import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn";
 import { Clipboard } from "lucide-react";
 
 

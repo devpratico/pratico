@@ -4,6 +4,7 @@ import Link from "next/link"
 // Or use a src directory.
 
 export default function HomePage() {
+    // TODO: Redirect vers /capsules
     return (
         <div style={{ backgroundColor: 'var(--secondary)', display:'flex', flexDirection:'column', alignItems:'center', height: '100dvh', justifyContent:'center'}}>
             <h1>👋</h1>

@@ -1,11 +1,11 @@
 import CanvasSwitcher from './_components/CanvasSwitcher';
-import DeskLayout from '@/app/_components/layouts/DeskLayout/DeskLayout';
+import DeskLayout from '@/app/[locale]/_components/layouts/DeskLayout/DeskLayout';
 import { getTranslations } from 'next-intl/server';
-import DeskMenuBar from '@/app/_components/menu-bars/DeskMenuBar/DeskMenuBar';
-import TLToolbar from '@/app/_components/desk/custom-ui/TLToolbar/TLToolbar';
-import DeskMenus from '@/app/_components/menus/DeskMenus/DeskMenus';
-import Carousel from '@/app/_components/desk/carousel/Carousel/Carousel';
-import Controls from '@/app/_components/desk/controls/Controls/Controls';
+import DeskMenuBar from '@/app/[locale]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
+import TLToolbar from '@/app/[locale]/_components/desk/custom-ui/TLToolbar/TLToolbar';
+import DeskMenus from '@/app/[locale]/_components/menus/DeskMenus/DeskMenus';
+import Carousel from '@/app/[locale]/_components/desk/carousel/Carousel/Carousel';
+import Controls from '@/app/[locale]/_components/desk/controls/Controls/Controls';
 
 
 export default async function CapsulePage() {

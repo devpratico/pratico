@@ -2,8 +2,8 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from '../DocumentMiniature/DocumentMiniature';
 import Link from 'next/link';
-import Thumbnail from '@/app/_components/Thumbnail/Thumbnail';
-import { useCapsules } from '@/app/_hooks/useCapsules';
+import Thumbnail from '@/app/[locale]/_components/Thumbnail/Thumbnail';
+import { useCapsules } from '@/app/[locale]/_hooks/useCapsules';
 import { useState, useEffect } from 'react';
 import type { Capsule } from '@/supabase/services/capsules';
 import logger from '@/app/_utils/logger';
