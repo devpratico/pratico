@@ -44,7 +44,13 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
         <Flex direction='column' gap='2'>
             <Tabs.Root defaultValue='signup'>
 
-                <Tabs.List justify='center'>
+                <Tabs.List
+                    justify='center'
+                    onChange={() => {
+                        setServerError(null)
+                        setIsLoading(false)
+                    }}
+                >
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
                     <Tabs.Trigger value='signin'>{messages['sign in']}</Tabs.Trigger>
                 </Tabs.List>
