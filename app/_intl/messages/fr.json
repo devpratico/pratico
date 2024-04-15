@@ -8,7 +8,9 @@
         "confirm password": "Confirmer le mot de passe",
         "forgot password": "Mot de passe oublié",
         "sign in with Google": "Se connecter avec Google",
-        "sign in with Apple": "Se connecter avec Apple"
+        "sign in with Apple": "Se connecter avec Apple",
+        "passwords do not match": "Les mots de passe ne correspondent pas",
+        "try without an account": "Essayer sans compte"
     },
 
     "dashboard": {

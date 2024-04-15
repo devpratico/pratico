@@ -22,6 +22,8 @@ export default async function Login() {
         "forgot password": t('forgot password'),
         "sign in with Google": t('sign in with Google'),
         "sign in with Apple": t('sign in with Apple'),
+        "passwords do not match": t('passwords do not match'),
+        "try without an account": t('try without an account'),
     }
 
     return (

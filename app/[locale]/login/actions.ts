@@ -45,3 +45,19 @@ export async function signup({ email, password }: Credentials) {
 
 
 
+export async function signInAnonymously() {
+    const supabase = createClient()
+
+
+    try {
+        const { data, error } = await supabase.auth.signInAnonymously({})
+        if (error) {
+            throw error
+        }
+    } catch (error) {
+        throw error
+    }
+
+    revalidatePath('/', 'layout')
+
+}
