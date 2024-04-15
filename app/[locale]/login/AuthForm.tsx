@@ -76,8 +76,8 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                             } catch (error) {
                                 logger.error('supabase:auth', 'Error signing up with email', (error as Error).message);
                                 setServerError((error as Error).message);
+                                setIsLoading(false);
                             }
-                            setIsLoading(false);
                         }}
                     >
 
@@ -138,8 +138,8 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                             } catch (error) {
                                 logger.error('supabase:auth', 'Error signing in with email', (error as Error).message);
                                 setServerError((error as Error).message);
+                                setIsLoading(false);
                             }
-                            setIsLoading(false);
                         }}
                     >
 
