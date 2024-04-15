@@ -1,41 +1,14 @@
 {
-    "Login": {
-        "title": "Connexion",
-        "sign_up": {
-            "email_label": "Adresse email",
-            "password_label": "Mot de passe",
-            "email_input_placeholder": "Votre adresse email",
-            "password_input_placeholder": "Votre mot de passe",
-            "button_label": "S'inscrire",
-            "loading_button_label": "Inscription...",
-            "socia_provider_text": "Se connecter avec {{provider}}",
-            "link_text": "Vous n'avez pas de compte ? Inscrivez-vous !",
-            "confirmation_text": "Un email de confirmation a été envoyé à {{email}}. Veuillez cliquer sur le lien pour confirmer votre adresse email."
-        },
-        "sign_in": {
-            "email_label": "Adresse email",
-            "password_label": "Mot de passe",
-            "email_input_placeholder": "Votre adresse email",
-            "password_input_placeholder": "Votre mot de passe",
-            "button_label": "Se connecter",
-            "loading_button_label": "Connexion...",
-            "forgot_password": "Mot de passe oublié ?",
-            "socia_provider_text": "Se connecter avec {{provider}}",
-            "link_text": "Vous avez déjà un compte ? Connectez-vous"
-        },
-        "forgotten_password": {
-            "email_label": "Adresse email",
-            "password_label": "Mot de passe",
-            "email_input_placeholder": "Votre adresse email",
-            "button_label": "Envoyer le lien de réinitialisation",
-            "loading_button_label": "Envoi du lien...",
-            "link_text": "Mot de passe oublié ?"
-        }
-    },
-    "auth": {
+    "AuthForm": {
         "sign in": "Se connecter",
         "sign out": "Se déconnecter",
-        "sign up": "S'inscrire"
+        "sign up": "S'inscrire",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirm password": "Confirmer le mot de passe",
+        "forgot password": "Mot de passe oublié",
+        "sign in with Google": "Se connecter avec Google",
+        "sign in with Apple": "Se connecter avec Apple"
     },
 
     "dashboard": {

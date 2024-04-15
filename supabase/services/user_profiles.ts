@@ -1,4 +1,4 @@
-import getSupabaseClient from "../clients/getSupabaseClient";
+import getSupabaseClient from "../clients/old_getSupabaseClient";
 
 
 /**

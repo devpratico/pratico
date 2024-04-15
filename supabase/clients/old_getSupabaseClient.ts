@@ -19,7 +19,7 @@ const getSupabaseClient = async (): Promise<SupabaseClient> => {
     if (typeof window === 'undefined') {
         const { cookies } = await import('next/headers');
         const cookieStore = cookies(); // Should be called every time to get the latest cookies
-        const createClient: CreateServerClientFunction  = (await import('./server')).default;
+        const createClient: CreateServerClientFunction  = (await import('./old_server')).default;
         const client = createClient(cookieStore);
         return client;
 

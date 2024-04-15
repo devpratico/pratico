@@ -20,7 +20,8 @@ import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
 import { useCallback } from 'react'
 import Resizer from '../custom-ui/Resizer/Resizer'
 import EmbedHint from '../custom-ui/EmbedHint/EmbedHint'
-import { useAuth } from '@/app/[locale]/_hooks/useAuth'
+//import { useAuth } from '@/app/[locale]/_hooks/useAuth'
+import { useUser } from '@/app/[locale]/_hooks/useUser'
 import logger from '@/app/_utils/logger'
 
 
@@ -42,7 +43,7 @@ export interface CanvasProps {
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
-    const { user } = useAuth()
+    const { user } = useUser()
 
     /**
      * This function is called when the tldraw editor is mounted.

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import getSupabaseClient from '@/supabase/clients/getSupabaseClient'
+import getSupabaseClient from '@/supabase/clients/old_getSupabaseClient'
 import logger from '@/app/_utils/logger'
 
 

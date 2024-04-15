@@ -1,5 +1,5 @@
 import logger from "@/app/_utils/logger";
-import getSupabaseClient from "../clients/getSupabaseClient";
+import getSupabaseClient from "../clients/old_getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 import { TLStoreSnapshot } from "tldraw";
 

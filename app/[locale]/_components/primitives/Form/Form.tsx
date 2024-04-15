@@ -1,6 +1,8 @@
+'use client'
 import styles from './Form.module.css';
 import * as FormPrimitive from '@radix-ui/react-form';
-import PlainBtn from '../buttons/PlainBtn/PlainBtn';
+import { Button } from '@radix-ui/themes';
+
 
 export interface Field {
     name: string;
@@ -53,8 +55,8 @@ export default function Form({ fields, submitBtnLabel='OK', onSubmit, cancelBtnL
             ))}
                     
             <div className={styles.buttonsContainer}>
-                {cancelBtnLabel && <PlainBtn message={cancelBtnLabel} color="secondary" style="solid" size="m" onClick={onCancel} />}
-                <PlainBtn message={submitBtnLabel} color="primary" style="solid" size="m" type="submit" />
+                {/*cancelBtnLabel && <PlainBtn message={cancelBtnLabel} color="secondary" style="solid" size="m" onClick={onCancel} />*/}
+                <Button type="submit">{submitBtnLabel}</Button>
             </div>
 
         </FormPrimitive.Root>
