@@ -11,6 +11,8 @@ import { useRouter } from '@/app/_intl/intlNavigation';
 import { useState } from 'react';
 
 
+// TODO: utiliser searchParams pour afficher login ou signup avec des radix tabnav
+
 export default function AuthForm({ messages }: { messages: typeof en.AuthForm }) {
 
     const router = useRouter();
@@ -34,7 +36,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 }}>
                     {messages['sign in with Google']}
                 </Button>
-                <Button variant='soft' disabled={true}>{messages['sign in with Apple']}</Button>
+                {/*<Button variant='soft' disabled={true}>{messages['sign in with Apple']}</Button>*/}
             </Flex>
         )
     }
@@ -42,15 +44,15 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
     return (
         <Flex direction='column' gap='2'>
-            <Tabs.Root defaultValue='signup'>
+            <Tabs.Root 
+                defaultValue='signup'
+                onValueChange={() => {
+                    setServerError(null)
+                    setIsLoading(false)
+                }}
+            >
 
-                <Tabs.List
-                    justify='center'
-                    onChange={() => {
-                        setServerError(null)
-                        setIsLoading(false)
-                    }}
-                >
+                <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
                     <Tabs.Trigger value='signin'>{messages['sign in']}</Tabs.Trigger>
                 </Tabs.List>
