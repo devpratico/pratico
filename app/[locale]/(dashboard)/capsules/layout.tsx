@@ -1,7 +1,7 @@
 import { fetchCapsulesData, Capsule } from '@/supabase/services/capsules';
 import { fetchUserId } from '@/supabase/services/auth';
-import { CapsulesProvider } from '@/hooks/useCapsules';
-import logger from '@/utils/logger';
+import { CapsulesProvider } from '@/app/[locale]/_hooks/useCapsules';
+import logger from '@/app/_utils/logger';
 
 
 export default async function Layout({ children }: { children: React.ReactNode }) {

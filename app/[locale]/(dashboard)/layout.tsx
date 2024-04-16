@@ -1,6 +1,7 @@
 import DashboardLeftBar from './_components/LeftBar'
 import MenuBar from './_components/MenuBar'
 import { getTranslations } from 'next-intl/server'
+import { ScrollArea, Flex, Grid, Box } from '@radix-ui/themes'
 
 
 interface RootLayoutProps {
@@ -22,11 +23,17 @@ export default async function DashboardLayout({children }: RootLayoutProps) {
     }
 
     return (
-        <div style={containerStyle}>
-            <MenuBar style={{gridArea: 'menuBar'}}/>
-            <DashboardLeftBar messages={leftbarMessages} style={{gridArea: 'leftBar'}}/>
-            {children}
-        </div>
+        <Grid rows='auto 1fr' style={{height: '100dvh'}}>
+            <MenuBar/>
+
+            <Grid columns='auto 1fr' maxHeight='100%' overflow='hidden'>
+                <DashboardLeftBar messages={leftbarMessages}/>
+                <ScrollArea scrollbars="vertical" type='auto' style={{backgroundColor: 'var(--secondary)'}}>
+                    {children}
+                </ScrollArea>
+            </Grid>
+
+        </Grid>
     )
 }
 

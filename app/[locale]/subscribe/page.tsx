@@ -1,7 +1,7 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
 import { fetchUserId } from '@/supabase/services/auth';
-import config from '@/stripe/stripe.config';
+import config from '@/app/_stripe/stripe.config';
 
 declare global {
     namespace JSX {

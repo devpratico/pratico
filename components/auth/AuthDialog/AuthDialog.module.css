@@ -1,9 +1,0 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.formContainer {
-    min-width: 300px;
-}

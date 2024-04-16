@@ -1,0 +1,18 @@
+{
+    "AuthForm": {
+        "sign in": "Sign in",
+        "log out": "Log out",
+        "sign up": "Sign up",
+        "email": "Email",
+        "password": "Password",
+        "confirm password": "Confirm password",
+        "forgot password": "Forgot password?",
+        "sign in with Google": "Sign in with Google",
+        "sign in with Apple": "Sign in with Apple",
+        "passwords do not match": "Passwords do not match",
+        "try without an account": "Try without an account"
+    },
+    "dashboard": {
+        "help": "Help"
+    }
+}

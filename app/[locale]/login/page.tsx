@@ -1,98 +1,59 @@
-'use client'
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import createClient from "@/supabase/clients/client";
-import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
-import { useRouter } from "next/navigation";
+import AuthForm from "./AuthForm";
+import { getTranslations } from 'next-intl/server';
+import en from '@/app/_intl/messages/en.json';
+import { Card, Box, Flex } from "@radix-ui/themes";
+import Image from "next/image";
+import loginImage from '@/public/illustrations/login.svg';
 
 
-export default function Page() {
-
-    const router = useRouter();
-
-    const mainStyle: React.CSSProperties = {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100dvh',
-        width: '100vw',
-        backgroundColor: 'var(--secondary)',
-    };
-
-    const containerStyle: React.CSSProperties = {
-        width: '100%',
-        maxWidth: '400px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '1rem',
-        padding: '1rem',
-    };
-
-    const formContainerStyle: React.CSSProperties = {
-        backgroundColor: 'var(--background)',
-        width: '100%',
-        //maxWidth: '300px',
-        padding: '2rem',
-        borderRadius: '1rem',
-        boxShadow: 'var(--small-shadow)',
-    };
-
-    const buttonRowStyle: React.CSSProperties = {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: '1rem',
-        alignSelf: 'flex-end',
-    };
 
 
+export default async function Login() {
+
+    const t = await getTranslations("AuthForm");
+
+    const messages: typeof en.AuthForm = {
+        "sign in": t('sign in'),
+        "log out": t('log out'),
+        "sign up": t('sign up'),
+        "email": t('email'),
+        "password": t('password'),
+        "confirm password": t('confirm password'),
+        "forgot password": t('forgot password'),
+        "sign in with Google": t('sign in with Google'),
+        "sign in with Apple": t('sign in with Apple'),
+        "passwords do not match": t('passwords do not match'),
+        "try without an account": t('try without an account'),
+    }
 
     return (
-        <main style={mainStyle}>
-            <div style={containerStyle}>
-                <h1>Se connecter</h1>
-                <div style={formContainerStyle}>
-                    <Auth
-                        supabaseClient={createClient()}
-                        redirectTo="http://localhost:3000/"
-                        providers={[]}
-                        socialLayout='horizontal'
-                        appearance={{
-                            theme: ThemeSupa,
-                            variables: {
-                                default: {
-                                    colors: {
-                                        brand: 'var(--primary)',
-                                        brandAccent: 'var(--primary-border)',
-                                    },
-                                },
-                            },
-                        }}
-                    />
-                </div>
-                <div style={buttonRowStyle}>
-                    <PlainBtn
-                        color="secondary"
-                        size="m"
-                        onClick={() => {
-                            //setIsAnonymous(true)
-                            //setAuthDialogOpen(false)
-                        }}
-                        message="Essayer sans compte"
-                    />
-                    <PlainBtn
-                        color="primary"
-                        size="m"
-                        onClick={() => {
-                            router.push('/capsules')
-                        }}
-                        message="OK"
-                    />
-                </div>
-            </div>
+        <main style={{backgroundColor: 'var(--secondary)'}} >
+            <Flex align='center' justify='center' gap={{initial: '0', md:'9'}}  direction={{initial:'column', md:'row'}} style={{height: '100dvh'}}>
+
+                <Box width={{md:'400px', initial:'300px'}} height={{md:'400px', initial:'300px'}} display={{initial: 'none', sm:'block'}}  style={{position: 'relative'}}>
+                    <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
+                </Box>
+
+
+                {/* Tablet and desktop view */}
+                <Box asChild width='400px' display={{initial: 'none', sm:'block'}} >
+                    <Card size='5'>
+                        <AuthForm messages={messages} />
+                    </Card>
+                </Box>
+
+
+                {/* Mobile view */}
+                <Box p='5'  width='100%' height='100dvh' display={{initial: 'block', sm:'none'}} style={{backgroundColor:'var(--background)'}}>
+                    <Flex direction='column' height='100%' justify='between' >
+                        <Box width='100%' height='40%'   style={{position: 'relative'}}>
+                            <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
+                        </Box>
+                        <AuthForm messages={messages} />
+                    </Flex>
+                </Box>
+
+            </Flex>
         </main>
     );
 }

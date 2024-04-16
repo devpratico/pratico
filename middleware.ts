@@ -1,16 +1,25 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
-import config from './intl/intl.config'
-    
+import config from './app/_intl/intl.config'
+ 
+
+
 /**
  * Prevent middleware from running on those specific paths:
  * - _next/static (static files)
  * - _next/image (image optimization files)
  * - favicon.ico (favicon file)
+ * - public folder (public files)
  * - api (API routes)
  */
-const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico|api)/
+const baseBypassPaths = [
+    '_next/static',
+    '_next/image',
+    'favicon.ico',
+    'public',
+    'api',
+];
 
 
 /**
@@ -19,13 +28,19 @@ const bypassPathsRegex = /^\/(_next\/static|_next\/image|favicon.ico|api)/
 */
 async function authMiddleware(request: NextRequest, response: NextResponse) {
     
-    /*
-    * Bypass middleware for specific paths:
-    * - _next/static (static files)
-    * - _next/image (image optimization files)
-    * - favicon.ico (favicon file)
-    * Feel free to modify this pattern to include more paths.
-    */
+    // Bypass middleware for specific paths
+
+    // Optional locale pattern: matches alphanumeric and hyphen characters followed by a slash
+    // This is flexible enough to match locales like 'en', 'fr', 'en-US', etc.
+    const optionalLocalePattern = '(?:[a-zA-Z0-9-]+/)?';
+
+    // Login path with optional locale prefix
+    const loginPath = `${optionalLocalePattern}login`;
+
+
+    const combinedPaths = [...baseBypassPaths, loginPath].join('|');
+    const bypassPathsRegex = new RegExp(`^/(${combinedPaths})`);
+
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
         //return NextResponse.next()
         return response
@@ -58,8 +73,10 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
         if (error) throw error
         if (!user) throw new Error('Supabase returned null')
     } catch (error) {
-            console.error('supabase:auth', '(Middleware) No user:', (error as Error).message)
-        //decision = NextResponse.redirect('/login')
+        console.warn('supabase:auth', 'Middleware - no user', `(${(error as Error).message})`)
+        const url = request.nextUrl.clone()
+        url.pathname = 'login'
+        decision = NextResponse.redirect(url)
     }
     
     return decision
@@ -76,28 +93,16 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
  */
 export default function intlMiddleware(request: NextRequest) {
 
-    /**
-    * Bypass middleware for specific paths:
-    * - _next/static (static files)
-    * - _next/image (image optimization files)
-    * - favicon.ico (favicon file)
-    * Feel free to modify this pattern to include more paths.
-    * @see https://next-intl-docs.vercel.app/docs/routing/middleware#matcher-no-prefix
-    */
+    const bypassPathsRegex = new RegExp(`^/(${baseBypassPaths.join('|')})`)
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
         return NextResponse.next()
     }
 
-    /*
-    // Match only internationalized pathnames
-    //const internationalizedPathnameRegex = /^\/(en|fr)(\/|$)/
-    const internationalizedPathnameRegex = /^\/(fr|en)($|\/.*)/
-
-    // If it doesn't match, do nothing
-    if (!internationalizedPathnameRegex.test(request.nextUrl.pathname)) {
-        return NextResponse.next()
-    }
-    */
+    // This is the middleware provided by next-intl library
+    const nextIntlMiddleware = createMiddleware({
+        locales: config.locales,
+        defaultLocale: config.defaultLocale,
+    })
 
     const decision = nextIntlMiddleware(request)
 
@@ -114,11 +119,7 @@ export default function intlMiddleware(request: NextRequest) {
     return decision
 }
 
-// This is the middleware provided by next-intl library
-const nextIntlMiddleware = createMiddleware({
-    locales: config.locales,
-    defaultLocale: config.defaultLocale,
-})
+
 
 
 

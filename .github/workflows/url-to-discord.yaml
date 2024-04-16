@@ -1,0 +1,35 @@
+name: Send deployment URL to Discord
+
+on:
+  deployment_status:
+
+jobs:
+  send-url:
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Preview – pratico'
+    steps:
+
+      - name: Show content of github.event.deployment_status
+        run: echo "${{ toJson(github.event.deployment_status) }}"
+
+      - name: Log Vercel Deployment URL
+        run: echo "Vercel Deployment URL is ${{ github.event.deployment_status.target_url }}"
+
+
+      - name: Extract Webhook ID and Token
+        id: extract_webhook
+        run: |
+          echo "Extracting Webhook ID and Token"
+          WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK }}
+          WEBHOOK_ID=$(echo $WEBHOOK_URL | cut -d'/' -f6)
+          WEBHOOK_TOKEN=$(echo $WEBHOOK_URL | cut -d'/' -f7)
+          echo "::set-output name=webhook_id::$WEBHOOK_ID"
+          echo "::set-output name=webhook_token::$WEBHOOK_TOKEN"
+
+      - name: Send Discord Message
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ steps.extract_webhook.outputs.webhook_id }}
+          webhook_token: ${{ steps.extract_webhook.outputs.webhook_token }}
+          message: "Nouveau lien de prévisualisation : ${{ github.event.deployment_status.target_url }}"
+

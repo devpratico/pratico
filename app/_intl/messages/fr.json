@@ -1,0 +1,66 @@
+{
+    "AuthForm": {
+        "sign in": "Se connecter",
+        "sign out": "Se déconnecter",
+        "sign up": "S'inscrire",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirm password": "Confirmer le mot de passe",
+        "forgot password": "Mot de passe oublié",
+        "sign in with Google": "Se connecter avec Google",
+        "sign in with Apple": "Se connecter avec Apple",
+        "passwords do not match": "Les mots de passe ne correspondent pas",
+        "try without an account": "Essayer sans compte"
+    },
+
+    "dashboard": {
+        "capsules": "Capsules",
+        "activities": "Activités",
+        "quizes and surveys": "Quiz et sondages",
+        "reports": "Rapports",
+        "help": "Aide",
+        "settings": "Paramètres",
+        "creation": "Création",
+        "last session": "Dernière session",
+        "untitled": "Sans titre"
+    },
+
+    "menu-bar": {
+        "session name": "Nom de la session",
+        "play": "Lancer",
+        "polls": "Activités",
+        "more": "Plus",
+        "chat": "Chat",
+        "participants": "Participants",
+        "save": "Sauvegarder",
+        "done": "Terminé",
+        "quit": "Quitter",
+        "stop session": "Arrêter la session"
+    },
+
+    "settings": {
+        "information": "Informations",
+        "account": "Compte",
+        "email": "Email",
+        "name": "Prénom",
+        "surname": "Nom",
+        "nickname": "Pseudo",
+        "id": "Identifiant",
+        "stripe id": "Identifiant Stripe",
+        "sign out": "Se déconnecter",
+        "change password": "Changer le mot de passe",
+        "subscription": "Abonnement",
+        "plan": "Plan",
+        "subscribe": "S'abonner",
+        "unsubscribe": "Se désabonner",
+        "subscription status": "Statut de l'abonnement",
+        "subscription end": "Fin de l'abonnement",
+        "manage subscription": "Gérer l'abonnement"
+    },
+
+    "subscribe": {
+        "subscribe to pratico": "S'abonner à pratico",
+        "thanks for subscribing": "Merci pour votre abonnement !",
+        "start using pratico": "Commencez à utiliser pratico"
+    }
+}

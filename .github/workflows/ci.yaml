@@ -1,4 +1,4 @@
-name: Supabase CI
+name: Supabase - Check types
 
 on:
   pull_request:
@@ -7,7 +7,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    env: 
+      SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ${{ secrets.SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET }}
+    
     steps:
       - uses: actions/checkout@v3
 

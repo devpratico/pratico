@@ -2,15 +2,15 @@
 import styles from './DocumentsGrid.module.css';
 import DocumentMiniature from '../DocumentMiniature/DocumentMiniature';
 import Link from 'next/link';
-import Thumbnail from '@/components/Thumbnail/Thumbnail';
-import { useCapsules } from '@/hooks/useCapsules';
+import Thumbnail from '@/app/[locale]/_components/Thumbnail/Thumbnail';
+import { useCapsules } from '@/app/[locale]/_hooks/useCapsules';
 import { useState, useEffect } from 'react';
 import type { Capsule } from '@/supabase/services/capsules';
-import logger from '@/utils/logger';
+import logger from '@/app/_utils/logger';
 import { IconButton, DropdownMenu, Badge } from '@radix-ui/themes';
 import { Ellipsis } from 'lucide-react';
 import { Trash2, Copy, TextCursor, CloudOff } from 'lucide-react';
-import { deleteLocalTLDrawDB, getLocalTLDrawDocName } from '@/utils/tldraw/localDBManager';
+import { deleteLocalTLDrawDB, getLocalTLDrawDocName } from '@/app/_utils/tldraw/localDBManager';
 import type { TLStoreSnapshot } from 'tldraw';
 
 

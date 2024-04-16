@@ -1,5 +1,5 @@
 'use client'
-import PlainBtn from "@/components/primitives/buttons/PlainBtn/PlainBtn";
+import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn";
 import { useRouter } from "next/navigation";
 
 
