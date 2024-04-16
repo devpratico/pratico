@@ -86,6 +86,8 @@ enable_signup = true
 # Allow/disallow testing manual linking of accounts
 enable_manual_linking = false
 
+enable_anonymous_sign_ins = true
+
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
@@ -158,10 +160,10 @@ redirect_uri = "http://localhost:54321/auth/v1/callback"
 
 
 
-[auth.external.anonymous_users]
-enabled = true
-client_id = "anonymous_users_client_id"
-secret = "anonymous_users_secret"
+#[auth.external.anonymous_users]
+#enabled = true
+#client_id = "anonymous_users_client_id"
+#secret = "anonymous_users_secret"
 
 
 [analytics]

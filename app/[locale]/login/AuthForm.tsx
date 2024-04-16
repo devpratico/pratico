@@ -188,7 +188,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
             }
 
             <Button
-                disabled={true}
+                disabled={false}
                 variant='soft'
                 onClick={() => {
                     setIsLoading(true);
