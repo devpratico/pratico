@@ -4,7 +4,7 @@ import logger from "@/app/_utils/logger";
 import { createRoom } from "@/app/[locale]/_actions/capsuleActions";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useParams } from "next/navigation";
-import useIsLocalDoc from "@/app/[locale]/_hooks/useIsLocalDoc";
+import useIsLocalDoc from "@/app/[locale]/_hooks/old_useIsLocalDoc";
 
 
 interface StartBtnProps {

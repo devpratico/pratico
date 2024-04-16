@@ -15,15 +15,28 @@ export interface ImportPdfBackgroundArgs {
     editor: Editor
     //capsuleId: string
     destination: { saveTo: 'supabase', capsuleId: string } | { saveTo: 'local' }
+    progressCallback?: (progress: number) => void
 }
 
 /**
  * Creates pages from a PDF file
  */
-export default async function importPdfBackground({ file, editor, destination }: ImportPdfBackgroundArgs) {
+export default async function importPdfBackground({ file, editor, destination, progressCallback }: ImportPdfBackgroundArgs) {
+
+    // Initialize the progress callback
+    let progress = 0
+    const incrementProgress = () => {
+        if (progressCallback) {
+            progress += 1
+            progressCallback(progress)
+        }
+    }
+
 
     // Get individual pages
     const pages = await getPdfFilePages(file)
+    incrementProgress()
+
 
     // Convert each page to bitmap
     const imagePromises = pages.map(convertPDFPageToBitmap);
@@ -40,6 +53,7 @@ export default async function importPdfBackground({ file, editor, destination }:
         for (let index = 0; index < images.length; index++) {
             const blob = dataURLToBlob(images[index].bitmap);
             logger.log('system:file', `Converted to Blob page ${index}`);
+            incrementProgress();
 
             try {
                 // Take the name of the file and remove what's after the first '.' (the extension) if there is one.
@@ -70,6 +84,7 @@ export default async function importPdfBackground({ file, editor, destination }:
     // Create tldraw assets with the URLs
     let assetIds: string[] = []
     urls.forEach((url, index) => {
+        incrementProgress()
         const assetId = AssetRecordType.createId(getHashForString(url))
         assetIds.push(assetId)
         editor.createAssets([
@@ -98,6 +113,7 @@ export default async function importPdfBackground({ file, editor, destination }:
     // Batch all the following operations
     editor.batch(() => {
         assetIds.forEach((assetId, index) => {
+            incrementProgress()
             // Create a new page for each image, except the first image if the current page is empty
             if ((index === 0 && !currentPageIsEmpty) || index > 0) {
                 const pageId = 'page:' + uniqueId() as TLPageId
