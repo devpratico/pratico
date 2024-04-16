@@ -8,6 +8,9 @@ import Carousel from '@/app/[locale]/_components/desk/carousel/Carousel/Carousel
 import Controls from '@/app/[locale]/_components/desk/controls/Controls/Controls';
 
 
+// TODO: Layouyt stuff should be in a layout component. Use client components if it needs to change
+
+
 export default async function CapsulePage() {
 
     const t = await getTranslations('menu-bar')

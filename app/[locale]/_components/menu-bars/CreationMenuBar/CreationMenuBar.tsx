@@ -4,7 +4,7 @@ import CapsuleTitle from '../components/CapsuleTitle/CapsuleTitle';
 import LabeledIconBtn from '../../primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import DoneBtn from './buttons/DoneBtn';
 import { IconSize } from '@/app/_utils/icons/IconProps';
-//import praticoLogo from '../../../public/images/pratico.svg';
+import praticoLogo from '@/public/images/pratico.svg';
 import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import StartBtn from "./buttons/StartBtn";
@@ -32,7 +32,7 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
 
     return (
         <MenuBarLayout spacerPosition={3}>
-            <Image src={'/images/pratico.svg'} width={100} height={50} alt="Pratico" />
+            <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
             <CapsuleTitle />
             <StartBtn message={messages?.play || 'Play'} />
             <LabeledIconBtn icon={<PuzzleIcon/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
