@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import DeskMenuBar from '@/app/[locale]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
 import TLToolbar from '@/app/[locale]/_components/desk/custom-ui/TLToolbar/TLToolbar';
 import DeskMenus from '@/app/[locale]/_components/menus/DeskMenus/DeskMenus';
-import Carousel from '@/app/[locale]/_components/desk/carousel/Carousel/Carousel';
+import Carousel from '@/app/[locale]/_components/desk/Carousel/Carousel';
 import Controls from '@/app/[locale]/_components/desk/controls/Controls/Controls';
 
 

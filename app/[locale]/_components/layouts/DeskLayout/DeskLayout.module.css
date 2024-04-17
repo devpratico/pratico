@@ -5,7 +5,7 @@
     height: 100dvh;
     width:  100dvw;
     display: grid;
-    grid-template-rows:    auto 1fr auto;
+    grid-template-rows:    auto 1fr 70px;
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
         "menuBar  menuBar  menuBar"
@@ -42,7 +42,6 @@
 .carousel {
     background-color: var(--background);
     /*background-color: aquamarine;*/
-    height: 70px;
     width: 100%;
     grid-area: carousel;
     pointer-events: auto;
@@ -51,7 +50,6 @@
 
 .controls {
     /*background-color: red;*/
-    height: 70px;
     width: 100%;
     grid-area: controls;
     pointer-events: auto;
