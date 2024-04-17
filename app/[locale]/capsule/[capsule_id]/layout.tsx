@@ -5,6 +5,7 @@ import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import logger from "@/app/_utils/logger";
+import { MenuProvider } from "./_hooks/useMenu";
 
 
 
@@ -32,7 +33,9 @@ export default async function Layout({ children, params: { capsule_id } }: Layou
         <TLEditorProvider>
             <RoomProvider initialRoom={rooms?.[0]}>
                 <NavProvider>
-                    { children }
+                    <MenuProvider>
+                        { children }
+                    </MenuProvider>
                 </NavProvider>
             </RoomProvider>
         </TLEditorProvider>

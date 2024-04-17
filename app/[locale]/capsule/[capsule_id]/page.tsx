@@ -1,14 +1,11 @@
 import CanvasSwitcher from './_components/CanvasSwitcher';
-import DeskLayout from '@/app/[locale]/_components/layouts/DeskLayout/DeskLayout';
 import { getTranslations } from 'next-intl/server';
-import DeskMenuBar from '@/app/[locale]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
-import TLToolbar from '@/app/[locale]/_components/desk/custom-ui/TLToolbar/TLToolbar';
-import DeskMenus from '@/app/[locale]/_components/menus/DeskMenus/DeskMenus';
-import Carousel from '@/app/[locale]/_components/desk/Carousel/Carousel';
-import Controls from '@/app/[locale]/_components/desk/controls/Controls/Controls';
-
-
-// TODO: Layouyt stuff should be in a layout component. Use client components if it needs to change
+import DeskMenuBar from '@/app/[locale]/capsule/[capsule_id]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
+import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/TLToolbar/TLToolbar';
+import DeskMenus from '@/app/[locale]/capsule/[capsule_id]/_components/menus/DeskMenus/DeskMenus';
+import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
+import Controls from './_components/Controls';
+import styles from './page.module.css'
 
 
 export default async function CapsulePage() {
@@ -25,13 +22,33 @@ export default async function CapsulePage() {
     }
 
     return (
-            <DeskLayout
-                canvas={<CanvasSwitcher />}
-                menuBar={<DeskMenuBar messages={messages} />}
-                carousel={<Carousel />}
-                controls={<Controls />}
-                toolBar={<TLToolbar />}
-                menu={<DeskMenus />}
-            />
+        <div className={styles.container}>
+
+            <div className={styles.canvas}>
+                <CanvasSwitcher />
+            </div>
+
+            <div className={styles.menuBar}>
+                <DeskMenuBar messages={messages} />
+            </div>
+
+            <div className={styles.toolBar}>
+                <TLToolbar />
+            </div>
+
+            <div className={styles.carousel}>
+                <Carousel />
+            </div>
+
+            <div className={styles.controls}>
+                <Controls />
+            </div>
+
+            <div className={styles.menu}>
+                <DeskMenus />
+            </div>
+
+        </div>
+        
     )
 }

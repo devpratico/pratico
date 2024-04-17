@@ -1,5 +1,5 @@
 'use client'
-import StudentForm from "@/app/[locale]/_components/auth/StudentForm/StudentForm"
+import StudentForm from "@/app/[locale]/[room_code]/student-form/StudentForm"
 import { getUserPreferences,  setUserPreferences } from 'tldraw'
 import { useRouter } from "next/navigation"
 

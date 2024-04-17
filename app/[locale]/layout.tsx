@@ -2,11 +2,7 @@ import type { Metadata } from 'next'
 import '@radix-ui/themes/styles.css';
 import '../colors.css'
 import '../globals.css'
-//import AuthDialog from '@/components/auth/AuthDialog/AuthDialog'
-import { UiProvider } from '@/app/[locale]/_hooks/useUi'
-//import { AuthProvider } from '@/app/[locale]/_hooks/useAuth'
 import { UserProvider } from './_hooks/useUser';
-import { getTranslations } from 'next-intl/server'
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
 import AdminInfo from './_components/AdminInfo';
@@ -26,10 +22,6 @@ interface RootLayoutProps {
 
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
 
-    //const t = await getTranslations("auth")
-    // TODO: Make a Ui provider for each page
-    // TODO : get rid of that auth dialog and make an intercepting route
-
     //const user = await fetchUser()
     let user: User | undefined = undefined
     try {
@@ -41,14 +33,12 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <UserProvider user={user}>
-                <UiProvider>
-                    <body className={luciole.className}>
-                        <Theme accentColor="violet">
-                            {children}
-                            <AdminInfo />
-                        </Theme>
-                    </body>
-                </UiProvider>
+                <body className={luciole.className}>
+                    <Theme accentColor="violet">
+                        {children}
+                        <AdminInfo />
+                    </Theme>
+                </body>
             </UserProvider>
         </html>
     )
