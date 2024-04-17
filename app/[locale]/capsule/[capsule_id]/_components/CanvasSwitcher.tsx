@@ -1,6 +1,6 @@
 'use client'
-import CanvasRT from "@/app/[locale]/_components/desk/CanvasRT/CanvasRT";
-import CanvasSL from "@/app/[locale]/_components/desk/CanvasSL/CanvasSL";
+import CanvasRT from "@/app/[locale]/_components/canvases/CanvasRT";
+import CanvasSL from "@/app/[locale]/_components/canvases/CanvasSL";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useMemo } from "react";
 
