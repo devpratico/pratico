@@ -23,7 +23,7 @@ export default function Controls() {
 
 
     return (
-        <Flex  p='4' justify='between' align='center' style={{backgroundColor:'var(--background)'}}>
+        <Flex  px='4' justify='between' align='center' style={{height:'100%', backgroundColor:'var(--background)'}}>
             <IconButton size='3' onClick={() => toggleDeskMenu('add')}>
                 <Plus size={iconSize} />
             </IconButton>
