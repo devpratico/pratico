@@ -42,7 +42,8 @@
 .carousel {
     background-color: var(--background);
     /*background-color: aquamarine;*/
-    width: 100%;
+    width:  100%;
+    height: 100%;
     grid-area: carousel;
     pointer-events: auto;
     overflow: hidden;

@@ -10,7 +10,6 @@ import logger from '@/app/_utils/logger'
 
 
 interface MiniatureProps {
-    key: string
     snapshot: any
     pageId: TLPageId
     selected: boolean
@@ -31,15 +30,16 @@ export default function Carousel() {
     
     return (
         <ScrollArea scrollbars='horizontal'>
-            <Flex p='3' gap='3' align='stretch'  style={{height:'100%', overflow:'hidden'}}>
+            <Flex p='3' gap='3' align='stretch' style={{height:'70px'}}>
                 {pageIds.map((id, i) => (
-                    <Miniature
-                        key={id}
-                        snapshot={snapshot}
-                        pageId={id}
-                        selected={currentPageId === id}
-                        onClick={() => setCurrentPage(id)}
-                    />
+                    <div key={`${i}`} style={{ aspectRatio: '16/9', height:'100%'}}>
+                        <Miniature
+                            snapshot={snapshot}
+                            pageId={id}
+                            selected={currentPageId === id}
+                            onClick={() => setCurrentPage(id)}
+                        />
+                    </div>
                 ))}
             </Flex>
         </ScrollArea>
@@ -47,7 +47,7 @@ export default function Carousel() {
 }
 
 
-function Miniature({key, snapshot, pageId, selected, onClick}: MiniatureProps) {
+function Miniature({snapshot, pageId, selected, onClick}: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { editor } = useTLEditor()
@@ -61,14 +61,14 @@ function Miniature({key, snapshot, pageId, selected, onClick}: MiniatureProps) {
 
     return (
         <Card
-            key={key}
             variant='classic'
-            style={{aspectRatio:'16/9', height: '100%', padding:'0', ...outlineStyle}}
+            style={{ padding: '0', height:'100%', ...outlineStyle}}
             onClick={onClick}
             onMouseEnter={() => setShowEllipsis(true)}
             onMouseLeave={() => {setShowEllipsis(false); setShowMenu(false) }}
         >
             <Thumbnail snapshot={snapshot} pageId={pageId} />
+
 
             <DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
@@ -95,6 +95,7 @@ function Miniature({key, snapshot, pageId, selected, onClick}: MiniatureProps) {
                     </DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
+
 
         </Card>    
     )
