@@ -6,6 +6,7 @@ import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
+import logger from '@/app/_utils/logger'
 
 
 interface MiniatureProps {
@@ -49,9 +50,14 @@ export default function Carousel() {
 function Miniature({key, snapshot, pageId, selected, onClick}: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
-    
+    const { editor } = useTLEditor()
+
     const selectedStyle = { boxShadow: '0 0 0 3px var(--primary)' };
     const outlineStyle = selected ? selectedStyle : {}
+
+    function deletePage() {
+        editor?.deletePage(pageId)
+    }
 
     return (
         <Card
@@ -78,7 +84,12 @@ function Miniature({key, snapshot, pageId, selected, onClick}: MiniatureProps) {
                         Dupliquer
                     </DropdownMenu.Item>
 
-                    <DropdownMenu.Item color='red' onSelect={() => console.log('Delete')}>
+                    <DropdownMenu.Item color='red' onSelect={() => {
+                        if (confirm('Êtes-vous sûr de vouloir supprimer cette page ?')) {
+                            deletePage()
+                            logger.log('tldraw:editor', `Page ${pageId} deleted successfully`)
+                        }}
+                    }>
                         <Trash2 size='18' />
                         Supprimer
                     </DropdownMenu.Item>
