@@ -1,4 +1,4 @@
-import styles from './page.module.css'
+import styles from './page.module.css';
 import DocumentsGrid from '@/app/[locale]/(dashboard)/capsules/_components/DocumentsGrid/DocumentsGrid';
 import { getTranslations } from 'next-intl/server';
 import { CreateCapsuleBtn } from './_components/buttons';

@@ -1,7 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { NextURL } from 'next/dist/server/web/next-url'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
 import config from './app/_intl/intl.config'
+import logger from './app/_utils/logger'
+import { redirect } from 'next/dist/server/api-utils'
  
 
 
@@ -41,13 +44,12 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
     const combinedPaths = [...baseBypassPaths, loginPath].join('|');
     const bypassPathsRegex = new RegExp(`^/(${combinedPaths})`);
 
+    // If the request path matches the bypass regex, skip the middleware
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
-        //return NextResponse.next()
         return response
     }
     
     // The default decision is to proceed normally.
-    //let decision = NextResponse.next()
     let decision = response
     
     const supabase = createServerClient(
@@ -72,11 +74,17 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
         const {data:{user}, error} = await supabase.auth.getUser()
         if (error) throw error
         if (!user) throw new Error('Supabase returned null')
+
+    // If there's an error (no user), redirect to the login page   
     } catch (error) {
-        console.warn('supabase:auth', 'Middleware - no user', `(${(error as Error).message})`)
-        const url = request.nextUrl.clone()
-        url.pathname = 'login'
-        decision = NextResponse.redirect(url)
+        logger.log('supabase:auth', '(Middleware) No user', `(${(error as Error).message})`)
+
+        const originUrl = request.nextUrl
+        const redirectUrl = originUrl.clone()
+        redirectUrl.pathname = 'login' // Overwrite the pathname
+        redirectUrl.searchParams.set('nextUrl', originUrl.pathname)
+        logger.log('next:middleware', 'Redirecting to login page. Next URL:', originUrl.pathname)
+        decision = NextResponse.redirect(redirectUrl)
     }
     
     return decision
@@ -95,6 +103,7 @@ export default function intlMiddleware(request: NextRequest) {
 
     const bypassPathsRegex = new RegExp(`^/(${baseBypassPaths.join('|')})`)
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
+        //logger.log('next:middleware', 'Bypassing intl middleware for path:', request.nextUrl.pathname)
         return NextResponse.next()
     }
 
@@ -107,14 +116,13 @@ export default function intlMiddleware(request: NextRequest) {
     const decision = nextIntlMiddleware(request)
 
     /*
-    console.log({
-        tags: ["internationalization", "middleware", "next-intl", "i18n", "intlMiddleware"],
+    logger.log('next:middleware', 'Intl middleware:', {
         pathname: request.nextUrl.pathname,
         browserLanguages: request.headers.get("accept-language"),
         nextLocaleCookie: decision.headers.get("x-middleware-request-cookie")?.substring(12),
-        chosenLocale: decision.headers.get("x-middleware-request-x-next-intl-locale")
-    })
-    */
+        chosenLocale: decision.headers.get("x-middleware-request-x-next-intl-locale"),
+        redirection: decision.url,
+    })*/
 
     return decision
 }

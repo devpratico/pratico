@@ -1,4 +1,5 @@
-import AuthForm from "./AuthForm";
+import AuthForm from "./_components/AuthForm";
+import StudentForm from "./_components/StudentForm";
 import { getTranslations } from 'next-intl/server';
 import en from '@/app/_intl/messages/en.json';
 import { Card, Box, Flex } from "@radix-ui/themes";
@@ -8,8 +9,9 @@ import loginImage from '@/public/illustrations/login.svg';
 
 
 
-export default async function Login() {
+export default async function Login({searchParams}: {searchParams: { [key: string]: string | string[] | undefined}}) {
 
+    const nextUrl = searchParams.nextUrl as string;
     const t = await getTranslations("AuthForm");
 
     const messages: typeof en.AuthForm = {
@@ -26,6 +28,20 @@ export default async function Login() {
         "try without an account": t('try without an account'),
     }
 
+    // If the nextUrl is a room, show the student form
+    if(nextUrl.includes('/room/')) {
+        return (
+            <main style={{height:'100dvh'}}>
+                <Flex align='center' justify='center' style={{height: '100%'}}>
+                    <Card size='5'>
+                        <StudentForm />
+                    </Card>
+                </Flex>
+            </main>
+        )
+    }
+
+    // Otherwise, show the normal login form
     return (
         <main style={{backgroundColor: 'var(--secondary)'}} >
             <Flex align='center' justify='center' gap={{initial: '0', md:'9'}}  direction={{initial:'column', md:'row'}} style={{height: '100dvh'}}>

@@ -1,6 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import createClient from '@/supabase/clients/server'
+import { TablesInsert } from '@/supabase/types/database.types'
 
 
 interface Credentials {
@@ -54,10 +55,27 @@ export async function signInAnonymously() {
         if (error) {
             throw error
         }
+
+        revalidatePath('/', 'layout')
+
+        return data
+
     } catch (error) {
         throw error
     }
+}
 
-    revalidatePath('/', 'layout')
+
+export async function setNames({ id, first_name, last_name }: TablesInsert<'user_profiles'>) {
+    const supabase = createClient()
+
+    try {
+        const { error } = await supabase.from('user_profiles').upsert({id, first_name, last_name})
+        if (error) {
+            throw error
+        }
+    } catch (error) {
+        throw error
+    }
 
 }

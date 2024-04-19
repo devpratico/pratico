@@ -12,7 +12,7 @@ interface LayoutProps {
     params: { room_code: string };
 }
 
-const revalidate = 0
+export const revalidate = 0
 
 export default async function Layout({children, params}: LayoutProps) {
     const { room_code } = params;

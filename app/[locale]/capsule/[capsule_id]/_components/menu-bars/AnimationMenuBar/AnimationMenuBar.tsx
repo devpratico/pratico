@@ -2,7 +2,7 @@ import styles from './AnimationMenuBar.module.css';
 import MenuBarLayout from "../components/MenuBarLayout/MenuBarLayout";
 import Image from 'next/image';
 import LabeledIconBtn from '../../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
-//import praticoLogo from '../../../public/images/pratico.svg';
+import praticoLogo from '@/public/images/pratico.svg';
 import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import ChatSquareDotIcon from '@/app/[locale]/_components/icons/ChatSquareDotIcon';
@@ -35,7 +35,7 @@ export default function AnimationMenuBar({ messages }: AnimationMenuBarProps) {
     return (
         <MenuBarLayout spacerPosition={2}>
             <div className={styles.link}>
-                <Image src={'/images/pratico.svg'} width={100} height={50} alt="Pratico" />
+                <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
                 <RoomLink />
             </div>
             <StopBtn message={messages?.stop || 'Stop Session'} />
