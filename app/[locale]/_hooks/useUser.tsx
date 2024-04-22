@@ -5,13 +5,19 @@ import { createContext, useContext } from "react";
 
 interface UserContextProps {
     user: User | undefined;
+    firstName?: string;
+    lastName?: string;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
-export function UserProvider({ user, children }: { user: User | undefined, children: React.ReactNode }) {
+
+
+type UserProviderProps = UserContextProps & { children: React.ReactNode }
+
+export function UserProvider({ user, firstName, lastName, children }: UserProviderProps) {
     return (
-        <UserContext.Provider value={{ user }}>
+        <UserContext.Provider value={{ user, firstName, lastName }}>
             {children}
         </UserContext.Provider>
     );

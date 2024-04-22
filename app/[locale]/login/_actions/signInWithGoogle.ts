@@ -1,6 +1,6 @@
 /**
  * Sign in with Google
- * This cannot be a server action, thus the client supabase client.
+ * This cannot be a server action for some reason, thus the client supabase client.
  */
 'use client'
 import createClient from "@/supabase/clients/client"

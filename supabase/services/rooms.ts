@@ -20,7 +20,7 @@ export async function fetchRoom(roomId: string) {
 }
 
 
-export async function fetchRoomByCode(code: string) {
+export async function old_fetchRoomByCode(code: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('code', code).single()
     if (error) {

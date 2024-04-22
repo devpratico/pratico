@@ -2,13 +2,13 @@
 import LabeledIconBtn from "@/app/[locale]/_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn";
 import PeopleIcon from "@/app/[locale]/_components/icons/PeopleIcon";
 import { IconSize } from "@/app/_utils/icons/IconProps";
-//import { useUi } from "@/app/[locale]/capsule/[capsule_id]/_hooks/useMenu";
+import { useMenu } from "../../../../_hooks/useMenu";
 
 
 
 export default function ParticipantsBtn({message}: {message?: string}) {
 
-    //const { toggleDeskMenu } = useUi()
+    const { toggleDeskMenu } = useMenu()
 
     const styleBtnProps = {
         iconColor: "var(--text-on-primary)",
@@ -21,7 +21,7 @@ export default function ParticipantsBtn({message}: {message?: string}) {
         <LabeledIconBtn
             icon={<PeopleIcon fill={true}/>}
             label={message || 'participants'}
-            //onClick={() => toggleDeskMenu('participants')}
+            onClick={() => toggleDeskMenu('participants')}
             {...styleBtnProps}
         />
     )

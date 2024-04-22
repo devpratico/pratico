@@ -3,6 +3,7 @@ const logCategories = {
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
     tldraw: ['tools', 'editor', 'collab'] as const,
     system: ['file', 'network', 'memory'] as const,
+    next: ['middleware', 'api', 'page', 'layout'] as const,
 }
 
 // TODO: style it also for when it prints in the server console.
@@ -14,6 +15,7 @@ const browserConsoleStyles: { [key in keyof typeof logCategories]: string } = {
     supabase: 'background-color: forestgreen;'   + sharedStyles,
     tldraw:   'background-color: darkslategray;' + sharedStyles,
     system:   'background-color: darkorange;'    + sharedStyles,
+    next:     'background-color: darkorchid;'    + sharedStyles,
 };
 
 const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
@@ -21,6 +23,7 @@ const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
         supabase: '\x1b[32m', // Green
         tldraw:   '\x1b[36m', // Cyan
         system:   '\x1b[33m', // Yellow
+        next:     '\x1b[35m', // Magenta
 };
 
 

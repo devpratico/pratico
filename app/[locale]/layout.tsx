@@ -5,9 +5,7 @@ import '../globals.css'
 import { UserProvider } from './_hooks/useUser';
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
-import AdminInfo from './_components/AdminInfo';
-import { fetchUser } from '@/supabase/services/auth';
-import { User } from '@supabase/supabase-js';
+import { fetchUser, User, fetchNames, Names } from './_actions/actions'
 
 
 export const metadata: Metadata = {
@@ -22,24 +20,26 @@ interface RootLayoutProps {
 
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
 
-    //const user = await fetchUser()
-    let user: User | undefined = undefined
+    let user: User | undefined
+    let names: Names | undefined
+
     try {
         user = await fetchUser()
+        names = await fetchNames(user.id)
     } catch (error) {
-        //console.error(error)
+        user = undefined
+        names = undefined
     }
     
     return (
         <html lang={locale} data-theme="pratico">
-            <UserProvider user={user}>
-                <body className={luciole.className}>
+            <body className={luciole.className}>
+                <UserProvider user={user} firstName={names?.first_name} lastName={names?.last_name}>
                     <Theme accentColor="violet">
                         {children}
-                        <AdminInfo />
                     </Theme>
-                </body>
-            </UserProvider>
+                </UserProvider>
+            </body>
         </html>
     )
 }

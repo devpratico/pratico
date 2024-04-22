@@ -8,6 +8,7 @@ import praticoLogo from '@/public/images/pratico.svg';
 import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import StartBtn from "./buttons/StartBtn";
+import { useMenu } from "../../../_hooks/useMenu";
 
 
 
@@ -21,6 +22,8 @@ interface CreationMenuBarProps {
 }
 
 export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
+
+    const { toggleDeskMenu } = useMenu()
 
     const styleBtnProps = {
         iconColor: "var(--text-on-primary)",
@@ -36,7 +39,14 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
             <CapsuleTitle />
             <StartBtn message={messages?.play || 'Play'} />
             <LabeledIconBtn icon={<PuzzleIcon/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
-            <LabeledIconBtn icon={<ThreeDotsIcon/>} label={messages?.more || 'more'} {...styleBtnProps} />
+
+            <LabeledIconBtn
+                icon={<ThreeDotsIcon/>}
+                label={messages?.more || 'more'}
+                onClick={() => toggleDeskMenu('more')}
+                {...styleBtnProps}
+            />
+
             <DoneBtn message={messages?.done || 'Done'} />
         </MenuBarLayout>
     )
