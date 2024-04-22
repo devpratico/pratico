@@ -43,7 +43,7 @@ export interface CanvasProps {
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
-    const { user } = useUser()
+    const { user, firstName, lastName } = useUser()
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -68,9 +68,11 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
          */
         const userPref = getUserPreferences()
         const userId = user?.id
+        const name = firstName && lastName ? `${firstName} ${lastName}` : userPref.name
         setUserPreferences({
             ...userPref,
             id: userId || userPref.id,
+            name: name,
             color: getRandomColor(),
             edgeScrollSpeed: 0
         })
@@ -79,7 +81,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor, user, onMount])
+    }, [setEditor, user, onMount, firstName, lastName])
 
     return (
         <Tldraw

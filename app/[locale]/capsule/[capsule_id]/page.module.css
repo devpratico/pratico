@@ -60,7 +60,7 @@
 .menu {
     /*background-color: yellow;*/
     grid-area: menu;
-    display: flex;
+    /*display: flex;*/
     width: 350px;
     height: 100%;
     overflow-x: hidden;

@@ -2,10 +2,11 @@ import CanvasSwitcher from './_components/CanvasSwitcher';
 import { getTranslations } from 'next-intl/server';
 import DeskMenuBar from '@/app/[locale]/capsule/[capsule_id]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
 import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/TLToolbar/TLToolbar';
-import DeskMenus from '@/app/[locale]/capsule/[capsule_id]/_components/menus/DeskMenus/DeskMenus';
 import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from './_components/Controls';
 import styles from './page.module.css'
+import Participants from "./_components/menus/Participants";
+import Add from "./_components/menus/Add";
 
 
 export default async function CapsulePage() {
@@ -45,7 +46,8 @@ export default async function CapsulePage() {
             </div>
 
             <div className={styles.menu}>
-                <DeskMenus />
+                <Participants />
+                <Add />
             </div>
 
         </div>

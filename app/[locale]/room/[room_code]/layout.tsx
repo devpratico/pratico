@@ -1,10 +1,7 @@
-import { Room } from "@/supabase/services/rooms";
-import { fetchRoomByCode } from "@/supabase/services/rooms";
-import { SupabaseError } from "@/supabase/types/errors";
+import { fetchRoomByCode, Room } from "./_actions/actions";
 import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
-import logger from "@/app/_utils/logger";
 
 
 interface LayoutProps {
@@ -20,9 +17,7 @@ export default async function Layout({children, params}: LayoutProps) {
     let room: Room
     try {
         room = await fetchRoomByCode(room_code)
-        logger.log('react:layout', `fetched room by code ${room_code}`)
     } catch (error) {
-        logger.error('supabase:database', `error getting room by code "${room_code}"`, (error as Error).message)
         return <div>{(error as Error).message}</div>
     }
 

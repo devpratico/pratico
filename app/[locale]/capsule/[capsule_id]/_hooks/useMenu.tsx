@@ -10,7 +10,7 @@ type MenuContextType = {
     // Desk menus
     openedDeskMenu: DeskMenu | undefined;
     setOpenDeskMenu: (menu: DeskMenu | undefined) => void;
-    toggleDeskMenu: (menu: DeskMenu | undefined) => void;
+    toggleDeskMenu: (menu: DeskMenu) => void;
 };
 
 

@@ -1,9 +1,0 @@
-.container {
-    display: flex;
-    gap: 0.2rem;
-}
-.color {
-    width:  0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-}

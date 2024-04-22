@@ -9,16 +9,13 @@ import { useMemo } from "react";
 import logger from "@/app/_utils/logger";
 
 
-interface CanvasSTProps {
-    children?: React.ReactNode;
-}
 
 /**
  * This is a canvas for the room page. It allows for real time collaboration.
  * `ST` stands for "student".
  * @client
  */
-export default function RoomPage({ children }: CanvasSTProps) {
+export default function RoomPage() {
     // Get the room we're in
     const { room } = useRoom()
     const roomId = useMemo(() => room?.id?.toString(), [room])
@@ -39,7 +36,6 @@ export default function RoomPage({ children }: CanvasSTProps) {
     return (
         <main style={{height: '100dvh'}}>
             <Canvas store={store}>
-                {children}
                 <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} />
                 <NavigatorSync />
             </Canvas>
