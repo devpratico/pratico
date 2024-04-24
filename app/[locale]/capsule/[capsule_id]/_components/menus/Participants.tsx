@@ -1,10 +1,9 @@
 'use client'
 import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
 import { Section, Heading, RadioCards } from '@radix-ui/themes'
-import { Text, Flex, Table } from "@radix-ui/themes"
+import { Text, Flex, Table, Badge } from "@radix-ui/themes"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import { useUser } from "@/app/[locale]/_hooks/useUser"
-import { Crown } from "lucide-react"
 
 
 export default function Participants() {
@@ -67,7 +66,9 @@ export default function Participants() {
                                     <Table.RowHeaderCell>
                                         <Flex align='center' gap='2'>
                                             {Circle(presence.state == 'online' ? presence.color : 'lightgray')}
-                                            {presence.firstName + ' ' + presence.lastName + (isMe ? ' (moi)' : '')}
+                                            {presence.firstName + ' ' + presence.lastName}
+                                            {isMe && <Badge radius='full'>moi</Badge>}
+                                            {presence.state == 'offline' && <Badge radius='full' color='gray'>hors ligne</Badge>}
                                         </Flex>
                                     </Table.RowHeaderCell>
                                 </Table.Row>
