@@ -3,11 +3,13 @@ import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
 import { Section, Heading, RadioCards } from '@radix-ui/themes'
 import { Text, Flex, Table } from "@radix-ui/themes"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
+import { useUser } from "@/app/[locale]/_hooks/useUser"
 
 
 export default function Participants() {
 
     const { presences } = usePresences()
+    const { user } = useUser()
 
     return (
         <DeskMenuLayout menu="participants">
@@ -42,6 +44,7 @@ export default function Participants() {
                 <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
 
                 <Table.Root>
+                    {/*
                     <Table.Header>
                         <Table.Row>
                             <Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
@@ -49,6 +52,7 @@ export default function Participants() {
                             <Table.ColumnHeaderCell>ID</Table.ColumnHeaderCell>
                         </Table.Row>
                     </Table.Header>
+                    */}
 
                     <Table.Body>
 
@@ -56,13 +60,13 @@ export default function Participants() {
                         {presences.map((presence, index) => {
 
                             const name = presence.firstName + ' ' + presence.lastName
-                            const date = presence.connectedAt !== '' ? presence.connectedAt : presence.disconnectedAt
+                            //const date = presence.connectedAt !== '' ? presence.connectedAt : presence.disconnectedAt
+                            const isMe = presence.id === user?.id
+                            const raw = (presence.state == 'online' ? '🟢 ' : '⚪️ ') + name + (isMe ? ' (moi)' : '')
 
                             return(
                                 <Table.Row key={presence.id}>
-                                    <Table.RowHeaderCell>{name}</Table.RowHeaderCell>
-                                    <Table.Cell>{presence.state == 'online' ? '🟢':'🔴'}</Table.Cell>
-                                    <Table.Cell>{presence.id}</Table.Cell>
+                                    <Table.RowHeaderCell>{raw}</Table.RowHeaderCell>
                                 </Table.Row>
                             )
                         })}

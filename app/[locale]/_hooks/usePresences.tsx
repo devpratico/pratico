@@ -64,71 +64,10 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
 
         room.on('presence', { event: 'join' }, ({ key, newPresences }) => {
             logger.log('supabase:realtime', 'usePresence', 'join', newPresences)
-            /*
-            const _newPresences: PresenceState[] = newPresences.map(p => {
-                return {
-                    id: p.id,
-                    firstName: p.firstName,
-                    lastName: p.lastName,
-                    state: 'online',
-                    connectedAt: p.joinedAt,
-                    disconnectedAt: ''
-                }
-            })
-
-            // Add the new presences to the list
-            //setPresences((prev) => [...prev, ..._newPresences])
-
-            // Add the presences that are not already in the list (because we keep left presences)
-            setPresences((prev) => {
-                const realNewPresences = _newPresences.filter(np => !prev.map(p => p.id).includes(np.id))
-                return [...prev, ...realNewPresences]
-            })
-
-            // Update the presences that are already in the list
-            setPresences((prev) => {
-                const presencesToUpdate = _newPresences.filter(np => prev.map(p => p.id).includes(np.id))
-                // Just replace the presence with the new one, based on id
-                const updatedPresences = prev.map(p => {
-                    const presenceToUpdate = presencesToUpdate.find(ptu => p.id === ptu.id)
-                    if (presenceToUpdate) {
-                        return presenceToUpdate
-                    }
-                    return p
-                })
-
-                return updatedPresences
-            })*/
         })
 
         room.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
             logger.log('supabase:realtime', 'usePresence', 'leave', leftPresences)
-            /*
-            const leftIds = leftPresences.map(p => p.id)
-            // Keep the presences in the list but update the disconnectedAt date
-            setPresences((prev) => prev.map(p => {
-                if (leftIds.includes(p.id)) {
-                    return { ...p, state: 'offline', disconnectedAt: new Date().toISOString() }
-                }
-                return p
-            }))*/
-
-            // Add the left presences to the list, with an 'offline' status and a disconnectedAt date
-            /*
-            const _leftPresences: PresenceState[] = leftPresences.map(p => {
-                return {
-                    id: p.id,
-                    firstName: p.firstName,
-                    lastName: p.lastName,
-                    state: 'offline',
-                    connectedAt: p.joinedAt,
-                    disconnectedAt: new Date().toISOString()
-                }
-            })
-
-            // Add the left presences to the list
-            setPresences((prev) => [...prev, ..._leftPresences])
-            */
         })
 
         // Send my presence
