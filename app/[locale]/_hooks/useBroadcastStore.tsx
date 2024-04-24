@@ -1,5 +1,5 @@
 'use client'
-import createClient from "@/supabase/clients/client";
+import createClient from '@/supabase/clients/client';
 import {
     createTLStore,
     defaultShapeUtils,
@@ -48,10 +48,11 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
     useEffect(() => {
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
-        const channel = supabase.channel(roomId,
+        const channel = supabase.channel(roomId + "_document")
+        /*,
             // We use the tldraw user id as the supabase presence key id to identify the user:
             {config:{ presence: { key: getUserPreferences().id } }}
-        )
+        )*/
 
         // Initialize the listeners in the body of the useEffect so that we can unsubscribe in the cleanup function
         let storeListener: () => void
@@ -60,10 +61,10 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         // LISTEN TO LOCAL TLDRAW CHANGES - BROADCAST THEM
         // In order to broadcast stuff, we need to be in the `subscribe` callback
         channel.subscribe((status, err) => {
-            logger.log('supabase:realtime', 'status', status, err)
+            logger.log('supabase:realtime', roomId + "_document", 'status', status, err)
             // Define the logging function outside of the loop to allow debouncing
             // TODO: Get rid of debounce and use throttle
-            const debounceLog = debounce((response: any) => {logger.log('supabase:realtime', 'sent', response)}, 1000)
+            const debounceLog = debounce((response: any) => { logger.log('supabase:realtime', roomId + "_document", 'sent', response)}, 1000)
 
             // Define a function to send changes to the server
             const broadcast = async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {
@@ -90,6 +91,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 await channel.track(connexionStatus).then((response) => {debounceLog(response)})
             }
             sendConnexionStatus()
+            */
         
 
             // PRESENCE CHANGES - Mouse position, name, color...
@@ -117,7 +119,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 //requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
                 broadcast({eventName: 'presence', payload: presence})
             })
-            */
+            
 
 
         })
@@ -143,7 +145,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
 
         // LISTEN TO THE CHANNEL 'PRESENCE' REMOTE EVENTS - MERGE REMOTE CHANGES IN THE STORE
         // This is the mouse positions, names, colors...
-        /*
+        
         channel.on(
             'broadcast',
             { event: 'presence' },
@@ -159,6 +161,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }
         )
 
+        /*
         // LISTEN TO THE CHANNEL 'CONNEXIONS' REMOTE EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
         channel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
             // `leftPresences` corresponds to the connexion status we sent above
@@ -173,10 +176,10 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         })*/
 
         return () => {
-            supabase.removeChannel(channel).then((res) => {logger.log('supabase:realtime', 'channel removed:', res)})
+            supabase.removeChannel(channel).then((res) => { logger.log('supabase:realtime', roomId + "_document", 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
-            //presenceListener()
+            presenceListener()
             //channel.untrack()
         }
     }, [roomId, store])

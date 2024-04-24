@@ -25,7 +25,7 @@ export default function RoomPage() {
         initialSnapshot = JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot
     }
 
-    //const store = useBroadcastStore({ roomId, initialSnapshot })
+    const store = useBroadcastStore({ roomId, initialSnapshot })
 
     if (!room || !room.id || !roomId || !room.code) {
         //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
@@ -35,8 +35,7 @@ export default function RoomPage() {
 
     return (
         <main style={{height: '100dvh'}}>
-            {/*<Canvas store={store}>*/}
-            <Canvas>
+            <Canvas store={store}>
                 <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} />
                 <NavigatorSync />
             </Canvas>

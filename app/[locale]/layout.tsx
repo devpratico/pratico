@@ -6,7 +6,6 @@ import { UserProvider } from './_hooks/useUser';
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
 import { fetchUser, User, fetchNames, Names } from './_actions/actions'
-import logger from '../_utils/logger';
 
 
 export const metadata: Metadata = {

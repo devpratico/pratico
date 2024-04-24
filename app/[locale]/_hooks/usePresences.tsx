@@ -37,11 +37,11 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
         }
 
         const supabase = createClient()
-        const room = supabase.channel(roomId)
+        const room = supabase.channel(roomId + "_presence")
 
         // React to presence changes
         room.on('presence', { event: 'sync' }, () => {
-            logger.log('supabase:realtime', 'usePresence', 'Presence sync')
+            logger.log('supabase:realtime', roomId + "_presence", 'Presence sync')
             const newState = room.presenceState<PresenceState>()
             const newPresences = Object.values(newState).map(array => array[0])
 
@@ -63,11 +63,11 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
         })
 
         room.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-            logger.log('supabase:realtime', 'usePresence', 'join', newPresences)
+            logger.log('supabase:realtime', roomId + "_presence", 'join', newPresences)
         })
 
         room.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-            logger.log('supabase:realtime', 'usePresence', 'leave', leftPresences)
+            logger.log('supabase:realtime', roomId + "_presence", 'leave', leftPresences)
         })
 
         // Send my presence
@@ -81,14 +81,17 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
         }
 
         room.subscribe(async (status) => {
-            logger.log('supabase:realtime', 'usePresence', 'Presence status', status)
+            logger.log('supabase:realtime', roomId + "_presence", 'Presence status', status)
             if (status !== 'SUBSCRIBED') { return }
             const presenceTrackStatus = await room.track(myPresence)
             //logger.log('supabase:realtime', 'My presence track', presenceTrackStatus)
         })
 
 
-        return () => { room.untrack() }
+        return () => { 
+            //room.untrack()
+            supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', roomId + "_presence", 'channel removed:', res)})
+        }
 
     }, [roomId, user, firstName, lastName])
 

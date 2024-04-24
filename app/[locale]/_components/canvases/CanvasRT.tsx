@@ -25,7 +25,7 @@ export default function CanvasRT({children}: CanvasRTProps) {
     const initialSnapshot = useMemo(() => room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot : undefined, [room])
     
     // Create a store for the canvas
-    //const store = useBroadcastStore({roomId, initialSnapshot})
+    const store = useBroadcastStore({roomId, initialSnapshot})
 
     // TODO: clean up that number or string roomId
     if (!room || !room.id || !roomId) {
@@ -33,8 +33,7 @@ export default function CanvasRT({children}: CanvasRTProps) {
     }
 
     return (
-        <Canvas>
-            {/*<Canvas store={store}>*/}
+        <Canvas store={store}>
             {children}
             <AutoSaver saveTo={{destination: 'remote room', roomId: room.id}}/>
         </Canvas>
