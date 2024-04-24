@@ -8,6 +8,7 @@ import logger from "@/app/_utils/logger";
 
 interface PresenceState {
     id: string;
+    color: string;
     firstName: string;
     lastName: string;
     state: 'online' | 'offline';
@@ -26,7 +27,7 @@ const PresencesContext = createContext<PresencesContext | undefined>(undefined);
 // Note : https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
 export function PresencesProvider({ children, roomId }: { children: React.ReactNode, roomId: string }) {
 
-    const { user, firstName, lastName } = useUser()
+    const { user, color, firstName, lastName } = useUser()
     const [presences, setPresences] = useState<PresenceState[]>([])
 
     useEffect(() => {
@@ -52,6 +53,7 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
                 const gonePresences = prev.filter(p => !newPresences.map(np => np.id).includes(p.id))
                 const updatedGonePresences = gonePresences.map(gp => ({
                     id: gp.id,
+                    color: gp.color,
                     firstName: gp.firstName,
                     lastName: gp.lastName,
                     state: 'offline' as 'offline',
@@ -73,6 +75,7 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
         // Send my presence
         const myPresence: PresenceState = {
             id: user?.id || 'unknown',
+            color: color || 'lightblue',
             firstName: firstName || 'unknown',
             lastName: lastName || 'unknown',
             state: 'online',
@@ -93,7 +96,7 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
             supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', roomId + "_presence", 'channel removed:', res)})
         }
 
-    }, [roomId, user, firstName, lastName])
+    }, [roomId, user, color, firstName, lastName])
 
     return (
         <PresencesContext.Provider value={{ presences }}>

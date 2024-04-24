@@ -15,7 +15,6 @@ import {
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background/Background'
 import CanvasArea from './custom-ui/CanvasArea/CanvasArea'
-import { getRandomColor } from '@/app/_utils/codeGen'
 import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
 import { useCallback } from 'react'
 import Resizer from './custom-ui/Resizer/Resizer'
@@ -42,7 +41,7 @@ export interface CanvasProps {
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
-    const { user, firstName, lastName } = useUser()
+    const { user, color, firstName, lastName } = useUser()
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -72,7 +71,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             ...userPref,
             id: userId || userPref.id,
             name: name,
-            color: getRandomColor(),
+            color: color,
             edgeScrollSpeed: 0
         })
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
@@ -80,7 +79,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor, user, onMount, firstName, lastName])
+    }, [setEditor, user, color, onMount, firstName, lastName])
 
     return (
         <Tldraw

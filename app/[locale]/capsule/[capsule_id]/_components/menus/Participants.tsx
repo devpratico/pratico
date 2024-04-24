@@ -4,6 +4,7 @@ import { Section, Heading, RadioCards } from '@radix-ui/themes'
 import { Text, Flex, Table } from "@radix-ui/themes"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import { useUser } from "@/app/[locale]/_hooks/useUser"
+import { Crown } from "lucide-react"
 
 
 export default function Participants() {
@@ -59,14 +60,16 @@ export default function Participants() {
 
                         {presences.map((presence, index) => {
 
-                            const name = presence.firstName + ' ' + presence.lastName
-                            //const date = presence.connectedAt !== '' ? presence.connectedAt : presence.disconnectedAt
                             const isMe = presence.id === user?.id
-                            const raw = (presence.state == 'online' ? '🟢 ' : '⚪️ ') + name + (isMe ? ' (moi)' : '')
 
                             return(
                                 <Table.Row key={presence.id}>
-                                    <Table.RowHeaderCell>{raw}</Table.RowHeaderCell>
+                                    <Table.RowHeaderCell>
+                                        <Flex align='center' gap='2'>
+                                            {Circle(presence.state == 'online' ? presence.color : 'lightgray')}
+                                            {presence.firstName + ' ' + presence.lastName + (isMe ? ' (moi)' : '')}
+                                        </Flex>
+                                    </Table.RowHeaderCell>
                                 </Table.Row>
                             )
                         })}
@@ -78,4 +81,10 @@ export default function Participants() {
 
         </DeskMenuLayout>
     )
+}
+
+
+
+function Circle(color: string) {
+    return <div style={{width: 10, height: 10, borderRadius: '50%', backgroundColor: color}}></div>
 }

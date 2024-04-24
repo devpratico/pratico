@@ -17,15 +17,21 @@ export function encodeStringForURL(str: string): string {
 }
 
 
-const colors = [
-    'cadetblue',
-    'coral',
-    'cornflowerblue',
-    'darkgreen',
-    'darkviolet',
-    'dodgerblue',
-    'tomato'
-]
+const colors: string[] = [
+    'AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure',
+    'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue',
+    'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse',
+    'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson',
+    'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray',
+    'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen',
+    'Darkorange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen',
+    'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet',
+    'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue',
+    'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro',
+    'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey',
+    'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed',
+    // Add all other CSS colors
+];
 
 /**
  * Returns a random color from the list of colors
