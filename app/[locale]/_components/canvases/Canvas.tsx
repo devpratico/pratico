@@ -93,7 +93,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             persistenceKey={persistenceKey}
         >
             {children}
-            <Resizer/>
+            {/*<Resizer/>*/}
             <EmbedHint/>
             <KeyboardShortcuts/>
         </Tldraw>

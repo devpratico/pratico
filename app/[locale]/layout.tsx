@@ -6,6 +6,7 @@ import { UserProvider } from './_hooks/useUser';
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
 import { fetchUser, User, fetchNames, Names } from './_actions/actions'
+import logger from '../_utils/logger';
 
 
 export const metadata: Metadata = {
@@ -25,9 +26,13 @@ export default async function RootLayout({children, params: { locale }}: RootLay
 
     try {
         user = await fetchUser()
-        names = await fetchNames(user.id)
     } catch (error) {
         user = undefined
+    }
+
+    try {
+        if (user) names = await fetchNames(user.id)
+    } catch (error) {
         names = undefined
     }
     

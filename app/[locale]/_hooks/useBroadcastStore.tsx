@@ -84,11 +84,13 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
             // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
             // TODO: Make a usePresence generally available in the app?
+            /*
             const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
             async function sendConnexionStatus() {
                 await channel.track(connexionStatus).then((response) => {debounceLog(response)})
             }
             sendConnexionStatus()
+        
 
             // PRESENCE CHANGES - Mouse position, name, color...
             // Broadcast your tldraw's TLInstancePresence to everyone
@@ -115,6 +117,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 //requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
                 broadcast({eventName: 'presence', payload: presence})
             })
+            */
 
 
         })
@@ -140,6 +143,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
 
         // LISTEN TO THE CHANNEL 'PRESENCE' REMOTE EVENTS - MERGE REMOTE CHANGES IN THE STORE
         // This is the mouse positions, names, colors...
+        /*
         channel.on(
             'broadcast',
             { event: 'presence' },
@@ -166,13 +170,13 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 newStore.remove(leftPresencesIds)
                 return newStore
             })
-        })
+        })*/
 
         return () => {
             supabase.removeChannel(channel).then((res) => {logger.log('supabase:realtime', 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
-            presenceListener()
+            //presenceListener()
             //channel.untrack()
         }
     }, [roomId, store])

@@ -3,8 +3,13 @@ import { fetchUserId } from '@/supabase/services/auth';
 import { fetchCapsuleSnapshot, saveSnapshotToCapsules } from '@/supabase/services/capsules'
 import { saveRoom, deleteRoom, RoomInsert, fetchRoomsCodes, roomParams } from '@/supabase/services/rooms'
 import { generateRandomCode } from '@/app/_utils/codeGen';
+import createClient from '@/supabase/clients/server';
+import logger from '@/app/_utils/logger';
+import { Tables } from "@/supabase/types/database.types";
 
 // TODO: Rappatrier le code supabase ici
+
+type Room = Tables<'rooms'>
 
 
 export async function createRoom(capsuleId: string): Promise<RoomInsert> {
@@ -49,6 +54,27 @@ export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
     try {
         await saveSnapshotToCapsules(capsuleId, snapshot)
     } catch (error) {
+        throw error
+    }
+}
+
+/**
+ * Get rooms related to a capsule
+ */
+export async function fetchRoomsByCapsuleId(capsuleId: string) {
+    const supabase = createClient()
+
+    try {
+        const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
+        if (error) {
+            throw error
+        } else {
+            const result = data as Room[]
+            logger.log('supabase:database', 'fetchRoomsByCapsuleId', capsuleId)
+            return result
+        }
+    } catch (error) {
+        logger.error('supabase:database', 'Error fetchRoomsByCapsuleId', (error as Error).message)
         throw error
     }
 }

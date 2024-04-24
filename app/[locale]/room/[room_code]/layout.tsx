@@ -2,6 +2,7 @@ import { fetchRoomByCode, Room } from "./_actions/actions";
 import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
+import { PresencesProvider } from "../../_hooks/usePresences";
 
 
 interface LayoutProps {
@@ -25,7 +26,9 @@ export default async function Layout({children, params}: LayoutProps) {
         <TLEditorProvider>
             <RoomProvider initialRoom={room}>
                 <NavProvider>
-                    { children }
+                    <PresencesProvider roomId={room.id.toString()}>
+                        { children }
+                    </PresencesProvider>
                 </NavProvider>
             </RoomProvider>
         </TLEditorProvider>
