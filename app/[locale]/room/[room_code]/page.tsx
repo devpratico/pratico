@@ -2,10 +2,12 @@
 import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import useBroadcastStore from "@/app/[locale]/_hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
+import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import AutoSaver from "@/app/[locale]/_components/canvases/custom-ui/AutoSaver/AutoSaver";
 import NavigatorSync from "@/app/[locale]/_components/canvases/custom-ui/NavigatorSync/NavigatorSync";
 import { useMemo } from "react";
+import Resizer from "../../_components/canvases/custom-ui/Resizer/Resizer";
 import logger from "@/app/_utils/logger";
 
 
@@ -36,6 +38,10 @@ export default function RoomPage() {
     return (
         <main style={{height: '100dvh'}}>
             <Canvas store={store}>
+                <div style={{position: 'absolute', height:'100%', display:'flex', alignItems:'center', left: '10px', zIndex: 1000}}>
+                    <TLToolbar />
+                </div>
+                <Resizer insets={{top: 0, right: 0, bottom: 0, left: 70}} margin={10} />
                 <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} />
                 <NavigatorSync />
             </Canvas>

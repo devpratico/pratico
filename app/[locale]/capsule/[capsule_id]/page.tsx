@@ -1,7 +1,7 @@
 import CanvasSwitcher from './_components/CanvasSwitcher';
 import { getTranslations } from 'next-intl/server';
 import DeskMenuBar from '@/app/[locale]/capsule/[capsule_id]/_components/menu-bars/DeskMenuBar/DeskMenuBar';
-import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/TLToolbar/TLToolbar';
+import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar';
 import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from './_components/Controls';
 import styles from './page.module.css'

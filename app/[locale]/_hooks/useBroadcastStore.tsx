@@ -68,7 +68,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             logger.log('supabase:realtime', roomId + "_document", 'status', status, err)
             // Define the logging function outside of the loop to allow debouncing
             // TODO: Get rid of debounce and use throttle
-            const debounceLog = debounce((response: any) => { logger.log('supabase:realtime', roomId + "_document", 'sent', response)}, 1000)
+            const debounceLog = debounce((response: any) => { logger.log('supabase:realtime', roomId + "_document", 'sent', response)}, 100)
 
             // Define a function to send changes to the server
             const broadcast = async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {

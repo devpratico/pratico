@@ -17,7 +17,7 @@ import Background from './custom-ui/Background/Background'
 import CanvasArea from './custom-ui/CanvasArea/CanvasArea'
 import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
 import { useCallback } from 'react'
-import Resizer from './custom-ui/Resizer/Resizer'
+//import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import { useUser } from '@/app/[locale]/_hooks/useUser'
 import logger from '@/app/_utils/logger'
@@ -91,7 +91,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             persistenceKey={persistenceKey}
         >
             {children}
-            <Resizer/>
+            {/*<Resizer/>*/}
             <EmbedHint/>
             <KeyboardShortcuts/>
         </Tldraw>
