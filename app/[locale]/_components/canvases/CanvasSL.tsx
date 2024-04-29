@@ -99,7 +99,7 @@ export default function CanvasSL() {
         // If not local, we will use the AutoSaver to save the snapshot to the capsule
         return (
             <Canvas store={store}>
-                <Resizer insets={{top: 0, right: 0, bottom: 0, left: 60}} margin={10} />
+                <Resizer insets={{top: 60, right: 0, bottom: 70, left: 60}} margin={10} />
                 <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
             </Canvas>
         )
