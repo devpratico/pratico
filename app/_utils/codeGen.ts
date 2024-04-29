@@ -22,13 +22,13 @@ const colors: string[] = [
     'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue',
     'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse',
     'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson',
-    'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray',
-    'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen',
+    'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod',
+    'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen',
     'Darkorange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen',
-    'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet',
-    'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue',
+    'DarkSlateBlue', 'DarkTurquoise', 'DarkViolet',
+    'DeepPink', 'DeepSkyBlue', 'DodgerBlue',
     'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro',
-    'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey',
+    'GhostWhite', 'Gold', 'GoldenRod',
     'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed',
     // Add all other CSS colors
 ];
