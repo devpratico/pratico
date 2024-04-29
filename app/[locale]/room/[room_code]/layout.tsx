@@ -26,7 +26,7 @@ export default async function Layout({children, params}: LayoutProps) {
         <TLEditorProvider>
             <RoomProvider initialRoom={room}>
                 <NavProvider>
-                    <PresencesProvider roomId={room.id.toString()}>
+                    <PresencesProvider>
                         { children }
                     </PresencesProvider>
                 </NavProvider>
