@@ -48,7 +48,11 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
     useEffect(() => {
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
-        const channel = supabase.channel(roomId + "_document")
+        const channel = supabase.channel(roomId + "_document", {
+            config: {
+                broadcast: { ack: true },
+            },
+        })
         /*,
             // We use the tldraw user id as the supabase presence key id to identify the user:
             {config:{ presence: { key: getUserPreferences().id } }}
@@ -58,7 +62,7 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         let storeListener: () => void
         let presenceListener: () => void
 
-        // LISTEN TO LOCAL TLDRAW CHANGES - BROADCAST THEM
+        // BROADCAST LOCAL TLDRAW CHANGES - BROADCAST THEM
         // In order to broadcast stuff, we need to be in the `subscribe` callback
         channel.subscribe((status, err) => {
             logger.log('supabase:realtime', roomId + "_document", 'status', status, err)
@@ -80,18 +84,6 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 logChanges(changes, 'local')
                 broadcast({eventName: 'document', payload: changes})
             }, { source: 'user', scope: 'document' })
-
-            // PRESENCE CHANGES - Connexion status of participants
-            // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
-            // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
-            // TODO: Make a usePresence generally available in the app?
-            /*
-            const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
-            async function sendConnexionStatus() {
-                await channel.track(connexionStatus).then((response) => {debounceLog(response)})
-            }
-            sendConnexionStatus()
-            */
         
 
             // PRESENCE CHANGES - Mouse position, name, color...
@@ -99,9 +91,9 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
 				const user = getUserPreferences()
 				return {
-					id: user.id,
+					id:    user.id,
 					color: user.color ?? defaultUserPreferences.color,
-					name: user.name ?? defaultUserPreferences.name,
+					name:  user.name  ?? defaultUserPreferences.name,
 				}
 			})
 
@@ -115,13 +107,10 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             presenceListener = react('when presence changes', () => {
                 const presence = presenceSignal.get()
                 if (!presence) return
-                // `requestAnimationFrame` is used in the example, not sure why not used for the document changes too
-                //requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
+                //`requestAnimationFrame` is used in the example, not sure why not used for the document changes too
+                // requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
                 broadcast({eventName: 'presence', payload: presence})
             })
-            
-
-
         })
 
         // LISTEN TO THE CHANNEL 'DOCUMENT' EVENTS - MERGE REMOTE CHANGES IN THE STORE
@@ -145,7 +134,6 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
 
         // LISTEN TO THE CHANNEL 'PRESENCE' REMOTE EVENTS - MERGE REMOTE CHANGES IN THE STORE
         // This is the mouse positions, names, colors...
-        
         channel.on(
             'broadcast',
             { event: 'presence' },
@@ -160,20 +148,6 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
                 })
             }
         )
-
-        /*
-        // LISTEN TO THE CHANNEL 'CONNEXIONS' REMOTE EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
-        channel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-            // `leftPresences` corresponds to the connexion status we sent above
-            // Get the ids and turn them into the special Instance type
-            const leftPresencesIds = leftPresences.map(p => InstancePresenceRecordType.createId(p.id))
-            logger.log('supabase:realtime', 'presences leave', leftPresencesIds, (`key: ${key}, myKey: ${getUserPreferences().id}`))
-            setStore((prevStore) => {
-                const newStore = prevStore
-                newStore.remove(leftPresencesIds)
-                return newStore
-            })
-        })*/
 
         return () => {
             supabase.removeChannel(channel).then((res) => { logger.log('supabase:realtime', roomId + "_document", 'channel removed:', res)})

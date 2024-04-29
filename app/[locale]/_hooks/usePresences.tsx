@@ -3,6 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
 import { useUser } from "./useUser";
 import logger from "@/app/_utils/logger";
+import { useRoom } from "./useRoom";
 
 
 
@@ -25,8 +26,10 @@ const PresencesContext = createContext<PresencesContext | undefined>(undefined);
 
 
 // Note : https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
-export function PresencesProvider({ children, roomId }: { children: React.ReactNode, roomId: string }) {
+export function PresencesProvider({ children }: { children: React.ReactNode }) {
 
+    const { room } = useRoom()
+    const roomId = room?.id
     const { user, color, firstName, lastName } = useUser()
     const [presences, setPresences] = useState<PresenceState[]>([])
 
@@ -97,6 +100,11 @@ export function PresencesProvider({ children, roomId }: { children: React.ReactN
         }
 
     }, [roomId, user, color, firstName, lastName])
+
+
+    if (!roomId) {
+        logger.log('react:hook', 'usePresences', 'No room id found - no presences to track')
+    }
 
     return (
         <PresencesContext.Provider value={{ presences }}>

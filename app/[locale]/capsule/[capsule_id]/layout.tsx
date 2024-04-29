@@ -33,7 +33,7 @@ export default async function Layout({ children, params: { capsule_id } }: Layou
     return (
         <TLEditorProvider>
             <RoomProvider initialRoom={room}>
-                <PresencesProvider roomId={room?.id.toString() || 'unknown'}>
+                <PresencesProvider>
                     <NavProvider>
                         <MenuProvider>
                             { children }
