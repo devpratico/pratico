@@ -185,3 +185,6 @@ function logChanges(changes: RecordsDiff<TLRecord>, source: 'local' | 'remote') 
     Object.values(changes.removed).forEach((record)     => {logger.log('tldraw:collab', source + ' removed', record.id)})
     Object.values(changes.updated).forEach(([from, to]) => {debounceLog(source + ' updated', from.id)})
 }
+
+
+// TODO : Le throttling a pour conséquence de manquer la fin des traits. Déclencher une syncchro au leve de la souris
