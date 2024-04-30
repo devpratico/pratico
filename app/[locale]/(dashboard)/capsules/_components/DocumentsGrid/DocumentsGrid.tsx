@@ -21,8 +21,6 @@ interface DocumentsGridProps {
 }
 
 
-// TODO: Remove capsule name from Supabase, as it is stored inside the tldraw document. Same with created_at.
-
 /**
  * This grid displays the capsules from the database and the local storage.
  */

@@ -2,9 +2,10 @@
 import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/app/_utils/logger";
 import { createRoom } from "@/app/[locale]/capsule/[capsule_id]/_actions/capsuleActions";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
+//import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useParams } from "next/navigation";
 import useIsLocalDoc from "@/app/[locale]/_hooks/old_useIsLocalDoc";
+import { useRouter } from "@/app/_intl/intlNavigation";
 
 
 interface StartBtnProps {
@@ -13,7 +14,8 @@ interface StartBtnProps {
 
 export default function StartBtn({ message }: StartBtnProps) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const { setRoom } = useRoom()
+    const router = useRouter()
+    //const { setRoom } = useRoom()
     const local = useIsLocalDoc()
     
 
@@ -24,7 +26,10 @@ export default function StartBtn({ message }: StartBtnProps) {
             // Start the session and get the room that is created
             const createdRoom = await createRoom(capsuleId)
             // Set the room in the context
-            setRoom(createdRoom)
+            //setRoom(createdRoom)
+
+            // Redirect to the room page
+            router.push(`/room/${createdRoom.code}`)
         } catch (error) {
             logger.error('supabase:database', 'Error starting session', (error as Error).message)
         }

@@ -2,7 +2,7 @@
 import { Flex, IconButton, Text } from "@radix-ui/themes"
 import { Plus, ChevronLeft, ChevronRight, Maximize } from "lucide-react"
 import { useNav } from "@/app/[locale]/_hooks/useNav"
-import { useMenu } from "../_hooks/useMenu"
+import { useMenu } from "../../../_hooks/useMenu"
 
 
 export default function Controls() {
@@ -38,7 +38,7 @@ export default function Controls() {
                 <ChevronRight size={iconSize} />
             </IconButton>
 
-            <IconButton variant='ghost' size='3'>
+            <IconButton variant='ghost' size='3' disabled={true}>
                 <Maximize size={iconSize} />
             </IconButton>
         </Flex>

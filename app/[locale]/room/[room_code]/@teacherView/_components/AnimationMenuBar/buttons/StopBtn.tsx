@@ -3,7 +3,7 @@ import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/Pla
 import logger from "@/app/_utils/logger";
 import { stopRoom } from "@/app/[locale]/capsule/[capsule_id]/_actions/capsuleActions";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/app/_intl/intlNavigation";
 
 
 interface StopBtnProps {
@@ -14,7 +14,7 @@ interface StopBtnProps {
 export default function StopBtn({ message }: StopBtnProps) {
 
     const router = useRouter()
-    const { room, setRoom } = useRoom()
+    const { room } = useRoom()
     const roomId = room?.id
 
     const handleClick = async () => {
@@ -22,9 +22,10 @@ export default function StopBtn({ message }: StopBtnProps) {
         logger.log('react:component', 'Clicked stop button')
         try {
             await stopRoom(roomId)
-            setRoom(undefined)
             logger.log('supabase:database', 'Session stopped')
-            router.refresh()
+            //router.refresh()
+            // Redirect to the capsule page
+            router.push(`/capsule/${room.capsule_id}`)
         } catch (error) {
             logger.error('supabase:database', 'Error stopping session', error)
         }

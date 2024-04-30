@@ -1,7 +1,7 @@
 'use client'
 import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
 import { Section, Heading, RadioCards } from '@radix-ui/themes'
-import { Text, Flex, Table, Badge } from "@radix-ui/themes"
+import { Text, Flex, Table, Badge, Box } from "@radix-ui/themes"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import { useUser } from "@/app/[locale]/_hooks/useUser"
 
@@ -16,25 +16,31 @@ export default function Participants() {
             <Section size='1'>
                 <Heading size='3' as="h3" trim='both'>DÉFILEMENT</Heading>
 
-                <RadioCards.Root defaultValue='1' columns='1'>
-                    <RadioCards.Item value='1'>
+                <RadioCards.Root defaultValue='2' columns='1'>
+                    <RadioCards.Item value='1'  disabled={true}>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Pratico</Text>
-                            <Text>Explication</Text>
+                            <Text>Les participants peuvent consulter les pages précédentes</Text>
                         </Flex>
+                        <Box position='absolute' top='2' right='2'>
+                            <Badge color='gray'>Bientôt</Badge>
+                        </Box>
                     </RadioCards.Item>
                     <RadioCards.Item value='2'>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Animateur</Text>
-                            <Text>Explication</Text>
+                            <Text>Les participants voient la page du formateur</Text>
                         </Flex>
 
                     </RadioCards.Item>
-                    <RadioCards.Item value='3'>
+                    <RadioCards.Item value='3' disabled={true}>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Libre</Text>
-                            <Text>Explication</Text>
+                            <Text>Les participants ont accès à toutes les pages</Text>
                         </Flex>
+                        <Box position='absolute' top='2' right='2'>
+                            <Badge color='gray'>Bientôt</Badge>
+                        </Box>
                     </RadioCards.Item>
                 </RadioCards.Root>
 
@@ -44,16 +50,6 @@ export default function Participants() {
                 <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
 
                 <Table.Root>
-                    {/*
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell>ID</Table.ColumnHeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    */}
-
                     <Table.Body>
 
 

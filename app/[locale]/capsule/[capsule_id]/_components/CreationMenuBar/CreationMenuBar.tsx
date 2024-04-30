@@ -1,14 +1,15 @@
-import MenuBarLayout from "../components/MenuBarLayout/MenuBarLayout";
+'use client'
+import MenuBarLayout from "../MenuBarLayout/MenuBarLayout";
 import Image from 'next/image';
-import CapsuleTitle from '../components/CapsuleTitle/CapsuleTitle';
-import LabeledIconBtn from '../../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
+import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
+import LabeledIconBtn from '../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import DoneBtn from './buttons/DoneBtn';
 import { IconSize } from '@/app/_utils/icons/IconProps';
 import praticoLogo from '@/public/images/pratico.svg';
 import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import StartBtn from "./buttons/StartBtn";
-import { useMenu } from "../../../_hooks/useMenu";
+import { useMenu } from "../../../../_hooks/useMenu";
 
 
 

@@ -1,5 +1,5 @@
 import styles from './AnimationMenuBar.module.css';
-import MenuBarLayout from "../components/MenuBarLayout/MenuBarLayout";
+import MenuBarLayout from "../../../../../capsule/[capsule_id]/_components/MenuBarLayout/MenuBarLayout";
 import Image from 'next/image';
 import LabeledIconBtn from '../../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import praticoLogo from '@/public/images/pratico.svg';
@@ -8,7 +8,7 @@ import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import ChatSquareDotIcon from '@/app/[locale]/_components/icons/ChatSquareDotIcon';
 import { IconSize } from '@/app/_utils/icons/IconProps';
 import StopBtn from "./buttons/StopBtn";
-import RoomLink from "../components/RoomLink/RoomLink";
+import RoomLink from "../../../../../capsule/[capsule_id]/_components/RoomLink/RoomLink";
 import ParticipantsBtn from './buttons/ParticipantsBtn';
 
 

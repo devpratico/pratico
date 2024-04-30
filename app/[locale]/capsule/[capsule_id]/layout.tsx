@@ -5,7 +5,7 @@ import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import logger from "@/app/_utils/logger";
-import { MenuProvider } from "./_hooks/useMenu";
+import { MenuProvider } from "../../_hooks/useMenu";
 import { PresencesProvider } from "../../_hooks/usePresences";
 
 

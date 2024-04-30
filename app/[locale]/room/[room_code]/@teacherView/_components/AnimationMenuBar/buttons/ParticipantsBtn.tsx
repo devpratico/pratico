@@ -2,7 +2,7 @@
 import LabeledIconBtn from "@/app/[locale]/_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn";
 import PeopleIcon from "@/app/[locale]/_components/icons/PeopleIcon";
 import { IconSize } from "@/app/_utils/icons/IconProps";
-import { useMenu } from "../../../../_hooks/useMenu";
+import { useMenu } from "../../../../../../_hooks/useMenu";
 
 
 
