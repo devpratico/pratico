@@ -40,15 +40,6 @@ export async function createRoom(capsuleId: string): Promise<RoomInsert> {
     }
 }
 
-export async function stopRoom(roomId: number) {
-    if (!roomId) throw new Error('No room id provided for stop button')
-    try {
-        await deleteRoom(roomId)
-    } catch (error) {
-        throw error
-    }
-}
-
 
 export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
     try {

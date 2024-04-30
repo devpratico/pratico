@@ -10,6 +10,8 @@ import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
 import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
 import StartBtn from "./buttons/StartBtn";
 import { useMenu } from "../../../../_hooks/useMenu";
+import LoginBtn from "@/app/[locale]/_components/LoginBtn";
+import { useUser } from "@/app/[locale]/_hooks/useUser";
 
 
 
@@ -24,6 +26,7 @@ interface CreationMenuBarProps {
 
 export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
 
+    const { user } = useUser()
     const { toggleDeskMenu } = useMenu()
 
     const styleBtnProps = {
@@ -49,6 +52,7 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
             />
 
             <DoneBtn message={messages?.done || 'Done'} />
+            { user?.is_anonymous && <LoginBtn message="Se connecter" />}
         </MenuBarLayout>
     )
 }

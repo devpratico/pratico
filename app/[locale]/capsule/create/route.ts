@@ -39,11 +39,14 @@ export async function GET(request: Request) {
 
     } else {        
         // The user is not logged in, we'll use a local storage capsule 
+        /*
         const capsule_id = randomUUID()
         let url = '/capsule/' + capsule_id 
         url += '?local=true' // Tell the capsule page that this is a local capsule (so it won't try to fetch things)
         url += loadDefault ? '&loadDefault=' + loadDefault : '' // Pass the loadDefault query parameter to the redirection
 
         return new Response(null, { status: 302, headers: { Location: url } })
+        */
+        return new Response("User not logged in", { status: 401 })
     }   
 }

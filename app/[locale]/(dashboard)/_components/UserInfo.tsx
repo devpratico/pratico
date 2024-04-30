@@ -2,7 +2,7 @@ import Avatar from "@/app/[locale]/_components/primitives/Avatar/Avatar";;
 import { fetchProfile } from '@/supabase/services/user_profiles';
 import { fetchUser } from '@/supabase/services/auth';
 import { Link } from "@/app/_intl/intlNavigation";
-import LogInBtn from './LogInBtn';
+import LoginBtn from "../../_components/LoginBtn";
 import { getTranslations } from 'next-intl/server';
 
 
@@ -10,13 +10,17 @@ export const revalidate = 0
 
 export default async function UserInfo() {
 
-    const t = await getTranslations("auth")
+    const t = await getTranslations("dashboard")
 
     let user
     try {
         user = await fetchUser()
     } catch (error) {
-        return <LogInBtn>{t("sign in")}</LogInBtn>
+        return <LoginBtn message={t('sign in')} />
+    }
+
+    if (!user || user.is_anonymous) {
+        return <LoginBtn message={t('sign in')} />
     }
 
     const { data: profileData, error: profileError } = await fetchProfile(user.id)

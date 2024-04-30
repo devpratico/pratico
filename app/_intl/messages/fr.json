@@ -14,6 +14,7 @@
     },
 
     "dashboard": {
+        "sign in": "Se connecter",
         "capsules": "Capsules",
         "activities": "Activités",
         "quizes and surveys": "Quiz et sondages",
