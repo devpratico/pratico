@@ -1,12 +1,12 @@
 'use client'
-import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
+import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout/DeskMenuLayout"
 import { Section, Heading, RadioCards } from '@radix-ui/themes'
 import { Text, Flex, Table, Badge, Box } from "@radix-ui/themes"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import { useUser } from "@/app/[locale]/_hooks/useUser"
 
 
-export default function Participants() {
+export default function ParticipantMenu() {
 
     const { presences } = usePresences()
     const { user } = useUser()
@@ -20,7 +20,7 @@ export default function Participants() {
                     <RadioCards.Item value='1'  disabled={true}>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Pratico</Text>
-                            <Text>Les participants peuvent consulter les pages précédentes</Text>
+                            <Text color='gray'>Les participants peuvent consulter les pages précédentes</Text>
                         </Flex>
                         <Box position='absolute' top='2' right='2'>
                             <Badge color='gray'>Bientôt</Badge>
@@ -29,14 +29,14 @@ export default function Participants() {
                     <RadioCards.Item value='2'>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Animateur</Text>
-                            <Text>Les participants voient la page du formateur</Text>
+                            <Text color='gray'>Les participants voient la page du formateur</Text>
                         </Flex>
 
                     </RadioCards.Item>
                     <RadioCards.Item value='3' disabled={true}>
                         <Flex direction='column' width='100%'>
                             <Text weight="bold">Libre</Text>
-                            <Text>Les participants ont accès à toutes les pages</Text>
+                            <Text color='gray'>Les participants ont accès à toutes les pages</Text>
                         </Flex>
                         <Box position='absolute' top='2' right='2'>
                             <Badge color='gray'>Bientôt</Badge>

@@ -16,7 +16,7 @@ export default function DeskMenuLayout({ menu, children }: DeskMenuLayoutProps) 
     return (
         <Dialog
             open={openedDeskMenu === menu}
-            onOpenChange={open => setOpenDeskMenu(open ? 'participants' : undefined)}
+            onOpenChange={open => setOpenDeskMenu(open ? menu : undefined)}
         >
             <DialogContent portal={false} className={styles.container}>
                 {children}

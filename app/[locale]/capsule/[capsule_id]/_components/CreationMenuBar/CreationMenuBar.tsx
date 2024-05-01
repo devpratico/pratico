@@ -37,6 +37,8 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
         disabled: true,
     }
 
+    const isAnonymous = user?.is_anonymous
+
     return (
         <MenuBarLayout spacerPosition={3}>
             <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
@@ -52,7 +54,7 @@ export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
             />
 
             <DoneBtn message={messages?.done || 'Done'} />
-            { user?.is_anonymous && <LoginBtn message="Se connecter" />}
+            { isAnonymous && <LoginBtn message="Se connecter" />}
         </MenuBarLayout>
     )
 }

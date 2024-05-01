@@ -1,11 +1,14 @@
 import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar';
 import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from '@/app/[locale]/capsule/[capsule_id]/_components/Controls';
-import Participants from '@/app/[locale]/capsule/[capsule_id]/_components/menus/Participants';
-import Add from '@/app/[locale]/capsule/[capsule_id]/_components/menus/Add';
+import ParticipantsMenu from '@/app/[locale]/room/[room_code]/@teacherView/_components/menus/ParticipantsMenu';
+import AddMenu from '@/app/[locale]/capsule/[capsule_id]/_components/menus/AddMenu';
 import CanvasRT from '@/app/[locale]/_components/canvases/CanvasRT';
 import AnimationMenuBar from '@/app/[locale]/room/[room_code]/@teacherView/_components/AnimationMenuBar';
 import styles from '@/app/[locale]/capsule/[capsule_id]/page.module.css'
+import ChatMenu from './_components/menus/ChatMenu';
+import ActivitiesMenu from '@/app/[locale]/capsule/[capsule_id]/_components/menus/ActivitiesMenu';
+import MoreMenu from './_components/menus/MoreMenu';
 
 
 export default async function TeacherView({ params }: { params: { room_code: string } }) {
@@ -33,8 +36,11 @@ export default async function TeacherView({ params }: { params: { room_code: str
             </div>
 
             <div className={styles.menu}>
-                <Participants />
-                <Add />
+                <ParticipantsMenu />
+                <AddMenu />
+                <ChatMenu />
+                <ActivitiesMenu />
+                <MoreMenu/>
             </div>
 
         </div>

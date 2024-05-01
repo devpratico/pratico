@@ -3,10 +3,12 @@ import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/tool-bar/TL
 import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from './_components/Controls';
 import styles from './page.module.css'
-import Participants from "./_components/menus/Participants";
-import Add from "./_components/menus/Add";
+import ParticipantsMenu from "../../room/[room_code]/@teacherView/_components/menus/ParticipantsMenu";
+import AddMenu from "./_components/menus/AddMenu";
+import ActivitiesMenu from './_components/menus/ActivitiesMenu';
 import CanvasSL from '../../_components/canvases/CanvasSL';
 import CreationMenuBar from './_components/CreationMenuBar/CreationMenuBar';
+import ChatMenu from '../../room/[room_code]/@teacherView/_components/menus/ChatMenu';
 
 
 export default async function CapsulePage() {
@@ -26,12 +28,10 @@ export default async function CapsulePage() {
         <div className={styles.container}>
 
             <div className={styles.canvas}>
-                {/*<CanvasSwitcher />*/}
                 <CanvasSL />
             </div>
 
             <div className={styles.menuBar}>
-                {/*<DeskMenuBar messages={messages} />*/}
                 <CreationMenuBar messages={messages} />
             </div>
 
@@ -48,8 +48,10 @@ export default async function CapsulePage() {
             </div>
 
             <div className={styles.menu}>
-                <Participants />
-                <Add />
+                <ParticipantsMenu />
+                <AddMenu />
+                <ActivitiesMenu/>
+                <ChatMenu />
             </div>
 
         </div>

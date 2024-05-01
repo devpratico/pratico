@@ -1,5 +1,6 @@
 'use client'
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import logger from '@/app/_utils/logger';
 
 
 //export type MenuBarMode = 'creation' | 'animation';
@@ -22,6 +23,10 @@ export function MenuProvider({ children }: { children: React.ReactNode }) {
     const toggleDeskMenu = (menu: DeskMenu | undefined) => {
         setOpenDeskMenu((prev) => prev === menu ? undefined : menu);
     };
+
+    useEffect(() => {
+        logger.log('react:hook', 'Menu set to', openedDeskMenu)
+    }, [openedDeskMenu]);
 
     return (
         <MenuContext.Provider value={{

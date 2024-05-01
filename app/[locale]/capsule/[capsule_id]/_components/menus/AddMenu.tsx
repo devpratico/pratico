@@ -11,7 +11,7 @@ import { useNav } from "@/app/[locale]/_hooks/useNav"
 
 
 
-export default function Add() {
+export default function AddMenu() {
 
     const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()

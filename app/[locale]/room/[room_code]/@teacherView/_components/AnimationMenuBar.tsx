@@ -1,17 +1,13 @@
 import Image from 'next/image';
-import LabeledIconBtn from '../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
 import praticoLogo from '@/public/images/pratico.svg';
-import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
-import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
-import ChatSquareDotIcon from '@/app/[locale]/_components/icons/ChatSquareDotIcon';
-import { IconSize } from '@/app/_utils/icons/IconProps';
-import ParticipantsBtn from './ParticipantsBtn';
 import { getTranslations } from 'next-intl/server';
-import { HoverCard, Code, Flex, Box, Text, Button, IconButton } from "@radix-ui/themes";
+import { HoverCard, Code, Flex, Box, Text, Button } from "@radix-ui/themes";
 import StopBtn from "./StopBtn";
-import { Copy, Puzzle } from 'lucide-react';
+import { Copy, Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
+import { isUserAnonymous } from '../_actions/actions';
+import MenuBtn from './MenuBtn';
 
 
 
@@ -22,22 +18,9 @@ interface AnimationMenuBarProps {
 export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarProps) {
 
     const t = await getTranslations('menu-bar')
-    const messages = {
-        play: t('play'),
-        stop: t('stop session'),
-        polls: t('polls'),
-        chat: t('chat'),
-        participants: t('participants'),
-        more: t('more'),
-        done: t('done'),
-    }
 
-    const styleBtnProps = {
-        iconColor: "var(--text-on-primary)",
-        iconSize: "md" as IconSize,
-        labelColor: "var(--secondary)",
-        hideLabel: false,
-    }
+
+    const isAnonymous = await isUserAnonymous()
 
 
     return (
@@ -53,7 +36,7 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
                         <Text>{`Pour rejoindre la session, rendez-vous sur`}</Text>
                         <Button variant='ghost' asChild>
                             <Flex gap='2' align='center'>
-                                <Code size='5' weight='bold'>{"pratico.io/room/" + roomCode}</Code>
+                                <Code size='5' weight='bold'>{"pratico.io/" + roomCode}</Code>
                                 <Copy/>
                             </Flex>
                         </Button>
@@ -63,18 +46,16 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
             </HoverCard.Root>
             
 
-            <StopBtn message={messages?.stop || 'stop session'}/>
+            <StopBtn message={t('stop') || 'stop session'}/>
             
             <Box flexGrow='1' />
 
-            <Button asChild>
-                <Puzzle/>
-            </Button>
-            <LabeledIconBtn icon={<PuzzleIcon        fill={true}/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
-            <LabeledIconBtn icon={<ChatSquareDotIcon fill={true}/>} label={messages?.chat || 'chat'} {...styleBtnProps} />
-            <ParticipantsBtn message={messages?.participants} />
-            <LabeledIconBtn icon={<ThreeDotsIcon     fill={true}/>} label={messages?.more || 'more'} {...styleBtnProps} />
-            <LoginBtn message="Se connecter" />
+            <MenuBtn menu='polls' message={t('activities')}><Puzzle /></MenuBtn>
+            <MenuBtn menu='chat' message={t('chat')}><MessageSquareText /></MenuBtn>
+            <MenuBtn menu='participants' message={t('participants')}><Users/></MenuBtn>
+            <MenuBtn menu='more' message={t('more')}><Ellipsis /></MenuBtn>
+
+            { isAnonymous && <LoginBtn message="Se connecter" />}
         </Flex>
     )
 }
