@@ -7,6 +7,7 @@ import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 import { useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
+import { Button } from "@radix-ui/themes";
 
 
 interface DoneBtnProps {
@@ -46,6 +47,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
         }
     }, [capsuleId, editor, router, setRoom, local])
 
+    /*
     return (
         <PlainBtn
             color="secondary"
@@ -54,5 +56,11 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             onClick={handleClick}
             message={message || "Done"}
         />
+    )*/
+
+    return (
+        <Button onClick={handleClick}>
+            {message}
+        </Button>
     )
 }

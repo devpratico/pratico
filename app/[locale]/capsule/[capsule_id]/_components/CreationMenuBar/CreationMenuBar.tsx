@@ -7,6 +7,7 @@ import MenuBtn from '@/app/[locale]/room/[room_code]/@teacherView/_components/Me
 import { Puzzle, Ellipsis } from 'lucide-react';
 import { isUserAnonymous } from '@/app/[locale]/room/[room_code]/@teacherView/_actions/actions';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
+import DoneBtn from './buttons/DoneBtn';
 
 
 export default async function CreationMenuBar() {
@@ -23,6 +24,7 @@ export default async function CreationMenuBar() {
 
             <MenuBtn menu='polls' message={'activités'}><Puzzle /></MenuBtn>
             <MenuBtn menu='more' message={'plus'}><Ellipsis /></MenuBtn>
+            <DoneBtn message='terminé'/>
 
             {isAnonymous && <LoginBtn message="Se connecter" />}
         </Flex>
