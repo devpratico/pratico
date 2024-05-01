@@ -18,10 +18,7 @@ interface AnimationMenuBarProps {
 export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarProps) {
 
     const t = await getTranslations('menu-bar')
-
-
     const isAnonymous = await isUserAnonymous()
-
 
     return (
         <Flex align='center' p='3' gap='5' height='60px' style={{backgroundColor:'var(--brand)'}}>

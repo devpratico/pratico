@@ -1,60 +1,31 @@
-'use client'
-import MenuBarLayout from "../MenuBarLayout/MenuBarLayout";
 import Image from 'next/image';
-import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
-import LabeledIconBtn from '../../../../_components/primitives/buttons/LabaledIconBtn/LabeledIconBtn';
-import DoneBtn from './buttons/DoneBtn';
-import { IconSize } from '@/app/_utils/icons/IconProps';
 import praticoLogo from '@/public/images/pratico.svg';
-import PuzzleIcon from '@/app/[locale]/_components/icons/PuzzleIcon';
-import ThreeDotsIcon from '@/app/[locale]/_components/icons/ThreeDotsIcon';
-import StartBtn from "./buttons/StartBtn";
-import { useMenu } from "../../../../_hooks/useMenu";
-import LoginBtn from "@/app/[locale]/_components/LoginBtn";
-import { useUser } from "@/app/[locale]/_hooks/useUser";
+import { Flex, Box } from "@radix-ui/themes";
+import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
+import StartBtn from './buttons/StartBtn';
+import MenuBtn from '@/app/[locale]/room/[room_code]/@teacherView/_components/MenuBtn';
+import { Puzzle, Ellipsis } from 'lucide-react';
+import { isUserAnonymous } from '@/app/[locale]/room/[room_code]/@teacherView/_actions/actions';
+import LoginBtn from '@/app/[locale]/_components/LoginBtn';
 
 
+export default async function CreationMenuBar() {
 
-interface CreationMenuBarProps {
-    messages?: {
-        play: string;
-        polls: string;
-        more: string;
-        done: string;
-    }
-}
-
-export default function CreationMenuBar({ messages }: CreationMenuBarProps) {
-
-    const { user } = useUser()
-    const { toggleDeskMenu } = useMenu()
-
-    const styleBtnProps = {
-        iconColor: "var(--text-on-primary)",
-        iconSize: "md" as IconSize,
-        labelColor: "var(--secondary)",
-        hideLabel: false,
-        disabled: true,
-    }
-
-    const isAnonymous = user?.is_anonymous
+    const isAnonymous = await isUserAnonymous()
 
     return (
-        <MenuBarLayout spacerPosition={3}>
+        <Flex align='center' p='3' gap='5' height='60px' style={{ backgroundColor: 'var(--brand)' }}>
             <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
             <CapsuleTitle />
-            <StartBtn message={messages?.play || 'Play'} />
-            <LabeledIconBtn icon={<PuzzleIcon/>} label={messages?.polls || 'activities'} {...styleBtnProps} />
+            <StartBtn message='Lancer la session'/>
 
-            <LabeledIconBtn
-                icon={<ThreeDotsIcon/>}
-                label={messages?.more || 'more'}
-                onClick={() => toggleDeskMenu('more')}
-                {...styleBtnProps}
-            />
+            <Box flexGrow='1' />
 
-            <DoneBtn message={messages?.done || 'Done'} />
-            { isAnonymous && <LoginBtn message="Se connecter" />}
-        </MenuBarLayout>
+            <MenuBtn menu='polls' message={'activités'}><Puzzle /></MenuBtn>
+            <MenuBtn menu='more' message={'plus'}><Ellipsis /></MenuBtn>
+
+            {isAnonymous && <LoginBtn message="Se connecter" />}
+        </Flex>
+
     )
 }

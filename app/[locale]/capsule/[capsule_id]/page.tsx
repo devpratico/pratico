@@ -9,10 +9,12 @@ import ActivitiesMenu from './_components/menus/ActivitiesMenu';
 import CanvasSL from '../../_components/canvases/CanvasSL';
 import CreationMenuBar from './_components/CreationMenuBar/CreationMenuBar';
 import ChatMenu from '../../room/[room_code]/@teacherView/_components/menus/ChatMenu';
+import MoreMenu from '../../room/[room_code]/@teacherView/_components/menus/MoreMenu';
 
 
 export default async function CapsulePage() {
 
+    /*
     const t = await getTranslations('menu-bar')
     const messages = {
         play: t('play'),
@@ -22,7 +24,7 @@ export default async function CapsulePage() {
         participants: t('participants'),
         more: t('more'),
         done: t('done'),
-    }
+    }*/
 
     return (
         <div className={styles.container}>
@@ -32,7 +34,8 @@ export default async function CapsulePage() {
             </div>
 
             <div className={styles.menuBar}>
-                <CreationMenuBar messages={messages} />
+                {/*<CreationMenuBar messages={messages} />*/}
+                <CreationMenuBar/>
             </div>
 
             <div className={styles.toolBar}>
@@ -52,6 +55,7 @@ export default async function CapsulePage() {
                 <AddMenu />
                 <ActivitiesMenu/>
                 <ChatMenu />
+                <MoreMenu />
             </div>
 
         </div>
