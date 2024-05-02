@@ -39,7 +39,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <UserProvider user={user} firstName={names?.first_name} lastName={names?.last_name}>
+                <UserProvider user={user} firstName={names?.first_name || null} lastName={names?.last_name || null}>
                     <Theme accentColor="violet">
                         <HintsProvider>
                             {children}

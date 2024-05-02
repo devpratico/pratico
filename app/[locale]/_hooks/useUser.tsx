@@ -7,8 +7,8 @@ import { getRandomColor } from "@/app/_utils/codeGen";
 interface UserContextProps {
     user: User | undefined;
     color?: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string | null;
+    lastName: string | null;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
