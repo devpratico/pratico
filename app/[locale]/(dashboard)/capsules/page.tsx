@@ -6,6 +6,8 @@ import CreateCapsuleBtn from './_components/CreateCapsuleBtn';
 import { Link } from '@/app/_intl/intlNavigation';
 import Thumbnail from '../../_components/Thumbnail';
 import { TLStoreSnapshot } from 'tldraw';
+import Menu from './_components/Menu';
+
 
 
 export const revalidate = 0
@@ -32,10 +34,11 @@ export default async function CapsulesPage() {
                         let url = `/capsule/${id}`
 
                         return (
-                            <Link href={url} key={id} style={{all:'unset'}}>
+                            <Link href={url} key={id} style={{all:'unset', position:'relative'}}>
                                 <Miniature title={title} createdAt={created_at}>
                                     {snap &&  <Thumbnail snapshot={snap} scale={0.2} />}
                                 </Miniature>
+                                <Menu capsuleId={id} />
                             </Link>
                         )
                     })}
@@ -71,33 +74,4 @@ function Miniature({ title, createdAt, children }: MiniatureProps) {
 }
 
 
-/*
-<DropdownMenu.Root>
-    <DropdownMenu.Trigger>
-        <IconButton radius='full' size='1' variant='soft' style={{ position: 'absolute', top: '0', right: '0', margin: '5px' }}>
-            <Ellipsis size='18' />
-        </IconButton>
-    </DropdownMenu.Trigger>
 
-    <DropdownMenu.Content>
-
-        <DropdownMenu.Item disabled>
-            <TextCursor size='13' />
-            Renommer
-        </DropdownMenu.Item>
-
-        <DropdownMenu.Item disabled>
-            <Copy size='13' />
-            Dupliquer
-        </DropdownMenu.Item>
-
-        <DropdownMenu.Separator />
-
-        <DropdownMenu.Item color='red' disabled>
-            <Trash2 size='13' />
-            Supprimer
-        </DropdownMenu.Item>
-
-    </DropdownMenu.Content>
-</DropdownMenu.Root>
-*/

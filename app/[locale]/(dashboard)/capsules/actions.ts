@@ -1,3 +1,4 @@
+'use server'
 import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert } from "@/supabase/types/database.types"
 import { TLStoreSnapshot } from "tldraw";
@@ -22,3 +23,14 @@ export async function fetchCapsulesData(userId: string): Promise<Capsule[]> {
 }
 
 
+export async function deleteCapsule(capsuleId: string) {
+    const supabase = createClient()
+    logger.log('supabase:database', 'Deleting capsule', capsuleId)
+    const { error } = await supabase.from('capsules').delete().eq('id', capsuleId)
+    if (error) {
+        logger.error('supabase:database', 'Error deleting capsule', capsuleId, error.message)
+        throw error
+    } else {
+        logger.log('supabase:database', 'Deleted capsule', capsuleId)
+    }
+}
