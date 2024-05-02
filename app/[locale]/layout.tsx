@@ -6,6 +6,7 @@ import { UserProvider } from './_hooks/useUser';
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
 import { fetchUser, User, fetchNames, Names } from './_actions/user'
+import { HintsProvider } from './_hooks/useHints';
 
 
 export const metadata: Metadata = {
@@ -40,7 +41,9 @@ export default async function RootLayout({children, params: { locale }}: RootLay
             <body className={luciole.className}>
                 <UserProvider user={user} firstName={names?.first_name} lastName={names?.last_name}>
                     <Theme accentColor="violet">
-                        {children}
+                        <HintsProvider>
+                            {children}
+                        </HintsProvider>
                     </Theme>
                 </UserProvider>
             </body>

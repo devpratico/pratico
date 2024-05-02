@@ -1,9 +1,7 @@
 'use client'
-import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/app/_utils/logger";
 import { useRouter } from "next/navigation";
 import { saveCapsuleSnapshot } from "@/app/[locale]/capsule/[capsule_id]/actions";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";

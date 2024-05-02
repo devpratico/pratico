@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Rocket, Gamepad2, NotepadText, CircleHelp, Cog } from 'lucide-react';
+import { Rocket, Puzzle, NotepadText, Cog, BookOpen } from 'lucide-react';
 
 
 
@@ -10,7 +10,7 @@ interface DashboardLeftBarProps extends React.HTMLAttributes<HTMLDivElement> {
         'capsules': string;
         'activities': string;
         'reports': string;
-        'help': string;
+        'resources': string;
         'settings': string;
     }
 }
@@ -55,21 +55,21 @@ export default function LeftBar({ messages, ...props }: DashboardLeftBarProps) {
                 {messages['capsules']}
             </Link>
 
-            <Link href="/capsules" style={pathname === '/' ? activeButtonStyle : buttonStyle}>
-                <Gamepad2 size={24} style={{marginRight: '0.5rem'}}/>
+            <Link href="/activities" style={pathname === '/activities' ? activeButtonStyle : buttonStyle}>
+                <Puzzle size={24} style={{marginRight: '0.5rem'}}/>
                 {messages['activities']}
             </Link>
 
-            <Link href="/capsules" style={pathname === '/' ? activeButtonStyle : buttonStyle}>
+            <Link href="/reports" style={pathname === '/reports' ? activeButtonStyle : buttonStyle}>
                 <NotepadText size={24} style={{marginRight: '0.5rem'}}/>
                 {messages['reports']}
             </Link>
 
             <div style={{flex: 1}}></div>
 
-            <Link href="/capsules" style={pathname === '/' ? activeButtonStyle : buttonStyle}>
-                <CircleHelp size={24} style={{marginRight: '0.5rem'}}/>
-                {messages['help']}
+            <Link href="/resources" style={pathname === '/resources' ? activeButtonStyle : buttonStyle}>
+                <BookOpen size={24} style={{marginRight: '0.5rem'}}/>
+                {messages['resources']}
             </Link>
 
             <Link href="/settings" style={pathname === '/settings' ? activeButtonStyle : buttonStyle}>

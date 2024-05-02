@@ -2,12 +2,10 @@ import TLToolbar from '@/app/[locale]/_components/canvases/custom-ui/tool-bar/TL
 import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from './_components/Controls';
 import styles from './page.module.css'
-import ParticipantsMenu from "../../room/[room_code]/@teacherView/_components/menus/ParticipantsMenu";
 import AddMenu from "./_components/menus/AddMenu";
 import ActivitiesMenu from './_components/menus/ActivitiesMenu';
 import CanvasSL from '../../_components/canvases/CanvasSL';
 import CreationMenuBar from './_components/CreationMenuBar/CreationMenuBar';
-import ChatMenu from '../../room/[room_code]/@teacherView/_components/menus/ChatMenu';
 import MoreMenu from '../../room/[room_code]/@teacherView/_components/menus/MoreMenu';
 
 

@@ -7,8 +7,8 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 export type User = SupabaseUser
 
 export interface Names {
-    first_name: string
-    last_name: string
+    first_name: string | null
+    last_name: string  | null
 }
 
 export async function fetchUser(): Promise<SupabaseUser> {
@@ -32,8 +32,9 @@ export async function fetchNames(userId: string): Promise<Names> {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', userId).single()
     if (error) {
-        logger.error('supabase:database', `error getting names for user ${userId.slice(0,5)}...`, error.message)
-        throw error
+        logger.log('supabase:database', `no names for user ${userId.slice(0,5)}...`, error.message)
+        //throw error
+        return { first_name: null, last_name: null }
     } else {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name)
         return data as Names

@@ -1,12 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '../../_actions/user';
 import { fetchCapsulesData } from './actions';
-import { Section, Heading, Grid, Card, Flex, Text, AspectRatio } from '@radix-ui/themes';
+import { Heading, Grid, Card, Flex, Text, AspectRatio, Callout } from '@radix-ui/themes';
 import CreateCapsuleBtn from './_components/CreateCapsuleBtn';
 import { Link } from '@/app/_intl/intlNavigation';
 import Thumbnail from '../../_components/Thumbnail';
 import { TLStoreSnapshot } from 'tldraw';
 import Menu from './_components/Menu';
+import { Telescope } from 'lucide-react';
 
 
 
@@ -19,33 +20,41 @@ export default async function CapsulesPage() {
     
     return (
         <main style={{padding: '2rem'}}>
-            <Section>
-                <Heading as='h1'>{t('capsules')}</Heading>
+            <Heading as='h1'>{t('capsules')}</Heading>
 
-                <CreateCapsuleBtn message={t('create')} />
+            <CreateCapsuleBtn message={t('create')} />
 
-                <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='5'>
-                    {capsules.map((cap) => {
-                        const id = cap.id
-                        const title = cap.title || t('untitled')
-                        const created_at = new Date(cap.created_at)
-                        const snap = cap.tld_snapshot?.[0] as TLStoreSnapshot | undefined
+            {capsules.length === 0 &&
+                <Callout.Root>
+                    <Callout.Icon>
+                        <Telescope />
+                    </Callout.Icon>
+                    <Callout.Text>
+                        Aucune capsule trouvée. Créez-en une pour commencer !
+                    </Callout.Text>
+                </Callout.Root>
+            }
 
-                        let url = `/capsule/${id}`
+            <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='5'>
+                {capsules.map((cap) => {
+                    const id = cap.id
+                    const title = cap.title || t('untitled')
+                    const created_at = new Date(cap.created_at)
+                    const snap = cap.tld_snapshot?.[0] as TLStoreSnapshot | undefined
 
-                        return (
-                            <Link href={url} key={id} style={{all:'unset', position:'relative'}}>
-                                <Miniature title={title} createdAt={created_at}>
-                                    {snap &&  <Thumbnail snapshot={snap} scale={0.2} />}
-                                </Miniature>
-                                <Menu capsuleId={id} />
-                            </Link>
-                        )
-                    })}
+                    let url = `/capsule/${id}`
 
-                </Grid>
+                    return (
+                        <Link href={url} key={id} style={{all:'unset', position:'relative'}}>
+                            <Miniature title={title} createdAt={created_at}>
+                                {snap &&  <Thumbnail snapshot={snap} scale={0.2} />}
+                            </Miniature>
+                            <Menu capsuleId={id} />
+                        </Link>
+                    )
+                })}
 
-            </Section>
+            </Grid>
         </main>
     )
 }

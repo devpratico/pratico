@@ -4,16 +4,26 @@ import { Button } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 
 
-export function SignOutBtn({message}: {message: string}) {
+interface SignOutBtnProps {
+    message: string
+    disabled?: boolean
+}
+
+export function SignOutBtn({message, disabled}: SignOutBtnProps) {
     const router = useRouter()
 
     const handleSignOut = async () => {
         await signOut()
-        //router.push('/login')
-        router.refresh()
+        router.push('/login')
+        //router.refresh()
     }
 
     return (
-        <Button color='red' variant='soft' onClick={handleSignOut}>{message}</Button>
+        <Button
+            color='red'
+            variant='soft'
+            onClick={handleSignOut}
+            disabled={disabled}
+        >{message}</Button>
     )
 }
