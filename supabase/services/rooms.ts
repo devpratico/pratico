@@ -82,7 +82,7 @@ export async function deleteRoom(roomId: number) {
 /**
  * Get rooms related to a capsule
  */
-export async function fetchRoomsByCapsuleId(capsuleId: string) {
+export async function old_fetchRoomsByCapsuleId(capsuleId: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) {

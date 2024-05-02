@@ -136,7 +136,7 @@ export async function fetchCapsuleIdsTitlesDates(userId: string): Promise<{id: s
     }
 }
 
-
+/*
 export async function fetchCapsulesData(userId: string): Promise<Capsule[]> {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('capsules').select('*').eq('created_by', userId)
@@ -145,4 +145,4 @@ export async function fetchCapsulesData(userId: string): Promise<Capsule[]> {
     } else {
         return data
     }
-}
+}*/

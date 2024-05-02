@@ -1,5 +1,5 @@
 'use client'
-import createClient from "@/supabase/clients/client";
+import createClient from '@/supabase/clients/client';
 import {
     createTLStore,
     defaultShapeUtils,
@@ -25,6 +25,8 @@ interface useBroadcastStoreProps {
     initialSnapshot?: StoreSnapshot<TLRecord>
 }
 
+type broadcastArgs = { eventName: 'document', payload: RecordsDiff<TLRecord> } | { eventName: 'presence', payload: TLInstancePresence }
+
 /**
  * This hook is used to create a realtime channel with supabase,
  * broadcasting changes and merging them in the store that it returns.
@@ -48,56 +50,64 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
     useEffect(() => {
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
-        const channel = supabase.channel(roomId,
-            // We use the tldraw user id as the supabase presence key id to identify the user:
-            {config:{ presence: { key: getUserPreferences().id } }}
-        )
+        const channel = supabase.channel(roomId + "_document", {
+            config: {
+                broadcast: { ack: true },
+            },
+        })
 
         // Initialize the listeners in the body of the useEffect so that we can unsubscribe in the cleanup function
         let storeListener: () => void
         let presenceListener: () => void
 
-        // LISTEN TO LOCAL TLDRAW CHANGES - BROADCAST THEM
+        // BROADCAST LOCAL TLDRAW CHANGES - BROADCAST THEM
         // In order to broadcast stuff, we need to be in the `subscribe` callback
         channel.subscribe((status, err) => {
-            logger.log('supabase:realtime', 'status', status, err)
+            logger.log('supabase:realtime', roomId + "_document", 'status', status, err)
             // Define the logging function outside of the loop to allow debouncing
             // TODO: Get rid of debounce and use throttle
-            const debounceLog = debounce((response: any) => {logger.log('supabase:realtime', 'sent', response)}, 1000)
+            const debounceLog = debounce((response: any) => { logger.log('supabase:realtime', roomId + "_document", 'sent', response)}, 100)
 
             // Define a function to send changes to the server
-            const broadcast = async ({eventName, payload}: {eventName:'document', payload: RecordsDiff<TLRecord>} | {eventName:'presence', payload: TLInstancePresence}) => {
+            const broadcast = async ({eventName, payload}: broadcastArgs) => {
                 if (status !== 'SUBSCRIBED') return
                 await channel.send({type: 'broadcast', event: eventName, payload}).then((response) => {
                     if(eventName == 'document')  debounceLog(response) // Only log document changes (presence would be annoying)
                 })
             }
+            
+            const throttleBroadcast = throttle((args: broadcastArgs) => { broadcast(args)}, 50)
+            //const debounceBroadcast = debounce((args: broadcastArgs) => { broadcast(args)}, 500)
 
             // DOCUMENT CHANGES (drawing, adding shapes...)
             // Listen to tldraw store and broadcast changes
             storeListener = store.listen(({changes}) => {
                 logChanges(changes, 'local')
-                broadcast({eventName: 'document', payload: changes})
-            }, { source: 'user', scope: 'document' })
 
-            // PRESENCE CHANGES - Connexion status of participants
-            // Send a presence message to everyone when you connect, modify your connexionStatus, or leave
-            // We use it to remove the tldraw presence (see below) when the user leaves. Otherwise, the mouse cursor would stay on the canvas.
-            // TODO: Make a usePresence generally available in the app?
-            const connexionStatus = {id: getUserPreferences().id, onlineAt: new Date().toISOString()}
-            async function sendConnexionStatus() {
-                await channel.track(connexionStatus).then((response) => {debounceLog(response)})
-            }
-            sendConnexionStatus()
+                // If there is added or removed records, broadcast directly
+                if (Object.keys(changes.added).length > 0 || Object.keys(changes.removed).length > 0) {
+                    broadcast({eventName: 'document', payload: changes})
+                    return
+                } else {
+                    // If there are only updated records, we need to throttle the updates
+                    // Otherwise, we would send too many updates to the server
+                    throttleBroadcast({eventName: 'document', payload: changes})
+                    //debounceBroadcast(changes)
+                }
+
+
+                //broadcast({eventName: 'document', payload: changes})
+            }, { source: 'user', scope: 'document' })
+        
 
             // PRESENCE CHANGES - Mouse position, name, color...
             // Broadcast your tldraw's TLInstancePresence to everyone
             const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
 				const user = getUserPreferences()
 				return {
-					id: user.id,
+					id:    user.id,
 					color: user.color ?? defaultUserPreferences.color,
-					name: user.name ?? defaultUserPreferences.name,
+					name:  user.name  ?? defaultUserPreferences.name,
 				}
 			})
 
@@ -111,12 +121,9 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             presenceListener = react('when presence changes', () => {
                 const presence = presenceSignal.get()
                 if (!presence) return
-                // `requestAnimationFrame` is used in the example, not sure why not used for the document changes too
-                //requestAnimationFrame(() => {broadcast({eventName: 'presence', payload: presence})})
-                broadcast({eventName: 'presence', payload: presence})
+                //broadcast({eventName: 'presence', payload: presence})
+                throttleBroadcast({eventName: 'presence', payload: presence})
             })
-
-
         })
 
         // LISTEN TO THE CHANNEL 'DOCUMENT' EVENTS - MERGE REMOTE CHANGES IN THE STORE
@@ -155,21 +162,8 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             }
         )
 
-        // LISTEN TO THE CHANNEL 'CONNEXIONS' REMOTE EVENTS - REMOVE PRESENCES WHEN USERS LEAVE
-        channel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-            // `leftPresences` corresponds to the connexion status we sent above
-            // Get the ids and turn them into the special Instance type
-            const leftPresencesIds = leftPresences.map(p => InstancePresenceRecordType.createId(p.id))
-            logger.log('supabase:realtime', 'presences leave', leftPresencesIds, (`key: ${key}, myKey: ${getUserPreferences().id}`))
-            setStore((prevStore) => {
-                const newStore = prevStore
-                newStore.remove(leftPresencesIds)
-                return newStore
-            })
-        })
-
         return () => {
-            supabase.removeChannel(channel).then((res) => {logger.log('supabase:realtime', 'channel removed:', res)})
+            supabase.removeChannel(channel).then((res) => { logger.log('supabase:realtime', roomId + "_document", 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
             presenceListener()
@@ -191,3 +185,6 @@ function logChanges(changes: RecordsDiff<TLRecord>, source: 'local' | 'remote') 
     Object.values(changes.removed).forEach((record)     => {logger.log('tldraw:collab', source + ' removed', record.id)})
     Object.values(changes.updated).forEach(([from, to]) => {debounceLog(source + ' updated', from.id)})
 }
+
+
+// TODO : Le throttling a pour conséquence de manquer la fin des traits. Déclencher une syncchro au leve de la souris

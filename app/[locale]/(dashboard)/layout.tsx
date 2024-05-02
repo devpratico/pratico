@@ -18,7 +18,7 @@ export default async function DashboardLayout({children }: RootLayoutProps) {
         'activities': t('activities'),
         'quizes and surveys': t('quizes and surveys'),
         'reports': t('reports'),
-        'help': t('help'),
+        'resources': t('resources'),
         'settings': t('settings'),
     }
 

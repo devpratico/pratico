@@ -2,7 +2,7 @@ import styles from './ColorsOptions.module.css'
 import { DefaultColorStyle, DefaultColorThemePalette } from 'tldraw';
 
 
-const colors = DefaultColorStyle.values // Get colors from tldraw ("black", "red", etc.)
+const colors = DefaultColorStyle.values.slice(0,-1) // Get colors from tldraw ("black", "red", etc.)
 const colorValues = colors.map(color => DefaultColorThemePalette.lightMode[color].solid) // Get the hex value of each color
 const colorsMap = Object.fromEntries(colors.map((color, i) => [color, colorValues[i]])) // Create a map of color names to hex values
 

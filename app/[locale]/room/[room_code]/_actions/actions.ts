@@ -19,3 +19,17 @@ export async function fetchRoomByCode(code: string) {
         return data as Tables<'rooms'>
     }
 }
+
+
+export async function getUserId() {
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.getUser()
+
+    if (error || !data.user.id) {
+        logger.error('supabase:auth', `error getting user id`, error?.message)
+        throw error
+    } else {
+        logger.log('supabase:auth', `fetched user id`)
+        return data.user.id
+    }
+}

@@ -10,19 +10,21 @@
         "sign in with Google": "Se connecter avec Google",
         "sign in with Apple": "Se connecter avec Apple",
         "passwords do not match": "Les mots de passe ne correspondent pas",
-        "try without an account": "Essayer sans compte"
+        "try without an account": "Continuer sans compte"
     },
 
     "dashboard": {
+        "sign in": "Se connecter",
         "capsules": "Capsules",
         "activities": "Activités",
         "quizes and surveys": "Quiz et sondages",
         "reports": "Rapports",
-        "help": "Aide",
+        "resources": "Ressources",
         "settings": "Paramètres",
         "creation": "Création",
         "last session": "Dernière session",
-        "untitled": "Sans titre"
+        "untitled": "Sans titre",
+        "create": "Créer"
     },
 
     "menu-bar": {

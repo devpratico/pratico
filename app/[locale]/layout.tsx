@@ -5,7 +5,8 @@ import '../globals.css'
 import { UserProvider } from './_hooks/useUser';
 import { luciole } from '../Fonts'
 import { Theme } from '@radix-ui/themes'
-import { fetchUser, User, fetchNames, Names } from './_actions/actions'
+import { fetchUser, User, fetchNames, Names } from './_actions/user'
+import { HintsProvider } from './_hooks/useHints';
 
 
 export const metadata: Metadata = {
@@ -25,18 +26,24 @@ export default async function RootLayout({children, params: { locale }}: RootLay
 
     try {
         user = await fetchUser()
-        names = await fetchNames(user.id)
     } catch (error) {
         user = undefined
+    }
+
+    try {
+        if (user) names = await fetchNames(user.id)
+    } catch (error) {
         names = undefined
     }
     
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <UserProvider user={user} firstName={names?.first_name} lastName={names?.last_name}>
+                <UserProvider user={user} firstName={names?.first_name || null} lastName={names?.last_name || null}>
                     <Theme accentColor="violet">
-                        {children}
+                        <HintsProvider>
+                            {children}
+                        </HintsProvider>
                     </Theme>
                 </UserProvider>
             </body>

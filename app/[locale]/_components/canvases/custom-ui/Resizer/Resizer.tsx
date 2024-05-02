@@ -7,17 +7,24 @@ import useWindow from "@/app/[locale]/_hooks/useWindow"
 import { useNav } from "@/app/[locale]/_hooks/useNav"
 
 
+
+interface ResizerProps {
+    insets?: {top: number, right: number, bottom: number, left: number}
+    margin?: number
+}
+
+
 /**
  * This element is responsible for resizing the canvas to fit the window.
  * It doesn't actually render anything.
  */
-const Resizer = () => {
+export default function Resizer({ insets, margin }: ResizerProps) {
     const editor = useEditor()
-    const { isMobile, orientation } = useWindow()
+    //const { isMobile, orientation } = useWindow()
     const { currentPageId } = useNav()
 
     
-
+    /*
     const insets = useMemo(() => {
         if (isMobile && orientation === 'landscape') {
             return {top: 0, right: 50, bottom: 0, left: 50}
@@ -26,14 +33,14 @@ const Resizer = () => {
         } else {
             return {top: 60, right: 0, bottom: 70, left: 60}
         }
-    }, [isMobile, orientation])
+    }, [isMobile, orientation])*/
 
 
     const updateSize = useCallback(() => {
         const box = new Box(0, 0, 1920, 1080)
-        zoomToBounds({ editor, box, margin: 10,  insets })
+        zoomToBounds({ editor, box, margin,  insets })
         logger.log('tldraw:editor', 'Resized')
-    }, [editor, insets])
+    }, [editor, insets, margin])
 
 
     useEffect(() => {
@@ -55,5 +62,3 @@ const Resizer = () => {
 
     return null
 }
-
-export default Resizer

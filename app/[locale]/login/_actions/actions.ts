@@ -79,3 +79,34 @@ export async function setNames({ id, first_name, last_name }: TablesInsert<'user
     }
 
 }
+
+
+export async function logOut() {
+    const supabase = createClient()
+
+    try {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            throw error
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function isLoggedIn() {
+    const supabase = createClient()
+
+    try {
+        const user = supabase.auth.getUser()
+        return user
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function isUserAnonymous() {
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.getUser()
+    return data?.user?.is_anonymous
+}
