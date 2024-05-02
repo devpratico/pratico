@@ -28,7 +28,7 @@ const colors: string[] = [
     'DarkSlateBlue', 'DarkTurquoise', 'DarkViolet',
     'DeepPink', 'DeepSkyBlue', 'DodgerBlue',
     'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro',
-    'GhostWhite', 'Gold', 'GoldenRod',
+    'Gold', 'GoldenRod',
     'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed',
     // Add all other CSS colors
 ];
