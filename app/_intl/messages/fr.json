@@ -10,7 +10,7 @@
         "sign in with Google": "Se connecter avec Google",
         "sign in with Apple": "Se connecter avec Apple",
         "passwords do not match": "Les mots de passe ne correspondent pas",
-        "try without an account": "Essayer sans compte"
+        "try without an account": "Continuer sans compte"
     },
 
     "dashboard": {
@@ -23,7 +23,8 @@
         "settings": "Paramètres",
         "creation": "Création",
         "last session": "Dernière session",
-        "untitled": "Sans titre"
+        "untitled": "Sans titre",
+        "create": "Créer"
     },
 
     "menu-bar": {

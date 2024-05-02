@@ -6,7 +6,7 @@ import StopBtn from "./StopBtn";
 import { Copy, Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
-import { isUserAnonymous } from '../_actions/actions';
+import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import MenuBtn from './MenuBtn';
 
 
@@ -43,7 +43,7 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
             </HoverCard.Root>
             
 
-            <StopBtn message={t('stop') || 'stop session'}/>
+            <StopBtn message={t('stop session') || 'stop session'}/>
             
             <Box flexGrow='1' />
 

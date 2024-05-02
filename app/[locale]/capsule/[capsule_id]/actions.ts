@@ -52,7 +52,7 @@ export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
 /**
  * Get rooms related to a capsule
  */
-export async function fetchRoomsByCapsuleId(capsuleId: string) {
+export async function fetchRoomsByCapsuleId(capsuleId: string): Promise<Room[]> {
     const supabase = createClient()
 
     try {

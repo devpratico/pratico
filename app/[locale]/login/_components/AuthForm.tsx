@@ -4,11 +4,11 @@ import { TextField, Flex } from '@radix-ui/themes';
 import { Button, Tabs, Separator, Callout } from '@radix-ui/themes';
 import { Mail, RectangleEllipsis, TriangleAlert, ArrowRight } from 'lucide-react';
 import en from '@/app/_intl/messages/en.json';
-import { login, signup, signInAnonymously } from '../_actions/actions';
+import { login, signup, signInAnonymously, isUserAnonymous } from '../_actions/actions';
 import signInWithGoogle from '../_actions/signInWithGoogle';
 import logger from '@/app/_utils/logger';
 import { useRouter } from '@/app/_intl/intlNavigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 // TODO: utiliser searchParams pour afficher login ou signup avec des radix tabnav
@@ -18,6 +18,13 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
+    //const [isLogged, setIsLogged] = useState(false);
+    const [isAnon, setIsAnon] = useState(false);
+
+    useEffect(() => {
+        //isLoggedIn().then((user) => {setIsLogged(!!user)})
+        isUserAnonymous().then((anon) => {setIsAnon(!!anon)})
+    }, []);
 
 
     const SocialProviders = () => {
@@ -189,23 +196,35 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 </Callout.Root>
             }
 
+
             <Button
                 disabled={false}
                 variant='soft'
                 onClick={() => {
                     setIsLoading(true);
+                    // If already logged in a anonymously, don't sign in again (otherwise it creates a new anon account)
+                    if (isAnon) {
+                        router.push('/capsules');
+                        return
+                    }
+
                     signInAnonymously()
                         .then(() => router.push('/capsules'))
                         .catch(error => {
                             logger.error('supabase:auth', 'Error signing in anonymously', (error as Error).message);
                             setServerError((error as Error).message);
+                            setIsLoading(false);
                         })
-                        .finally(() => setIsLoading(false));
                 }}
             >
                 {messages['try without an account']}
                 <ArrowRight/>
             </Button>
+
+
+
+
+
         </Flex>
     )
 }

@@ -5,7 +5,7 @@ import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
 import StartBtn from './buttons/StartBtn';
 import MenuBtn from '@/app/[locale]/room/[room_code]/@teacherView/_components/MenuBtn';
 import { Puzzle, Ellipsis } from 'lucide-react';
-import { isUserAnonymous } from '@/app/[locale]/room/[room_code]/@teacherView/_actions/actions';
+import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
 import DoneBtn from './buttons/DoneBtn';
 

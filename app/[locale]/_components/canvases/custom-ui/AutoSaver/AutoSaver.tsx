@@ -1,6 +1,6 @@
 'use client'
 import { useEditor, track } from 'tldraw'
-import { saveCapsuleSnapshot } from '@/app/[locale]/capsule/[capsule_id]/_actions/capsuleActions'
+import { saveCapsuleSnapshot } from '@/app/[locale]/capsule/[capsule_id]/actions'
 import { saveRoomSnapshot } from '@/supabase/services/rooms';
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';

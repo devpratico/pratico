@@ -18,8 +18,3 @@ export async function stopRoom({ roomId, capsuleId }: stopRoomArgs) {
     }
 }
 
-export async function isUserAnonymous() {
-    const supabase = createClient()
-    const { data, error } = await supabase.auth.getUser()
-    return data?.user?.is_anonymous
-}

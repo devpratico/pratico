@@ -77,7 +77,7 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
 
     // If there's an error (no user)
     } catch (error) {
-        logger.log('supabase:auth', '(Middleware) No user', `(${(error as Error).message})`)
+        logger.log('next:middleware', 'No user', `(${(error as Error).message})`)
 
         /*
         const originUrl = request.nextUrl
@@ -92,7 +92,7 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
         const {data, error: _error} = await supabase.auth.signInAnonymously()
         if (_error) throw _error
         if (!data) throw new Error('Supabase returned null')
-        logger.log('supabase:auth', 'Signed in anonymously')
+        logger.log('next:middleware', 'Signed in anonymously')
         // Continue normally
     }
     

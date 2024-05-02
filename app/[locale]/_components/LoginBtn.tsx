@@ -12,9 +12,10 @@ export default function LoginBtn({ message, nextUrl }: LoginBtnProps) {
     const router = useRouter()
     return (
         <Button
-            variant='surface'
+            variant='solid'
             radius='large'
-            style={{ backgroundColor: 'var(--background)' }}
+            color='yellow'
+            //style={{ backgroundColor: 'var(--background)' }}
             onClick={() => router.push('/login' + (nextUrl ? '?nextUrl=' + nextUrl : ''))}
         >
             {message}

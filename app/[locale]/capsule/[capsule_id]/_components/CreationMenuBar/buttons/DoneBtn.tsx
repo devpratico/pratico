@@ -2,11 +2,11 @@
 import PlainBtn from "@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn";
 import logger from "@/app/_utils/logger";
 import { useRouter } from "next/navigation";
-import { saveCapsuleSnapshot } from "@/app/[locale]/capsule/[capsule_id]/_actions/capsuleActions";
+import { saveCapsuleSnapshot } from "@/app/[locale]/capsule/[capsule_id]/actions";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
-import { useCallback } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
+import { useParams } from "next/navigation";
 import { Button } from "@radix-ui/themes";
 
 
@@ -19,47 +19,30 @@ interface DoneBtnProps {
  * and navigates back to the dashboard.
  */
 export default function DoneBtn({ message }: DoneBtnProps) {
-    // TODO: Maybe get rid of tldraw stuff and use a hook
-
     const router = useRouter()
-    const { setRoom } = useRoom()
     const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const searchParams = useSearchParams()
-    const local = searchParams.get('local') === 'true'
+    const [loading, setLoading] = useState(false)
     
 
     const handleClick = useCallback(async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
+        setLoading(true)
         if (!capsuleId || !editor) return
         const snapshot = editor.store.getSnapshot()
         try {
-            if (!local) await saveCapsuleSnapshot(capsuleId!, snapshot)
-
-            // TODO: Maybe keep the room open ?
-            setRoom(undefined) // This will stop the session (if it's running)
+            await saveCapsuleSnapshot(capsuleId!, snapshot)
             router.push('/capsules')
             router.refresh() // This is to force the revalidation of the cache
 
         } catch (error) {
-            //console.error("Error saving snapshot", error)
             logger.error('react:component', 'Error saving snapshot', (error as Error).message)
+            setLoading(false)
         }
-    }, [capsuleId, editor, router, setRoom, local])
-
-    /*
-    return (
-        <PlainBtn
-            color="secondary"
-            style="soft"
-            enabled={!local}
-            onClick={handleClick}
-            message={message || "Done"}
-        />
-    )*/
+    }, [capsuleId, editor, router])
 
     return (
-        <Button onClick={handleClick}>
+        <Button onClick={handleClick} loading={loading} style={{color:'var(--background)'}}>
             {message}
         </Button>
     )
