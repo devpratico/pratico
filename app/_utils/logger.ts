@@ -6,7 +6,6 @@ const logCategories = {
     next: ['middleware', 'api', 'page', 'layout'] as const,
 }
 
-// TODO: style it also for when it prints in the server console.
 
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 
@@ -81,7 +80,7 @@ class Logger {
         const isCategoryEnabled = isCategoryDirectlyEnabled || isParentCategoryEnabled
         
         if (
-            process.env.NODE_ENV === 'development' &&
+            ( process.env.NODE_ENV === 'development' || type === 'error' ) &&
             this.options.enable &&
             isCategoryEnabled
         ) {
