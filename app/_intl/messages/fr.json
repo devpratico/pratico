@@ -28,7 +28,7 @@
     },
 
     "menu-bar": {
-        "session name": "Nom de la session",
+        "capsule name": "Nom de la capsule",
         "play": "Lancer",
         "activities": "activités",
         "more": "plus",

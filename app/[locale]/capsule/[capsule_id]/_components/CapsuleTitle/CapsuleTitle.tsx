@@ -25,7 +25,7 @@ export default function CapsuleTitle({ disabled }: TitleProps) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const searchParams = useSearchParams()
     const local = searchParams.get('local') === 'true'
-    const placeholder = "Session name";
+    const placeholder = "Titre";
     const [inputValue, setInputValue] = useState('')
     const { editor } = useTLEditor()
 
