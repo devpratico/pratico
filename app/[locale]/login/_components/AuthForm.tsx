@@ -70,8 +70,10 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 {/************ SIGN UP ************/}
                 <Tabs.Content value='signup'>
 
+                    {/*
                     <SocialProviders />
                     <Separator size='4' />
+                    */}
 
                     <Form.Root
                         onSubmit={async (event) => {
@@ -137,8 +139,10 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 {/************ SIGN IN ************/}
                 <Tabs.Content value='signin'>
 
+                    {/*
                     <SocialProviders />
                     <Separator size='4' />
+                    */}
 
                     <Form.Root
                         onSubmit={async (event) => {
