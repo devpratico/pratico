@@ -124,7 +124,12 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                                 </Form.Control>
                             </Form.Field>
 
-                            <Button type="submit">{messages['sign up']}</Button>
+                            <Button
+                                type="submit"
+                                loading={isLoading}
+                            >
+                                    {messages['sign up']}
+                            </Button>
 
                         </Flex>
 
