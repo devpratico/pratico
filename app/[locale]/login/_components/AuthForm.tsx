@@ -30,7 +30,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     const SocialProviders = () => {
         return (
             <Flex direction='column' gap='2' py='5'>
-                <Button variant='soft' onClick={async () => {
+                <Button disabled variant='soft' onClick={async () => {
                     setIsLoading(true);
                     try {
                         await signInWithGoogle({ redirectTo: window.location.origin + '/api/auth/callback' });
