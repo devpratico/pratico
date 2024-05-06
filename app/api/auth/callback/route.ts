@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import getSupabaseClient from '@/supabase/clients/old_getSupabaseClient'
+import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 
 
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
     if (code) {
         logger.log('supabase:auth', 'Exchanging code for session', code)
-        const supabase = await getSupabaseClient()
+        const supabase = createClient()
         try {
             const { error } = await supabase.auth.exchangeCodeForSession(code)
             if (!error) {

@@ -14,7 +14,7 @@ export default function ActivitiesMenu() {
 
                 <Callout.Root variant='outline'>
                     <Callout.Text>
-                        Ici, bientôt, gérez vos quizes et sondages, et bien plus encore !
+                        Ici, bientôt, gérez vos quiz et sondages, et bien plus encore !
                     </Callout.Text>
                 </Callout.Root>
             </Section>

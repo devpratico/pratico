@@ -8,6 +8,7 @@ import QRCode from 'react-qr-code';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
 import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import MenuBtn from './MenuBtn';
+import FeedbackBtn from '@/app/[locale]/capsule/[capsule_id]/_components/CreationMenuBar/buttons/FeedbackBtn';
 
 
 
@@ -51,6 +52,7 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
             <MenuBtn menu='chat' message={t('chat')}><MessageSquareText /></MenuBtn>
             <MenuBtn menu='participants' message={t('participants')}><Users/></MenuBtn>
             <MenuBtn menu='more' message={t('more')}><Ellipsis /></MenuBtn>
+            <FeedbackBtn />
 
             { isAnonymous && <LoginBtn message="Se connecter" />}
         </Flex>

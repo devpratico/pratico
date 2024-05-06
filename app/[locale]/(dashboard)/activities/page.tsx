@@ -7,7 +7,7 @@ export default function ActivitiesPage() {
             <Container>
                 <Heading as='h1'>Activités</Heading>
                 <Callout.Root mt='4'>
-                    <p>Vous retrouverez ici vos quizes, sondages, et bientôt de nouvelles activités !</p>
+                    <p>Vous retrouverez ici vos quiz, sondages, et bientôt de nouvelles activités !</p>
                 </Callout.Root>
             </Container>
         </main>

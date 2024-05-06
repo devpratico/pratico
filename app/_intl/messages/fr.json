@@ -28,16 +28,16 @@
     },
 
     "menu-bar": {
-        "session name": "Nom de la session",
+        "capsule name": "Nom de la capsule",
         "play": "Lancer",
-        "polls": "Activités",
-        "more": "Plus",
-        "chat": "Chat",
-        "participants": "Participants",
-        "save": "Sauvegarder",
-        "done": "Terminé",
-        "quit": "Quitter",
-        "stop session": "Arrêter la session"
+        "activities": "activités",
+        "more": "plus",
+        "chat": "chat",
+        "participants": "participants",
+        "save": "sauvegarder",
+        "done": "terminé",
+        "quit": "quitter",
+        "stop session": "arrêter la session"
     },
 
     "settings": {

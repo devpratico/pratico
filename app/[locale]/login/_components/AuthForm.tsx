@@ -30,7 +30,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     const SocialProviders = () => {
         return (
             <Flex direction='column' gap='2' py='5'>
-                <Button variant='soft' onClick={async () => {
+                <Button disabled variant='soft' onClick={async () => {
                     setIsLoading(true);
                     try {
                         await signInWithGoogle({ redirectTo: window.location.origin + '/api/auth/callback' });
@@ -70,8 +70,10 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 {/************ SIGN UP ************/}
                 <Tabs.Content value='signup'>
 
+                    {/*
                     <SocialProviders />
                     <Separator size='4' />
+                    */}
 
                     <Form.Root
                         onSubmit={async (event) => {
@@ -122,7 +124,12 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                                 </Form.Control>
                             </Form.Field>
 
-                            <Button type="submit">{messages['sign up']}</Button>
+                            <Button
+                                type="submit"
+                                loading={isLoading}
+                            >
+                                    {messages['sign up']}
+                            </Button>
 
                         </Flex>
 
@@ -137,8 +144,10 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 {/************ SIGN IN ************/}
                 <Tabs.Content value='signin'>
 
+                    {/*
                     <SocialProviders />
                     <Separator size='4' />
+                    */}
 
                     <Form.Root
                         onSubmit={async (event) => {
