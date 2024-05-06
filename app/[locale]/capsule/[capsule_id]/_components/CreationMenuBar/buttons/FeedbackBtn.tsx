@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Send } from "lucide-react";
-import { Flex, Text, Button } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 
 export default function FeedbackBtn() {
     return (
