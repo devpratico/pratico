@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Rocket, Puzzle, NotepadText, Cog, BookOpen } from 'lucide-react';
+import { Rocket, Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
 
 
 
@@ -51,7 +51,7 @@ export default function LeftBar({ messages, ...props }: DashboardLeftBarProps) {
     return (
         <nav style={containerStyle}>
             <Link href="/capsules" style={pathname === '/capsules' ? activeButtonStyle : buttonStyle}>
-                <Rocket size={24} style={{marginRight: '0.5rem'}}/>
+                <FlaskRound size={24} style={{marginRight: '0.5rem'}}/>
                 {messages['capsules']}
             </Link>
 
