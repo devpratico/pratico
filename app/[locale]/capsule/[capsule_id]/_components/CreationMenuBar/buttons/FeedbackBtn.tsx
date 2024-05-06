@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Send } from "lucide-react";
-import { Flex, Text } from "@radix-ui/themes";
+import { Flex, Text, Button } from "@radix-ui/themes";
 
 export default function FeedbackBtn() {
     return (
         <Link href='mailto:bonjour@pratico.live' style={{all:'unset', color:'var(--background)'}}>
-            <Flex direction='column' align='center' gap='1'>
+            <Button style={{backgroundColor:'var(--pink)'}}>
                 <Send />
-                <Text as='label' size='1'>feedback</Text>
-            </Flex>
+                votre avis
+            </Button>
         </Link>
     )
 }
