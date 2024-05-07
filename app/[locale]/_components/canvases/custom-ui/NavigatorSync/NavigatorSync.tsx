@@ -1,7 +1,7 @@
 'use client'
 import { useEditor, useComputed, useValue } from 'tldraw'
 import { useRoom } from '@/app/[locale]/_hooks/useRoom'
-import { roomParams } from '@/supabase/services/rooms'
+import { roomParams } from '@/app/[locale]/capsule/[capsule_id]/actions'
 import { useEffect, useMemo } from 'react'
 import logger from '@/app/_utils/logger'
 

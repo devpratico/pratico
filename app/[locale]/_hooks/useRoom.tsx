@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import type { Room, RoomInsert } from '@/supabase/services/rooms';
+import type { Room, RoomInsert } from '@/app/[locale]/capsule/[capsule_id]/actions';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 

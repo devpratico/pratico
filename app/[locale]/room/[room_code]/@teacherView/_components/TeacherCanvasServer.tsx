@@ -1,18 +1,26 @@
-import StudentCanvas from './_components/StudentCanvas'
+import TeacherCanvasClient from "./TeacherCanvasClient";
 import { getUser, fetchNames } from '@/app/[locale]/_actions/user'
-import { redirect } from '@/app/_intl/intlNavigation'
+//import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchRoomByCode } from '../_actions/actions'
+import { fetchRoomByCode } from '../../_actions/actions'
 
-export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
+
+interface TeacherCanvasServerProps {
+    roomCode: string
+}
+
+export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasServerProps) {
+
     const userId = (await getUser()).id
     const { first_name, last_name } = await fetchNames(userId)
 
     if (!first_name || !last_name) {
+        /*
         const nextUrl = `/room/${params.room_code}`
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString())
         return null
+        */
     }
 
     const user: CanvasUser = {
@@ -21,12 +29,9 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         color: getRandomColor(),
     }
 
-    const room = await fetchRoomByCode(params.room_code)
+    const room = await fetchRoomByCode(roomCode)
     const snapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) : undefined
 
-    return (
-        <main style={{ height: '100dvh' }}>
-            <StudentCanvas user={user} roomId={parseInt(params.room_code)} snapshot={snapshot} />
-        </main>
-    )
+
+    return <TeacherCanvasClient user={user} roomId={parseInt(roomCode)} snapshot={snapshot} />
 }

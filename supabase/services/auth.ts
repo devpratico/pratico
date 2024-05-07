@@ -1,3 +1,4 @@
+/*
 import getSupabaseClient from "../clients/old_getSupabaseClient";
 import { User as SupabaseUser, AuthChangeEvent, Session, SignUpWithPasswordCredentials} from "@supabase/supabase-js";
 
@@ -107,3 +108,4 @@ export async function signUpNewUser(args: SignUpWithPasswordCredentials) {
         throw error
     }
 }
+*/

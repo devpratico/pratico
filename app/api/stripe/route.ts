@@ -1,5 +1,5 @@
 import getStripeClient from '@/app/_stripe/getStripeClient'
-import { saveStripeId } from '@/supabase/services/user_profiles'
+import createClient from '@/supabase/clients/server'
 
 
 // Respond to a POST request sent to the /api/stripe endpoint by a Stripe webhook
@@ -38,4 +38,18 @@ export async function POST(request: Request) {
     return new Response('Success!', {
       status: 200,
     })
+}
+
+
+async function saveStripeId(userId: string, stripeId: string) {
+    const supabase = createClient()
+    //const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
+    // Upsert instead (create row if it doesn't exist)
+    const { data, error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
+    if (error) {
+        console.error("error setting stripe id", error)
+        throw error
+    } else {
+        return data
+    }
 }

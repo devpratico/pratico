@@ -3,10 +3,16 @@ import Canvas from "./Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
 import AutoSaver from "./custom-ui/AutoSaver/AutoSaver";
 import { useParams, useSearchParams } from "next/navigation";
-import { fetchCapsuleSnapshot } from "@/supabase/services/capsules";
+import { fetchCapsuleSnapshot } from "@/app/[locale]/capsule/[capsule_id]/actions";
 import { useEffect, useState } from "react";
 import Resizer from "./custom-ui/Resizer/Resizer";
 import logger from "@/app/_utils/logger";
+import { CanvasUser } from "./Canvas";
+
+
+interface CanvasSLProps {
+    user: CanvasUser
+}
 
 
 /**
@@ -15,7 +21,7 @@ import logger from "@/app/_utils/logger";
  * or use the local storage (if `local=true`) for loginless users.
  * It also has the ability to load a default snapshot (if `loadDefault` search param is set in URL).
  */
-export default function CanvasSL() {
+export default function CanvasSL({user}: CanvasSLProps) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const searchParams = useSearchParams()
     const local = searchParams.get('local') === 'true'
@@ -93,12 +99,12 @@ export default function CanvasSL() {
     
     if (local) {
         // If local, we will use the local storage (see https://tldraw.dev/docs/persistence)
-        return <Canvas persistenceKey={capsuleId} initialSnapshot={initialSnapshot}/>
+        return <Canvas user={user} persistenceKey={capsuleId} initialSnapshot={initialSnapshot}/>
         
     } else {
         // If not local, we will use the AutoSaver to save the snapshot to the capsule
         return (
-            <Canvas store={store}>
+            <Canvas user= {user} store={store}>
                 <Resizer insets={{top: 60, right: 0, bottom: 70, left: 60}} margin={10} />
                 <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
             </Canvas>

@@ -1,9 +1,10 @@
-import { fetchRoomByCode, Room, getUserId } from "./_actions/actions";
+import { fetchRoomByCode, Room } from "./_actions/actions";
 import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import { PresencesProvider } from "../../_hooks/usePresences";
 import { MenuProvider } from "../../_hooks/useMenu";
+import { getUser, fetchNames } from "../../_actions/user";
 
 
 interface LayoutProps {
@@ -26,14 +27,23 @@ export default async function Layout({studentView, teacherView, params}: LayoutP
     }
 
     // Check if user is teacher or student, and render the appropriate view
-    const user_id = await getUserId()
+    const user = await getUser()
 
     let page: React.ReactNode
 
-    if (room.created_by === user_id) {
+    if (room.created_by === user.id) {
         page = teacherView
     } else {
         page = studentView
+    }
+
+    // Construct the user object for the presence provider
+    const names = await fetchNames(user.id)
+    const presenceUser = {
+        id: user.id,
+        color: 'blue',
+        firstName: names.first_name || '',
+        lastName:  names.last_name || '',
     }
 
     return (
@@ -41,7 +51,7 @@ export default async function Layout({studentView, teacherView, params}: LayoutP
             <RoomProvider initialRoom={room}>
                 <NavProvider>
                     <MenuProvider>
-                        <PresencesProvider>
+                        <PresencesProvider user={presenceUser}>
                             {page}
                         </PresencesProvider>
                     </MenuProvider>

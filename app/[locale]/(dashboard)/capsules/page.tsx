@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '../../_actions/user';
+import { getUser } from '../../_actions/user';
 import { fetchCapsulesData } from './actions';
 import { Heading, Grid, Card, Flex, Text, AspectRatio, Callout } from '@radix-ui/themes';
 import CreateCapsuleBtn from './_components/CreateCapsuleBtn';
@@ -15,7 +15,7 @@ export const revalidate = 0
 
 export default async function CapsulesPage() {
     const t = await getTranslations("dashboard")
-    const userId = (await fetchUser()).id;
+    const userId = (await getUser()).id;
     const capsules = await fetchCapsulesData(userId);
     
     return (

@@ -1,4 +1,5 @@
-import getSupabaseClient from "../clients/old_getSupabaseClient";
+'use server'
+import createClient from "@/supabase/clients/server"
 
 
 type UploadCapsuleFileArgs = {
@@ -12,12 +13,9 @@ type UploadCapsuleFileArgs = {
     folder?: string
 }
 
-/**
- * Uploads a file to the `capsules_files` bucket
- * @returns The url of the uploaded file
- */
+
 export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
-    const supabase =  await getSupabaseClient()
+    const supabase =  createClient()
 
     // Get user id because we use it in the path
     const res = await supabase.auth.getUser()
@@ -47,11 +45,9 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
     }
 }
 
-/**
- * Downloads a file from the `capsules_files` bucket
- */
+
 export async function downloadCapsuleFile(fileUrl: string) {
-    const supabase =  await getSupabaseClient()
+    const supabase =  createClient()
     const { data, error } = await supabase.storage.from('capsules_files').download(fileUrl)
     if (error) {
         throw error
@@ -60,11 +56,9 @@ export async function downloadCapsuleFile(fileUrl: string) {
     }
 }
 
-/**
- * Creates a signed URL for a file in the `capsules_files` bucket
- */
+
 export async function createSignedUrl(fileUrl: string) {
-    const supabase =  await getSupabaseClient()
+    const supabase =  createClient()
     const { data, error } = await supabase.storage.from('capsules_files').createSignedUrl(fileUrl, 60)
     if (error) {
         throw error
@@ -74,11 +68,9 @@ export async function createSignedUrl(fileUrl: string) {
 }
 
 
-/**
- * Get the public URL of a file in the `capsules_files` bucket (the bucket must be public)
- */
+
 export async function getPublicUrl(path: string) {
-    const supabase =  await getSupabaseClient()
+    const supabase = createClient()
     const { data } = supabase.storage.from('capsules_files').getPublicUrl(path)
     return data.publicUrl
 }

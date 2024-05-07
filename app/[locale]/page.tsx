@@ -1,9 +1,9 @@
 import { redirect } from "../_intl/intlNavigation"
-import { fetchUser } from "./_actions/user"
+import { getUser } from "./_actions/user"
 import { saveCapsule } from "./_actions/capsule"
 
 export default async function HomePage() {
-    const user = await fetchUser()
+    const user = await getUser()
 
     if (!user.is_anonymous) {
         redirect('/capsules')

@@ -81,7 +81,7 @@ export async function setNames({ id, first_name, last_name }: TablesInsert<'user
 }
 
 
-export async function logOut() {
+export async function signOut() {
     const supabase = createClient()
 
     try {

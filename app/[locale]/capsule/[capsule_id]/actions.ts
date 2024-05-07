@@ -1,15 +1,106 @@
 'use server'
-import { fetchUserId } from '@/supabase/services/auth';
-import { fetchCapsuleSnapshot, saveSnapshotToCapsules } from '@/supabase/services/capsules'
-import { saveRoom, deleteRoom, RoomInsert, fetchRoomsCodes, roomParams } from '@/supabase/services/rooms'
+import { getUser } from '../../_actions/user';
 import { generateRandomCode } from '@/app/_utils/codeGen';
 import createClient from '@/supabase/clients/server';
 import logger from '@/app/_utils/logger';
-import { Tables } from "@/supabase/types/database.types";
+import { Tables, TablesInsert } from "@/supabase/types/database.types";
+import { TLStoreSnapshot } from "tldraw";
 
-// TODO: Rappatrier le code supabase ici
 
-type Room = Tables<'rooms'>
+export type Room = Tables<'rooms'>
+export type RoomInsert = TablesInsert<'rooms'>
+export type Capsule = Tables<'capsules'>
+
+export interface roomParams {
+    navigation: {
+        type: 'pratico' | 'animateur' | 'libre'
+        follow: string
+    }
+}
+
+
+export async function fetchCapsule(capsuleId: string): Promise<Capsule> {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').select('*').eq('id', capsuleId).single()
+    if (error) {
+        throw error
+    } else {
+        logger.log('supabase:database', 'got capsule', (data as Capsule).title)
+        return data
+    }
+}
+
+export async function fetchCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot | undefined> {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
+    if (error) {
+        throw error
+    } else {
+        return data.tld_snapshot?.[0] as TLStoreSnapshot || undefined
+    }
+}
+
+export async function fetchCapsuleTitle(capsuleId: string): Promise<string> {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
+    if (error) {
+        throw error
+    } else {
+        return data.title || ''
+    }
+}
+
+export async function saveCapsuleTitle(capsuleId: string, title: string) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').update({ title }).eq('id', capsuleId)
+    if (error) {
+        throw error
+    } else {
+        return data
+    }
+}
+
+export async function saveSnapshotToCapsules(capsuleId: string, snapshot: TLStoreSnapshot) {
+    const supabase = createClient()
+    //const _snapshot = [JSON.stringify(snapshot)]
+    const { data, error } = await supabase.from('capsules').update({ tld_snapshot: [snapshot] }).eq('id', capsuleId)
+    if (error) {
+        throw error
+    } else {
+        return data
+    }
+}
+
+export async function saveRoom(room: TablesInsert<'rooms'>) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').upsert(room).select()
+    if (error) {
+        throw error
+    } else {
+        return data[0] as Room // TODO: not sure about this
+    }
+}
+
+export async function deleteRoom(roomId: number) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
+    if (error) {
+        throw error
+    } else {
+        return data
+    }
+}
+
+export async function fetchRoomsCodes() {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('code')
+    if (error) {
+        throw error
+    } else {
+        const codesArray = data.map((e: { code: string }) => e.code)
+        return codesArray
+    }
+}
 
 
 export async function createRoom(capsuleId: string): Promise<RoomInsert> {
@@ -25,7 +116,7 @@ export async function createRoom(capsuleId: string): Promise<RoomInsert> {
     }
 
     // generate room params
-    const userId = await fetchUserId()
+    const userId = (await getUser()).id
     const params: roomParams = { navigation: { type: 'animateur', follow: userId } }
 
     // Generate the room object
@@ -49,6 +140,12 @@ export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
     }
 }
 
+export async function saveRoomSnapshot(roomId: number, snapshot: any) {
+    const supabase = createClient()
+    const { error } = await supabase.from('rooms').update({ capsule_snapshot: JSON.stringify(snapshot) }).eq('id', roomId)
+    if (error) throw error
+}
+
 /**
  * Get rooms related to a capsule
  */
@@ -67,5 +164,16 @@ export async function fetchRoomsByCapsuleId(capsuleId: string): Promise<Room[]> 
     } catch (error) {
         logger.error('supabase:database', 'Error fetchRoomsByCapsuleId', (error as Error).message)
         throw error
+    }
+}
+
+
+export async function saveRoomParams(roomId: number, params: roomParams) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').update(params).eq('id', roomId)
+    if (error) {
+        throw error
+    } else {
+        return data
     }
 }

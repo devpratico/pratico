@@ -7,16 +7,28 @@ import ActivitiesMenu from './_components/menus/ActivitiesMenu';
 import CanvasSL from '../../_components/canvases/CanvasSL';
 import CreationMenuBar from './_components/CreationMenuBar/CreationMenuBar';
 import MoreMenu from '../../room/[room_code]/@teacherView/_components/menus/MoreMenu';
+import { getUser, fetchNames } from '../../_actions/user';
+import { CanvasUser } from '../../_components/canvases/Canvas';
+import { getRandomColor } from '@/app/_utils/codeGen';
 
 
 export default async function CapsulePage() {
+
+    const userId = (await getUser()).id
+    const { first_name, last_name } = await fetchNames(userId)
+    const user: CanvasUser = {
+        id: userId,
+        name: `${first_name} ${last_name}`,
+        color: getRandomColor(),
+    }
+
 
 
     return (
         <div className={styles.container}>
 
             <div className={styles.canvas}>
-                <CanvasSL />
+                <CanvasSL user={user} />
             </div>
 
             <div className={styles.menuBar}>

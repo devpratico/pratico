@@ -1,5 +1,5 @@
 'use client'
-import { fetchUser } from "@/app/[locale]/_actions/user";
+import { getUser } from "@/app/[locale]/_actions/user";
 import { saveCapsule } from "@/app/[locale]/_actions/capsule";
 import { Button } from "@radix-ui/themes";
 import { useRouter } from "@/app/_intl/intlNavigation";
@@ -18,7 +18,7 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
     async function handleClick() {
         setLoading(true)
         try {
-            const userId = (await fetchUser()).id;
+            const userId = (await getUser()).id;
             const newCapsule = await saveCapsule({ created_by: userId })
             router.push('/capsule/' + newCapsule.id)
         } catch (error) {

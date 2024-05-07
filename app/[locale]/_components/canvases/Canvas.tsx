@@ -19,18 +19,21 @@ import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
 import { useCallback } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
-import { useUser } from '@/app/[locale]/_hooks/useUser'
 import logger from '@/app/_utils/logger'
 
 
+export interface CanvasUser {
+    id: string
+    name: string
+    color: string
+}
+
 export interface CanvasProps {
     store?: TLStoreWithStatus | TLStore
-    /**
-     * The initial snapshot of the store. Should not be used if the store is provided.
-     */
     initialSnapshot?: StoreSnapshot<TLRecord>
     persistenceKey?: string
     onMount?: (editor: Editor) => void
+    user: CanvasUser
     children?: React.ReactNode
 }
 
@@ -38,10 +41,9 @@ export interface CanvasProps {
  * This is the canvas component provided by tldraw.
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
-export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
+export default function Canvas({store, initialSnapshot, persistenceKey, onMount, user, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
-    const { user, color, firstName, lastName } = useUser()
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -64,14 +66,11 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
          * This is useful if the user has already set its `name` before - we don't redirect him to the student-form page.
          * For the user id, we take the supabase user id (if it exists) or the already existing id (if it exists - if not, tldraw will generate a new one)
          */
-        const userPref = getUserPreferences()
-        const userId = user?.id
-        const name = firstName && lastName ? `${firstName} ${lastName}` : userPref.name
         setUserPreferences({
-            ...userPref,
-            id: userId || userPref.id,
-            name: name,
-            color: color,
+            ...getUserPreferences(),
+            id: user.id,
+            name: user.name,
+            color: user.color,
             edgeScrollSpeed: 0
         })
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
@@ -79,7 +78,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor, user, color, onMount, firstName, lastName])
+    }, [setEditor, onMount, user])
 
     return (
         <Tldraw

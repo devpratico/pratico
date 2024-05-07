@@ -1,17 +1,19 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
-import { useUser } from "./useUser";
 import logger from "@/app/_utils/logger";
 import { useRoom } from "./useRoom";
 
 
-
-interface PresenceState {
+interface PresenceUser {
     id: string;
     color: string;
     firstName: string;
     lastName: string;
+}
+
+interface PresenceState extends PresenceUser {
+    isMe: boolean;
     state: 'online' | 'offline';
     connectedAt: string;
     disconnectedAt: string;
@@ -21,16 +23,20 @@ interface PresencesContext {
     presences: PresenceState[];
 }
 
+interface PresencesProviderProps {
+    user: PresenceUser
+    children: React.ReactNode
+}
+
 
 const PresencesContext = createContext<PresencesContext | undefined>(undefined);
 
 
 // Note : https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
-export function PresencesProvider({ children }: { children: React.ReactNode }) {
+export function PresencesProvider({ user, children }: PresencesProviderProps) {
 
     const { room } = useRoom()
     const roomId = room?.id
-    const { user, color, firstName, lastName } = useUser()
     const [presences, setPresences] = useState<PresenceState[]>([])
 
     useEffect(() => {
@@ -59,6 +65,7 @@ export function PresencesProvider({ children }: { children: React.ReactNode }) {
                     color: gp.color,
                     firstName: gp.firstName,
                     lastName: gp.lastName,
+                    isMe: gp.id === user.id,
                     state: 'offline' as 'offline',
                     connectedAt: gp.connectedAt,
                     disconnectedAt: new Date().toISOString()
@@ -78,9 +85,10 @@ export function PresencesProvider({ children }: { children: React.ReactNode }) {
         // Send my presence
         const myPresence: PresenceState = {
             id: user?.id || 'unknown',
-            color: color || 'lightblue',
-            firstName: firstName || 'unknown',
-            lastName: lastName || 'unknown',
+            color: user.color || 'blue',
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
+            isMe: true,
             state: 'online',
             connectedAt: new Date().toISOString(),
             disconnectedAt: ''
@@ -99,7 +107,7 @@ export function PresencesProvider({ children }: { children: React.ReactNode }) {
             supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', roomId + "_presence", 'channel removed:', res)})
         }
 
-    }, [roomId, user, color, firstName, lastName])
+    }, [roomId, user])
 
 
     if (!roomId) {

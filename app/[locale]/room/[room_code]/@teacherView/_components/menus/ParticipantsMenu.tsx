@@ -1,15 +1,14 @@
 'use client'
 import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout/DeskMenuLayout"
-import { Section, Heading, RadioCards } from '@radix-ui/themes'
-import { Text, Flex, Table, Badge, Box } from "@radix-ui/themes"
+import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator } from '@radix-ui/themes'
+import { Pen, CircleDollarSign, Trophy, EllipsisVertical } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
-import { useUser } from "@/app/[locale]/_hooks/useUser"
 
 
 export default function ParticipantMenu() {
 
     const { presences } = usePresences()
-    const { user } = useUser()
+
 
     return (
         <DeskMenuLayout menu="participants">
@@ -49,13 +48,17 @@ export default function ParticipantMenu() {
             <Section size='1'>
                 <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
 
+                {/*<Flex direction='column' gap='1'>
+                    <Button variant='soft'><Trophy />Équipes</Button>
+                    <Button variant='soft'><Coins/>Récompenser</Button>
+                    <Button variant='soft'><Pen/>Collaborer</Button>
+                </Flex>*/}
+
                 <Table.Root>
                     <Table.Body>
 
 
                         {presences.map((presence, index) => {
-
-                            const isMe = presence.id === user?.id
 
                             return(
                                 <Table.Row key={presence.id}>
@@ -63,8 +66,23 @@ export default function ParticipantMenu() {
                                         <Flex align='center' gap='2'>
                                             {Circle(presence.state == 'online' ? presence.color : 'lightgray')}
                                             {presence.firstName + ' ' + presence.lastName}
-                                            {isMe && <Badge radius='full'>moi</Badge>}
+                                            {presence.isMe && <Badge radius='full'>moi</Badge>}
                                             {presence.state == 'offline' && <Badge radius='full' color='gray'>hors ligne</Badge>}
+                                            
+                                            <div style={{flex: 1}}></div>
+
+                                            <IconButton variant='ghost'>
+                                                <Pen size='20'/>
+                                            </IconButton>
+
+                                            {/*
+                                            <IconButton variant='ghost'>
+                                                <CircleDollarSign size='20' />
+                                            </IconButton>
+
+                                            <IconButton variant='ghost'>
+                                                <EllipsisVertical size='20' />
+                                            </IconButton>*/}
                                         </Flex>
                                     </Table.RowHeaderCell>
                                 </Table.Row>

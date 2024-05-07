@@ -1,10 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
-//import { NextURL } from 'next/dist/server/web/next-url'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
 import config from './app/_intl/intl.config'
 import logger from './app/_utils/logger'
-//import { redirect } from 'next/dist/server/api-utils'
  
 
 
@@ -75,27 +73,22 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
         if (error) throw error
         if (!user) throw new Error('Supabase returned null')
 
-    // If there's an error (no user)
     } catch (error) {
-        logger.log('next:middleware', 'No user', `(${(error as Error).message})`)
-
-        /*
-        const originUrl = request.nextUrl
-        const redirectUrl = originUrl.clone()
-        redirectUrl.pathname = 'login' // Overwrite the pathname
-        redirectUrl.searchParams.set('nextUrl', originUrl.pathname)
-        logger.log('next:middleware', 'Redirecting to login page. Next URL:', originUrl.pathname)
-        decision = NextResponse.redirect(redirectUrl)
-        */
-
+        logger.log('next:middleware', 'No user') //, `(${(error as Error).message})`)
         // Sign in anonymously
-        const {data, error: _error} = await supabase.auth.signInAnonymously()
-        if (_error) throw _error
-        if (!data) throw new Error('Supabase returned null')
-        logger.log('next:middleware', 'Signed in anonymously')
-        // Continue normally
+        try {
+            const { data:{user}, error: _error } = await supabase.auth.signInAnonymously()
+            if (_error) throw _error
+            if (!user) throw new Error('Supabase returned null')
+            logger.log('next:middleware', 'Signed in anonymously')
+
+        } catch (error) {
+            // We couldn't load the user nor sign in anonymously
+            logger.error('next:middleware', 'Failed to sign in anonymously, redirecting to login page', `(${(error as Error).message})`)
+            // Redirect to the login page
+            decision = NextResponse.redirect('/login')
+        }
     }
-    
     return decision
 }
 

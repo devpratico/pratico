@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import type { Capsule } from '@/supabase/services/capsules';
+import type { Capsule } from '@/app/[locale]/_actions/capsule'
 
 
 export type CapsulesContext = {

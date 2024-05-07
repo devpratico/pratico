@@ -1,3 +1,4 @@
+/*
 import getSupabaseClient from "../clients/old_getSupabaseClient";
 import { Tables, TablesInsert } from "../types/database.types";
 
@@ -5,10 +6,7 @@ import { Tables, TablesInsert } from "../types/database.types";
 export type Room = Tables<'rooms'>
 export type RoomInsert = TablesInsert<'rooms'>
 
-/**
- * @returns a room from the `rooms` table
- * @param roomId - The id of the room to get
- */
+
 export async function fetchRoom(roomId: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('id', roomId).single()
@@ -43,9 +41,7 @@ export async function fetchRoomsCodes() {
 }
 
 
-/**
- * Sets a room in the `rooms` table
- */
+
 export async function saveRoom(room: TablesInsert<'rooms'>) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select()
@@ -57,18 +53,14 @@ export async function saveRoom(room: TablesInsert<'rooms'>) {
 }
 
 
-/**
- * Sets a room snapshot in the `rooms` table
- */
+
 export async function saveRoomSnapshot(roomId: number, snapshot: any) {
     const supabase =  await getSupabaseClient()
     const { error } = await supabase.from('rooms').update({capsule_snapshot: JSON.stringify(snapshot)}).eq('id', roomId)
     if (error) throw error
 }
 
-/**
- * Deletes a room from the `rooms` table
- */
+
 export async function deleteRoom(roomId: number) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
@@ -79,9 +71,7 @@ export async function deleteRoom(roomId: number) {
     }
 }
 
-/**
- * Get rooms related to a capsule
- */
+
 export async function old_fetchRoomsByCapsuleId(capsuleId: string) {
     const supabase =  await getSupabaseClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
@@ -110,3 +100,4 @@ export async function saveRoomParams(roomId: number, params: roomParams) {
         return data
     }
 }
+*/
