@@ -53,13 +53,15 @@ export function PresencesProvider({ user, children }: PresencesProviderProps) {
         room.on('presence', { event: 'sync' }, () => {
             logger.log('supabase:realtime', roomId + "_presence", 'Presence sync')
             const newState = room.presenceState<PresenceState>()
-            const newPresences = Object.values(newState).map(array => array[0])
+            const newPresences = Object.values(newState).map(array => array[0]) // Weird but that's how supabase returns it
 
-            // Update the presences:
-            // Replace the list by the new list
-            // Put back the removed ones
+            // Set the correct `isMe` flag
+            newPresences.forEach(p => p.isMe = p.id === user.id)
+
             setPresences((prev) => {
+                // Get the presences that are gone
                 const gonePresences = prev.filter(p => !newPresences.map(np => np.id).includes(p.id))
+                // Update the gone presences with a disconnectedAt date and offline state
                 const updatedGonePresences = gonePresences.map(gp => ({
                     id: gp.id,
                     color: gp.color,
@@ -70,6 +72,7 @@ export function PresencesProvider({ user, children }: PresencesProviderProps) {
                     connectedAt: gp.connectedAt,
                     disconnectedAt: new Date().toISOString()
                 }))
+                // Refresh the presences but keep the gone presences
                 return [...newPresences, ...updatedGonePresences]
             })
         })
