@@ -1,14 +1,15 @@
 'use client'
 import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout/DeskMenuLayout"
 import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator } from '@radix-ui/themes'
-import { Pen, CircleDollarSign, Trophy, EllipsisVertical } from "lucide-react"
+import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
+import CollabSwitch from "../CollabSwitch"
+import { useParams } from "next/navigation"
 
 
 export default function ParticipantMenu() {
-
+    const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
-
 
     return (
         <DeskMenuLayout menu="participants">
@@ -48,11 +49,13 @@ export default function ParticipantMenu() {
             <Section size='1'>
                 <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
 
-                {/*<Flex direction='column' gap='1'>
+                {/*
+                <Flex direction='column' gap='1'>
                     <Button variant='soft'><Trophy />Équipes</Button>
                     <Button variant='soft'><Coins/>Récompenser</Button>
                     <Button variant='soft'><Pen/>Collaborer</Button>
-                </Flex>*/}
+                </Flex>
+                */}
 
                 <Table.Root>
                     <Table.Body>
@@ -71,9 +74,7 @@ export default function ParticipantMenu() {
                                             
                                             <div style={{flex: 1}}></div>
 
-                                            <IconButton variant='ghost'>
-                                                <Pen size='20'/>
-                                            </IconButton>
+                                            { !presence.isMe && presence.state == 'online' && <CollabSwitch userId={presence.id} roomCode={room_code} /> }
 
                                             {/*
                                             <IconButton variant='ghost'>

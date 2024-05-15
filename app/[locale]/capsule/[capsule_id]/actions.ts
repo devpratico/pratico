@@ -15,6 +15,11 @@ export interface roomParams {
     navigation: {
         type: 'pratico' | 'animateur' | 'libre'
         follow: string
+    },
+    collaboration: {
+        active: boolean
+        allowAll: boolean
+        allowedUsersIds: string[]
     }
 }
 
@@ -117,7 +122,10 @@ export async function createRoom(capsuleId: string): Promise<RoomInsert> {
 
     // generate room params
     const userId = (await getUser()).id
-    const params: roomParams = { navigation: { type: 'animateur', follow: userId } }
+    const params: roomParams = { 
+        navigation: { type: 'animateur', follow: userId },
+        collaboration: { active: true, allowAll: true, allowedUsersIds: [] }
+    }
 
     // Generate the room object
     const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: JSON.stringify(snapshot), params: JSON.stringify(params) }
@@ -168,12 +176,56 @@ export async function fetchRoomsByCapsuleId(capsuleId: string): Promise<Room[]> 
 }
 
 
+export async function fetchRoomParams(roomId: number): Promise<roomParams> {
+    const supabase = createClient()
+    logger.log('supabase:database', 'fetching room params for', roomId, '...')
+    const { data, error } = await supabase.from('rooms').select('params').eq('id', roomId).single()
+    if (error) {
+        logger.error('supabase:database', 'Error fetchRoomParams', error.message)
+        throw error
+    } else {
+        logger.log('supabase:database', 'fetched room params for', roomId, JSON.parse(data.params))
+        //return data.params as roomParams
+        return JSON.parse(data.params) as roomParams
+    }
+}
+
+
 export async function saveRoomParams(roomId: number, params: roomParams) {
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').update(params).eq('id', roomId)
+    const { data, error } = await supabase.from('rooms').update({ params: JSON.stringify(params) }).eq('id', roomId)
+    if (error) {
+        logger.error('supabase:database', 'Error saveRoomParams', error.message)
+        throw error
+    } else {
+        logger.log('supabase:database', 'saved room params for', roomId)
+        return data
+    }
+}
+
+async function getRoomId(roomCode: string): Promise<number> {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('id').eq('code', roomCode).single()
     if (error) {
         throw error
     } else {
-        return data
+        return data.id
     }
+}
+
+
+export async function toggleCollaborationFor(userId: string, roomCode: string) {
+    const roomId = await getRoomId(roomCode.toString())
+    const params = await fetchRoomParams(roomId)
+
+    if (params.collaboration.allowedUsersIds.includes(userId)) {
+        logger.log('supabase:database', 'removing user from allowed collab users', userId)
+        params.collaboration.allowedUsersIds = params.collaboration.allowedUsersIds.filter(e => e !== userId)
+
+    } else {
+        logger.log('supabase:database', 'adding user to allowed collab users', userId)
+        params.collaboration.allowedUsersIds.push(userId)
+    }
+
+    await saveRoomParams(roomId, params)
 }

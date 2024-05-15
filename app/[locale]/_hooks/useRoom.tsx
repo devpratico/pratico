@@ -9,6 +9,9 @@ export type RoomContext = {
     setRoom: (room?: Room | RoomInsert) => void;
 }
 
+
+// TODO: get rid of that hook. We know the room from the url and should fetch when needed?
+
 const RoomContext = createContext<RoomContext | undefined>(undefined);
 
 export function RoomProvider({ children, initialRoom }: { children: React.ReactNode, initialRoom?: Room }) {
