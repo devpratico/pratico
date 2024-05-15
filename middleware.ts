@@ -6,20 +6,13 @@ import logger from './app/_utils/logger'
  
 
 
-/**
- * Prevent middleware from running on those specific paths:
- * - _next/static (static files)
- * - _next/image (image optimization files)
- * - favicon.ico (favicon file)
- * - public folder (public files)
- * - api (API routes)
- */
+//Prevent middleware from running on those specific paths
 const baseBypassPaths = [
-    '_next/static',
-    '_next/image',
-    'favicon.ico',
-    'public',
-    'api',
+    '_next/static', // static files
+    '_next/image', // image optimization files
+    'favicon.ico', // favicon file
+    'public', // public files
+    'api', // API routes
 ];
 
 
@@ -86,7 +79,7 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
             // We couldn't load the user nor sign in anonymously
             logger.error('next:middleware', 'Failed to sign in anonymously, redirecting to login page', `(${(error as Error).message})`)
             // Redirect to the login page
-            decision = NextResponse.redirect('/login')
+            decision = NextResponse.redirect(new URL('/login', request.url))
         }
     }
     return decision

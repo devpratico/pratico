@@ -11,7 +11,7 @@ export interface Names {
     last_name: string  | null
 }
 
-export async function getUser(): Promise<SupabaseUser> {
+export async function getSession(): Promise<SupabaseUser> {
     const supabase = createClient()
     try {
         // Using getSession instead of getUser to avoid a server call. I think it is safe because the auth token
@@ -20,8 +20,25 @@ export async function getUser(): Promise<SupabaseUser> {
         if (error || !session) {
             throw error || new Error("No session")
         } else {
-            logger.log('supabase:auth', `fetched user`, session.user.email || session.user.is_anonymous && "Anonymous" + session.user.id)
+            logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous" + session.user.id)
             return session.user as SupabaseUser
+        }
+    } catch (error) {
+        logger.error('supabase:auth', `error fetching session`, (error as Error).message)
+        throw error
+    }
+}
+
+
+export async function getUser(): Promise<SupabaseUser> {
+    const supabase = createClient()
+    try {
+        const { data, error } = await supabase.auth.getUser()
+        if (error || !data.user) {
+            throw error || new Error("No session")
+        } else {
+            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous" + data.user.id)
+            return data.user as SupabaseUser
         }
     } catch (error) {
         logger.error('supabase:auth', `error fetching user`, (error as Error).message)
