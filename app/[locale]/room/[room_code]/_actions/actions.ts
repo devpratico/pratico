@@ -1,6 +1,5 @@
 'use server'
 import createClient from '@/supabase/clients/server'
-import { Tables } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
 import { Room } from '@/app/[locale]/capsule/[capsule_id]/actions';
 
