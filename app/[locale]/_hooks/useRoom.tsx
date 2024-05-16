@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { fetchRoomByCode } from '../room/[room_code]/_actions/actions';
 import { useParams } from 'next/navigation';
+import createClient from '@/supabase/clients/client';
 
 
 export type RoomContext = {
@@ -13,19 +14,37 @@ export type RoomContext = {
 
 const RoomContext = createContext<RoomContext | undefined>(undefined);
 
+/**
+ * This provider fetches the room data based on the url room code.
+ * Only the params property is updated in real time.
+ * The other data is fetched once and doesn't change.
+ */
 export function RoomProvider({ children }: { children: React.ReactNode}) {
-
-    const [room, setRoom] = useState<Room | undefined>(undefined);
     const { room_code }: { room_code: string } = useParams();
+    const [room, setRoom] = useState<Room | undefined>(undefined);
 
+    // Fetch the room data (happens once)
     useEffect(() => {
         fetchRoomByCode(room_code)
             .then((room) => {setRoom(room)})
             .catch((error) => {logger.error('react:hook', `error getting room by code "${room_code}"`, (error as Error).message)})
     }, [room_code]);
 
+    // Subscribe to room params changes
+    useEffect(() => {
+        const supabase = createClient();
+        const channel = supabase.channel(room_code + "_params");
+        channel
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
+                (payload): void => {console.log('🟢 room params updated', payload)}
+            )
+            .subscribe(async (status) => {
+                console.log('🟢 room params subscription status', status);
+            })
 
-    // TODO: listen for postgre changes to setRoom
+        return () => {supabase.removeChannel(channel)}
+
+    }, [room_code]);
 
     return (
         <RoomContext.Provider value={{ room }}>

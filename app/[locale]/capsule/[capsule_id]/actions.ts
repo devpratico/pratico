@@ -198,7 +198,7 @@ export async function saveRoomParams(roomId: number, params: roomParams) {
         logger.error('supabase:database', 'Error saveRoomParams', error.message)
         throw error
     } else {
-        logger.log('supabase:database', 'saved room params for', roomId)
+        logger.log('supabase:database', 'Saved room params for', roomId)
         return data
     }
 }
