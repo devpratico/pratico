@@ -1,5 +1,5 @@
 'use server'
-import { getUser } from '../../_actions/user';
+import { fetchUser } from '../../_actions/user';
 import { generateRandomCode } from '@/app/_utils/codeGen';
 import createClient from '@/supabase/clients/server';
 import logger from '@/app/_utils/logger';
@@ -121,7 +121,7 @@ export async function createRoom(capsuleId: string): Promise<RoomInsert> {
     }
 
     // generate room params
-    const userId = (await getUser()).id
+    const userId = (await fetchUser()).id
     const params: roomParams = { 
         navigation: { type: 'animateur', follow: userId },
         collaboration: { active: true, allowAll: true, allowedUsersIds: [] }

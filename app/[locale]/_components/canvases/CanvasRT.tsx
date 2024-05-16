@@ -21,7 +21,7 @@ interface CanvasRTProps {
 export default function CanvasRT({user, children}: CanvasRTProps) {
 
     // Get the room we're in
-    const { room } = useRoom()
+    const  { room }  = useRoom()
 
     // Compute some values
     const roomId = useMemo(() => room?.id?.toString(), [room])

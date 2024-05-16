@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { getUser } from '@/app/[locale]/_actions/user'
+import { fetchUser } from '@/app/[locale]/_actions/user'
 import { fetchProfile, fetchStripeId } from './actions';
 import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
@@ -13,7 +13,7 @@ import { redirect } from '@/app/_intl/intlNavigation';
 export default async function AccountPage() {
     const t = await getTranslations("settings")
     
-    const user = await getUser()
+    const user = await fetchUser()
     const isAnon = user.is_anonymous
 
     if (!user || isAnon) {

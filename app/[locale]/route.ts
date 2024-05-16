@@ -1,5 +1,5 @@
 import { redirect } from "../_intl/intlNavigation"
-import { getUser } from "./_actions/user"
+import { fetchUser } from "./_actions/user"
 import { saveCapsule } from "./_actions/capsule"
 
 /**
@@ -7,7 +7,7 @@ import { saveCapsule } from "./_actions/capsule"
  * it just redirects to the capsules page if the user is a full account, or to a new capsule if not.
  */
 export async function GET() {
-    const user = await getUser()
+    const user = await fetchUser()
 
     if (!user.is_anonymous) {
         redirect('/capsules')

@@ -1,5 +1,5 @@
 import TeacherCanvasClient from "./TeacherCanvasClient";
-import { getUser, fetchNames } from '@/app/[locale]/_actions/user'
+import { fetchUser, fetchNames } from '@/app/[locale]/_actions/user'
 //import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
@@ -12,7 +12,7 @@ interface TeacherCanvasServerProps {
 
 export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasServerProps) {
 
-    const userId = (await getUser()).id
+    const userId = (await fetchUser()).id
     const { first_name, last_name } = await fetchNames(userId)
 
     if (!first_name || !last_name) {

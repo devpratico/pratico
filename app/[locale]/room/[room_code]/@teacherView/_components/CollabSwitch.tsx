@@ -7,11 +7,7 @@ import { toggleCollaborationFor } from '@/app/[locale]/capsule/[capsule_id]/acti
 
 
 interface SwitchIconProps {
-    /*
-    * The id of the user that should collaborate
-    */
     userId: string
-
     roomCode: string
 }
 

@@ -2,7 +2,8 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { useRoom } from "./useRoom";
+import { fetchNames, fetchUser } from "../_actions/user";
+import { getRandomColor } from "@/app/_utils/codeGen";
 
 
 interface PresenceUser {
@@ -24,7 +25,8 @@ interface PresencesContext {
 }
 
 interface PresencesProviderProps {
-    user: PresenceUser
+    roomCode: string;
+    userId: string;
     children: React.ReactNode
 }
 
@@ -33,30 +35,21 @@ const PresencesContext = createContext<PresencesContext | undefined>(undefined);
 
 
 // Note : https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
-export function PresencesProvider({ user, children }: PresencesProviderProps) {
-
-    const { room } = useRoom()
-    const roomId = room?.id
+export function PresencesProvider({ roomCode, userId, children }: PresencesProviderProps) {
     const [presences, setPresences] = useState<PresenceState[]>([])
 
     useEffect(() => {
-
-        if (!user?.id) {
-            logger.error('react:hook', 'usePresence', 'No user id found')
-            return
-        }
-
         const supabase = createClient()
-        const room = supabase.channel(roomId + "_presence")
+        const room = supabase.channel(roomCode + "_presence")
 
         // React to presence changes
         room.on('presence', { event: 'sync' }, () => {
-            logger.log('supabase:realtime', roomId + "_presence", 'Presence sync')
+            logger.log('supabase:realtime', roomCode + "_presence", 'Presence sync')
             const newState = room.presenceState<PresenceState>()
             const newPresences = Object.values(newState).map(array => array[0]) // Weird but that's how supabase returns it
 
             // Set the correct `isMe` flag
-            newPresences.forEach(p => p.isMe = p.id === user.id)
+            newPresences.forEach(p => p.isMe = p.id === userId)
 
             setPresences((prev) => {
                 // Get the presences that are gone
@@ -67,7 +60,7 @@ export function PresencesProvider({ user, children }: PresencesProviderProps) {
                     color: gp.color,
                     firstName: gp.firstName,
                     lastName: gp.lastName,
-                    isMe: gp.id === user.id,
+                    isMe: false,
                     state: 'offline' as 'offline',
                     connectedAt: gp.connectedAt,
                     disconnectedAt: new Date().toISOString()
@@ -77,29 +70,33 @@ export function PresencesProvider({ user, children }: PresencesProviderProps) {
             })
         })
 
+        /*
         room.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-            logger.log('supabase:realtime', roomId + "_presence", 'join', newPresences)
+            logger.log('supabase:realtime', roomCode + "_presence", 'join', newPresences)
         })
 
         room.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-            logger.log('supabase:realtime', roomId + "_presence", 'leave', leftPresences)
-        })
+            logger.log('supabase:realtime', roomCode + "_presence", 'leave', leftPresences)
+        })*/
 
         // Send my presence
-        const myPresence: PresenceState = {
-            id: user?.id || 'unknown',
-            color: user.color || 'blue',
-            firstName: user.firstName || '',
-            lastName: user.lastName || '',
-            isMe: true,
-            state: 'online',
-            connectedAt: new Date().toISOString(),
-            disconnectedAt: ''
-        }
-
         room.subscribe(async (status) => {
-            logger.log('supabase:realtime', roomId + "_presence", 'Presence status', status)
+            logger.log('supabase:realtime', roomCode + "_presence", 'Presence status', status)
             if (status !== 'SUBSCRIBED') { return }
+
+            const names = await fetchNames(userId)
+
+            const myPresence: PresenceState = {
+                id: userId || 'unknown',
+                color: getRandomColor(),
+                firstName: names.first_name || '',
+                lastName: names.last_name || '',
+                isMe: true,
+                state: 'online',
+                connectedAt: new Date().toISOString(),
+                disconnectedAt: ''
+            }
+
             const presenceTrackStatus = await room.track(myPresence)
             //logger.log('supabase:realtime', 'My presence track', presenceTrackStatus)
         })
@@ -107,13 +104,13 @@ export function PresencesProvider({ user, children }: PresencesProviderProps) {
 
         return () => { 
             //room.untrack()
-            supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', roomId + "_presence", 'channel removed:', res)})
+            supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', roomCode + "_presence", 'channel removed:', res)})
         }
 
-    }, [roomId, user])
+    }, [roomCode, userId])
 
 
-    if (!roomId) {
+    if (!roomCode) {
         logger.log('react:hook', 'usePresences', 'No room id found - no presences to track')
     }
 

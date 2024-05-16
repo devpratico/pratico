@@ -1,5 +1,5 @@
 import { Avatar } from '@radix-ui/themes';
-import { getUser, fetchNames } from '../../_actions/user';
+import { fetchUser, fetchNames } from '../../_actions/user';
 import { Link } from "@/app/_intl/intlNavigation";
 import LoginBtn from "../../_components/LoginBtn";
 import { getTranslations } from 'next-intl/server';
@@ -14,7 +14,7 @@ export default async function UserInfo() {
 
     let user
     try {
-        user = await getUser()
+        user = await fetchUser()
         if (!user || user.is_anonymous) throw new Error("User not found")
     } catch (error) {
         return <LoginBtn message={t('sign in')} />

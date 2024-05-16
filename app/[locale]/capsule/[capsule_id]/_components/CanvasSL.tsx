@@ -7,7 +7,7 @@ import { fetchCapsuleSnapshot } from "../actions";
 import { useEffect, useState } from "react";
 import Resizer from "../../../_components/canvases/custom-ui/Resizer/Resizer";
 import { CanvasUser } from "../../../_components/canvases/Canvas";
-import { getUser, fetchNames } from "../../../_actions/user";
+import { fetchUser, fetchNames } from "../../../_actions/user";
 import { getRandomColor } from "@/app/_utils/codeGen";
 
 
@@ -26,7 +26,7 @@ export default function CanvasSL() {
     const [user, setUser] = useState<CanvasUser>(initialUser)
     useEffect(() => {
         async function _setUser() {
-            const userId = (await getUser()).id
+            const userId = (await fetchUser()).id
             const { first_name, last_name } = await fetchNames(userId)
             const user: CanvasUser = {
                 id: userId,

@@ -30,7 +30,7 @@ export async function getSession(): Promise<SupabaseUser> {
 }
 
 
-export async function getUser(): Promise<SupabaseUser> {
+export async function fetchUser(): Promise<SupabaseUser> {
     const supabase = createClient()
     try {
         const { data, error } = await supabase.auth.getUser()
@@ -45,6 +45,7 @@ export async function getUser(): Promise<SupabaseUser> {
         throw error
     }
 }
+
 
 
 export async function fetchNames(userId: string): Promise<Names> {

@@ -1,12 +1,12 @@
 import StudentCanvas from './_components/StudentCanvas'
-import { getUser, fetchNames } from '@/app/[locale]/_actions/user'
+import { fetchUser, fetchNames } from '@/app/[locale]/_actions/user'
 import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '../_actions/actions'
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
-    const userId = (await getUser()).id
+    const userId = (await fetchUser()).id
     const { first_name, last_name } = await fetchNames(userId)
 
     if (!first_name || !last_name) {
