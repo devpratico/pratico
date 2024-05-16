@@ -30,7 +30,7 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
     }
 
     const room = await fetchRoomByCode(roomCode)
-    const snapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) : undefined
+    const snapshot = room?.capsule_snapshot || undefined
 
 
     return <TeacherCanvasClient user={user} roomId={parseInt(roomCode)} snapshot={snapshot} />

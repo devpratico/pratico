@@ -11,7 +11,7 @@ import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
 interface TeacherCanvasClientProps {
     user: CanvasUser
     roomId: number
-    snapshot: TLStoreSnapshot
+    snapshot?: TLStoreSnapshot
 }
 
 

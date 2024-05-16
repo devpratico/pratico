@@ -12,7 +12,7 @@ import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
 interface StudentCanvasProps {
     user: CanvasUser
     roomId: number
-    snapshot: TLStoreSnapshot
+    snapshot?: TLStoreSnapshot
 }
 
 

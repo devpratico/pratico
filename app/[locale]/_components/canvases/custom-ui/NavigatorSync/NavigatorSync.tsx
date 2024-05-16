@@ -1,7 +1,7 @@
 'use client'
 import { useEditor, useComputed, useValue } from 'tldraw'
 import { useRoom } from '@/app/[locale]/_hooks/useRoom'
-import { roomParams } from '@/app/[locale]/capsule/[capsule_id]/actions'
+import { RoomParams } from '@/app/[locale]/capsule/[capsule_id]/actions'
 import { useEffect, useMemo } from 'react'
 import logger from '@/app/_utils/logger'
 
@@ -13,8 +13,7 @@ const NavigatorSync = () => {
     
     const idToFollow = useMemo(() => {
         const params = room?.params
-        const paramsObject = params ? JSON.parse(String(params)) as roomParams : null
-        const follow = paramsObject?.navigation?.follow
+        const follow = params?.navigation?.follow
         logger.log('tldraw:editor', 'Id to follow:', follow)
         return follow
     }, [room])

@@ -22,7 +22,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     }
 
     const room = await fetchRoomByCode(params.room_code)
-    const snapshot = room?.capsule_snapshot ? JSON.parse(room.capsule_snapshot as any) : undefined
+    const snapshot = room?.capsule_snapshot || undefined
 
     return (
         <main style={{ height: '100dvh' }}>

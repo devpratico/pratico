@@ -2,9 +2,9 @@
 import createClient from '@/supabase/clients/server'
 import { Tables } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
+import { Room } from '@/app/[locale]/capsule/[capsule_id]/actions';
 
 
-export type Room = Tables<'rooms'>
 
 export async function fetchRoomByCode(code: string) {
     const supabase = createClient()
@@ -16,7 +16,7 @@ export async function fetchRoomByCode(code: string) {
 
     } else {
         logger.log('supabase:database', `fetched data for room ${code}`)
-        return data as Tables<'rooms'>
+        return data as Room
     }
 }
 

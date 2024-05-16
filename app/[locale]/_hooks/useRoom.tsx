@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import type { Room} from '@/app/[locale]/capsule/[capsule_id]/actions';
+import type { Room } from '@/app/[locale]/capsule/[capsule_id]/actions';
 import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { fetchRoomByCode } from '../room/[room_code]/_actions/actions';
@@ -36,11 +36,19 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
         const channel = supabase.channel(room_code + "_params");
         channel
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
-                (payload): void => {console.log('🟢 room params updated', payload)}
+                (payload): void => {
+                    logger.log('supabase:realtime', "room params updated", room_code)
+                    const newRecord = payload.new// as Room
+                    setRoom((prev) => {
+                        if (prev) {
+                            return {...prev, params: newRecord.params}
+                        } else {
+                            return prev
+                        }
+                    })
+                }
             )
-            .subscribe(async (status) => {
-                console.log('🟢 room params subscription status', status);
-            })
+            .subscribe()
 
         return () => {supabase.removeChannel(channel)}
 
