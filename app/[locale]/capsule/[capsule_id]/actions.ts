@@ -132,7 +132,7 @@ export async function createRoom(capsuleId: string): Promise<Room> {
     const userId = (await fetchUser()).id
     const params: RoomParams = { 
         navigation: { type: 'animateur', follow: userId },
-        collaboration: { active: true, allowAll: true, allowedUsersIds: [] }
+        collaboration: { active: true, allowAll: false, allowedUsersIds: [] }
     }
 
     // Generate the room object
