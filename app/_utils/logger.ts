@@ -80,7 +80,12 @@ class Logger {
         const isCategoryEnabled = isCategoryDirectlyEnabled || isParentCategoryEnabled
         
         if (
-            ( process.env.NODE_ENV === 'development' || type === 'error' ) &&
+            ( 
+                process.env.NODE_ENV   === 'development' ||
+                process.env.VERCEL_ENV === 'development' ||
+                process.env.VERCEL_ENV === 'preview' ||
+                type === 'error'
+            ) &&
             this.options.enable &&
             isCategoryEnabled
         ) {
