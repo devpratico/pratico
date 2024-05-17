@@ -20,7 +20,7 @@ export async function getSession(): Promise<SupabaseUser> {
         if (error || !session) {
             throw error || new Error("No session")
         } else {
-            logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous" + session.user.id)
+            logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous " + session.user.id)
             return session.user as SupabaseUser
         }
     } catch (error) {
@@ -37,7 +37,7 @@ export async function fetchUser(): Promise<SupabaseUser> {
         if (error || !data.user) {
             throw error || new Error("No session")
         } else {
-            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous" + data.user.id)
+            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous " + data.user.id)
             return data.user as SupabaseUser
         }
     } catch (error) {
