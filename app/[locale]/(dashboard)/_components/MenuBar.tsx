@@ -30,7 +30,7 @@ export default function MenuBar({ ...props }: MenuBarProps) {
             <div style={imageContainerStyle}>
                 <Image src={praticoLogo} objectFit='contain' fill alt="Pratico" />
             </div>
-            <UserInfo/>
+            {/*<UserInfo/>*/}
         </div>    
     )
 }

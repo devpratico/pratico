@@ -14,5 +14,9 @@
     },
     "dashboard": {
         "help": "Help"
+    },
+
+    "admin": {
+        "hello": "Hello"
     }
 }

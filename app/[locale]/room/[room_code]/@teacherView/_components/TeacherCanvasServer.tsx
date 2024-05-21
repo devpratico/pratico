@@ -33,5 +33,5 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
     const snapshot = room?.capsule_snapshot || undefined
 
 
-    return <TeacherCanvasClient user={user} roomId={parseInt(roomCode)} snapshot={snapshot} />
+    return <TeacherCanvasClient user={user} roomId={room.id} snapshot={snapshot} />
 }

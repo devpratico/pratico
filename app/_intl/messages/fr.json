@@ -64,5 +64,9 @@
         "subscribe to pratico": "S'abonner à pratico",
         "thanks for subscribing": "Merci pour votre abonnement !",
         "start using pratico": "Commencez à utiliser pratico"
+    },
+
+    "admin": {
+        "hello": "Bonjour"
     }
 }

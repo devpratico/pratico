@@ -74,7 +74,7 @@ async function authMiddleware(request: NextRequest, intlResponse: NextResponse) 
         const {data:{user}, error} = await supabase.auth.getUser()
         if (error) { throw error }
         if (!user) { throw new Error('getUser returned null') }
-        logger.log('next:middleware', 'Signed in as', user.id)
+        //logger.log('next:middleware', 'Signed in as', user.id)
 
     } catch (error1) {
         try {

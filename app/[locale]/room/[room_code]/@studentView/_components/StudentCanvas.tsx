@@ -14,14 +14,13 @@ import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 
 interface StudentCanvasProps {
     user: CanvasUser
-    roomId: number
     snapshot?: TLStoreSnapshot
 }
 
 
-export default function StudentCanvas({ user, roomId, snapshot }: StudentCanvasProps) {
-    const store = useBroadcastStore({ roomId:  roomId.toString(), initialSnapshot: snapshot })
+export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
+    const store = useBroadcastStore({ roomId:  room?.id.toString(), initialSnapshot: snapshot })
 
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
@@ -37,8 +36,8 @@ export default function StudentCanvas({ user, roomId, snapshot }: StudentCanvasP
             store={store}
         >
             {canCollab && <ToolBar />}
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 70 }} margin={10} />
-            <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} />
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 70 : 0 }} margin={10} />
+            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
             <NavigatorSync />
         </Canvas>
     )

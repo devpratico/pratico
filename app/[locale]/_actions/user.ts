@@ -23,9 +23,9 @@ export async function getSession(): Promise<SupabaseUser> {
             logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous " + session.user.id)
             return session.user as SupabaseUser
         }
-    } catch (error) {
-        logger.error('supabase:auth', `error fetching session`, (error as Error).message)
-        throw error
+    } catch (err) {
+        logger.error('supabase:auth', `error fetching session`, (err as Error).message)
+        throw err
     }
 }
 

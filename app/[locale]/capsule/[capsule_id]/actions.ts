@@ -159,7 +159,12 @@ export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
 export async function saveRoomSnapshot(roomId: number, snapshot: any) {
     const supabase = createClient()
     const { error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
-    if (error) throw error
+    if (error) {
+        logger.log('supabase:database', 'Error saving room snapshot', error.message)
+        throw error
+    } else {
+        logger.log('supabase:database', 'Saved room snapshot to', roomId)
+    }
 }
 
 /**

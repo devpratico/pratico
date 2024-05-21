@@ -5,6 +5,9 @@ import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '../_actions/actions'
 
+
+// TODO: Simplify that mess? No need to use a server component to fetch data to pass to client components
+
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const userId = (await fetchUser()).id
     const { first_name, last_name } = await fetchNames(userId)
@@ -26,7 +29,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 
     return (
         <main style={{ height: '100dvh' }}>
-            <StudentCanvas user={user} roomId={parseInt(params.room_code)} snapshot={snapshot} />
+            <StudentCanvas user={user} snapshot={snapshot} />
         </main>
     )
 }
