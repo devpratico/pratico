@@ -93,10 +93,12 @@ async function authMiddleware(request: NextRequest, intlResponse: NextResponse) 
 
     // The following monstrosity is used to combine the intl response with the auth response.
     // I couldn't find a way to successfully combine middlewares from supabase and next-intl, as both documentations are not compatible.
-    // Get intl response important data and put them in the auth response
+
+    // Get intl response elements needed for the final response
     const intlCookies = intlResponse.cookies.getAll()
     const intlLocale = intlResponse.headers.get('x-middleware-request-x-next-intl-locale')
 
+    // Put them in the auth response
     intlCookies.forEach((value, name) => { authResponse.cookies.set(value)})
     if (intlLocale) { authResponse.headers.set('x-middleware-request-x-next-intl-locale', intlLocale) }
 
