@@ -3,17 +3,16 @@ import { IconButton, Tooltip } from '@radix-ui/themes'
 import { Pen } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import logger from '@/app/_utils/logger'
-import { toggleCollaborationFor } from '../_actions/actions'
+import { toggleCollaborationForAll } from '../_actions/actions'
 import { useRoom } from '@/app/[locale]/_hooks/useRoom'
 
 
-interface CollabSwitchProps {
-    userId: string
+interface CollabSwitchGlobalProps {
     roomCode: string
 }
 
 
-export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
+export default function CollabSwitchGlobal({ roomCode }: CollabSwitchGlobalProps) {
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
     
@@ -21,21 +20,21 @@ export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
     const _params = room?.params?.collaboration
     const isActive =  _params?.active
     const isForAll =  _params?.allowAll
-    const isAllowed = _params?.allowedUsersIds.includes(userId)
-    const [active, setActive] = useState(isActive && (isForAll || isAllowed))
+
+    const [active, setActive] = useState(isActive && isForAll)
 
     useEffect(() => {
-        setActive(isActive && (isForAll || isAllowed))
-    }, [isActive, isForAll, isAllowed])
+        setActive(isActive && isForAll)
+    }, [isActive, isForAll])
 
     function handleClick() {
         setLoading(true)
-        logger.log('react:component', 'CollabSwitch clicked', { userId, active: !active })
-        toggleCollaborationFor(userId, roomCode).then(() => { setLoading(false)})
+        logger.log('react:component', 'CollabSwitchGlobal clicked', { active: !active })
+        toggleCollaborationForAll(roomCode).then(() => { setLoading(false)})
     }
 
     return (
-        <Tooltip content={active ? 'Désactiver la collaboration' : 'Activer la collaboration'}>
+        <Tooltip content={active ? 'Désactiver la collaboration pour tous' : 'Activer la collaboration pour tous'}>
             <IconButton
                 variant='ghost'
                 color={active ? 'violet' : 'gray'}

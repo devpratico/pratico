@@ -4,6 +4,7 @@ import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, Ic
 import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import CollabSwitch from "../CollabSwitch"
+import CollabSwitchGlobal from "../CollabSwitchGlobal"
 import { useParams } from "next/navigation"
 
 
@@ -58,11 +59,16 @@ export default function ParticipantMenu() {
                 */}
 
                 <Table.Root>
+
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell><CollabSwitchGlobal roomCode={room_code}/></Table.ColumnHeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
                     <Table.Body>
-
-
                         {presences.map((presence, index) => {
-
                             return(
                                 <Table.Row key={presence.id}>
                                     <Table.RowHeaderCell>
@@ -73,8 +79,10 @@ export default function ParticipantMenu() {
                                             {presence.state == 'offline' && <Badge radius='full' color='gray'>hors ligne</Badge>}
                                             
                                             <div style={{flex: 1}}></div>
+                                            {/*
 
                                             { !presence.isMe && presence.state == 'online' && <CollabSwitch userId={presence.id} roomCode={room_code} /> }
+                                            */}
 
                                             {/*
                                             <IconButton variant='ghost'>
@@ -86,6 +94,10 @@ export default function ParticipantMenu() {
                                             </IconButton>*/}
                                         </Flex>
                                     </Table.RowHeaderCell>
+
+                                    <Table.Cell>
+                                        {!presence.isMe && presence.state == 'online' && <CollabSwitch userId={presence.id} roomCode={room_code} />}
+                                    </Table.Cell>
                                 </Table.Row>
                             )
                         })}

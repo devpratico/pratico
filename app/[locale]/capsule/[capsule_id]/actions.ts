@@ -215,29 +215,6 @@ export async function saveRoomParams(roomId: number, params: RoomParams) {
     }
 }
 
-async function getRoomId(roomCode: string): Promise<number> {
-    const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('id').eq('code', roomCode).single()
-    if (error) {
-        throw error
-    } else {
-        return data.id
-    }
-}
 
 
-export async function toggleCollaborationFor(userId: string, roomCode: string) {
-    const roomId = await getRoomId(roomCode.toString())
-    const params = await fetchRoomParams(roomId)
 
-    if (params.collaboration.allowedUsersIds.includes(userId)) {
-        logger.log('supabase:database', 'removing user from allowed collab users', userId)
-        params.collaboration.allowedUsersIds = params.collaboration.allowedUsersIds.filter(e => e !== userId)
-
-    } else {
-        logger.log('supabase:database', 'adding user to allowed collab users', userId)
-        params.collaboration.allowedUsersIds.push(userId)
-    }
-
-    await saveRoomParams(roomId, params)
-}
