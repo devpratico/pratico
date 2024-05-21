@@ -20,7 +20,7 @@ const baseBypassPaths = [
 * This middleware revalidates the user's session
 * @see https://supabase.com/docs/guides/auth/server-side/nextjs
 */
-async function authMiddleware(request: NextRequest, response: NextResponse) {
+async function authMiddleware(request: NextRequest, intlResponse: NextResponse) {
     
     // Bypass middleware for specific paths
 
@@ -37,11 +37,17 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
 
     // If the request path matches the bypass regex, skip the middleware
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
-        return response
+        return intlResponse
     }
-    
-    // The default decision is to proceed normally.
-    let decision = response
+
+    // If the intlResponse is a redirect, we don't need to check the user's session yet.
+    // We'll do it in the next round
+    if (intlResponse.status === 307) {
+        return intlResponse
+    }
+
+
+    let authResponse = NextResponse.next({request: {headers: request.headers}})
     
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -52,37 +58,58 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
             },
             set(name: string, value: string, options: CookieOptions) {
                 request.cookies.set( {name, value, ...options})
-                decision.cookies.set({name,value,...options})
+                authResponse = NextResponse.next({request: {headers: request.headers}})
+                authResponse.cookies.set({name, value, ...options})
+                //logger.log('next:middleware', 'Setting cookie', name)
             },
             remove(name: string, options: CookieOptions) {
                 request.cookies.set( {name, value: '', ...options})
-                decision.cookies.set({name,value: '',...options})
+                authResponse = NextResponse.next({ request: {headers: request.headers } })
+                authResponse.cookies.set({name, value: '', ...options})
             },
         }}
     )
        
     try {
         const {data:{user}, error} = await supabase.auth.getUser()
-        if (error) throw error
-        if (!user) throw new Error('Supabase returned null')
+        if (error) { throw error }
+        if (!user) { throw new Error('getUser returned null') }
+        logger.log('next:middleware', 'Signed in as', user.id)
 
-    } catch (error) {
-        logger.log('next:middleware', 'No user') //, `(${(error as Error).message})`)
-        // Sign in anonymously
+    } catch (error1) {
         try {
             const { data:{user}, error: _error } = await supabase.auth.signInAnonymously()
-            if (_error) throw _error
-            if (!user) throw new Error('Supabase returned null')
-            logger.log('next:middleware', 'Signed in anonymously')
-
-        } catch (error) {
-            // We couldn't load the user nor sign in anonymously
-            logger.error('next:middleware', 'Failed to sign in anonymously, redirecting to login page', `(${(error as Error).message})`)
-            // Redirect to the login page
-            decision = NextResponse.redirect(new URL('/login', request.url))
+            if (_error) { throw _error }
+            if (!user) { throw new Error('Supabase returned null') }
+            logger.log('next:middleware', 'Signed in anonymously', user.id, `because "${(error1 as Error).message}"`)
+            //return NextResponse.redirect(request.url)
+        
+        } catch (error2) {
+            logger.error('next:middleware', 'Failed to sign in anonymously, redirecting to login page', `(${(error2 as Error).message})`)
+            return NextResponse.redirect(new URL('/login', request.url))
         }
     }
-    return decision
+
+
+    // The following monstrosity is used to combine the intl response with the auth response.
+    // I couldn't find a way to successfully combine middlewares from supabase and next-intl, as both documentations are not compatible.
+    // Get intl response important data and put them in the auth response
+    const intlCookies = intlResponse.cookies.getAll()
+    const intlLocale = intlResponse.headers.get('x-middleware-request-x-next-intl-locale')
+
+    intlCookies.forEach((value, name) => { authResponse.cookies.set(value)})
+    if (intlLocale) { authResponse.headers.set('x-middleware-request-x-next-intl-locale', intlLocale) }
+
+    // Both responses have a slightly different value for this header.
+    // Add the missing value to the auth response
+    authResponse.headers.set('x-middleware-override-headers', authResponse.headers.get('x-middleware-override-headers') + ', x-next-intl-locale')
+    
+        
+        
+        
+    //logger.log('next:middleware', `Auth response for ${request.url}`, authResponse)
+
+    return authResponse
 }
 
 
@@ -94,7 +121,7 @@ async function authMiddleware(request: NextRequest, response: NextResponse) {
  * This middleware handles internationalization
  * @see https://next-intl-docs.vercel.app/docs/getting-started/app-router
  */
-export default function intlMiddleware(request: NextRequest) {
+function intlMiddleware(request: NextRequest) {
 
     const bypassPathsRegex = new RegExp(`^/(${baseBypassPaths.join('|')})`)
     if (bypassPathsRegex.test(request.nextUrl.pathname)) {
@@ -110,6 +137,10 @@ export default function intlMiddleware(request: NextRequest) {
 
     const decision = nextIntlMiddleware(request)
 
+    if (decision.status === 307) {
+        logger.log('next:middleware', 'Redirecting from', request.url, 'to', decision.headers.get('Location'))
+    }
+
     /*
     logger.log('next:middleware', 'Intl middleware:', {
         pathname: request.nextUrl.pathname,
@@ -118,6 +149,9 @@ export default function intlMiddleware(request: NextRequest) {
         chosenLocale: decision.headers.get("x-middleware-request-x-next-intl-locale"),
         redirection: decision.url,
     })*/
+
+    //logger.log('next:middleware', `Intl response for ${request.url}`, decision.cookies.getAll())
+    //logger.log('next:middleware', `Intl response for ${request.url}`, decision)
 
     return decision
 }
@@ -129,7 +163,7 @@ export default function intlMiddleware(request: NextRequest) {
 
 
 // Middleware is used to make decisions about how to respond to a request.
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
 
     // Internationalization middleware
     const intlResponse = intlMiddleware(request)
