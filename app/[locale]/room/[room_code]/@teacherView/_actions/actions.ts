@@ -3,7 +3,6 @@ import createClient from "@/supabase/clients/server"
 import { redirect } from "@/app/_intl/intlNavigation"
 import logger from "@/app/_utils/logger"
 import { fetchRoomParams, saveRoomParams } from "@/app/[locale]/capsule/[capsule_id]/actions"
-import { log } from "console"
 
 
 interface stopRoomArgs {
@@ -31,7 +30,13 @@ async function getRoomId(roomCode: string): Promise<number> {
     }
 }
 
-export async function toggleCollaborationFor(userId: string, roomCode: string) {
+
+interface toggleCollaborationForArgs {
+    userId: string
+    roomCode: string
+}
+
+export async function toggleCollaborationFor({ userId, roomCode }: toggleCollaborationForArgs) {
     const roomId = await getRoomId(roomCode.toString())
     const params = await fetchRoomParams(roomId)
 
@@ -56,13 +61,29 @@ export async function toggleCollaborationFor(userId: string, roomCode: string) {
 }
 
 
+interface toggleCollaborationForAllArgs {
+    roomCode: string
+    /**
+     * We need all users in order to allow them all when needed
+     * (Not 100% satisfied with this)
+     */
+    allUsersIds: string[]
+}
 
-export async function toggleCollaborationForAll(roomCode: string) {
+export async function toggleCollaborationForAll({ roomCode, allUsersIds }: toggleCollaborationForAllArgs) {
     const roomId = await getRoomId(roomCode.toString())
     const params = await fetchRoomParams(roomId)
 
     params.collaboration.allowAll = !params.collaboration.allowAll
-    params.collaboration.allowedUsersIds = [] // reset allowed users
+
+    // if we are disabling allowAll, we need to reset the allowed users
+    if (!params.collaboration.allowAll) {
+        params.collaboration.allowedUsersIds = []
+    } else {
+        // if we are enabling allowAll, we need to add all users to the allowed users.
+        params.collaboration.allowedUsersIds = allUsersIds
+    }
+
 
     try {
         await saveRoomParams(roomId, params)

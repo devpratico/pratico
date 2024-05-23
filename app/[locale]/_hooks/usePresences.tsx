@@ -2,7 +2,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { fetchNames, fetchUser } from "../_actions/user";
+import { fetchNames } from "../_actions/user";
 import { getRandomColor } from "@/app/_utils/codeGen";
 
 

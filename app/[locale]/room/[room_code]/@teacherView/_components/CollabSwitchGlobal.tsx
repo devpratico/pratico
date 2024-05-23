@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import logger from '@/app/_utils/logger'
 import { toggleCollaborationForAll } from '../_actions/actions'
 import { useRoom } from '@/app/[locale]/_hooks/useRoom'
+import { usePresences } from '@/app/[locale]/_hooks/usePresences'
 
 
 interface CollabSwitchGlobalProps {
@@ -15,6 +16,7 @@ interface CollabSwitchGlobalProps {
 export default function CollabSwitchGlobal({ roomCode }: CollabSwitchGlobalProps) {
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
+    const { presences } = usePresences()
     
     // Collaboration:
     const _params = room?.params?.collaboration
@@ -30,7 +32,8 @@ export default function CollabSwitchGlobal({ roomCode }: CollabSwitchGlobalProps
     function handleClick() {
         setLoading(true)
         logger.log('react:component', 'CollabSwitchGlobal clicked', { active: !active })
-        toggleCollaborationForAll(roomCode).then(() => { setLoading(false)})
+        const allUsersIds = presences.map(p => p.id)
+        toggleCollaborationForAll({roomCode, allUsersIds}).then(() => { setLoading(false)})
     }
 
     return (

@@ -31,7 +31,7 @@ export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
     function handleClick() {
         setLoading(true)
         logger.log('react:component', 'CollabSwitch clicked', { userId, active: !active })
-        toggleCollaborationFor(userId, roomCode).then(() => { setLoading(false)})
+        toggleCollaborationFor({userId, roomCode}).then(() => { setLoading(false)})
     }
 
     return (
