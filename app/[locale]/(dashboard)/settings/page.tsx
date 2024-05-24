@@ -4,7 +4,7 @@ import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
-import { doesCustomerExist } from '@/app/_stripe/services/customer';
+//import { doesCustomerExist } from '@/app/_stripe/services/customer';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card } from '@radix-ui/themes';
 import { redirect } from '@/app/_intl/intlNavigation';
 
@@ -22,7 +22,7 @@ export default async function AccountPage() {
 
 
     const profile  = await fetchProfile(user.id)
-    const customerExists = profile.stripe_id && await doesCustomerExist(profile.stripe_id)
+    //const customerExists = profile.stripe_id && await doesCustomerExist(profile.stripe_id)
 
     return (
         <main style={{ padding: '2rem' }}>
