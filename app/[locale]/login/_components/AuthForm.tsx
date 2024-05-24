@@ -4,7 +4,7 @@ import { TextField, Flex } from '@radix-ui/themes';
 import { Button, Tabs, Separator, Callout } from '@radix-ui/themes';
 import { Mail, RectangleEllipsis, TriangleAlert, ArrowRight } from 'lucide-react';
 import en from '@/app/_intl/messages/en.json';
-import { login, signup, signInAnonymously, isUserAnonymous } from '../_actions/actions';
+import { login, signup, signInAnonymously, isUserAnonymous, setNames } from '../_actions/actions';
 import signInWithGoogle from '../_actions/signInWithGoogle';
 import logger from '@/app/_utils/logger';
 import { useRouter } from '@/app/_intl/intlNavigation';
@@ -79,17 +79,31 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         onSubmit={async (event) => {
                             event.preventDefault();
                             setIsLoading(true);
+
+                            /*
+                            interface SignUpFormData {
+                                firstname: string
+                                lastname: string
+                                email: string
+                                password: string
+                                'confirm-password': string
+                            }*/
+                            
                             const data = Object.fromEntries(new FormData(event.currentTarget));
-                            const { email, password, 'confirm-password': confirmPassword } = data as { email: string, password: string, 'confirm-password': string };
-                            if (password !== confirmPassword) {
+
+                            //const { firstname, lastname, email, password, 'confirm-password': confirmPassword } = data as unknown as SignUpFormData;
+                            if (data.password !== data['confirm-password']) {
                                 setServerError(messages['passwords do not match']);
                                 setIsLoading(false);
                                 return;
                             }
                             try {
-                                logger.log('supabase:auth', 'Signing up with email', email);
-                                await signup({ email, password });
+                                logger.log('supabase:auth', 'Signing up with email', data.email);
+                                const { user } = await signup({ email:(data.email as string), password:(data.password as string) });
+                                if (!user) {throw new Error('No user returned');}
+                                await setNames({ id: user.id, first_name: (data.firstname as string), last_name: (data.lastname as string) });
                                 router.push('/capsules');
+                                
                             } catch (error) {
                                 logger.error('supabase:auth', 'Error signing up with email', (error as Error).message);
                                 setServerError((error as Error).message);
@@ -99,6 +113,22 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                     >
 
                         <Flex direction='column' gap='5' pt='5'>
+
+                            <Form.Field key='firstname' name='firstname'>
+                                <Form.Control asChild>
+                                    <TextField.Root placeholder='Prénom' required>
+                                    </TextField.Root>
+                                </Form.Control>
+                            </Form.Field>
+
+                            <Form.Field key='lastname' name='lastname'>
+                                <Form.Control asChild>
+                                    <TextField.Root placeholder='Nom' required>
+                                    </TextField.Root>
+                                </Form.Control>
+                            </Form.Field>
+
+                            <Separator size='4' />
 
                             <Form.Field key='email' name='email'>
                                 <Form.Control asChild>
