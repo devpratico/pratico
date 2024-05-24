@@ -24,14 +24,14 @@ export default async function UserInfo() {
         return <LoginBtn message={t('sign in')} />
     }
 
-    const { data: profileData, error: profileError } = await fetchProfile(user.id)
-    const name = profileData?.[0]?.name
+    const profile = await fetchProfile(user.id)
+    const name = profile?.first_name || user.email
     //const surname = profileData?.[0]?.surname
     //const letters = name[0] + surname[0]
 
     return (
         <Link href='/settings' style={containerStyle}>
-            { name && <p style={textStyle}>{name}</p> }
+            {name && <p style={textStyle}>{name}</p> }
             <Avatar
                 size='3'
                 variant='solid'
