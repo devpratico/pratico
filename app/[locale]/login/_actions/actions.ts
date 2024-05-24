@@ -32,15 +32,12 @@ export async function signup({ email, password }: Credentials) {
     const supabase = createClient()
 
     try {
-        const { error } = await supabase.auth.signUp({email, password})
-        if (error) {
-            throw error
-        }
-    } catch (error) {
-        throw error
+        const { data, error } = await supabase.auth.signUp({ email, password })
+        if (error || !data.user) { throw error || new Error('No user returned') }
+        return data
+    } catch (err) {
+        throw err
     }
-
-    revalidatePath('/', 'layout')
 }
 
 
