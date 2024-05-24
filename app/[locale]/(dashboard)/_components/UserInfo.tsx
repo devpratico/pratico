@@ -1,5 +1,5 @@
 import { Avatar } from '@radix-ui/themes';
-import { fetchProfile } from '@/supabase/services/user_profiles';
+import { fetchProfile } from '@/app/[locale]/_actions/user';
 import { fetchUser } from '@/supabase/services/auth';
 import { Link } from "@/app/_intl/intlNavigation";
 import LoginBtn from "../../_components/LoginBtn";

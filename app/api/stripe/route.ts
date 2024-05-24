@@ -1,5 +1,5 @@
 import getStripeClient from '@/app/_stripe/getStripeClient'
-import { saveStripeId } from '@/supabase/services/user_profiles'
+import { saveStripeId } from '@/app/[locale]/_actions/user'
 
 
 // Respond to a POST request sent to the /api/stripe endpoint by a Stripe webhook

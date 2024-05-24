@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/[locale]/_actions/user'
-import { fetchProfile } from '@/supabase/services/user_profiles';
+import { fetchUser, fetchProfile } from '@/app/[locale]/_actions/user'
 import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
@@ -22,9 +21,8 @@ export default async function AccountPage() {
     }
 
 
-    const { data: profileData, error: profileError } = await fetchProfile(user.id)
-    const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
-    const customerExists = await doesCustomerExist(stripe_id)
+    const profile  = await fetchProfile(user.id)
+    const customerExists = profile.stripe_id && await doesCustomerExist(profile.stripe_id)
 
     return (
         <main style={{ padding: '2rem' }}>
@@ -37,26 +35,27 @@ export default async function AccountPage() {
 
                         <Card size='4'>
                             <DataList.Root>
-                                <DataList.Item>
+                                {/*<DataList.Item>
                                     <DataList.Label>{t("nickname")}</DataList.Label>
-                                    <DataList.Value>{nickname}</DataList.Value>
-                                </DataList.Item>
+                                    <DataList.Value>{profile.nickname}</DataList.Value>
+                                </DataList.Item>*/}
                                 <DataList.Item>
                                     <DataList.Label>{t("name")}</DataList.Label>
-                                    <DataList.Value>{name}</DataList.Value>
+                                    <DataList.Value>{profile.first_name}</DataList.Value>
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("surname")}</DataList.Label>
-                                    <DataList.Value>{surname}</DataList.Value>
+                                    <DataList.Value>{profile.last_name}</DataList.Value>
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("email")}</DataList.Label>
                                     <DataList.Value>{user?.email}</DataList.Value>
                                 </DataList.Item>
+                                {/*
                                 <DataList.Item>
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
-                                </DataList.Item>
+                            </DataList.Item>*/}
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
@@ -73,6 +72,7 @@ export default async function AccountPage() {
                     <Heading as='h1' mb='2'>{t('subscription')}</Heading>
                     <Card size='4'>
 
+                        {/*
                         <DataList.Root>
                             <DataList.Item>
                                 <DataList.Label>{t("customer exists")}</DataList.Label>
@@ -80,11 +80,12 @@ export default async function AccountPage() {
                             </DataList.Item>
                             <DataList.Item>
                                 <DataList.Label>{t("stripe id")}</DataList.Label>
-                                <DataList.Value><Code>{stripe_id}</Code></DataList.Value>
+                                <DataList.Value><Code>{profile.stripe_id}</Code></DataList.Value>
                             </DataList.Item>
                         </DataList.Root>
 
                         <Separator size='4' my='4'/>
+                        */}
 
                         <Flex gap='4'>
                             <SubscribeBtn message={t("subscribe")}/>
@@ -92,6 +93,8 @@ export default async function AccountPage() {
                         </Flex>
                     </Card>
                 </Section>
+
+                {/*
 
                 <Section size='1'>
                     <Heading as='h1' mb='2'>{'Software'}</Heading>
@@ -106,6 +109,7 @@ export default async function AccountPage() {
 
                     </Card>
                 </Section>
+                    */}
 
             </Container>
 
