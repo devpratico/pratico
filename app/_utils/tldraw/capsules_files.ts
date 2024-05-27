@@ -1,5 +1,7 @@
-'use server'
-import createClient from "@/supabase/clients/server"
+//'use server'
+//import createClient from "@/supabase/clients/server"
+'use client'
+import createClient from "@/supabase/clients/client"
 
 
 type UploadCapsuleFileArgs = {
@@ -7,7 +9,7 @@ type UploadCapsuleFileArgs = {
     capsuleId: string
     folder?: string
 } | {
-    blob: Blob
+    dataUrl: string
     name: string
     capsuleId: string
     folder?: string
@@ -35,7 +37,7 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
 
     const userId = res.data.user.id
     const path = `${userId}/${args.capsuleId}/${folderName ? folderName + '/' : ''}${fileName}`
-    const { data, error } = await supabase.storage.from('capsules_files').upload(path, 'file' in args ? args.file : args.blob)
+    const { data, error } = await supabase.storage.from('capsules_files').upload(path, 'file' in args ? args.file : dataURLToBlob(args.dataUrl))
 
     if (error) {
         // For example, when the file name already exists
@@ -73,4 +75,22 @@ export async function getPublicUrl(path: string) {
     const supabase = createClient()
     const { data } = supabase.storage.from('capsules_files').getPublicUrl(path)
     return data.publicUrl
+}
+
+
+
+/**
+ * Converts a data URL to a Blob, that can be uploaded to Supabase
+ */
+const dataURLToBlob = (dataURL: string): Blob => {
+    const [headers, base64Data] = dataURL.split(',');
+    const byteString = atob(base64Data);
+    const mimeString = headers.split(':')[1].split(';')[0];
+
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
 }

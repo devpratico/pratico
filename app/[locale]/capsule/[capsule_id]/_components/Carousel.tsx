@@ -22,7 +22,13 @@ export default function Carousel() {
     const { pageIds, currentPageId, setCurrentPage } = useNav()
 
     // TODO: Update the thumbnail when new object added
-    const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor]) // currentPageId so that it updates when the current page changes
+    //const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor]) // currentPageId so that it updates when the current page changes
+    const snapshot = editor?.store?.getSnapshot()
+
+    /*
+    editor?.sideEffects.registerAfterChangeHandler(''
+        console.log('Document changed')
+    })*/
 
     if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
         return <></> // TODO: Make a loading animation

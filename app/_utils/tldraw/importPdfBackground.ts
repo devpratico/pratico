@@ -51,8 +51,11 @@ export default async function importPdfBackground({ file, editor, destination, p
     // If destination is supabase, upload the images to supabase and put the public URLs in the urls array
     if (destination.saveTo === 'supabase') {
         for (let index = 0; index < images.length; index++) {
-            const blob = dataURLToBlob(images[index].bitmap);
-            logger.log('system:file', `Converted to Blob page ${index}`);
+            //const blob = dataURLToBlob(images[index].bitmap);
+            //logger.log('system:file', `Converted to Blob page ${index}`);
+            const dataUrl = images[index].bitmap;
+            const size = dataUrl.length * (3/4) - 2;
+            logger.log('system:file', `Page ${index} size: ${size} bytes`);
             incrementProgress();
 
             try {
@@ -62,7 +65,8 @@ export default async function importPdfBackground({ file, editor, destination, p
                 const fileName = cleanName + '-' + index + '.png';
                 assetNames.push(fileName);
                 logger.log('system:file', `Uploading file ${fileName} to supabase`);
-                const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: destination.capsuleId, folder: cleanName});
+                //const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: destination.capsuleId, folder: cleanName});
+                const path = await uploadCapsuleFile({ dataUrl: dataUrl, name: fileName, capsuleId: destination.capsuleId, folder: cleanName });
                 const url  = await getPublicUrl(path);
                 urls.push(url);
                 logger.log('supabase:storage', `Uploaded page ${index}`);
