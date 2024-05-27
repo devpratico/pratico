@@ -30,8 +30,7 @@ run_services() {
 cleanup() {
     echo
     echo "Stopping Supabase..."
-    pnpm supabase stop --no-backup &&
-    ./app/_scripts/stop-docker.sh
+    pnpm supabase stop --no-backup && ./app/_scripts/stop-docker.sh
 }
 
 # Trap script exit signal
