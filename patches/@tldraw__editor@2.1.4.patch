@@ -1,0 +1,16 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+deleted file mode 100644
+index 45b8116f7bcde88454191b95760e16f43fb9af00..0000000000000000000000000000000000000000
+diff --git a/src/lib/constants.ts b/src/lib/constants.ts
+index d2745634024445fc9effe14421c759103d2ad36d..0b4bb60494a96cd577b7e938621161da7658fe39 100644
+--- a/src/lib/constants.ts
++++ b/src/lib/constants.ts
+@@ -3,7 +3,7 @@ import { EASINGS } from './primitives/easings'
+ /** @internal */
+ export const MAX_SHAPES_PER_PAGE = 2000
+ /** @internal */
+-export const MAX_PAGES = 40
++export const MAX_PAGES = 500
+ 
+ /** @internal */
+ export const ANIMATION_SHORT_MS = 80

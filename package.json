@@ -61,5 +61,10 @@
     "storybook": "^8.1.1",
     "supabase": "^1.167.4",
     "typescript": "^5.4.5"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@tldraw/editor@2.1.4": "patches/@tldraw__editor@2.1.4.patch"
+    }
   }
 }

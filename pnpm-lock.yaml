@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@tldraw/editor@2.1.4':
+    hash: h4gbpodhhfdrysmyp4gzcncepu
+    path: patches/@tldraw__editor@2.1.4.patch
+
 importers:
 
   .:
@@ -9806,7 +9811,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 9.3.4
 
-  '@tldraw/editor@2.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tldraw/editor@2.1.4(patch_hash=h4gbpodhhfdrysmyp4gzcncepu)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tldraw/state': 2.1.4(react@18.3.1)
       '@tldraw/store': 2.1.4(react@18.3.1)
@@ -14544,7 +14549,7 @@ snapshots:
       '@radix-ui/react-select': 1.2.2(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slider': 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-toast': 1.1.5(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tldraw/editor': 2.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tldraw/editor': 2.1.4(patch_hash=h4gbpodhhfdrysmyp4gzcncepu)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tldraw/store': 2.1.4(react@18.3.1)
       canvas-size: 1.2.6
       classnames: 2.5.1
