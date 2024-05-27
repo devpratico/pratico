@@ -1,12 +1,14 @@
 'use client'
-import Canvas from "./Canvas";
+import Canvas from "../../../_components/canvases/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
-import AutoSaver from "./custom-ui/AutoSaver/AutoSaver";
-import { useParams, useSearchParams } from "next/navigation";
-import { fetchCapsuleSnapshot } from "@/supabase/services/capsules";
+import AutoSaver from "../../../_components/canvases/custom-ui/AutoSaver/AutoSaver";
+import { useParams } from "next/navigation";
+import { fetchCapsuleSnapshot } from "../actions";
 import { useEffect, useState } from "react";
-import Resizer from "./custom-ui/Resizer/Resizer";
-import logger from "@/app/_utils/logger";
+import Resizer from "../../../_components/canvases/custom-ui/Resizer/Resizer";
+import { CanvasUser } from "../../../_components/canvases/Canvas";
+import { fetchUser, fetchNames } from "../../../_actions/user";
+import { getRandomColor } from "@/app/_utils/codeGen";
 
 
 /**
@@ -17,14 +19,69 @@ import logger from "@/app/_utils/logger";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const searchParams = useSearchParams()
-    const local = searchParams.get('local') === 'true'
-    const loadDefault = searchParams.get('loadDefault')
+
+    // TODO : remove the fetch actions and pass them as props from a server component
+    // Get the user
+    const initialUser: CanvasUser = { id: 'anonymous', name: 'Anonymous', color: 'black'}
+    const [user, setUser] = useState<CanvasUser>(initialUser)
+    useEffect(() => {
+        async function _setUser() {
+            const userId = (await fetchUser()).id
+            const { first_name, last_name } = await fetchNames(userId)
+            const user: CanvasUser = {
+                id: userId,
+                name: `${first_name} ${last_name}`,
+                color: getRandomColor(),
+            }
+            setUser(user)
+        }
+        _setUser()
+    }, [])
+
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function _setInitialSnapshot() {
+            const snapshot = await fetchCapsuleSnapshot(capsuleId)
+            setInitialSnapshot(snapshot)
+        }
+        _setInitialSnapshot()
+    }, [capsuleId])
+
+
+    // Create the store
+    const [store, setStore] = useState(createTLStore({shapeUtils: defaultShapeUtils}))
+    useEffect(() => {
+        if (initialSnapshot) {
+            const _store = createTLStore({shapeUtils: defaultShapeUtils})
+            _store.loadSnapshot(initialSnapshot)
+            setStore(_store)
+        }
+    }, [initialSnapshot])
+
+    
+    return (
+        <Canvas user= {user} store={store}>
+            <Resizer insets={{top: 60, right: 0, bottom: 70, left: 60}} margin={10} />
+            <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
+        </Canvas>
+    )
+
+}
+
+
+
+
+/*
+
+
+//const searchParams = useSearchParams()
+//const local = searchParams.get('local') === 'true'
+//const loadDefault = searchParams.get('loadDefault')
+
+
+async function _setInitialSnapshot() {
 
             // Let's make a value out of local and loadDefault to use in a switch statement
             // It's a string that will look something like this: "{local: false, withloadDefault: true}"
@@ -76,34 +133,17 @@ export default function CanvasSL() {
                 }
             }
         }
-        _setInitialSnapshot()
-    }, [capsuleId, local, loadDefault])
 
 
-    // Create the store
-    const [store, setStore] = useState(createTLStore({shapeUtils: defaultShapeUtils}))
-    useEffect(() => {
-        if (initialSnapshot) {
-            const _store = createTLStore({shapeUtils: defaultShapeUtils})
-            _store.loadSnapshot(initialSnapshot)
-            setStore(_store)
-        }
-    }, [initialSnapshot])
 
-    
-    if (local) {
+
+
+
+
+
+if (local) {
         // If local, we will use the local storage (see https://tldraw.dev/docs/persistence)
-        return <Canvas persistenceKey={capsuleId} initialSnapshot={initialSnapshot}/>
-        
-    } else {
-        // If not local, we will use the AutoSaver to save the snapshot to the capsule
-        return (
-            <Canvas store={store}>
-                <Resizer insets={{top: 60, right: 0, bottom: 70, left: 60}} margin={10} />
-                <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
-            </Canvas>
-        )
-    }
-}
+        return <Canvas user={user} persistenceKey={capsuleId} initialSnapshot={initialSnapshot}/>
 
 
+*/

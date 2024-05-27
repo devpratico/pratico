@@ -1,5 +1,5 @@
 'use client'
-import { signOut } from "@/supabase/services/auth";
+import { signOut } from '@/app/[locale]/login/_actions/actions';
 import { Button } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,7 @@
 'use client'
 import styles from './CapsuleTitle.module.css'
 import { useState, useEffect, useRef } from "react"
-import { fetchCapsuleTitle, saveCapsuleTitle } from '@/supabase/services/capsules'
+import { fetchCapsuleTitle, saveCapsuleTitle } from '@/app/[locale]/capsule/[capsule_id]/actions';
 import logger from '@/app/_utils/logger'
 //import { useCapsule } from '@/hooks/useCapsule';
 import { useParams, useSearchParams } from 'next/navigation';

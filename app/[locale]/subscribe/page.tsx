@@ -1,6 +1,6 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
-import { fetchUserId } from '@/supabase/services/auth';
+import { fetchUser } from '../_actions/user';
 import config from '@/app/_stripe/stripe.config';
 
 declare global {
@@ -16,7 +16,7 @@ export default async function SubScribePage() {
     const t = await getTranslations("subscribe")
     // On passe l'id de l'utilisateur à stripe afin de pouvoir facilement le retrouver parmis
     // les events émis par le webhook de stripe.
-    const userId = await fetchUserId()
+    const userId = (await fetchUser()).id
 
     return (
         <div className={styles.container}>

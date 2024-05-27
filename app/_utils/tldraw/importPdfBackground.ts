@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { pdfjs } from 'react-pdf';
-import { uploadCapsuleFile, getPublicUrl } from '@/supabase/services/capsules_files';
+import { uploadCapsuleFile, getPublicUrl } from './capsules_files';
 import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from 'tldraw';
 import 'tldraw/tldraw.css';
 

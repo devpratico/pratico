@@ -11,14 +11,33 @@ export interface Names {
     last_name: string  | null
 }
 
+export async function getSession(): Promise<SupabaseUser> {
+    const supabase = createClient()
+    try {
+        // Using getSession instead of getUser to avoid a server call. I think it is safe because the auth token
+        // can't be spoofed, thanks to the middleware refreshing it for every request.
+        const { data:{session}, error } = await supabase.auth.getSession()
+        if (error || !session) {
+            throw error || new Error("No session")
+        } else {
+            logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous " + session.user.id)
+            return session.user as SupabaseUser
+        }
+    } catch (err) {
+        logger.error('supabase:auth', `error fetching session`, (err as Error).message)
+        throw err
+    }
+}
+
+
 export async function fetchUser(): Promise<SupabaseUser> {
     const supabase = createClient()
     try {
         const { data, error } = await supabase.auth.getUser()
-        if (error) {
-            throw error
+        if (error || !data.user) {
+            throw error || new Error("No session")
         } else {
-            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous" + data.user.id)
+            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous " + data.user.id)
             return data.user as SupabaseUser
         }
     } catch (error) {
@@ -26,6 +45,7 @@ export async function fetchUser(): Promise<SupabaseUser> {
         throw error
     }
 }
+
 
 
 export async function fetchNames(userId: string): Promise<Names> {

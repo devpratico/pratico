@@ -35,10 +35,6 @@ type broadcastArgs = { eventName: 'document', payload: RecordsDiff<TLRecord> } |
  */
 export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcastStoreProps) {
 
-    // Check if roomId is defined
-    if (!roomId) {
-        throw new Error(`Missing roomId: ${roomId}`)
-    }
 
     // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
@@ -48,6 +44,10 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
     })
 
     useEffect(() => {
+
+        // Don't bother if there is no roomId
+        if (!roomId) return
+
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
         const channel = supabase.channel(roomId + "_document", {

@@ -3,12 +3,13 @@ import Carousel from '@/app/[locale]/capsule/[capsule_id]/_components/Carousel';
 import Controls from '@/app/[locale]/capsule/[capsule_id]/_components/Controls';
 import ParticipantsMenu from '@/app/[locale]/room/[room_code]/@teacherView/_components/menus/ParticipantsMenu';
 import AddMenu from '@/app/[locale]/capsule/[capsule_id]/_components/menus/AddMenu';
-import CanvasRT from '@/app/[locale]/_components/canvases/CanvasRT';
 import AnimationMenuBar from '@/app/[locale]/room/[room_code]/@teacherView/_components/AnimationMenuBar';
 import styles from '@/app/[locale]/capsule/[capsule_id]/page.module.css'
 import ChatMenu from './_components/menus/ChatMenu';
 import ActivitiesMenu from '@/app/[locale]/capsule/[capsule_id]/_components/menus/ActivitiesMenu';
 import MoreMenu from './_components/menus/MoreMenu';
+import TeacherCanvasServer from './_components/TeacherCanvasServer';
+import { Suspense } from 'react';
 
 
 export default async function TeacherView({ params }: { params: { room_code: string } }) {
@@ -16,7 +17,9 @@ export default async function TeacherView({ params }: { params: { room_code: str
         <div className={styles.container}>
 
             <div className={styles.canvas}>
-                <CanvasRT />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <TeacherCanvasServer roomCode={params.room_code} />
+                </Suspense>
             </div>
 
             <div className={styles.menuBar}>

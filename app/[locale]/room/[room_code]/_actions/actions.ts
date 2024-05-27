@@ -1,10 +1,9 @@
 'use server'
 import createClient from '@/supabase/clients/server'
-import { Tables } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
+import { Room } from '@/app/[locale]/capsule/[capsule_id]/actions';
 
 
-export type Room = Tables<'rooms'>
 
 export async function fetchRoomByCode(code: string) {
     const supabase = createClient()
@@ -16,20 +15,21 @@ export async function fetchRoomByCode(code: string) {
 
     } else {
         logger.log('supabase:database', `fetched data for room ${code}`)
-        return data as Tables<'rooms'>
+        return data as Room
     }
 }
 
 
-export async function getUserId() {
+export async function fetchRoomCreator(code: string): Promise<string | undefined> {
     const supabase = createClient()
-    const { data, error } = await supabase.auth.getUser()
+    const { data, error } = await supabase.from('rooms').select('created_by').eq('code', code).single()
 
-    if (error || !data.user.id) {
-        logger.error('supabase:auth', `error getting user id`, error?.message)
-        throw error
+    if (error) {
+        logger.error('supabase:database', 'fetchRoomCreator', `error getting room creator by code "${code}"`, error.message)
+        return undefined
+
     } else {
-        logger.log('supabase:auth', `fetched user id`)
-        return data.user.id
+        logger.log('supabase:database', 'fetchRoomCreator', `${code} created by ${data.created_by}`)
+        return data.created_by as string
     }
 }

@@ -6,9 +6,11 @@ import  AutoSaver from "./custom-ui/AutoSaver/AutoSaver";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useMemo } from "react";
 import Resizer from "./custom-ui/Resizer/Resizer";
+import { CanvasUser } from "./Canvas";
 
 
 interface CanvasRTProps {
+    user: CanvasUser
     children?: React.ReactNode;
 }
 
@@ -16,10 +18,10 @@ interface CanvasRTProps {
  * This is a special kind of canvas that allows for real time collaboration.
  * `RT` stands for "real time".
  */
-export default function CanvasRT({children}: CanvasRTProps) {
+export default function CanvasRT({user, children}: CanvasRTProps) {
 
     // Get the room we're in
-    const { room } = useRoom()
+    const  { room }  = useRoom()
 
     // Compute some values
     const roomId = useMemo(() => room?.id?.toString(), [room])
@@ -34,7 +36,10 @@ export default function CanvasRT({children}: CanvasRTProps) {
     }
 
     return (
-        <Canvas store={store}>
+        <Canvas
+            store={store}
+            user={user}
+        >
             {children}
             <Resizer insets={{ top: 60, right: 0, bottom: 70, left: 60 }} margin={10} />
             <AutoSaver saveTo={{destination: 'remote room', roomId: room.id}}/>

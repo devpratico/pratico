@@ -3,41 +3,52 @@ import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import useBroadcastStore from "@/app/[locale]/_hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import TLToolbar from "@/app/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import AutoSaver from "@/app/[locale]/_components/canvases/custom-ui/AutoSaver/AutoSaver";
 import NavigatorSync from "@/app/[locale]/_components/canvases/custom-ui/NavigatorSync/NavigatorSync";
-import { useMemo } from "react";
 import Resizer from "@/app/[locale]/_components/canvases/custom-ui/Resizer/Resizer";
-import logger from "@/app/_utils/logger";
+import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
+import { useRoom } from "@/app/[locale]/_hooks/useRoom";
+import { useEffect } from "react";
+import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 
 
-export default function StudentCanvas() {
+interface StudentCanvasProps {
+    user: CanvasUser
+    snapshot?: TLStoreSnapshot
+}
 
-    // Get the room we're in
+
+export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
-    const roomId = useMemo(() => room?.id?.toString(), [room])
+    const store = useBroadcastStore({ roomId:  room?.id.toString(), initialSnapshot: snapshot })
 
-    let initialSnapshot;
-    if (room?.capsule_snapshot) {
-        initialSnapshot = JSON.parse(room.capsule_snapshot as any) as TLStoreSnapshot
-    }
+    const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
-    const store = useBroadcastStore({ roomId, initialSnapshot })
-
-    if (!room || !room.id || !roomId || !room.code) {
-        //throw new Error(`Missing Room data: {room: ${room}, roomId: ${roomId}}`)
-        logger.error('react:hook', `Missing Room data: {room: ${room}, roomId: ${roomId}}`)
-        return <div>{`Missing Room data: {room: ${room}, roomId: ${roomId}}`}</div>
-    }
+    // Set canvas to read only if user is not allowed to collab
+    const { editor } = useTLEditor()
+    useEffect(() => {
+        editor?.updateInstanceState({ isReadonly: !canCollab })
+    }, [canCollab, editor])
 
     return (
-        <Canvas store={store}>
-            <div style={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', left: '10px', zIndex: 1000 }}>
-                <TLToolbar />
-            </div>
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 70 }} margin={10} />
-            <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} />
+        <Canvas
+            user={user}
+            store={store}
+        >
+            {canCollab && <ToolBar />}
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 70 : 0 }} margin={10} />
+            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
             <NavigatorSync />
         </Canvas>
+    )
+}
+
+
+
+function ToolBar() {
+    return (
+        <div style={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', left: '10px', zIndex: 1000 }}>
+            <TLToolbar />
+        </div>
     )
 }

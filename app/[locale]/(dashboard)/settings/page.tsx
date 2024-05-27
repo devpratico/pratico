@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/app/[locale]/_actions/user'
-import { fetchProfile } from '@/supabase/services/user_profiles';
+import { fetchProfile, fetchStripeId } from './actions';
 import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';

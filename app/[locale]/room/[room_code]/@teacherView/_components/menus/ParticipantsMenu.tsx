@@ -1,15 +1,16 @@
 'use client'
 import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout/DeskMenuLayout"
-import { Section, Heading, RadioCards } from '@radix-ui/themes'
-import { Text, Flex, Table, Badge, Box } from "@radix-ui/themes"
+import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator } from '@radix-ui/themes'
+import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
-import { useUser } from "@/app/[locale]/_hooks/useUser"
+import CollabSwitch from "../CollabSwitch"
+import CollabSwitchGlobal from "../CollabSwitchGlobal"
+import { useParams } from "next/navigation"
 
 
 export default function ParticipantMenu() {
-
+    const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
-    const { user } = useUser()
 
     return (
         <DeskMenuLayout menu="participants">
@@ -49,24 +50,54 @@ export default function ParticipantMenu() {
             <Section size='1'>
                 <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
 
+                {/*
+                <Flex direction='column' gap='1'>
+                    <Button variant='soft'><Trophy />Équipes</Button>
+                    <Button variant='soft'><Coins/>Récompenser</Button>
+                    <Button variant='soft'><Pen/>Collaborer</Button>
+                </Flex>
+                */}
+
                 <Table.Root>
+
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell><CollabSwitchGlobal roomCode={room_code}/></Table.ColumnHeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
                     <Table.Body>
-
-
                         {presences.map((presence, index) => {
-
-                            const isMe = presence.id === user?.id
-
                             return(
                                 <Table.Row key={presence.id}>
                                     <Table.RowHeaderCell>
                                         <Flex align='center' gap='2'>
                                             {Circle(presence.state == 'online' ? presence.color : 'lightgray')}
                                             {presence.firstName + ' ' + presence.lastName}
-                                            {isMe && <Badge radius='full'>moi</Badge>}
+                                            {presence.isMe && <Badge radius='full'>moi</Badge>}
                                             {presence.state == 'offline' && <Badge radius='full' color='gray'>hors ligne</Badge>}
+                                            
+                                            <div style={{flex: 1}}></div>
+                                            {/*
+
+                                            { !presence.isMe && presence.state == 'online' && <CollabSwitch userId={presence.id} roomCode={room_code} /> }
+                                            */}
+
+                                            {/*
+                                            <IconButton variant='ghost'>
+                                                <CircleDollarSign size='20' />
+                                            </IconButton>
+
+                                            <IconButton variant='ghost'>
+                                                <EllipsisVertical size='20' />
+                                            </IconButton>*/}
                                         </Flex>
                                     </Table.RowHeaderCell>
+
+                                    <Table.Cell>
+                                        {!presence.isMe && presence.state == 'online' && <CollabSwitch userId={presence.id} roomCode={room_code} />}
+                                    </Table.Cell>
                                 </Table.Row>
                             )
                         })}

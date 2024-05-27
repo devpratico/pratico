@@ -4,19 +4,18 @@ import Controls from './_components/Controls';
 import styles from './page.module.css'
 import AddMenu from "./_components/menus/AddMenu";
 import ActivitiesMenu from './_components/menus/ActivitiesMenu';
-import CanvasSL from '../../_components/canvases/CanvasSL';
+import CanvasSL from './_components/CanvasSL';
 import CreationMenuBar from './_components/CreationMenuBar/CreationMenuBar';
 import MoreMenu from '../../room/[room_code]/@teacherView/_components/menus/MoreMenu';
 
 
 export default async function CapsulePage() {
 
-
     return (
         <div className={styles.container}>
 
             <div className={styles.canvas}>
-                <CanvasSL />
+                <CanvasSL/>
             </div>
 
             <div className={styles.menuBar}>
