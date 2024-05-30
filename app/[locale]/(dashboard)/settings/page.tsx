@@ -23,8 +23,8 @@ export default async function AccountPage() {
 
 
     const { data: profileData, error: profileError } = await fetchProfile(user.id)
-    const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
-    const customerExists = await doesCustomerExist(stripe_id)
+    //const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
+    //const customerExists = await doesCustomerExist(stripe_id)
 
     return (
         <main style={{ padding: '2rem' }}>
@@ -37,26 +37,27 @@ export default async function AccountPage() {
 
                         <Card size='4'>
                             <DataList.Root>
+                                {/*
                                 <DataList.Item>
                                     <DataList.Label>{t("nickname")}</DataList.Label>
                                     <DataList.Value>{nickname}</DataList.Value>
-                                </DataList.Item>
+                                </DataList.Item>*/}
                                 <DataList.Item>
                                     <DataList.Label>{t("name")}</DataList.Label>
-                                    <DataList.Value>{name}</DataList.Value>
+                                    <DataList.Value>{profileData?.first_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("surname")}</DataList.Label>
-                                    <DataList.Value>{surname}</DataList.Value>
+                                    <DataList.Value>{profileData?.last_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("email")}</DataList.Label>
-                                    <DataList.Value>{user?.email}</DataList.Value>
+                                    <DataList.Value>{user?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
-                                <DataList.Item>
+                                {/*<DataList.Item>
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
-                                </DataList.Item>
+                                </DataList.Item>*/}
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
@@ -73,7 +74,7 @@ export default async function AccountPage() {
                     <Heading as='h1' mb='2'>{t('subscription')}</Heading>
                     <Card size='4'>
 
-                        <DataList.Root>
+                        {/*<DataList.Root>
                             <DataList.Item>
                                 <DataList.Label>{t("customer exists")}</DataList.Label>
                                 <DataList.Value>{customerExists ? <Badge color='green' radius='full'>yes</Badge> : <Badge color='red' radius='full'>no</Badge>}</DataList.Value>
@@ -84,16 +85,17 @@ export default async function AccountPage() {
                             </DataList.Item>
                         </DataList.Root>
 
-                        <Separator size='4' my='4'/>
+                        <Separator size='4' my='4'/>*/}
 
                         <Flex gap='4'>
-                            <SubscribeBtn message={t("subscribe")}/>
-                            <ManageSubscriptionBtn message={t("manage subscription")}/>
+                            <SubscribeBtn message={t("subscribe")} disabled={true}/>
+                            <ManageSubscriptionBtn message={t("manage subscription")} disabled={true}/>
                         </Flex>
                     </Card>
                 </Section>
 
-                <Section size='1'>
+                
+                {/*<Section size='1'>
                     <Heading as='h1' mb='2'>{'Software'}</Heading>
                     <Card size='4'>
 
@@ -105,7 +107,7 @@ export default async function AccountPage() {
                         </DataList.Root>
 
                     </Card>
-                </Section>
+                </Section>*/}
 
             </Container>
 
