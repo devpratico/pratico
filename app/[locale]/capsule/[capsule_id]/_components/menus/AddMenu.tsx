@@ -84,10 +84,13 @@ export default function AddMenu() {
             </Section>
 
             <Section size='1'>
-                <Heading size='3' as="h3" trim='both'>TEMPLATES</Heading>
+                <Heading size='3' as="h3" trim='both'>PAGES</Heading>
                 <Grid columns="2" gap='2' pt='2'>
                     <Button onClick={() => newPage?.()} variant='ghost' style={{all: 'unset'}}>
-                        <TemplateCard/>
+                        <Flex direction='column' align='center' gap='1'>
+                            <TemplateCard/>
+                            <Text size='1' color='gray'>Page blanche</Text>
+                        </Flex>
                     </Button>
                 </Grid>
             </Section>
