@@ -1,15 +1,19 @@
 'use client'
-import { Button } from "@radix-ui/themes";
+import { Button, ButtonProps } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 
 
-export function SubscribeBtn({message}: {message: string}) {
+interface SubscribeBtnProps extends ButtonProps {
+    message: string
+}
+
+export function SubscribeBtn({message, ...props}: SubscribeBtnProps) {
     const router = useRouter()
     const handleSubscribe = () => {
         router.push("/subscribe")
     }
 
     return (
-        <Button onClick={handleSubscribe}>{message}</Button>
+        <Button onClick={handleSubscribe} {...props}>{message}</Button>
     )
 }

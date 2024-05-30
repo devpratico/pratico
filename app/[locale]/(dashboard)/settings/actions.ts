@@ -1,9 +1,13 @@
 'use server'
 import createClient from "@/supabase/clients/server"
+import { Tables } from "@/supabase/types/database.types"
+
+
+type Profile = Tables<'user_profiles'>
 
 export async function fetchProfile(userId: string) {
     const supabase = createClient()
-    return supabase.from('user_profiles').select('*').eq('id', userId)
+    return await supabase.from('user_profiles').select().eq('id', userId).returns<Profile[]>().limit(1).single()
 }
 
 
