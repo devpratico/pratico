@@ -89,25 +89,26 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                                 'confirm-password': string
                             }*/
 
-                            const data = Object.fromEntries(new FormData(event.currentTarget));
+                            const formData = Object.fromEntries(new FormData(event.currentTarget));
 
                             //const { firstname, lastname, email, password, 'confirm-password': confirmPassword } = data as unknown as SignUpFormData;
-                            if (data.password !== data['confirm-password']) {
+                            if (formData.password !== formData['confirm-password']) {
                                 setServerError(messages['passwords do not match']);
                                 setIsLoading(false);
                                 return;
                             }
-                            try {
-                                logger.log('supabase:auth', 'Signing up with email', data.email);
-                                const { user } = await signup({ email: (data.email as string), password: (data.password as string) });
-                                if (!user) { throw new Error('No user returned'); }
-                                await setNames({ id: user.id, first_name: (data.firstname as string), last_name: (data.lastname as string) });
-                                router.push('/capsules');
 
-                            } catch (error) {
-                                logger.error('supabase:auth', 'Error signing up with email', (error as Error).message);
-                                setServerError((error as Error).message);
+                            logger.log('supabase:auth', 'Signing up with email', formData.email);
+                            const { user, error } = await signup({ email: (formData.email as string), password: (formData.password as string) });
+
+                            if (error || !user) {
+                                logger.error('supabase:auth', 'Error signing up with email', error);
+                                setServerError( error || 'error signing up');
                                 setIsLoading(false);
+
+                            } else {
+                                await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
+                                router.push('/capsules');
                             }
                         }}
                     >
@@ -183,17 +184,22 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         onSubmit={async (event) => {
                             event.preventDefault();
                             setIsLoading(true);
-                            const data = Object.fromEntries(new FormData(event.currentTarget));
-                            const { email, password } = data as { email: string, password: string };
-                            try {
-                                logger.log('supabase:auth', 'Signing in with email', email);
-                                await login({ email, password });
-                                router.push('/capsules');
-                            } catch (error) {
-                                logger.error('supabase:auth', 'Error signing in with email', (error as Error).message);
-                                setServerError((error as Error).message);
+                            const formData = Object.fromEntries(new FormData(event.currentTarget));
+                            const { email, password } = formData as { email: string, password: string };
+                            
+                            logger.log('supabase:auth', 'Signing in with email', email);
+                            const { user, error} = await login({ email, password });
+                            
+                            if (error || !user) {
+                                logger.error('supabase:auth', 'Error signing in with email', error);
+                                setServerError(error || 'error signing in');
                                 setIsLoading(false);
+
+                            } else {
+                                router.push('/capsules');
                             }
+
+
                         }}
                     >
 

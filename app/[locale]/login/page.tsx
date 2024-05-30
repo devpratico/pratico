@@ -28,21 +28,7 @@ export default async function Login({searchParams}: {searchParams: { [key: strin
         "try without an account": t('try without an account'),
     }
 
-    // If the nextUrl is a room, show the student form
-    /*
-    if(nextUrl.includes('/room/')) {
-        return (
-            <main style={{height:'100dvh'}}>
-                <Flex align='center' justify='center' style={{height: '100%'}}>
-                    <Card size='5'>
-                        <StudentForm />
-                    </Card>
-                </Flex>
-            </main>
-        )
-    }*/
 
-    // Otherwise, show the normal login form
     return (
         <main style={{backgroundColor: 'var(--secondary)'}} >
             <Flex align='center' justify='center' gap={{initial: '0', md:'9'}}  direction={{initial:'column', md:'row'}} style={{height: '100dvh'}}>
