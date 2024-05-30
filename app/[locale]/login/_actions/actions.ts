@@ -9,10 +9,13 @@ interface Credentials {
     password: string
 }
 
+/**
+ * Log in an existing user
+ */
 export async function login({ email, password }: Credentials) {
     const supabase = createClient()
 
-    
+    /*
     try {
         const { error } = await supabase.auth.signInWithPassword({email, password})
         if (error) {
@@ -21,23 +24,34 @@ export async function login({ email, password }: Credentials) {
     } catch (error) {
         throw error
     }
+    */
 
-    revalidatePath('/', 'layout')
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (!error) { revalidatePath('/', 'layout')}
+
+    return { user: data?.user, error: error?.message }
 }
 
 
 
-
+/**
+ * Create a new user
+ */
 export async function signup({ email, password }: Credentials) {
     const supabase = createClient()
 
+    /*
     try {
         const { data, error } = await supabase.auth.signUp({ email, password })
         if (error || !data.user) { throw error || new Error('No user returned') }
         return data
     } catch (err) {
         throw err
-    }
+    }*/
+
+    const { data, error } =  await supabase.auth.signUp({ email, password })
+
+    return { user: data?.user, error: error?.message }
 }
 
 
