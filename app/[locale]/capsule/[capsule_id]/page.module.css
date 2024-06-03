@@ -75,6 +75,14 @@
     pointer-events: auto;
 }
 
+.startModal {
+    height: 100%;
+    width: 100%;
+    grid-area: 2 / 1 / 4 / 4;
+    z-index: 100;
+    position: relative;
+}
+
 
 /* Mobile landscape */
 @media (max-height: 500px) {
