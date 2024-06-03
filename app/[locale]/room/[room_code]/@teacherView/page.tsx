@@ -13,12 +13,16 @@ import { Suspense } from 'react';
 import StartDialog from './_components/StartDialog';
 
 
+
 export default async function TeacherView({ params }: { params: { room_code: string } }) {
+
+    //const origin = process.env.NEXT_PUBLIC_
+
     return (
         <div className={styles.container}>
 
             <div className={styles.startModal} id='startModalContainer'>
-                <StartDialog qrCodeLink='123' />
+                <StartDialog roomCode={params.room_code} />
             </div>
 
             <div className={styles.canvas}>
