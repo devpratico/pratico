@@ -3,8 +3,9 @@ import { Grid, Heading, Flex, Button, Text, Code, Tooltip, Box, Switch, IconButt
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Copy } from "lucide-react";
 import QRCode from 'react-qr-code';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { useMenus } from "@/app/[locale]/_hooks/useMenus";
 
 
 interface StartDialogProps {
@@ -13,7 +14,10 @@ interface StartDialogProps {
 
 export default function StartDialog({ roomCode }: StartDialogProps) {
 
-    const [open, setOpen] = useState(false)
+    const { openedDeskMenu, setOpenDeskMenu } = useMenus()
+    const setOpen = useCallback((open: boolean) => {setOpenDeskMenu( open ? 'qr' : undefined)}, [setOpenDeskMenu])
+    const open = openedDeskMenu === 'qr'
+
     const [portal, setPortal] = useState<HTMLElement | null>(null)
     const [baseUrl, setBaseUrl] = useState('')
     const [showCopied, setShowCopied] = useState(false)
@@ -25,7 +29,7 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
         setPortal(document?.getElementById('startModalContainer'))
         setOpen(true)
         setBaseUrl(window.location.origin)
-    }, [])
+    }, [setOpen])
 
 
     return (
@@ -35,7 +39,19 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
 
                 <DialogPrimitive.Overlay className='overlay' style={{position:'absolute', inset:'0', backgroundColor:'black', opacity:'0.5'}}/>
 
-                <DialogPrimitive.Content style={{position:'absolute', inset:'3rem', backgroundColor:'white', borderRadius:'1rem', padding:'2rem', boxShadow:'0 0 10px rgba(0,0,0,0.1)', display:'flex', alignItems:'center', overflow:'auto'}}>
+                <DialogPrimitive.Content 
+                    //onOpenAutoFocus={e => e.preventDefault()}
+                    style={{
+                        position:'absolute',
+                        inset:'3rem',
+                        backgroundColor:'white',
+                        borderRadius:'1rem',
+                        padding:'2rem',
+                        boxShadow:'0 0 10px rgba(0,0,0,0.1)',
+                        display:'flex',
+                        alignItems:'center',
+                        overflow:'auto'}}
+                    >
 
                     <Grid columns='2' rows='1' style={{width:'100%', maxHeight:'100%'}}>
                         <QRCode value={link} size={200} style={{ height: "100%", width: "100%" }} />

@@ -1,6 +1,6 @@
 'use client'
 import { Button, Flex, Text } from "@radix-ui/themes"
-import { useMenu, DeskMenu } from "../../../../_hooks/useMenu";
+import { useMenus, DeskMenu } from "../../../../_hooks/useMenus";
 
 
 interface MenuBtnProps {
@@ -11,7 +11,7 @@ interface MenuBtnProps {
 
 
 export default function MenuBtn({children, message, menu}: MenuBtnProps) {
-    const { setOpenDeskMenu } = useMenu()
+    const { setOpenDeskMenu } = useMenus()
 
     return (
         <Button

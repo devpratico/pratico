@@ -2,7 +2,7 @@ import { fetchRoomsByCapsuleId } from "./actions";
 import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import logger from "@/app/_utils/logger";
-import { MenuProvider } from "../../_hooks/useMenu";
+import { MenusProvider } from "../../_hooks/useMenus";
 import { redirect } from "@/app/_intl/intlNavigation";
 
 
@@ -26,9 +26,9 @@ export default async function Layout({ children, params: { capsule_id } }: Layou
     return (
         <TLEditorProvider>
             <NavProvider>
-                <MenuProvider>
+                <MenusProvider>
                     { children }
-                </MenuProvider>
+                </MenusProvider>
             </NavProvider>
         </TLEditorProvider>
     )

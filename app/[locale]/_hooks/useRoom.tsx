@@ -8,6 +8,10 @@ import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 
 
+// TODO: Get rid of this. Fetch room data everywhere it's needed, and use cache.
+// Make a useRoomSettings for real-time settings.
+
+
 export type RoomContext = {
     room: Room | undefined;
 }
