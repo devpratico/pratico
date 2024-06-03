@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Heading, Flex, Button, Text, Code, Checkbox, Tooltip, Box, Switch, IconButton } from "@radix-ui/themes";
+import { Grid, Heading, Flex, Button, Text, Code, Tooltip, Box, Switch, IconButton } from "@radix-ui/themes";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Copy } from "lucide-react";
 import QRCode from 'react-qr-code';
@@ -50,7 +50,7 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
                             <Text align='center'>{`Envoyez le lien suivant à vos apprenants :`}</Text>
 
                             <Flex align='center' gap='3'>
-                                <Code size='5' wrap='wrap'>{link}</Code>
+                                <Text align='center' ><Code size='5'>{link}</Code></Text>
                                 <Tooltip content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
                                     <IconButton variant='ghost' onClick={() => {
                                         navigator.clipboard.writeText(link)
