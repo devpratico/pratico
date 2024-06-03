@@ -12,8 +12,10 @@ interface StartDialogProps {
 export default function StartDialog({ qrCodeLink }: StartDialogProps) {
 
     const [open, setOpen] = useState(false)
+    const [portal, setPortal] = useState<HTMLElement | null>(null)
 
     useEffect(() => {
+        setPortal(document?.getElementById('startModalContainer'))
         setOpen(true)
     }, [])
 
@@ -21,7 +23,7 @@ export default function StartDialog({ qrCodeLink }: StartDialogProps) {
     return (
         <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
         
-            <DialogPrimitive.Portal container={document ? document.getElementById('startModalContainer') : undefined}>
+            <DialogPrimitive.Portal container={portal}>
 
                 <DialogPrimitive.Overlay className='overlay' style={{position:'absolute', inset:'0', backgroundColor:'black', opacity:'0.5'}}/>
 
