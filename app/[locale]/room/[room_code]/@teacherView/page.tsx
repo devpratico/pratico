@@ -10,13 +10,23 @@ import ActivitiesMenu from '@/app/[locale]/capsule/[capsule_id]/_components/menu
 import MoreMenu from './_components/menus/MoreMenu';
 import TeacherCanvasServer from './_components/TeacherCanvasServer';
 import { Suspense } from 'react';
+import StartDialog from './_components/StartDialog';
+
 
 
 export default async function TeacherView({ params }: { params: { room_code: string } }) {
+
+    //const origin = process.env.NEXT_PUBLIC_
+
     return (
         <div className={styles.container}>
 
+            <div className={styles.startModal} id='startModalContainer'>
+                <StartDialog roomCode={params.room_code} />
+            </div>
+
             <div className={styles.canvas}>
+
                 <Suspense fallback={<div>Loading...</div>}>
                     <TeacherCanvasServer roomCode={params.room_code} />
                 </Suspense>
