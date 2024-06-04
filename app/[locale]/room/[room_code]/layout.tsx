@@ -3,7 +3,7 @@ import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import { PresencesProvider } from "../../_hooks/usePresences";
-import { MenuProvider } from "../../_hooks/useMenu";
+import { MenusProvider } from "../../_hooks/useMenus";
 import { fetchUser } from "../../_actions/user";
 
 
@@ -26,11 +26,11 @@ export default async function Layout({studentView, teacherView, params}: LayoutP
         <TLEditorProvider>
             <RoomProvider>
                 <NavProvider>
-                    <MenuProvider>
+                    <MenusProvider>
                         <PresencesProvider roomCode={room_code} userId={user.id}>
                             {isTeacher ? teacherView : studentView}
                         </PresencesProvider>
-                    </MenuProvider>
+                    </MenusProvider>
                 </NavProvider>
             </RoomProvider>
         </TLEditorProvider>

@@ -1,8 +1,8 @@
 'use client'
 import styles from './DeskMenuLayout.module.css'
-import { useMenu } from '@/app/[locale]/_hooks/useMenu'
+import { useMenus } from '@/app/[locale]/_hooks/useMenus'
 import { Dialog, DialogContent } from '@/app/[locale]/_components/primitives/Dialog/Dialog'
-import type { DeskMenu } from '@/app/[locale]/_hooks/useMenu'
+import type { DeskMenu } from '@/app/[locale]/_hooks/useMenus'
 
 
 interface DeskMenuLayoutProps {
@@ -11,7 +11,7 @@ interface DeskMenuLayoutProps {
 }
 
 export default function DeskMenuLayout({ menu, children }: DeskMenuLayoutProps) {
-    const { openedDeskMenu, setOpenDeskMenu } = useMenu()
+    const { openedDeskMenu, setOpenDeskMenu } = useMenus()
 
     return (
         <Dialog

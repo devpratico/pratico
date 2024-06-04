@@ -4,9 +4,9 @@ import logger from '@/app/_utils/logger';
 
 
 //export type MenuBarMode = 'creation' | 'animation';
-export type DeskMenu = 'polls' | 'participants' | 'chat' | 'more' | 'add';
+export type DeskMenu = 'polls' | 'participants' | 'chat' | 'more' | 'add' | 'qr';
 
-type MenuContextType = {
+type MenusContextType = {
 
     // Desk menus
     openedDeskMenu: DeskMenu | undefined;
@@ -15,9 +15,9 @@ type MenuContextType = {
 };
 
 
-const MenuContext = createContext<MenuContextType | undefined>(undefined);
+const MenusContext = createContext<MenusContextType | undefined>(undefined);
 
-export function MenuProvider({ children }: { children: React.ReactNode }) {
+export function MenusProvider({ children }: { children: React.ReactNode }) {
 
     const [openedDeskMenu, setOpenDeskMenu] = useState<DeskMenu | undefined>(undefined);
     const toggleDeskMenu = (menu: DeskMenu | undefined) => {
@@ -29,18 +29,18 @@ export function MenuProvider({ children }: { children: React.ReactNode }) {
     }, [openedDeskMenu]);
 
     return (
-        <MenuContext.Provider value={{
+        <MenusContext.Provider value={{
             openedDeskMenu,
             setOpenDeskMenu,
             toggleDeskMenu,
         }}>
             {children}
-        </MenuContext.Provider>
+        </MenusContext.Provider>
     );
 }
 
-export function useMenu() {
-    const context = useContext(MenuContext);
+export function useMenus() {
+    const context = useContext(MenusContext);
     if (!context) throw new Error('useMenuContext must be used within a MenuContextProvider');
     return context;
 }

@@ -2,7 +2,7 @@
 import { Flex, IconButton, Text } from "@radix-ui/themes"
 import { Plus, ChevronLeft, ChevronRight, Maximize } from "lucide-react"
 import { useNav } from "@/app/[locale]/_hooks/useNav"
-import { useMenu } from "../../../_hooks/useMenu"
+import { useMenus } from "../../../_hooks/useMenus"
 
 
 export default function Controls() {
@@ -14,7 +14,7 @@ export default function Controls() {
         goPrevPage,
     } = useNav()
 
-    const { toggleDeskMenu } = useMenu()
+    const { toggleDeskMenu } = useMenus()
 
     const leftNumber = pageIds && currentPageId ? Array.from(pageIds).indexOf(currentPageId) + 1 : 0
     const rightNumber = pageIds ? Array.from(pageIds).length : 0
