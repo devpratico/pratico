@@ -15,8 +15,8 @@ interface StartDialogProps {
 export default function StartDialog({ roomCode }: StartDialogProps) {
 
     const { openedDeskMenu, setOpenDeskMenu } = useMenus()
-    const setOpen = useCallback((open: boolean) => {setOpenDeskMenu( open ? 'qr' : undefined)}, [setOpenDeskMenu])
     const open = openedDeskMenu === 'qr'
+    const setOpen = useCallback((open: boolean) => {setOpenDeskMenu( open ? 'qr' : undefined)}, [setOpenDeskMenu])
 
     const [portal, setPortal] = useState<HTMLElement | null>(null)
     const [baseUrl, setBaseUrl] = useState('')
@@ -29,18 +29,16 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
         setPortal(document?.getElementById('startModalContainer'))
         setOpen(true)
         setBaseUrl(window.location.origin)
-    }, [setOpen])
-
+    }, [setPortal, setOpen, setBaseUrl])
 
     return (
         <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
         
             <DialogPrimitive.Portal container={portal}>
 
-                <DialogPrimitive.Overlay className='overlay' style={{position:'absolute', inset:'0', backgroundColor:'black', opacity:'0.5'}}/>
+                <DialogPrimitive.Overlay className='overlay' style={{position:'absolute', inset:'0', backgroundColor:'var(--intermediate)', opacity:'0.7'}}/>
 
                 <DialogPrimitive.Content 
-                    //onOpenAutoFocus={e => e.preventDefault()}
                     style={{
                         position:'absolute',
                         inset:'3rem',
@@ -68,13 +66,16 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
                             <Flex align='center' gap='3'>
                                 <Text align='center' ><Code size='5'>{link}</Code></Text>
                                 <Tooltip content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
-                                    <IconButton variant='ghost' onClick={() => {
-                                        navigator.clipboard.writeText(link)
-                                        setShowCopied(true)
-                                        setCopyMessage('Copié !')
-                                        setTimeout(() => {
-                                            setShowCopied(false)
-                                            setCopyMessage('Copier')
+                                    <IconButton
+                                        variant='ghost'
+                                        tabIndex={-1}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(link)
+                                            setShowCopied(true)
+                                            setCopyMessage('Copié !')
+                                            setTimeout(() => {
+                                                setShowCopied(false)
+                                                setCopyMessage('Copier')
                                         }, 2000)
                                     }}>
                                         <Copy size={16} />
@@ -93,7 +94,9 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
 
                             <Box height='100%' />
 
-                            <Button size='4' onClick={() => setOpen(false)}>{`C'est parti !`}</Button>
+                            <Button size='4' id='OkBtn' onClick={() => setOpen(false)}>
+                                {`C'est parti !`}
+                            </Button>
 
                             <Box height='100%' />
 
