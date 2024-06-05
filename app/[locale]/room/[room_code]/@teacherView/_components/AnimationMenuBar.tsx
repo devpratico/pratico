@@ -1,7 +1,6 @@
 import Image from 'next/image';
-import praticoLogo from '@/public/images/pratico.svg';
 import { getTranslations } from 'next-intl/server';
-import { Code, Flex, Box } from "@radix-ui/themes";
+import { Flex, Box, Text } from "@radix-ui/themes";
 import StopBtn from "./StopBtn";
 import { Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
@@ -20,12 +19,15 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
 
     const t = await getTranslations('menu-bar')
     const isAnonymous = await isUserAnonymous()
+    const logoScale = 0.25
 
     return (
         <Flex align='center' p='3' gap='5' height='60px' style={{backgroundColor:'var(--brand)'}}>
-            <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
 
-            <Code variant='solid' size='7' highContrast>{roomCode}</Code>
+            <Flex align='center'>
+                <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
+                <Text size='6' style={{color:'var(--background)'}}>{`/${roomCode}`}</Text>
+            </Flex>
 
             <QrButton/>
 
