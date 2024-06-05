@@ -8,6 +8,7 @@ import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import MenuBtn from './MenuBtn';
 import FeedbackBtn from '@/app/[locale]/capsule/[capsule_id]/_components/CreationMenuBar/buttons/FeedbackBtn';
 import QrButton from './QrButton';
+import { Link } from '@/app/_intl/intlNavigation';
 
 
 
@@ -25,8 +26,10 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
         <Flex align='center' p='3' gap='5' height='60px' style={{backgroundColor:'var(--brand)'}}>
 
             <Flex align='center'>
-                <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
-                <Text size='6' style={{color:'var(--background)'}}>{`/${roomCode}`}</Text>
+                <Link href='/capsules' style={{display: 'flex', alignItems: 'center'}}>
+                    <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
+                </Link>
+                <Text size='6' style={{color:'var(--background)', opacity:'0.5'}}>{`/${roomCode}`}</Text>
             </Flex>
 
             <QrButton/>
