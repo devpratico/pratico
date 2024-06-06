@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { Flex, Box, Text } from "@radix-ui/themes";
+import { Flex, Box, Text, Tooltip } from "@radix-ui/themes";
 import StopBtn from "./StopBtn";
 import { Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
@@ -27,8 +27,11 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
 
             <Flex align='center'>
                 <Link href='/capsules' style={{display: 'flex', alignItems: 'center'}}>
-                    <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
+                    <Tooltip content='Accueil' side='bottom'>
+                        <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
+                    </Tooltip>
                 </Link>
+
                 <Text size='6' style={{color:'var(--background)', opacity:'0.5'}}>{`/${roomCode}`}</Text>
             </Flex>
 

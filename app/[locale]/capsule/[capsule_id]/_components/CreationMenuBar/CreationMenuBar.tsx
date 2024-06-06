@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Flex, Box } from "@radix-ui/themes";
+import { Flex, Box, Tooltip } from "@radix-ui/themes";
 import CapsuleTitle from '../CapsuleTitle/CapsuleTitle';
 import StartBtn from './buttons/StartBtn';
 import MenuBtn from '@/app/[locale]/room/[room_code]/@teacherView/_components/MenuBtn';
@@ -20,7 +20,9 @@ export default async function CreationMenuBar() {
         <Flex align='center' p='3' gap='5' height='60px' style={{ backgroundColor: 'var(--brand)' }}>
 
             <Link href='/capsules' style={{display: 'flex', alignItems: 'center'}}>
-                <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+                <Tooltip content='Accueil' side='bottom'>
+                    <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+                </Tooltip>
             </Link>
 
             <CapsuleTitle />
