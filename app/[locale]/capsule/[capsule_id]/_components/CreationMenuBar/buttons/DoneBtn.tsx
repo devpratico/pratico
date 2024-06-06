@@ -40,7 +40,12 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     }, [capsuleId, editor, router])
 
     return (
-        <Button onClick={handleClick} loading={loading} style={{color:'var(--background)'}}>
+        <Button
+            variant="soft"
+            onClick={handleClick}
+            loading={loading}
+            style={{color:'var(--background)', backgroundColor:'hsla(var(--background-h), var(--background-s), var(--background-l), 0.2)'}}
+        >
             {message}
         </Button>
     )
