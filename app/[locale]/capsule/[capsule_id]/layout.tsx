@@ -21,6 +21,8 @@ export default async function Layout({ children, params: { capsule_id } }: Layou
         logger.log('react:layout', 'Room detected. Redirecting to room', roomCode)
         redirect(`/room/${roomCode}`)
         return null
+    } else {
+        logger.log('react:layout', 'No room detected. Opening capsule creation page')
     }
 
     return (
