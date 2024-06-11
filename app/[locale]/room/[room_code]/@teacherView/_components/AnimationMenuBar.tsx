@@ -27,7 +27,7 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
 
             <Flex align='center'>
                 <Link href='/capsules' style={{display: 'flex', alignItems: 'center'}}>
-                    <Tooltip content='Accueil' side='bottom'>
+                    <Tooltip content={<Text size='2'>Accueil</Text>} side='bottom' style={{padding:'0.5rem'}}>
                         <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
                     </Tooltip>
                 </Link>
