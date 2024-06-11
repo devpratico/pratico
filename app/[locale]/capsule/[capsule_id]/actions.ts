@@ -5,6 +5,7 @@ import createClient from '@/supabase/clients/server';
 import logger from '@/app/_utils/logger';
 import { Tables, TablesInsert, Json } from "@/supabase/types/database.types";
 import { TLStoreSnapshot } from "tldraw";
+import { revalidatePath } from 'next/cache';
 
 
 export type RoomInsert = TablesInsert<'rooms'>
@@ -100,6 +101,8 @@ export async function deleteRoom(roomId: number) {
     if (error) {
         throw error
     } else {
+        // Revalidate cache
+        revalidatePath('/', 'layout')
         return data
     }
 }
@@ -141,6 +144,10 @@ export async function createRoom(capsuleId: string): Promise<Room> {
     try {
         // Set the room in the database, and get the room that is created
         const createdRoom = await saveRoom(room)
+
+        // Revalidate cache
+        revalidatePath('/', 'layout')
+
         return createdRoom // We'll need this to set the room in the context
     } catch (error) {
         throw error

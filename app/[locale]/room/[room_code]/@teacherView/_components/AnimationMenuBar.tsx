@@ -1,7 +1,6 @@
 import Image from 'next/image';
-import praticoLogo from '@/public/images/pratico.svg';
 import { getTranslations } from 'next-intl/server';
-import { Code, Flex, Box } from "@radix-ui/themes";
+import { Flex, Box, Text, Tooltip } from "@radix-ui/themes";
 import StopBtn from "./StopBtn";
 import { Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
@@ -9,6 +8,7 @@ import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import MenuBtn from './MenuBtn';
 import FeedbackBtn from '@/app/[locale]/capsule/[capsule_id]/_components/CreationMenuBar/buttons/FeedbackBtn';
 import QrButton from './QrButton';
+import { Link } from '@/app/_intl/intlNavigation';
 
 
 
@@ -20,12 +20,20 @@ export default async function AnimationMenuBar({ roomCode }: AnimationMenuBarPro
 
     const t = await getTranslations('menu-bar')
     const isAnonymous = await isUserAnonymous()
+    const logoScale = 0.25
 
     return (
         <Flex align='center' p='3' gap='5' height='60px' style={{backgroundColor:'var(--brand)'}}>
-            <Image src={praticoLogo} width={100} height={50} alt="Pratico" />
 
-            <Code variant='solid' size='7' highContrast>{roomCode}</Code>
+            <Flex align='center'>
+                <Link href='/capsules' style={{display: 'flex', alignItems: 'center'}}>
+                    <Tooltip content={<Text size='2'>Accueil</Text>} side='bottom' style={{padding:'0.5rem'}}>
+                        <Image src={'/images/logolien.png'} width={500*logoScale} height={105*logoScale} alt="Pratico"/>
+                    </Tooltip>
+                </Link>
+
+                <Text size='6' style={{color:'var(--background)', opacity:'0.5'}}>{`/${roomCode}`}</Text>
+            </Flex>
 
             <QrButton/>
 

@@ -61,7 +61,7 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
                             <Image src='/illustrations/rocket.svg' height={100} width={100} alt='rocket' style={{minWidth:'40%', minHeight:'40%'}}/>
 
                             <Heading size='8' align='center'>{`La session est en cours`}</Heading>
-                            <Text align='center'>{`Envoyez le lien suivant à vos apprenants :`}</Text>
+                            <Text align='center'>{`Envoyez le lien suivant aux participants :`}</Text>
 
                             <Flex align='center' gap='3'>
                                 <Text align='center' ><Code size='5'>{link}</Code></Text>
