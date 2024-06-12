@@ -1,36 +1,19 @@
-:root {
-  --small-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
-  --big-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
-}
-
-
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  /*font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;*/
-  /*font-family: 'Luciole', 'Times New Roman';*/
 }
 
-/*
-button {
-  all: unset;
-}
-*/
+
 
 main {
     background-color: var(--secondary);
 }
 
-h3 {
-  margin-bottom: 0.5rem;
-}
 
-/*
-input::selection {
-  background-color: var(--violet);
-}*/
 
 .radix-themes {
     --default-font-family: var(--font-luciole) !important;
+    --cursor-button: pointer !important;
+    --cursor-checkbox: pointer !important;
 }

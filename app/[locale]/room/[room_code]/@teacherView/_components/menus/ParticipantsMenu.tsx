@@ -15,7 +15,7 @@ export default function ParticipantMenu() {
     return (
         <DeskMenuLayout menu="participants">
             <Section size='1'>
-                <Heading size='3' as="h3" trim='both'>DÉFILEMENT</Heading>
+                <Heading size='3' as="h3" mb='2' trim='both'>DÉFILEMENT</Heading>
 
                 <RadioCards.Root defaultValue='2' columns='1'>
                     <RadioCards.Item value='1'  disabled={true}>
@@ -48,7 +48,7 @@ export default function ParticipantMenu() {
             </Section>
 
             <Section size='1'>
-                <Heading size='3' as="h3" trim='both'>PARTICIPANTS</Heading>
+                <Heading size='3' as="h3" mb='2' trim='both'>PARTICIPANTS</Heading>
 
                 {/*
                 <Flex direction='column' gap='1'>

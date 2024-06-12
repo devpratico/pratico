@@ -10,7 +10,7 @@ export default function ActivitiesMenu() {
     return (
         <DeskMenuLayout menu="polls">
             <Section size='1'>
-                <Heading size='3' as="h3" trim='both'>ACTIVITÉS</Heading>
+                <Heading size='3' as="h3" mb='2' trim='both'>ACTIVITÉS</Heading>
 
                 <Callout.Root variant='outline'>
                     <Callout.Text>
