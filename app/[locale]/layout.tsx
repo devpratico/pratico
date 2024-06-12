@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import '@radix-ui/themes/styles.css';
+import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
 import { luciole } from '../Fonts'
-import { Theme } from '@radix-ui/themes'
 
 
 export const metadata: Metadata = {

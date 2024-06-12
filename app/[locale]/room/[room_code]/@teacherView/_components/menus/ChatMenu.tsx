@@ -8,7 +8,7 @@ export default function ChatMenu() {
     return (
         <DeskMenuLayout menu="chat">
             <Section size='1'>
-                <Heading size='3' as="h3" trim='both'>CHAT</Heading>
+                <Heading size='3' as="h3" mb='2' trim='both'>CHAT</Heading>
 
                 <Callout.Root variant='outline'>
                     <Callout.Text>
