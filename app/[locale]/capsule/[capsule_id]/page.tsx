@@ -14,7 +14,7 @@ export default async function CapsulePage() {
     return (
         <div className={styles.container}>
 
-            <div className={styles.canvas}>
+            <div className={styles.canvas} id='canvasArea'>
                 <CanvasSL/>
             </div>
 

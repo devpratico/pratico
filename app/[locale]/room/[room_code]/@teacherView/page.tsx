@@ -25,7 +25,7 @@ export default async function TeacherView({ params }: { params: { room_code: str
                 <StartDialog roomCode={params.room_code} />
             </div>
 
-            <div className={styles.canvas}>
+            <div className={styles.canvas} id='canvasArea'>
 
                 <Suspense fallback={<div>Loading...</div>}>
                     <TeacherCanvasServer roomCode={params.room_code} />
