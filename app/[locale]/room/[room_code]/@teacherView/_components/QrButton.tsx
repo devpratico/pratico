@@ -10,7 +10,7 @@ export default function QrButton() {
 
     return (
         <Tooltip content='QR Code'>
-            <IconButton onClick={() => setOpenDeskMenu('qr')} variant='ghost' style={{color:'var(--background)'}}>
+            <IconButton onPointerDown={() => setOpenDeskMenu('qr')} variant='ghost' style={{color:'var(--background)'}}>
                 <QrCode />
             </IconButton>
         </Tooltip>
