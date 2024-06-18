@@ -1,5 +1,5 @@
 'use client'
-import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
+import DeskMenuLayout from "./DeskMenuLayout"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor"
 import { useParams } from "next/navigation"

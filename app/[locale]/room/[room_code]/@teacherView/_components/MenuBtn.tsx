@@ -11,13 +11,14 @@ interface MenuBtnProps {
 
 
 export default function MenuBtn({children, message, menu}: MenuBtnProps) {
-    const { setOpenDeskMenu } = useMenus()
+    const { toggleDeskMenu } = useMenus()
 
     return (
         <Button
             variant='ghost'
             style={{ color: 'var(--background)' }}
-            onClick={() => setOpenDeskMenu(menu)}
+            //onClick={() => {toggleDeskMenu(menu)}}
+            onPointerDown={() => {toggleDeskMenu(menu)}}
         >
             <Flex direction='column' align='center' gap='1'>
                 {children}

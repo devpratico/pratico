@@ -1,8 +1,7 @@
 'use client'
-import styles from './DeskMenuLayout.module.css'
 import { useMenus } from '@/app/[locale]/_hooks/useMenus'
-import { Dialog, DialogContent } from '@/app/[locale]/_components/primitives/Dialog/Dialog'
 import type { DeskMenu } from '@/app/[locale]/_hooks/useMenus'
+import * as Dialog from '@radix-ui/react-dialog';
 
 
 interface DeskMenuLayoutProps {
@@ -14,13 +13,22 @@ export default function DeskMenuLayout({ menu, children }: DeskMenuLayoutProps) 
     const { openedDeskMenu, setOpenDeskMenu } = useMenus()
 
     return (
-        <Dialog
+        <Dialog.Root
             open={openedDeskMenu === menu}
             onOpenChange={open => setOpenDeskMenu(open ? menu : undefined)}
         >
-            <DialogContent portal={false} className={styles.container}>
+
+            <Dialog.Content
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor:'var(--background)',
+                    padding: '1.5rem',
+                    borderLeft: '1px solid var(--secondary)',
+                }}
+            >
                 {children}
-            </DialogContent>
-        </Dialog>
+            </Dialog.Content>
+        </Dialog.Root>
     )
 }
