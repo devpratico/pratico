@@ -1,11 +1,12 @@
 'use client'
-import { Grid, Heading, Flex, Button, Text, Code, Tooltip, Box, Switch, IconButton } from "@radix-ui/themes";
+import { Grid, Heading, Flex, Button, Text, Code, Box, Switch, IconButton } from "@radix-ui/themes";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Copy } from "lucide-react";
 import QRCode from 'react-qr-code';
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useMenus } from "@/app/[locale]/_hooks/useMenus";
+import TooltipL from "@/app/[locale]/_components/TooltipL";
 
 
 interface StartDialogProps {
@@ -65,7 +66,7 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
 
                             <Flex align='center' gap='3'>
                                 <Text align='center' ><Code size='5'>{link}</Code></Text>
-                                <Tooltip content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
+                                <TooltipL content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
                                     <IconButton
                                         variant='ghost'
                                         tabIndex={-1}
@@ -80,17 +81,17 @@ export default function StartDialog({ roomCode }: StartDialogProps) {
                                     }}>
                                         <Copy size={16} />
                                     </IconButton>
-                                </Tooltip>
+                                </TooltipL>
                             </Flex>
 
                             <Box height='100%' />
 
-                            <Tooltip content='Bientôt' side='left'>
+                            <TooltipL content='Bientôt' side='left'>
                                 <Flex as='span' gap='2' align='center'>
                                     <Switch disabled />
                                     <Text color='gray'>{`Émargement`}</Text>
                                 </Flex>
-                            </Tooltip>
+                            </TooltipL>
 
                             <Box height='100%' />
 
