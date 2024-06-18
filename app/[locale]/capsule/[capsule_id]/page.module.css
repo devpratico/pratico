@@ -59,7 +59,8 @@
 
 .menu {
     /*background-color: yellow;*/
-    grid-area: menu;
+    /*grid-area: menu;*/
+    grid-area: 2 / 3 / 4 / 4;
     /*display: flex;*/
     width: 350px;
     height: 100%;
