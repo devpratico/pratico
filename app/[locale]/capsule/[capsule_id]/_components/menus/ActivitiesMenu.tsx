@@ -1,5 +1,5 @@
 'use client'
-import DeskMenuLayout from "./DeskMenuLayout/DeskMenuLayout"
+import DeskMenuLayout from "./DeskMenuLayout"
 import { Section, Heading, Callout } from '@radix-ui/themes'
 import { Star } from "lucide-react"
 

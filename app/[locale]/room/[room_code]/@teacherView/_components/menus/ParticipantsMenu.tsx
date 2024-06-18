@@ -1,5 +1,5 @@
 'use client'
-import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout/DeskMenuLayout"
+import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout"
 import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator } from '@radix-ui/themes'
 import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
