@@ -1,7 +1,7 @@
 'use client'
 import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout"
 import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator, SegmentedControl, Callout } from '@radix-ui/themes'
-import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical, ChevronRight, Info } from "lucide-react"
+import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical, ChevronRight, Info, Telescope } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import CollabSwitch from "../CollabSwitch"
 import CollabSwitchGlobal from "../CollabSwitchGlobal"
@@ -99,7 +99,7 @@ export default function ParticipantMenu() {
 
 
                 {
-                    tab == 'collaborer' &&
+                    tab == 'collaborer' && presences.length > 1 &&
                     <Callout.Root mt='2' size='1'>
                         <Callout.Icon>
                             <Info size='20' />
@@ -111,7 +111,7 @@ export default function ParticipantMenu() {
                 }
 
                 {
-                    tab == 'recompenser' &&
+                    tab == 'recompenser' && presences.length > 1 &&
                     <Callout.Root mt='2' size='1'>
                         <Callout.Icon>
                             <Info size='20' />
@@ -122,9 +122,21 @@ export default function ParticipantMenu() {
                     </Callout.Root>
                 }
 
+                {
+                    presences.length < 2 &&
+                    <Callout.Root mt='2' size='1'>
+                        <Callout.Icon>
+                            <Telescope size='20' />
+                        </Callout.Icon>
+                        <Callout.Text>
+                            {`Aucun participant n'est connecté pour le moment.`}
+                        </Callout.Text>
+                    </Callout.Root>
+                }
+
 
                 {
-                    tab == 'collaborer' &&
+                    tab == 'collaborer' && presences.length > 1 &&
                     <Table.Root>
                         <Table.Header>
                             <Table.Row>
