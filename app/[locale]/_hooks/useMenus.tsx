@@ -4,7 +4,7 @@ import logger from '@/app/_utils/logger';
 
 
 //export type MenuBarMode = 'creation' | 'animation';
-export type DeskMenu = 'polls' | 'participants' | 'chat' | 'more' | 'add' | 'qr';
+export type DeskMenu = 'polls' | 'participants' | 'defilement' | 'chat' | 'more' | 'add' | 'qr';
 
 type MenusContextType = {
 

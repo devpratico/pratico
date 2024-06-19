@@ -1,18 +1,20 @@
 'use client'
-import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout"
-import { Section, Heading, RadioCards, Text, Flex, Table, Badge, Box, Button, IconButton, Separator, SegmentedControl, Callout } from '@radix-ui/themes'
-import { Pen, CircleDollarSign, Trophy, Coins, EllipsisVertical, ChevronRight, Info, Telescope } from "lucide-react"
+import DeskMenuLayout from "@/app/[locale]/capsule/[capsule_id]/_components/menus/DeskMenuLayout";
+import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout } from '@radix-ui/themes'
+import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
 import { usePresences } from "@/app/[locale]/_hooks/usePresences"
 import CollabSwitch from "../CollabSwitch"
 import CollabSwitchGlobal from "../CollabSwitchGlobal"
 import { useParams } from "next/navigation"
 import { useState } from "react"
+import { useMenus } from "@/app/[locale]/_hooks/useMenus";
 
 
 export default function ParticipantMenu() {
     const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
+    const  { setOpenDeskMenu } = useMenus()
 
     return (
         <DeskMenuLayout menu="participants">
@@ -21,11 +23,11 @@ export default function ParticipantMenu() {
                 {/*<Heading size='3' as="h3" mb='4' trim='both'>OPTIONS</Heading>*/}
 
                 <Flex direction='column' gap='2'>
-                    <Button variant='soft' size='3' color='gray'>
+                    <Button variant='soft' size='3' color='gray' onClick={() => setOpenDeskMenu('defilement')}>
                         <Flex justify='between' align='center' width='100%'>
                             <Text wrap='nowrap'>Défilement</Text>
                             <Box flexGrow='1'/>
-                            <Badge color='violet'>Pratico</Badge>
+                            <Badge color='violet'>Animateur</Badge>
                             <ChevronRight/>
                         </Flex>
                     </Button>
@@ -39,39 +41,6 @@ export default function ParticipantMenu() {
                         </Flex>
                     </Button>
                 </Flex>
-
-                
-
-
-                {/*
-                <RadioCards.Root defaultValue='2' columns='1'>
-                    <RadioCards.Item value='1'  disabled={true}>
-                        <Flex direction='column' width='100%'>
-                            <Text weight="bold">Pratico</Text>
-                            <Text color='gray'>Les participants peuvent consulter les pages précédentes</Text>
-                        </Flex>
-                        <Box position='absolute' top='2' right='2'>
-                            <Badge color='gray'>Bientôt</Badge>
-                        </Box>
-                    </RadioCards.Item>
-                    <RadioCards.Item value='2'>
-                        <Flex direction='column' width='100%'>
-                            <Text weight="bold">Animateur</Text>
-                            <Text color='gray'>Les participants voient la page du formateur</Text>
-                        </Flex>
-
-                    </RadioCards.Item>
-                    <RadioCards.Item value='3' disabled={true}>
-                        <Flex direction='column' width='100%'>
-                            <Text weight="bold">Libre</Text>
-                            <Text color='gray'>Les participants ont accès à toutes les pages</Text>
-                        </Flex>
-                        <Box position='absolute' top='2' right='2'>
-                            <Badge color='gray'>Bientôt</Badge>
-                        </Box>
-                    </RadioCards.Item>
-                </RadioCards.Root>
-                */}
 
             </Section>
 
