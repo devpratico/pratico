@@ -1,6 +1,6 @@
 'use client'
 import { IconButton } from '@radix-ui/themes'
-import { Pen } from 'lucide-react'
+import { Pen, PenOff } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import logger from '@/app/_utils/logger'
 import { toggleCollaborationFor } from '../_actions/actions'
@@ -39,12 +39,12 @@ export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
         <TooltipL content={active ? 'Désactiver la collaboration' : 'Activer la collaboration'}>
             <IconButton
                 variant='ghost'
-                color={active ? 'violet' : 'gray'}
+                color={active ? 'pink' : 'gray'}
                 style={{opacity: active ? 1 : 0.3}}
                 onClick={handleClick}
                 loading={loading}
             >
-                <Pen size='20'/>
+                {active ? <Pen size='20' color='var(--pink)'/> : <PenOff size='20'/>}
             </IconButton>
         </TooltipL>
     )

@@ -11,6 +11,7 @@ import MoreMenu from './_components/menus/MoreMenu';
 import TeacherCanvasServer from './_components/TeacherCanvasServer';
 import { Suspense } from 'react';
 import StartDialog from './_components/StartDialog';
+import DefilementMenu from './_components/menus/DefilementMenu';
 
 
 
@@ -50,6 +51,7 @@ export default async function TeacherView({ params }: { params: { room_code: str
 
             <div className={styles.menu}>
                 <ParticipantsMenu />
+                <DefilementMenu />
                 <AddMenu />
                 <ChatMenu />
                 <ActivitiesMenu />
