@@ -18,6 +18,8 @@ export default function ParticipantMenu() {
         <DeskMenuLayout menu="participants">
             <Section size='1'>
 
+                {/*<Heading size='3' as="h3" mb='4' trim='both'>OPTIONS</Heading>*/}
+
                 <Flex direction='column' gap='2'>
                     <Button variant='soft' size='3' color='gray'>
                         <Flex justify='between' align='center' width='100%'>
@@ -37,8 +39,6 @@ export default function ParticipantMenu() {
                         </Flex>
                     </Button>
                 </Flex>
-
-                {/*<Heading size='3' as="h3" mb='2' trim='both'>DÉFILEMENT</Heading>*/}
 
                 
 
@@ -76,21 +76,21 @@ export default function ParticipantMenu() {
             </Section>
 
             <Section size='1'>
-                {/*<Heading size='3' as="h3" mb='2' trim='both'>PARTICIPANTS</Heading>*/}
+                {/*<Heading size='3' as="h3" mb='4' trim='both'>PARTICIPANTS</Heading>*/}
 
                 <Box width='100%'>
                     <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} onValueChange={(value) => setTab(value as any)}>
 
                         <SegmentedControl.Item value='collaborer'>
                             <Flex align='center' gap='2'>
-                                <Pen size='20'/>
+                                <Pen size='20' color='var(--pink)'/>
                                 <Text>Collaborer</Text>
                             </Flex>
                         </SegmentedControl.Item>
 
                         <SegmentedControl.Item value='recompenser'>
                             <Flex align='center' gap='2'>
-                                <Coins size='20'/>
+                                <Coins size='20' color='var(--orange)'/>
                                 <Text>Récompenser</Text>
                             </Flex>
                         </SegmentedControl.Item>

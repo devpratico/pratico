@@ -41,12 +41,12 @@ export default function CollabSwitchGlobal({ roomCode }: CollabSwitchGlobalProps
         <TooltipL content={active ? 'Désactiver la collaboration pour tous' : 'Activer la collaboration pour tous'}>
             <IconButton
                 variant='ghost'
-                color={active ? 'violet' : 'gray'}
+                color={active ? 'pink' : 'gray'}
                 style={{opacity: active ? 1 : 0.3}}
                 onClick={handleClick}
                 loading={loading}
             >
-                <Pen size='20'/>
+                <Pen size='20' color={active ? 'var(--pink)' : 'gray'}/>
             </IconButton>
         </TooltipL>
     )
