@@ -82,9 +82,9 @@
   --orange-border: hsl(var(--orange-h), calc(var(--orange-s)*var(--border-s-mult)), calc(var(--orange-l)*var(--border-l-mult)));
 
   /* Yellow */
-  --yellow-h: 48;
+  --yellow-h: 49;
   --yellow-s: 89%;
-  --yellow-l: 59%;
+  --yellow-l: 60%;
   --yellow: hsl(var(--yellow-h), var(--yellow-s), var(--yellow-l));
   --yellow-border: hsl(var(--yellow-h), calc(var(--yellow-s)*var(--border-s-mult)), calc(var(--yellow-l)*var(--border-l-mult)));
 
