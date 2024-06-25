@@ -10,7 +10,7 @@ import { CanvasUser } from "./Canvas";
 
 
 interface CanvasRTProps {
-    user: CanvasUser
+    //user: CanvasUser
     children?: React.ReactNode;
 }
 
@@ -18,7 +18,7 @@ interface CanvasRTProps {
  * This is a special kind of canvas that allows for real time collaboration.
  * `RT` stands for "real time".
  */
-export default function CanvasRT({user, children}: CanvasRTProps) {
+export default function CanvasRT({ children}: CanvasRTProps) {
 
     // Get the room we're in
     const  { room }  = useRoom()
@@ -38,7 +38,7 @@ export default function CanvasRT({user, children}: CanvasRTProps) {
     return (
         <Canvas
             store={store}
-            user={user}
+            //user={user}
         >
             {children}
             <Resizer insets={{ top: 60, right: 0, bottom: 70, left: 60 }} margin={10} />

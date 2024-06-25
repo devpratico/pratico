@@ -10,6 +10,7 @@ import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
 import { useState, useEffect } from "react";
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
+import { setUserPreferences } from "tldraw";
 
 
 interface StudentCanvasProps {
@@ -26,6 +27,14 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         console.log('canCollab', canCollab)
     }, [canCollab])
 
+    useEffect(() => {
+        setUserPreferences({
+            id: user.id,
+            name: user.name,
+            color: user.color
+        })
+    }, [user])
+
 
     const store = useBroadcastStore({ roomId:  room?.id.toString(), initialSnapshot: snapshot, broadcastPresence: canCollab })
 
@@ -38,7 +47,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
 
     return (
         <Canvas
-            user={user}
+            //user={user}
             store={store}
         >
             {canCollab && <ToolBar />}

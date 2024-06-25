@@ -33,7 +33,7 @@ export interface CanvasProps {
     initialSnapshot?: StoreSnapshot<TLRecord>
     persistenceKey?: string
     onMount?: (editor: Editor) => void
-    user: CanvasUser
+    //user: CanvasUser
     children?: React.ReactNode
 }
 
@@ -41,7 +41,7 @@ export interface CanvasProps {
  * This is the canvas component provided by tldraw.
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
-export default function Canvas({store, initialSnapshot, persistenceKey, onMount, user, children}: CanvasProps) {
+export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
 
     const { setEditor } = useTLEditor()
 
@@ -68,9 +68,9 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
          */
         setUserPreferences({
             ...getUserPreferences(),
-            id: user.id,
-            name: user.name,
-            color: user.color,
+            //id: user.id,
+            //name: user.name,
+            //color: user.color,
             edgeScrollSpeed: 0
         })
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
@@ -78,7 +78,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
-    }, [setEditor, onMount, user])
+    }, [setEditor, onMount])
 
     return (
         <Tldraw
