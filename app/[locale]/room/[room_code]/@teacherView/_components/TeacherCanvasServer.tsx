@@ -26,7 +26,8 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
     const user: CanvasUser = {
         id: userId,
         name: `${first_name} ${last_name}`,
-        color: 'var(--brand)'
+        //color: 'var(--brand)'
+        color:'#674ACF'
     }
 
     const room = await fetchRoomByCode(roomCode)
