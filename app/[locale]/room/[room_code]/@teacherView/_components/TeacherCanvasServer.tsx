@@ -26,7 +26,7 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
        name = 'Formateur'
     }
 
-
+    name += ' ⭐️'
 
     const user: CanvasUser = {
         id: userId,

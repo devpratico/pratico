@@ -90,7 +90,7 @@ export function PresencesProvider({ roomCode, userId, children }: PresencesProvi
             const myPresence: PresenceState = {
                 id: userId || 'unknown',
                 color: getUserPreferences().color || getRandomColor(),
-                firstName: names.first_name || '',
+                firstName: names.first_name || getUserPreferences().name || 'Inconnu',
                 lastName: names.last_name || '',
                 isMe: true,
                 state: 'online',
