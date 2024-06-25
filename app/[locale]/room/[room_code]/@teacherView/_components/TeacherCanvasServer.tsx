@@ -15,18 +15,23 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
     const userId = (await fetchUser()).id
     const { first_name, last_name } = await fetchNames(userId)
 
+    let name = `${first_name} ${last_name}`
+
     if (!first_name || !last_name) {
         /*
         const nextUrl = `/room/${params.room_code}`
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString())
         return null
         */
+       name = 'Formateur'
     }
+
+
 
     const user: CanvasUser = {
         id: userId,
-        name: `${first_name} ${last_name}`,
-        //color: 'var(--brand)'
+        name: name,
+        //color: 'var(--brand)' // Doesn't work on first load, maybe because css variables are not loaded yet
         color:'#674ACF'
     }
 
