@@ -26,7 +26,16 @@ interface useBroadcastStoreProps {
     broadcastPresence?: boolean
 }
 
-type broadcastArgs = { eventName: 'document', payload: RecordsDiff<TLRecord> } | { eventName: 'presence', payload: TLInstancePresence }
+type broadcastArgs = 
+{ 
+    eventName: 'document',
+    payload: RecordsDiff<TLRecord>
+} |
+{ 
+    eventName: 'presence',
+    //payload: { action: 'put' | 'remove', presence: TLInstancePresence }
+    payload: RecordsDiff<TLInstancePresence>
+}
 
 /**
  * This hook is used to create a realtime channel with supabase,
@@ -99,30 +108,44 @@ export default function useBroadcastStore({roomId, initialSnapshot, broadcastPre
         
 
             // PRESENCE CHANGES - Mouse position, name, color...
+            // Broadcast your tldraw's TLInstancePresence to everyone
+
+            const presenceInfo = computed<{ id: string, color: string, name: string }>('userPreferences', () => {
+                const user = getUserPreferences()
+                return {
+                    id: user.id,
+                    color: user.color ?? defaultUserPreferences.color,
+                    name: user.name ?? defaultUserPreferences.name,
+                }
+            })
+
+            // The presence thing needs a special kind of id
+            const presenceId = InstancePresenceRecordType.createId(presenceInfo.get().id)
+
+            // Create a presence oject (signal)
+            const presenceSignal = createPresenceStateDerivation(presenceInfo, presenceId)(store)
+
             if (broadcastPresence) {
-                // Broadcast your tldraw's TLInstancePresence to everyone
-                const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
-                    const user = getUserPreferences()
-                    return {
-                        id:    user.id,
-                        color: user.color ?? defaultUserPreferences.color,
-                        name:  user.name  ?? defaultUserPreferences.name,
-                    }
-                })
-
-                // The presence thing needs a special kind of id
-                const presenceId = InstancePresenceRecordType.createId(presenceInfo.get().id)
-
-                // Finally, create a presence oject (signal)
-                const presenceSignal = createPresenceStateDerivation(presenceInfo, presenceId)(store)
-
                 // React to changes in the presence object
                 presenceListener = react('when presence changes', () => {
                     const presence = presenceSignal.get()
                     if (!presence) return
                     //broadcast({eventName: 'presence', payload: presence})
-                    throttleBroadcast({eventName: 'presence', payload: presence})
+                    const presenceDiff: RecordsDiff<TLInstancePresence> = {
+                        added: {[presence.id]: presence},
+                        removed: {},
+                        updated: {}
+                    }
+                    throttleBroadcast({eventName: 'presence', payload: presenceDiff})
                 })
+            } else {
+                // If we don't want to broadcast presence, broadcast a 'removed' payload
+                const presenceDiff: RecordsDiff<TLInstancePresence> = {
+                    added: {},
+                    removed: {[presenceId]: presenceSignal.get()!},
+                    updated: {}
+                }
+                broadcast({eventName: 'presence', payload: presenceDiff})
             }
         })
 
@@ -151,11 +174,13 @@ export default function useBroadcastStore({roomId, initialSnapshot, broadcastPre
             'broadcast',
             { event: 'presence' },
             (payload) => {
-                const presence = payload.payload as TLInstancePresence
+                const diff = payload.payload as RecordsDiff<TLInstancePresence>
                 setStore((prevStore) => {
                     const newStore = prevStore
                     newStore.mergeRemoteChanges(() => {
-                        newStore.put([presence])
+                        //newStore.put([presence])
+                        Object.values(diff.added  ).forEach((record)     => {newStore.put([record])})
+                        Object.values(diff.removed).forEach((record)     => {newStore.remove([record.id])})
                     })
                     return newStore
                 })
