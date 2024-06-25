@@ -16,7 +16,7 @@ export function encodeStringForURL(str: string): string {
     });
 }
 
-
+/*
 const colors: string[] = [
     'crimson',
     'darkblue',
@@ -27,8 +27,15 @@ const colors: string[] = [
     'seagreen',
     'mediumvioletred',
     // Add all other CSS colors
+];*/
+const colors: string[] = [
+    //'var(--blue)',
+    'var(--green)',
+    'var(--orange)',
+    'var(--pink)',
+    'var(--yellow)',
+    'var(--red)',
 ];
-
 /**
  * Returns a random color from the list of colors
  */
