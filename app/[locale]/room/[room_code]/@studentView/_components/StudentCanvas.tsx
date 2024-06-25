@@ -27,6 +27,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         console.log('canCollab', canCollab)
     }, [canCollab])
 
+    // TODO: remove the server side fetch and use a server action
     useEffect(() => {
         setUserPreferences({
             id: user.id,
