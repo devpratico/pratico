@@ -89,7 +89,6 @@ export function PresencesProvider({ roomCode, userId, children }: PresencesProvi
 
             const myPresence: PresenceState = {
                 id: userId || 'unknown',
-                //color: getRandomColor(),
                 color: getUserPreferences().color || getRandomColor(),
                 firstName: names.first_name || '',
                 lastName: names.last_name || '',
