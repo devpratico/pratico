@@ -8,7 +8,7 @@ import NavigatorSync from "@/app/[locale]/_components/canvases/custom-ui/Navigat
 import Resizer from "@/app/[locale]/_components/canvases/custom-ui/Resizer/Resizer";
 import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
 import { useRoom } from "@/app/[locale]/_hooks/useRoom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 
 
@@ -20,9 +20,15 @@ interface StudentCanvasProps {
 
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
-    const store = useBroadcastStore({ roomId:  room?.id.toString(), initialSnapshot: snapshot })
-
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
+    //const [canCollab, setCanCollab] = useState(false)
+    useEffect(() => {
+        console.log('canCollab', canCollab)
+    }, [canCollab])
+
+
+    const store = useBroadcastStore({ roomId:  room?.id.toString(), initialSnapshot: snapshot, broadcastPresence: canCollab })
+
 
     // Set canvas to read only if user is not allowed to collab
     const { editor } = useTLEditor()
