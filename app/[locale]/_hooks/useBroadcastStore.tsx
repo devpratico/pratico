@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import logger from "@/app/_utils/logger";
 import debounce from "@/app/_utils/debounce";
+import { cp } from 'fs';
 
 
 interface useBroadcastStoreProps {
@@ -138,9 +139,11 @@ export default function useBroadcastStore({roomId, initialSnapshot, broadcastPre
                 })
             } else {
                 // If we don't want to broadcast presence, broadcast a 'removed' payload
+                const presence = presenceSignal.get()
+                if (!presence) return
                 const presenceDiff: RecordsDiff<TLInstancePresence> = {
                     added: {},
-                    removed: {[presenceId]: presenceSignal.get()!},
+                    removed: {[presenceId]: presence},
                     updated: {}
                 }
                 broadcast({eventName: 'presence', payload: presenceDiff})
