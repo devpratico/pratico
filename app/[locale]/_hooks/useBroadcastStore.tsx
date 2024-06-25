@@ -45,8 +45,6 @@ type broadcastArgs =
  */
 export default function useBroadcastStore({roomId, initialSnapshot, broadcastPresence=true}: useBroadcastStoreProps) {
 
-    console.log('useBroadcastStore with canCollab', broadcastPresence)
-
     // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
         const _store = createTLStore({shapeUtils: defaultShapeUtils})
