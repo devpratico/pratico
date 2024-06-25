@@ -25,7 +25,7 @@ export default function StopBtn({ message }: StopBtnProps) {
             variant='surface'
             radius='large'
             loading={loading}
-            style={{ backgroundColor: 'var(--background)' }}
+            style={{ backgroundColor: 'var(--background)', boxShadow:'none' }}
             onClick={async () => { 
                 setLoading(true)
                 if (!roomId || !capsuleId) return

@@ -36,7 +36,7 @@ export default function StartBtn({ message }: StartBtnProps) {
         <Button
             variant='surface'
             radius='large'
-            style={{ backgroundColor: 'var(--background)' }}
+            style={{ backgroundColor: 'var(--background)', boxShadow:'none' }}
             loading={loading}
             onClick={handleClick}
         >
