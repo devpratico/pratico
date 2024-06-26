@@ -23,7 +23,7 @@ export default async function TeacherCanvasServer({ roomCode }: TeacherCanvasSer
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString())
         return null
         */
-       name = 'Formateur'
+       name = 'Animateur'
     }
 
     name += ' ⭐️'
