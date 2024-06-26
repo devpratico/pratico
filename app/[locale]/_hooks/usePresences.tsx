@@ -4,6 +4,7 @@ import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { fetchNames } from "../_actions/user";
 import { getRandomColor } from "@/app/_utils/codeGen";
+import { getUserPreferences } from "tldraw";
 
 
 interface PresenceUser {
@@ -88,8 +89,8 @@ export function PresencesProvider({ roomCode, userId, children }: PresencesProvi
 
             const myPresence: PresenceState = {
                 id: userId || 'unknown',
-                color: getRandomColor(),
-                firstName: names.first_name || '',
+                color: getUserPreferences().color || getRandomColor(),
+                firstName: names.first_name || getUserPreferences().name || 'Inconnu',
                 lastName: names.last_name || '',
                 isMe: true,
                 state: 'online',

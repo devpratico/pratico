@@ -20,8 +20,8 @@ import { getRandomColor } from "@/app/_utils/codeGen";
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
 
-    // TODO : remove the fetch actions and pass them as props from a server component
     // Get the user
+    /*
     const initialUser: CanvasUser = { id: 'anonymous', name: 'Anonymous', color: 'black'}
     const [user, setUser] = useState<CanvasUser>(initialUser)
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function CanvasSL() {
             setUser(user)
         }
         _setUser()
-    }, [])
+    }, [])*/
 
 
     // Get the initial snapshot from the capsule
@@ -62,7 +62,7 @@ export default function CanvasSL() {
 
     
     return (
-        <Canvas user= {user} store={store}>
+        <Canvas store={store}>
             <Resizer insets={{top: 60, right: 0, bottom: 70, left: 60}} margin={10} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>

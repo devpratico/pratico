@@ -16,23 +16,26 @@ export function encodeStringForURL(str: string): string {
     });
 }
 
-
+/*
 const colors: string[] = [
-    'AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure',
-    'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue',
-    'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse',
-    'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson',
-    'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod',
-    'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen',
-    'Darkorange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen',
-    'DarkSlateBlue', 'DarkTurquoise', 'DarkViolet',
-    'DeepPink', 'DeepSkyBlue', 'DodgerBlue',
-    'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro',
-    'Gold', 'GoldenRod',
-    'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed',
+    'crimson',
+    'darkblue',
+    'darkgreen',
+    'darkorange',
+    'darkslateblue',
+    'deeppink',
+    'seagreen',
+    'mediumvioletred',
     // Add all other CSS colors
+];*/
+const colors: string[] = [
+    //'var(--blue)',
+    'var(--green)',
+    'var(--orange)',
+    'var(--pink)',
+    'var(--yellow)',
+    'var(--red)',
 ];
-
 /**
  * Returns a random color from the list of colors
  */

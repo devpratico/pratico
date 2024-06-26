@@ -18,14 +18,25 @@ import {
 import { useEffect, useState } from "react";
 import logger from "@/app/_utils/logger";
 import debounce from "@/app/_utils/debounce";
+import { cp } from 'fs';
 
 
 interface useBroadcastStoreProps {
     roomId?: string
     initialSnapshot?: StoreSnapshot<TLRecord>
+    broadcastPresence?: boolean
 }
 
-type broadcastArgs = { eventName: 'document', payload: RecordsDiff<TLRecord> } | { eventName: 'presence', payload: TLInstancePresence }
+type broadcastArgs = 
+{ 
+    eventName: 'document',
+    payload: RecordsDiff<TLRecord>
+} |
+{ 
+    eventName: 'presence',
+    //payload: { action: 'put' | 'remove', presence: TLInstancePresence }
+    payload: RecordsDiff<TLInstancePresence>
+}
 
 /**
  * This hook is used to create a realtime channel with supabase,
@@ -33,8 +44,7 @@ type broadcastArgs = { eventName: 'document', payload: RecordsDiff<TLRecord> } |
  * It has been inspired by the [tldraw collaboration example](https://tldraw.dev/examples/collaboration/yjs) and [use presence example](https://tldraw.dev/examples/collaboration/user-presence).
  * See the [supabase documentation](https://supabase.com/docs/guides/realtime/broadcast) for more information.
  */
-export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcastStoreProps) {
-
+export default function useBroadcastStore({roomId, initialSnapshot, broadcastPresence=true}: useBroadcastStoreProps) {
 
     // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
@@ -50,15 +60,11 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
 
         // We'll use Supabase Broadcast feature
         const supabase = createClient()
-        const channel = supabase.channel(roomId + "_document", {
-            config: {
-                broadcast: { ack: true },
-            },
-        })
+        const channel = supabase.channel(roomId + "_document", { config: { broadcast: { ack: true }}})
 
         // Initialize the listeners in the body of the useEffect so that we can unsubscribe in the cleanup function
-        let storeListener: () => void
-        let presenceListener: () => void
+        let storeListener: () => void = () => {}
+        let presenceListener: () => void = () => {}
 
         // BROADCAST LOCAL TLDRAW CHANGES - BROADCAST THEM
         // In order to broadcast stuff, we need to be in the `subscribe` callback
@@ -102,28 +108,46 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
 
             // PRESENCE CHANGES - Mouse position, name, color...
             // Broadcast your tldraw's TLInstancePresence to everyone
-            const presenceInfo = computed<{id: string, color: string, name: string}>('userPreferences', () => {
-				const user = getUserPreferences()
-				return {
-					id:    user.id,
-					color: user.color ?? defaultUserPreferences.color,
-					name:  user.name  ?? defaultUserPreferences.name,
-				}
-			})
+
+            const presenceInfo = computed<{ id: string, color: string, name: string }>('userPreferences', () => {
+                const user = getUserPreferences()
+                return {
+                    id: user.id,
+                    color: user.color ?? defaultUserPreferences.color,
+                    name: user.name ?? defaultUserPreferences.name,
+                }
+            })
 
             // The presence thing needs a special kind of id
             const presenceId = InstancePresenceRecordType.createId(presenceInfo.get().id)
 
-            // Finally, create a presence oject (signal)
+            // Create a presence oject (signal)
             const presenceSignal = createPresenceStateDerivation(presenceInfo, presenceId)(store)
 
-            // React to changes in the presence object
-            presenceListener = react('when presence changes', () => {
+            if (broadcastPresence) {
+                // React to changes in the presence object
+                presenceListener = react('when presence changes', () => {
+                    const presence = presenceSignal.get()
+                    if (!presence) return
+                    //broadcast({eventName: 'presence', payload: presence})
+                    const presenceDiff: RecordsDiff<TLInstancePresence> = {
+                        added: {[presence.id]: presence},
+                        removed: {},
+                        updated: {}
+                    }
+                    throttleBroadcast({eventName: 'presence', payload: presenceDiff})
+                })
+            } else {
+                // If we don't want to broadcast presence, broadcast a 'removed' payload
                 const presence = presenceSignal.get()
                 if (!presence) return
-                //broadcast({eventName: 'presence', payload: presence})
-                throttleBroadcast({eventName: 'presence', payload: presence})
-            })
+                const presenceDiff: RecordsDiff<TLInstancePresence> = {
+                    added: {},
+                    removed: {[presenceId]: presence},
+                    updated: {}
+                }
+                broadcast({eventName: 'presence', payload: presenceDiff})
+            }
         })
 
         // LISTEN TO THE CHANNEL 'DOCUMENT' EVENTS - MERGE REMOTE CHANGES IN THE STORE
@@ -151,11 +175,13 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
             'broadcast',
             { event: 'presence' },
             (payload) => {
-                const presence = payload.payload as TLInstancePresence
+                const diff = payload.payload as RecordsDiff<TLInstancePresence>
                 setStore((prevStore) => {
                     const newStore = prevStore
                     newStore.mergeRemoteChanges(() => {
-                        newStore.put([presence])
+                        //newStore.put([presence])
+                        Object.values(diff.added  ).forEach((record)     => {newStore.put([record])})
+                        Object.values(diff.removed).forEach((record)     => {newStore.remove([record.id])})
                     })
                     return newStore
                 })
@@ -163,13 +189,13 @@ export default function useBroadcastStore({roomId, initialSnapshot}: useBroadcas
         )
 
         return () => {
-            supabase.removeChannel(channel).then((res) => { logger.log('supabase:realtime', roomId + "_document", 'channel removed:', res)})
             // Remove the listeners (they returned functions for that purpose)
             storeListener()
             presenceListener()
+            supabase.removeChannel(channel).then((res) => { logger.log('supabase:realtime', roomId + "_document", 'channel removed:', res)})
             //channel.untrack()
         }
-    }, [roomId, store])
+    }, [roomId, store, broadcastPresence])
     
     return store
 }
@@ -187,4 +213,4 @@ function logChanges(changes: RecordsDiff<TLRecord>, source: 'local' | 'remote') 
 }
 
 
-// TODO : Le throttling a pour conséquence de manquer la fin des traits. Déclencher une syncchro au leve de la souris
+// Note: Le throttling a pour conséquence de manquer la fin des traits. Déclencher une synchro au levé de la souris
