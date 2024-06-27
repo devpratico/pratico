@@ -12,6 +12,7 @@ import {
     StyleProp,
 } from 'tldraw'
 import logger from '../logger'
+import { uploadCapsuleFile } from './capsules_files'
 
 
 interface DispatchArgs {
@@ -188,7 +189,13 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             const assetId = AssetRecordType.createId()
 
             // This handler will be called when the image is done loading
-            image.onload = () => {
+            image.onload = async () => {
+
+                // Upload to supabase
+                //const path = await uploadCapsuleFile({dataUrl: imageSrc, name: 'tldraw.png', capsuleId: 'X', folder:'X'})
+
+
+
                 const imageWidth  = image.width
                 const imageHeight = image.height
                 const aspectRatio = imageWidth / imageHeight
