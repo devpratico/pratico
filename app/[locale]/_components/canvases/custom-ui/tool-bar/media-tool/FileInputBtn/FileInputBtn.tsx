@@ -1,8 +1,9 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useParams } from 'next/navigation'
 
 
 interface FileInputBtnProps {
-    dispatch: (action: string, payload: string) => void;
+    dispatch: (action: string, payload: any) => void;
 }
 
 /**
@@ -12,6 +13,7 @@ interface FileInputBtnProps {
 const FileInputBtn = forwardRef<HTMLInputElement , FileInputBtnProps>(
   function FileInputBtn({ dispatch }, ref) {
   
+const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
   const localInputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => localInputRef.current as HTMLInputElement);
 
@@ -20,8 +22,13 @@ const FileInputBtn = forwardRef<HTMLInputElement , FileInputBtnProps>(
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const imageSrc = e.target?.result as string; // Data URL
-        dispatch("CLICK_SUBMIT_IMAGE", imageSrc);
+        const dataUrl = e.target?.result as string; // Data URL
+        dispatch("CLICK_SUBMIT_IMAGE", {
+            dataUrl,
+            name: file.name,
+            capsuleId: capsuleId,
+        });
+        
       };
       reader.readAsDataURL(file);
     }

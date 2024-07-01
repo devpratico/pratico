@@ -12,13 +12,13 @@ import {
     StyleProp,
 } from 'tldraw'
 import logger from '../logger'
-import { uploadCapsuleFile } from './capsules_files'
+import { uploadCapsuleFile, getPublicUrl } from './capsules_files'
 
 
 interface DispatchArgs {
     editor: Editor,
     action: string,
-    payload: string
+    payload: any,
 }
 
 export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
@@ -179,8 +179,6 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             break
 
         case 'CLICK_SUBMIT_IMAGE':
-            const imageSrc = payload as string
-
             // We could directly create an image using imageSrc, but we want to get the image size first
             // To get the size, we need to create an Image element to access its width and height
             // But width and height are only available after the image is loaded
@@ -191,10 +189,16 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             // This handler will be called when the image is done loading
             image.onload = async () => {
 
-                // Upload to supabase
-                //const path = await uploadCapsuleFile({dataUrl: imageSrc, name: 'tldraw.png', capsuleId: 'X', folder:'X'})
-
-
+                //Upload to supabase
+                const path = await uploadCapsuleFile(
+                    {
+                        dataUrl: payload.dataUrl,
+                        name:    payload.name,
+                        capsuleId: payload.capsuleId,
+                        folder:    'images',
+                    }
+                )
+                const publicUrl = await getPublicUrl(path)
 
                 const imageWidth  = image.width
                 const imageHeight = image.height
@@ -206,8 +210,8 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
                         type: 'image',
                         typeName: 'asset',
                         props: {
-                            name: 'tldraw.png',
-                            src: imageSrc,
+                            name: payload.name,
+                            src: publicUrl,
                             w: imageWidth,
                             h: imageHeight,
                             mimeType: 'image/png',
@@ -242,7 +246,7 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
                 })
             }
 
-            image.src = imageSrc
+            image.src = payload.dataUrl
             
             break
 
