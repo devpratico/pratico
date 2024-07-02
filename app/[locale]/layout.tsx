@@ -4,6 +4,7 @@ import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
 import { luciole } from '../Fonts'
+import { DisableProvider } from './_hooks/useDisable';
 
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default async function RootLayout({children, params: { locale }}: RootLay
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
                 <Theme accentColor="violet">
-                    {children}
+                    <DisableProvider>
+                        {children}
+                    </DisableProvider>
                 </Theme>
             </body>
         </html>

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { useState } from "react";
+import { useDisable } from "@/app/[locale]/_hooks/useDisable";
 
 
 interface StartBtnProps {
@@ -15,6 +16,7 @@ export default function StartBtn({ message }: StartBtnProps) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
+    const { disabled } = useDisable()
     
 
     const handleClick = async () => {
@@ -39,6 +41,7 @@ export default function StartBtn({ message }: StartBtnProps) {
             style={{ backgroundColor: 'var(--background)', boxShadow:'none' }}
             loading={loading}
             onClick={handleClick}
+            disabled={disabled}
         >
             {message}
         </Button>

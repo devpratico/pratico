@@ -6,6 +6,7 @@ import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@radix-ui/themes";
+import { useDisable } from "@/app/[locale]/_hooks/useDisable";
 
 
 interface DoneBtnProps {
@@ -21,6 +22,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const [loading, setLoading] = useState(false)
+    const { disabled } = useDisable()
     
 
     const handleClick = useCallback(async () => {
@@ -44,6 +46,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             variant="soft"
             onClick={handleClick}
             loading={loading}
+            disabled={disabled}
             style={{color:'var(--background)', backgroundColor:'hsla(var(--background-h), var(--background-s), var(--background-l), 0.2)'}}
         >
             {message}
