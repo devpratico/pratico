@@ -201,20 +201,3 @@ async function convertPDFPageToBitmap(page: any): Promise<{ bitmap: string, widt
     const bitmap = canvas.toDataURL('image/png')
     return { bitmap, width: viewport.width, height: viewport.height }
 }
-
-
-/**
- * Converts a data URL to a Blob, that can be uploaded to Supabase
- */
-const dataURLToBlob = (dataURL: string): Blob => {
-    const [headers, base64Data] = dataURL.split(',');
-    const byteString = atob(base64Data);
-    const mimeString = headers.split(':')[1].split(';')[0];
-
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-}

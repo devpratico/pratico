@@ -2,6 +2,7 @@
 //import createClient from "@/supabase/clients/server"
 'use client'
 import createClient from "@/supabase/clients/client"
+import logger from "../logger"
 
 
 type UploadCapsuleFileArgs = {
@@ -19,9 +20,12 @@ type UploadCapsuleFileArgs = {
 export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
     const supabase =  createClient()
 
+    logger.log('supabase:storage', 'Uploading file', args);
+
     // Get user id because we use it in the path
     const res = await supabase.auth.getUser()
     if (res.error) {
+        logger.error('supabase:auth', 'Error getting user', res.error)
         throw res.error
     }
 
@@ -41,8 +45,10 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
 
     if (error) {
         // For example, when the file name already exists
+        logger.error('supabase:storage', 'Error uploading file', error)
         throw error
     } else {
+        logger.log('supabase:storage', 'Uploaded file', path)
         return data.path
     }
 }
