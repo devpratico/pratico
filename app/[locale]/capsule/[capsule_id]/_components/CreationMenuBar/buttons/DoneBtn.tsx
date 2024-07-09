@@ -22,25 +22,32 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const [loading, setLoading] = useState(false)
-    const { disabled } = useDisable()
+    const { disabled, setDisabled } = useDisable()
     
-
+    
     const handleClick = useCallback(async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
         setLoading(true)
+        setDisabled(true)
+
         if (!capsuleId || !editor) return
-        const snapshot = editor.store.getSnapshot()
+        
         try {
-            await saveCapsuleSnapshot(capsuleId!, snapshot)
+            const snapshot = editor.store.getSnapshot()
+            await saveCapsuleSnapshot(capsuleId!, snapshot)    
             router.push('/capsules')
             router.refresh() // This is to force the revalidation of the cache
 
         } catch (error) {
             logger.error('react:component', 'Error saving snapshot', (error as Error).message)
-            setLoading(false)
         }
-    }, [capsuleId, editor, router])
 
+        setDisabled(false)
+        setLoading(false)
+
+    }, [capsuleId, editor, router, setDisabled, setLoading])
+
+    
     return (
         <Button
             variant="soft"
