@@ -17,7 +17,7 @@ export default function StopBtn({ message }: StopBtnProps) {
     const router = useRouter()
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
-    const { disabled } = useDisable()
+    const { disabled, setDisabled } = useDisable()
 
     const roomId = room?.id
     const capsuleId = room?.capsule_id
@@ -31,12 +31,15 @@ export default function StopBtn({ message }: StopBtnProps) {
             disabled={disabled}
             onClick={async () => { 
                 setLoading(true)
+                setDisabled(true)
                 if (!roomId || !capsuleId) return
                 try {
                     await stopRoom({ roomId, capsuleId })
                     router.push(`/capsule/${capsuleId}`)
                 } catch (error) {
                     logger.error('supabase:database', 'Error stopping session', error)
+                } finally {
+                    setDisabled(false)
                     setLoading(false)
                 }
             }}
