@@ -20,7 +20,7 @@ export default function Controls() {
     return (
         <Flex  px='4' justify='between' align='center' style={{height:'100%', backgroundColor:'var(--background)'}}>
 
-            <IconButton size='3' onPointerDown={() => toggleDeskMenu('add')} disabled={disabled}>
+            <IconButton size='3' onPointerDown={() => toggleDeskMenu('add')}>
                 <Plus size={iconSize} />
             </IconButton>
 
