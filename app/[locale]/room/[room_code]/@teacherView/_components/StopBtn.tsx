@@ -5,6 +5,7 @@ import { useRouter } from "@/app/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { stopRoom } from '../_actions/actions';
 import { useState } from "react";
+import { useDisable } from "@/app/[locale]/_hooks/useDisable";
 
 
 interface StopBtnProps {
@@ -16,6 +17,7 @@ export default function StopBtn({ message }: StopBtnProps) {
     const router = useRouter()
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
+    const { disabled, setDisabled } = useDisable()
 
     const roomId = room?.id
     const capsuleId = room?.capsule_id
@@ -26,15 +28,19 @@ export default function StopBtn({ message }: StopBtnProps) {
             radius='large'
             loading={loading}
             style={{ backgroundColor: 'var(--background)', boxShadow:'none' }}
+            disabled={disabled}
             onClick={async () => { 
                 setLoading(true)
+                setDisabled(true)
                 if (!roomId || !capsuleId) return
                 try {
                     await stopRoom({ roomId, capsuleId })
                     router.push(`/capsule/${capsuleId}`)
                 } catch (error) {
                     logger.error('supabase:database', 'Error stopping session', error)
-                    setLoading(false)
+                } finally {
+                    setDisabled(false)
+                    //setLoading(false)
                 }
             }}
         >

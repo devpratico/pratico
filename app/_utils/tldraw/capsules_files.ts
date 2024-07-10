@@ -39,6 +39,7 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
     fileName = fileName.replace(/[^a-z0-9.]/gi, '_')
     fileName = encodeURIComponent(fileName)
 
+    // TODO: Remove the user id from the path. It should be independent.
     const userId = res.data.user.id
     const path = `${userId}/${args.capsuleId}/${folderName ? folderName + '/' : ''}${fileName}`
     const { data, error } = await supabase.storage.from('capsules_files').upload(path, 'file' in args ? args.file : dataURLToBlob(args.dataUrl))

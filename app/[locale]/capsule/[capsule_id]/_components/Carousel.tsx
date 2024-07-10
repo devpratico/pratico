@@ -7,6 +7,7 @@ import { Card, Flex, ScrollArea, DropdownMenu, IconButton } from '@radix-ui/them
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import logger from '@/app/_utils/logger'
+import { useDisable } from '@/app/[locale]/_hooks/useDisable'
 
 
 interface MiniatureProps {
@@ -20,6 +21,7 @@ interface MiniatureProps {
 export default function Carousel() {
     const { editor } = useTLEditor()
     const { pageIds, currentPageId, setCurrentPage } = useNav()
+    const { disabled } = useDisable()
 
     // TODO: Update the thumbnail when new object added
     //const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor]) // currentPageId so that it updates when the current page changes
@@ -43,7 +45,7 @@ export default function Carousel() {
                             snapshot={snapshot}
                             pageId={id}
                             selected={currentPageId === id}
-                            onClick={() => setCurrentPage(id)}
+                            onClick={() => { if (!disabled) setCurrentPage(id) }}
                         />
                     </div>
                 ))}
@@ -57,9 +59,11 @@ function Miniature({snapshot, pageId, selected, onClick}: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { editor } = useTLEditor()
+    const { disabled } = useDisable()
 
     const selectedStyle = { boxShadow: '0 0 0 3px var(--primary)' };
     const outlineStyle = selected ? selectedStyle : {}
+    const cursorStyle = { cursor: disabled ? 'not-allowed' : 'pointer'}
 
     function deletePage() {
         editor?.deletePage(pageId)
@@ -68,7 +72,7 @@ function Miniature({snapshot, pageId, selected, onClick}: MiniatureProps) {
     return (
         <Card
             variant='classic'
-            style={{ padding: '0', height:'100%', ...outlineStyle}}
+            style={{ padding: '0', height:'100%', ...outlineStyle, ...cursorStyle }}
             onClick={onClick}
             onMouseEnter={() => setShowEllipsis(true)}
             onMouseLeave={() => {setShowEllipsis(false); setShowMenu(false) }}

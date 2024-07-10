@@ -16,9 +16,8 @@ export default function MenuBtn({children, message, menu}: MenuBtnProps) {
     return (
         <Button
             variant='ghost'
-            style={{ color: 'var(--background)' }}
-            //onClick={() => {toggleDeskMenu(menu)}}
-            onPointerDown={() => {toggleDeskMenu(menu)}}
+            style={{ color:'var(--background)' }}
+            onPointerDown={() => toggleDeskMenu(menu) }
         >
             <Flex direction='column' align='center' gap='1'>
                 {children}

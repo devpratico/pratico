@@ -8,6 +8,7 @@ import { ArrowDown } from "lucide-react"
 import { useRef, useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/[locale]/_hooks/useNav"
+import { useDisable } from "@/app/[locale]/_hooks/useDisable"
 
 
 
@@ -17,11 +18,13 @@ export default function AddMenu() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const { newPage } = useNav()
     const [pdfImportProgress, setPdfImportProgress] = useState<number | null>(null)
+    const { disabled, setDisabled } = useDisable()
 
     
     // This is for the PDF import
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDisabled(true)
         const file = event.target.files ? event.target.files[0] : null;
         if (file && file.type === "application/pdf" && editor) {
             logger.log('system:file', 'File received', file.name, file.type)
@@ -32,6 +35,7 @@ export default function AddMenu() {
         }
         fileInputRef.current!.value = '';
         setPdfImportProgress(null)
+        setDisabled(false)
     };
     
     const handleClick = () => {
@@ -53,8 +57,18 @@ export default function AddMenu() {
                     <TemplateCard>
                         <Flex direction='column' gap='2'>
                             <Text align='center' weight='bold' color='violet'>PDF</Text>
-                            {pdfImportProgress === null &&  <Button size='1' variant='soft' onClick={handleClick}><ArrowDown size='15'/>Importer</Button> }
-                            {pdfImportProgress !== null && <Progress value={pdfImportProgress} />}
+
+                            {pdfImportProgress === null && 
+                                <Button size='1' variant='soft' onClick={handleClick} disabled={disabled}>
+                                    <ArrowDown size='15'/>
+                                    Importer
+                                </Button>
+                            }
+
+                            {pdfImportProgress !== null &&
+                                <Progress value={pdfImportProgress} />
+                            }
+
                         </Flex>
                         <input
                             type="file"
@@ -86,12 +100,12 @@ export default function AddMenu() {
             <Section size='1'>
                 <Heading size='3' as="h3" mb='2' trim='both'>PAGES</Heading>
                 <Grid columns="2" gap='2' pt='2'>
-                    <Button onClick={() => newPage?.()} variant='ghost' style={{all: 'unset'}}>
+                    <button onClick={() => newPage?.()} disabled={disabled} style={{all:'unset', cursor: disabled ? 'not-allowed' : 'pointer'}}>
                         <Flex direction='column' align='center' gap='1'>
                             <TemplateCard/>
                             <Text size='1' color='gray'>Page blanche</Text>
                         </Flex>
-                    </Button>
+                    </button>
                 </Grid>
             </Section>
 
@@ -109,7 +123,7 @@ interface TemplateCardProps {
 
 function TemplateCard({ backgroundColor, children }: TemplateCardProps) {
     return (
-        <AspectRatio ratio={16 / 9}>
+        <AspectRatio ratio={16/9}>
             <Card variant='classic' style={{height:'100%', backgroundColor: backgroundColor}}>
                 {children}
             </Card>

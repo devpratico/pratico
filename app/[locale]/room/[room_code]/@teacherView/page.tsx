@@ -27,14 +27,15 @@ export default async function TeacherView({ params }: { params: { room_code: str
             </div>
 
             <div className={styles.canvas} id='canvasArea'>
-
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={null}>
                     <TeacherCanvasServer roomCode={params.room_code} />
                 </Suspense>
             </div>
 
             <div className={styles.menuBar}>
-                <AnimationMenuBar roomCode={params.room_code} />
+                <Suspense fallback={null}>
+                    <AnimationMenuBar roomCode={params.room_code} />
+                </Suspense>
             </div>
 
             <div className={styles.toolBar}>
