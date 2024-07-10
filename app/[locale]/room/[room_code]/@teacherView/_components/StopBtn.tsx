@@ -40,7 +40,7 @@ export default function StopBtn({ message }: StopBtnProps) {
                     logger.error('supabase:database', 'Error stopping session', error)
                 } finally {
                     setDisabled(false)
-                    setLoading(false)
+                    //setLoading(false)
                 }
             }}
         >

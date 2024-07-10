@@ -36,7 +36,7 @@ export default function StartBtn({ message }: StartBtnProps) {
             logger.error('supabase:database', 'Error starting session', (error as Error).message)
             
         } finally {
-            setLoading(false)
+            //setLoading(false)
             setDisabled(false)
         }
     }

@@ -40,10 +40,11 @@ export default function DoneBtn({ message }: DoneBtnProps) {
 
         } catch (error) {
             logger.error('react:component', 'Error saving snapshot', (error as Error).message)
+            
+        } finally {
+            //setLoading(false)
+            setDisabled(false)
         }
-
-        setDisabled(false)
-        setLoading(false)
 
     }, [capsuleId, editor, router, setDisabled, setLoading])
 
