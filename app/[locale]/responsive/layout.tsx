@@ -5,7 +5,7 @@ import { Grid, Box } from "@radix-ui/themes"
 export default function Layout({children }: { children: React.ReactNode }) {
     // gap='3' p='3'
     return (
-        <Grid rows={{initial: 'auto 1fr', sm: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
+        <Grid rows={{initial: '1fr auto', sm: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
             {children}
         </Grid>
     )

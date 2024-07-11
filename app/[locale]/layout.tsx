@@ -22,7 +22,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <Theme accentColor="violet">
+                <Theme accentColor="violet" appearance='light'>
                     <DisableProvider>
                         {children}
                     </DisableProvider>
