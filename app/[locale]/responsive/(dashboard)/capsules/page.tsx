@@ -7,17 +7,12 @@ export default function Page() {
             <Container pr='3'>
                 <Section>
 
-                    <Heading as='h1' size='6'>Capsules</Heading>
+                    {/*<Heading as='h1' size='6'>Capsules</Heading>*/}
 
-                    <Flex justify='between' my='3'>
+                    <Flex justify='between' mb='3'>
                         <Button><Plus/>Créer</Button>
 
                         <Flex gap='3'>
-                            <TextField.Root placeholder='Rechercher'>
-                                <TextField.Slot>
-                                    <Search size='18'/>
-                                </TextField.Slot>
-                            </TextField.Root>
 
                             <SegmentedControl.Root defaultValue='grid'>
                                 <SegmentedControl.Item value='grid'>
@@ -28,6 +23,12 @@ export default function Page() {
                                     <Flex><List size='18'/></Flex>
                                 </SegmentedControl.Item>
                             </SegmentedControl.Root>
+
+                            <TextField.Root placeholder='Rechercher' disabled>
+                                <TextField.Slot>
+                                    <Search size='18' />
+                                </TextField.Slot>
+                            </TextField.Root>
                         </Flex>
                     </Flex>
                     

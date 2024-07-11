@@ -1,11 +1,11 @@
 import { Grid, Box } from "@radix-ui/themes"
-import { CSSProperties } from "react"
+//import { CSSProperties } from "react"
 
 
 export default function Layout({children }: { children: React.ReactNode }) {
     // gap='3' p='3'
     return (
-        <Grid rows='auto 1fr' style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
+        <Grid rows={{initial: 'auto 1fr', sm: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
             {children}
         </Grid>
     )
@@ -13,13 +13,17 @@ export default function Layout({children }: { children: React.ReactNode }) {
 
 export function TopBarBox({ children }: { children: React.ReactNode }) {
     return (
-        <Box p='3' style={{
-            backgroundColor: 'var(--accent-10)',
-            color:           'var(--accent-contrast)',
-            //borderRadius:    'var(--radius-3)',
-            boxShadow:       'var(--shadow-2)',
-            zIndex:          '1'
-        }}>
+        <Box
+            p='3'
+            gridRow={{initial: '2', sm: '1'}}
+            style={{
+                backgroundColor: 'var(--accent-10)',
+                color:           'var(--accent-contrast)',
+                //borderRadius:    'var(--radius-3)',
+                boxShadow:       'var(--shadow-2)',
+                zIndex:          '1'
+            }}
+        >
             {children}
         </Box>
     )

@@ -12,41 +12,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Text size='3' weight='bold'>TiKO</Text>
             </TopBarBox>
 
-            <Grid columns='auto 1fr' gap='3' maxHeight='100%' overflow='hidden'>
+            <Grid
+                columns={{initial: '1fr', sm: 'auto 1fr'}}
+                gap='3'
+                maxHeight='100%'
+                overflow='hidden'
+            >
 
-                <Box py='3' pl='3'>
-                    <Box p='3' style={{
-                        height: '100%',
-                        boxSizing: 'border-box',
-                        backgroundColor: 'var(--accent-contrast)',
-                        borderRadius: 'var(--radius-3)',
-                        boxShadow: 'var(--shadow-2)',
-                    }}>
+                <Box py='3' pl='3' pr={{initial:'3', sm:'0'}}   gridRow={{initial: '2', sm: '1'}}>
+                    <Box
+                        p={{initial: '1', sm: '3'}}
+                        height='100%'
+                        maxWidth='100%'
+                        style={{
+                            backgroundColor: 'var(--accent-contrast)',
+                            borderRadius: 'var(--radius-3)',
+                            boxShadow: 'var(--shadow-2)',
+                        }}
+                    >
 
-                        <Flex direction='column' gap='1' justify='between' style={{ height: '100%' }}>
-                            <Flex direction='column' gap='1'>
-                                <SideBarBtn href='/responsive/capsules'>
-                                    <FlaskRound size={iconSize} />Capsules
+                        <Flex direction={{initial:'row', sm:'column'}}  gap='1' justify='between' height='100%'>
+
+                                <SideBarBtn href='/responsive/capsules' message='Capsules'>
+                                    <FlaskRound size={iconSize} />
                                 </SideBarBtn>
 
-                                <SideBarBtn href='/responsive/activities'>
-                                    <Puzzle size={iconSize} />Activities
+                                <SideBarBtn href='/responsive/activities' message='Activités'>
+                                    <Puzzle size={iconSize} />
                                 </SideBarBtn>
 
-                                <SideBarBtn href='#'>
-                                    <NotepadText size={iconSize} />Rapports
-                                </SideBarBtn>
-                            </Flex>
-
-                            <Flex direction='column' gap='1'>
-                                <SideBarBtn href='#'>
-                                    <BookOpen size={iconSize} />Ressources
+                                <SideBarBtn href='#' message='Rapports'>
+                                    <NotepadText size={iconSize} />
                                 </SideBarBtn>
 
-                                <SideBarBtn href='#'>
-                                    <Cog size={iconSize} />Paramètres
+                                <Box height='100%' display={{initial: 'none', sm: 'block'}}></Box>
+
+                                <SideBarBtn href='#' message='Ressources'>
+                                    <BookOpen size={iconSize} />
                                 </SideBarBtn>
-                            </Flex>
+
+                                <SideBarBtn href='#' message='Paramètres'>
+                                    <Cog size={iconSize} />
+                                </SideBarBtn>
+
                         </Flex>
 
                     </Box>
