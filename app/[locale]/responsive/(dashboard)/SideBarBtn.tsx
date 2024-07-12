@@ -6,12 +6,12 @@ import { usePathname } from "@/app/_intl/intlNavigation";
 
 interface SideBarBtnProps {
     href: string;
-    message?: string;
+    message: string;
     children: React.ReactNode;
 }
 
 
-export default function SideBarBtn({ href, message, children }: SideBarBtnProps) {
+export function SideBarBtn({ href, message, children }: SideBarBtnProps) {
     const pathName = usePathname();
     const active = pathName === href;
 
@@ -23,19 +23,37 @@ export default function SideBarBtn({ href, message, children }: SideBarBtnProps)
         borderRadius: 'var(--radius-3)',
         cursor: 'pointer',
         ...(active ? { backgroundColor: 'var(--accent-3)' } : {})
-    
     }
 
     return (
         <Box style={style} asChild>
             <Link href={href}>
-                <Flex align='center' gap={{initial:'1', sm:'2'}} direction={{initial: 'column', sm: 'row'}}>
-                {children}
-                    {message &&
-                        <Box display={{initial: 'none', sm: 'block'}}>
-                            <Text size={{initial: '1', sm: '3'}} truncate>{message}</Text>
-                        </Box>
-                    }
+                <Flex align='center' gap='2'>
+                    {children}
+                    <Text as='label' size='3' truncate>{message}</Text>
+                </Flex>
+            </Link>
+        </Box>
+    )
+}
+
+
+export function BottomBarBtnMobile({ href, message, children }: SideBarBtnProps) {
+    const pathName = usePathname();
+    const active = pathName === href;
+
+    const style = {
+        textDecoration: 'none',
+        color: 'var(--accent-contrast)',
+        opacity: active ? '1' : '0.5'
+    }
+
+    return (
+        <Box style={style} asChild>
+            <Link href={href}>
+                <Flex align='center' gap='1' direction='column'>
+                    {children}
+                    <Text as='label' size='1' truncate>{message}</Text>
                 </Flex>
             </Link>
         </Box>
