@@ -1,4 +1,4 @@
-import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Heading, Button, SegmentedControl, Flex, TextField, Box, IconButton } from "@radix-ui/themes"
+import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton } from "@radix-ui/themes"
 import { Plus, LayoutGrid, List, Search } from "lucide-react"
 
 export default function Page() {
@@ -6,8 +6,6 @@ export default function Page() {
         <ScrollArea>
             <Container pr='3' pl={{initial: '3', sm: '0'}}>
                 <Section>
-
-                    {/*<Heading as='h1' size='6'>Capsules</Heading>*/}
 
                     <Flex justify='between' mb='3'>
                         <Button><Plus/>Créer</Button>
