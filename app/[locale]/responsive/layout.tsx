@@ -1,9 +1,7 @@
 import { Grid, Box } from "@radix-ui/themes"
-//import { CSSProperties } from "react"
 
 
 export default function Layout({children }: { children: React.ReactNode }) {
-    // gap='3' p='3'
     return (
         <Grid rows={{initial: '1fr auto', sm: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
             {children}
@@ -14,12 +12,13 @@ export default function Layout({children }: { children: React.ReactNode }) {
 export function TopBarBox({ children }: { children: React.ReactNode }) {
     return (
         <Box
-            p='3'
+            py='3'
+            pl='calc(12px + env(safe-area-inset-left))'
+            pr='calc(12px + env(safe-area-inset-right))'
             gridRow={{initial: '2', sm: '1'}}
             style={{
                 backgroundColor: 'var(--accent-10)',
                 color:           'var(--accent-contrast)',
-                //borderRadius:    'var(--radius-3)',
                 boxShadow:       'var(--shadow-2)',
                 zIndex:          '1'
             }}

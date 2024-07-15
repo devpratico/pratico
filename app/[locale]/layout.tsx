@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes'
 import '../colors.css'
@@ -10,6 +10,12 @@ import { DisableProvider } from './_hooks/useDisable';
 export const metadata: Metadata = {
     title: 'Pratico',
     description: '',
+}
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    viewportFit: 'cover',
+    //themeColor: 'var(--accent-10)',
 }
 
 interface RootLayoutProps {

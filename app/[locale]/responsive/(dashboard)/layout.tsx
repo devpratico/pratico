@@ -16,6 +16,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 gap='3'
                 maxHeight='100%'
                 overflow='hidden'
+                pl='env(safe-area-inset-left)'
+                pr='env(safe-area-inset-right)'
             >
 
                 <Box pb='3' pt='3' pl='3' display={{ initial: 'none', sm: 'block' }}>
@@ -78,7 +80,7 @@ function DesktopTopBar(props: BoxProps) {
 
 
 function MobileTopBar(props: BoxProps) {
-    const iconSize = '28'
+    const iconSize = '25'
     const strokeWidth = '1.5'
 
     return (
