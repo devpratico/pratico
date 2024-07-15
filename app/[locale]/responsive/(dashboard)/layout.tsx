@@ -6,13 +6,13 @@ import { SideBarBtn, BottomBarBtnMobile } from "./SideBarBtn";
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <> 
-            <TopBarBox>
-                <DesktopTopBar display={{ initial: 'none', sm: 'block' }} />
-                <MobileTopBar  display={{ initial: 'block', sm: 'none' }} />
+            <TopBarBox py='3'>
+                <DesktopTopBar display={{ initial: 'none', md: 'block' }} />
+                <MobileTopBar  display={{ initial: 'block', md: 'none' }} />
             </TopBarBox>
 
             <Grid
-                columns={{initial: '1fr', sm: 'auto 1fr'}}
+                columns={{initial: '1fr', md: 'auto 1fr'}}
                 gap='3'
                 maxHeight='100%'
                 overflow='hidden'
@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 pr='env(safe-area-inset-right)'
             >
 
-                <Box pb='3' pt='3' pl='3' display={{ initial: 'none', sm: 'block' }}>
+                <Box pb='3' pt='3' pl='3' display={{ initial: 'none', md: 'block' }}>
                     <DesktopSideBar />
                 </Box>
 
@@ -39,7 +39,7 @@ function DesktopSideBar() {
     return (
         <Card variant='classic' style={{ height: '100%' }}>
 
-            <Flex direction={{ initial: 'row', sm: 'column' }} gap='1' justify='between' height='100%'>
+            <Flex direction={{ initial: 'row', md: 'column' }} gap='1' justify='between' height='100%'>
 
                 <SideBarBtn href='/responsive/capsules' message='Capsules'>
                     <FlaskRound size={iconSize} />
@@ -53,7 +53,7 @@ function DesktopSideBar() {
                     <NotepadText size={iconSize} />
                 </SideBarBtn>
 
-                <Box height='100%' display={{ initial: 'none', sm: 'block' }}></Box>
+                <Box height='100%' display={{ initial: 'none', md: 'block' }}></Box>
 
                 <SideBarBtn href='#' message='Ressources'>
                     <BookOpen size={iconSize} />
@@ -85,7 +85,7 @@ function MobileTopBar(props: BoxProps) {
 
     return (
         <Box {...props}>
-            <Flex justify='between'>
+            <Flex justify='between' pt='2' pb='max(env(safe-area-inset-bottom, 8px), 8px)'>
                 <BottomBarBtnMobile href='/responsive/capsules' message='Capsules'>
                     <FlaskRound size={iconSize} strokeWidth={strokeWidth}/>
                 </BottomBarBtnMobile>

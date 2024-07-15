@@ -4,7 +4,7 @@ import { Plus, LayoutGrid, List, Search } from "lucide-react"
 export default function Page() {
     return (
         <ScrollArea>
-            <Container pr='3' pl={{initial: '3', sm: '0'}}>
+            <Container pr='3' pl={{initial: '3', md: '0'}}>
                 <Section>
 
                     <Flex justify='between' mb='3'>
@@ -22,7 +22,7 @@ export default function Page() {
                                 </SegmentedControl.Item>
                             </SegmentedControl.Root>
 
-                            <Box display={{initial: 'none', sm: 'block'}}>
+                            <Box display={{initial: 'none', md: 'block'}}>
                                 <TextField.Root placeholder='Rechercher' disabled>
                                     <TextField.Slot>
                                         <Search size='18' />
@@ -30,7 +30,7 @@ export default function Page() {
                                 </TextField.Root>
                             </Box>
 
-                            <Box display={{initial: 'block', sm: 'none'}}>
+                            <Box display={{initial: 'block', md: 'none'}}>
                                 <IconButton variant='ghost'><Search size='18' /></IconButton>
                             </Box>
                             

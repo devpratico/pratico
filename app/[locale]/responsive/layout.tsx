@@ -1,26 +1,27 @@
-import { Grid, Box } from "@radix-ui/themes"
+import { Grid, Box, BoxProps } from "@radix-ui/themes"
 
 
 export default function Layout({children }: { children: React.ReactNode }) {
     return (
-        <Grid rows={{initial: '1fr auto', sm: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
+        <Grid rows={{initial: '1fr auto', md: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
             {children}
         </Grid>
     )
 }
 
-export function TopBarBox({ children }: { children: React.ReactNode }) {
+export function TopBarBox({ children, ...props }: { children: React.ReactNode } & BoxProps) {
     return (
         <Box
             pl='calc(12px + env(safe-area-inset-left))'
             pr='calc(12px + env(safe-area-inset-right))'
-            gridRow={{initial: '2', sm: '1'}}
+            gridRow={{initial: '2', md: '1'}}
             style={{
                 backgroundColor: 'var(--accent-10)',
                 color:           'var(--accent-contrast)',
-                boxShadow:       'var(--shadow-2)',
+                boxShadow:       'var(--shadow-3)',
                 zIndex:          '1'
             }}
+            {...props}
         >
             {children}
         </Box>
