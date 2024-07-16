@@ -85,7 +85,7 @@ function MobileTopBar(props: BoxProps) {
 
     return (
         <Box {...props}>
-            <Flex justify='between' pt='2' pb='max(env(safe-area-inset-bottom, 8px), 8px)'>
+            <Flex justify='between' pt='2'> {/*pb='max(env(safe-area-inset-bottom, 8px), 8px)'*/}
                 <BottomBarBtnMobile href='/responsive/capsules' message='Capsules'>
                     <FlaskRound size={iconSize} strokeWidth={strokeWidth}/>
                 </BottomBarBtnMobile>
