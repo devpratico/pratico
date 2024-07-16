@@ -18,12 +18,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <Card variant='classic'>Menu</Card>
                 </Grid>
 
-                <Grid columns='1fr auto' gap='3' height='90px' display={{initial: 'none', md: 'grid'}}>
+                <Grid columns='1fr auto' gap='3' height='90px' display={{initial: 'none', xs: 'grid'}}>
                     <Card variant='classic'>Desktop controls</Card>
                     <Card variant='classic'>Desktop controls</Card>
                 </Grid>
 
-                <Flex direction='column' display={{initial: 'flex', md: 'none'}} gap='3'>
+                <Flex direction='column' display={{initial: 'flex', xs: 'none'}} gap='3'>
                     <Card variant='classic'>Mobile controls</Card>
                     <Card variant='classic'>Mobile controls</Card>
                     <Card variant='classic'>Mobile controls</Card>

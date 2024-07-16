@@ -4,7 +4,7 @@ import { Plus, LayoutGrid, List, Search } from "lucide-react"
 export default function Page() {
     return (
         <ScrollArea>
-            <Container pr='3' pl={{initial: '3', md: '0'}}>
+            <Container pr='3' pl={{initial: '3', xs: '0'}}>
                 <Section>
 
                     <Flex justify='between' mb='3'>
