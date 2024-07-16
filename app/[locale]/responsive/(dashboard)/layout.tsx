@@ -6,13 +6,13 @@ import { SideBarBtn, BottomBarBtnMobile } from "./SideBarBtn";
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <> 
-            <TopBarBox py='3'>
-                <DesktopTopBar display={{ initial: 'none', md: 'block' }} />
-                <MobileTopBar  display={{ initial: 'block', md: 'none' }} />
+            <TopBarBox>
+                <MobileTopBar  display={{ initial: 'block', xs: 'none' }} />
+                <DesktopTopBar display={{ initial: 'none',  xs: 'block' }} py='3'/>
             </TopBarBox>
 
             <Grid
-                columns={{initial: '1fr', md: 'auto 1fr'}}
+                columns={{initial: '1fr', xs: 'auto 1fr'}}
                 gap='3'
                 maxHeight='100%'
                 overflow='hidden'
@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 pr='env(safe-area-inset-right)'
             >
 
-                <Box pb='3' pt='3' pl='3' display={{ initial: 'none', md: 'block' }}>
+                <Box pb='3' pt='3' pl='3' display={{ initial: 'none', xs: 'block' }}>
                     <DesktopSideBar />
                 </Box>
 
@@ -39,7 +39,7 @@ function DesktopSideBar() {
     return (
         <Card variant='classic' style={{ height: '100%' }}>
 
-            <Flex direction={{ initial: 'row', md: 'column' }} gap='1' justify='between' height='100%'>
+            <Flex direction='column' gap='1' justify='between' height='100%'>
 
                 <SideBarBtn href='/responsive/capsules' message='Capsules'>
                     <FlaskRound size={iconSize} />
@@ -53,7 +53,7 @@ function DesktopSideBar() {
                     <NotepadText size={iconSize} />
                 </SideBarBtn>
 
-                <Box height='100%' display={{ initial: 'none', md: 'block' }}></Box>
+                <Box height='100%' display={{ initial: 'none', xs: 'block' }}></Box>
 
                 <SideBarBtn href='#' message='Ressources'>
                     <BookOpen size={iconSize} />
