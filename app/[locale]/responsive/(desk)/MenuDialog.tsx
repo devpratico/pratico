@@ -39,7 +39,16 @@ export default function MenuDialog() {
                 boxShadow:'var(--shadow-5)',
                 //borderRadius:'var(--radius-3)'
                 }}
-                //onPointerDownOutside={(event) => {event.preventDefault()}}
+                onInteractOutside={(event) => {
+                    // If click is on the #menu-tabs element, don't close the dialog
+                    if (event.target instanceof Element && event.target.closest('#menu-tabs')) {
+                        console.log('click on menu tabs')
+                        event.preventDefault()
+                        //event.stopPropagation()
+                        //return
+                    }
+
+                }}
             >
                 Dialog
             </Dialog.Content>

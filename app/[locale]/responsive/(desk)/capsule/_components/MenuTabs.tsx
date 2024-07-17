@@ -62,7 +62,7 @@ export default function MenuTabs() {
 
 
     return (
-        <TabNav.Root className="dark">
+        <TabNav.Root className="dark" id='menu-tabs'>
             <CustomTabStyle />
 
             <TabElement menu='one'>
