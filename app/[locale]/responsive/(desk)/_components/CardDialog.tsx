@@ -42,8 +42,10 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                         backgroundColor: 'var(--accent-1)',
                         boxShadow: 'var(--shadow-6)',
                         borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
+                        animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                 >
+                    <style>{slideUpAnimation}</style>
                     {children}
                 </Dialog.Content>
             </Dialog.Portal>
@@ -51,3 +53,14 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
         </Dialog.Root>
     )
 }
+
+const slideUpAnimation = `
+        @keyframes slideUp {
+            0% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+    `;
