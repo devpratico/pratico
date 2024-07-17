@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
+import { ScrollArea, Container } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/app/_intl/intlNavigation";
 
-export default function MenuDialog() {
+export default function MenuDialog({children}: {children: React.ReactNode}) {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -35,6 +36,7 @@ export default function MenuDialog() {
                 height:'100%',
                 maxWidth:'400px',
                 zIndex:'1',
+                paddingRight: 'env(safe-area-inset-right)',
                 backgroundColor:'var(--accent-1)',
                 boxShadow:'var(--shadow-5)',
                 //borderRadius:'var(--radius-3)'
@@ -44,7 +46,11 @@ export default function MenuDialog() {
                     if (event.target instanceof Element && event.target.closest('#menu-tabs')) event.preventDefault()
                 }}
             >
-                Dialog
+                <ScrollArea>
+                    <Container px='5'>
+                        {children}
+                    </Container>
+                </ScrollArea>
             </Dialog.Content>
         </Dialog.Root>
     )

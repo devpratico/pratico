@@ -1,7 +1,8 @@
 import { TopBarBox } from "../layout"
-import MenuTabs from "./capsule/_components/MenuTabs"
-import { Grid, Card, Box, Flex, Dialog } from "@radix-ui/themes"
-import MenuDialog from "./MenuDialog"
+import MenuTabs from "./_components/MenuTabs"
+import { Grid, Card, Box, Flex } from "@radix-ui/themes"
+import MenuDialog from "./_components/MenuDialog"
+import Menus from "./_components/Menus"
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Box>*/}
 
                 <Box position='absolute' height='100%' width='100%'> {/*style={{backgroundColor:'red'}}*/}
-                    <MenuDialog />
+                    <MenuDialog>
+                        <Menus />
+                    </MenuDialog>
                 </Box>
 
                 

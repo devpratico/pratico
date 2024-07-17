@@ -1,5 +1,5 @@
 export default function Page() {
     return (
-    <p>Desk Capsule (création)</p>
+        <p>Desk Room (animation)</p>
     )
 }

@@ -62,7 +62,7 @@ export default function MenuTabs() {
 
 
     return (
-        <TabNav.Root className="dark" id='menu-tabs'>
+        <TabNav.Root className="dark" id='menu-tabs' style={{width:'fit-content'}}>
             <CustomTabStyle />
 
             <TabElement menu='one'>
