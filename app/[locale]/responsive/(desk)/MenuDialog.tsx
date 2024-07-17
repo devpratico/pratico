@@ -41,13 +41,7 @@ export default function MenuDialog() {
                 }}
                 onInteractOutside={(event) => {
                     // If click is on the #menu-tabs element, don't close the dialog
-                    if (event.target instanceof Element && event.target.closest('#menu-tabs')) {
-                        console.log('click on menu tabs')
-                        event.preventDefault()
-                        //event.stopPropagation()
-                        //return
-                    }
-
+                    if (event.target instanceof Element && event.target.closest('#menu-tabs')) event.preventDefault()
                 }}
             >
                 Dialog
