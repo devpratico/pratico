@@ -1,7 +1,7 @@
 import { TopBarBox } from "../layout"
-import { Box, BoxProps, Flex, Grid, Text, Card, TabNav } from "@radix-ui/themes"
+import { Box, BoxProps, Flex, Grid, Text, Card } from "@radix-ui/themes"
 import { Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
-import { SideBarBtn, BottomBarBtnMobile } from "./SideBarBtn";
+import { SideBarBtn, BottomBarBtnMobile } from "./_components/SideBarBtn";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (

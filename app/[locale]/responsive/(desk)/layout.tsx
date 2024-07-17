@@ -1,7 +1,8 @@
 import { TopBarBox } from "../layout"
-import { Grid, Card, Box, Flex } from "@radix-ui/themes"
+import { Grid, Card, Box, Flex, Text, IconButton } from "@radix-ui/themes"
 import MenuDialog from "./_components/MenuDialog"
 import Menus from "./_components/Menus"
+import { MousePointer2, Pen, Type, Shapes, Image as ImageLucid, Eraser, Plus, ChevronRight, ChevronLeft} from "lucide-react"
 
 
 
@@ -45,11 +46,43 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <Card variant='classic'>Desktop controls</Card>
                 </Grid>
 
-                {/* Carousel + controls for mobile */}
+                {/* Controls for mobile */}
                 <Flex direction='column' display={{initial: 'flex', xs: 'none'}} gap='3'>
-                    <Card variant='classic'>Mobile controls</Card>
-                    <Card variant='classic'>Mobile controls</Card>
-                    <Card variant='classic'>Mobile controls</Card>
+
+                    <Card variant='classic'>
+                        <Flex justify='between'>
+                            <MousePointer2 />
+                            <Pen />
+                            <Type />
+                            <Shapes />
+                            <ImageLucid />
+                            <Eraser />
+                        </Flex>
+                    </Card>
+
+                    <Grid columns='2' gap='3'>
+                        <Flex align='center' justify='center'><Text size='7'>1/12</Text></Flex>
+                        <IconButton size='4' style={{width:'100%', boxShadow:'var(--shadow-2)'}}>
+                            <Plus size='30' />
+                        </IconButton>
+                    </Grid>
+
+                    <Grid columns='2' gap='3'>
+                        <Card variant='classic'>
+                            <Card style={{aspectRatio:'16/9'}}></Card>
+                            <Flex justify='center' pt='2'>
+                                <ChevronLeft size='30'/>
+                            </Flex>
+                        </Card>
+
+                        <Card variant='classic'>
+                            <Card style={{ aspectRatio: '16/9' }}></Card>
+                            <Flex justify='center' pt='2'>
+                                <ChevronRight size='30'/>
+                            </Flex>
+                        </Card>
+                    </Grid>
+
                 </Flex>
 
             </Grid>

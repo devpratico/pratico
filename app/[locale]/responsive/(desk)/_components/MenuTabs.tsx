@@ -6,7 +6,6 @@
  */
 'use client'
 import { TabNav, Flex, Text } from "@radix-ui/themes"
-import { Puzzle, Cake, Bike } from "lucide-react"
 import { Link } from "@/app/_intl/intlNavigation"
 import { useSearchParams } from "next/navigation"
 import { usePathname } from "@/app/_intl/intlNavigation"
@@ -69,34 +68,12 @@ interface MenuTabsProps {
     tabs: MenuTab[]
 }
 
-
 export default function MenuTabs({ tabs }: MenuTabsProps) {
 
 
     return (
-        <TabNav.Root className="dark" id='menu-tabs' style={{width:'fit-content'}}>
+        <TabNav.Root className="dark" id='menu-tabs'>
             <CustomTabStyle />
-
-            {/*<TabElement menu='one'>
-                <Flex direction='column' align='center' gap='1' pt='1'>
-                    <Puzzle />
-                    <Text as='label' size='1'>Activités</Text>
-                </Flex>
-            </TabElement>
-
-            <TabElement menu='two'>
-                <Flex direction='column' align='center' gap='1' pt='1'>
-                    <Cake />
-                    <Text as='label' size='1'>Gâteaux</Text>
-                </Flex>
-            </TabElement>
-
-            <TabElement menu='three'>
-                <Flex direction='column' align='center' gap='1' pt='1'>
-                    <Bike />
-                    <Text as='label' size='1'>Vélos</Text>
-                </Flex>
-            </TabElement>*/}
 
             {tabs.map(tab => (
                 <TabElement key={tab.menu} menu={tab.menu}>
@@ -110,8 +87,6 @@ export default function MenuTabs({ tabs }: MenuTabsProps) {
         </TabNav.Root>
     )
 }
-
-
 
 
 /**
