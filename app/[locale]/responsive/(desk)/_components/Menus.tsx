@@ -11,9 +11,10 @@ export default function Menus() {
 
     return (
         <>
-            <Box display={menu == 'one' ? 'block' : 'none'}>Activités</Box>
-            <Box display={menu == 'two' ? 'block' : 'none'}>Gâteaux</Box>
-            <Box display={menu == 'three' ? 'block' : 'none'}>Vélo</Box>
+            <Box display={menu == 'activities' ? 'block' : 'none'}>Activités</Box>
+            <Box display={menu == 'participants' ? 'block' : 'none'}>Participants</Box>
+            <Box display={menu == 'chat' ? 'block' : 'none'}>Chat</Box>
+            <Box display={menu == 'more' ? 'block' : 'none'}>Plus</Box>
         </>
     )
 }

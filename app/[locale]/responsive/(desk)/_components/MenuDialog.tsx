@@ -33,17 +33,16 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
                 position:'absolute',
                 right:'0',
                 width:'100%',
-                height:'100%',
                 maxWidth:'400px',
+                height:'100%',
                 zIndex:'1',
                 paddingRight: 'env(safe-area-inset-right)',
                 backgroundColor:'var(--accent-1)',
-                boxShadow:'var(--shadow-5)',
-                //borderRadius:'var(--radius-3)'
+                boxShadow:'var(--shadow-3)'
                 }}
                 onInteractOutside={(event) => {
                     // If click is on the #menu-tabs element, don't close the dialog
-                    if (event.target instanceof Element && event.target.closest('#menu-tabs')) event.preventDefault()
+                    if (event.target instanceof Element && event.target.closest('#menu-tabs')) {event.preventDefault()}
                 }}
             >
                 <ScrollArea>

@@ -50,7 +50,7 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
 
     return (
         <TabNav.Link active={searchParams.get('menu') == menu} asChild>
-            <Link href={hrefFor(searchParams, pathname, menu)} shallow>
+            <Link href={hrefFor(searchParams, pathname, menu)} shallow={false}>
                 {children}
             </Link>
         </TabNav.Link>
@@ -58,14 +58,26 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
 }
 
 
-export default function MenuTabs() {
+
+interface MenuTab {
+    menu: string
+    label: string
+    icon: React.ReactNode
+}
+
+interface MenuTabsProps {
+    tabs: MenuTab[]
+}
+
+
+export default function MenuTabs({ tabs }: MenuTabsProps) {
 
 
     return (
         <TabNav.Root className="dark" id='menu-tabs' style={{width:'fit-content'}}>
             <CustomTabStyle />
 
-            <TabElement menu='one'>
+            {/*<TabElement menu='one'>
                 <Flex direction='column' align='center' gap='1' pt='1'>
                     <Puzzle />
                     <Text as='label' size='1'>Activités</Text>
@@ -84,7 +96,16 @@ export default function MenuTabs() {
                     <Bike />
                     <Text as='label' size='1'>Vélos</Text>
                 </Flex>
-            </TabElement>
+            </TabElement>*/}
+
+            {tabs.map(tab => (
+                <TabElement key={tab.menu} menu={tab.menu}>
+                    <Flex direction='column' align='center' gap='1' pt='1'>
+                        {tab.icon}
+                        <Text as='label' size='1'>{tab.label}</Text>
+                    </Flex>
+                </TabElement>
+            ))}
 
         </TabNav.Root>
     )
