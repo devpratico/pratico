@@ -19,24 +19,30 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
 
+            <style>{slideUpAnimation}</style>
+            <style>{fadeInAnimation}</style>
+
             <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
-            <Dialog.Overlay style={{
-                position: 'fixed',
-                inset: 0,
-                backgroundColor: 'rgba(0,0,0,.3)',
-                zIndex: '1',
-            }} />
+            
 
             <Dialog.Portal container={container}>
+
+                <Dialog.Overlay style={{
+                    position: 'fixed',
+                    inset: 0,
+                    backgroundColor: 'rgba(0,0,0,.3)',
+                    animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                }} />
+
                 <Dialog.Content
                     id= 'card-dialog'
                     style={{
                         position: 'absolute',
                         bottom:'0',
-                        top: 'var(--space-8)',
+                        top: 'var(--space-1)',
                         width: '100%',
-                        zIndex: '2',
+                        zIndex: '1',
                         paddingRight: 'env(safe-area-inset-right)',
                         paddingLeft: 'env(safe-area-inset-left)',
                         backgroundColor: 'var(--accent-1)',
@@ -44,8 +50,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                         borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
                         animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
-                >
-                    <style>{slideUpAnimation}</style>
+                >   
                     {children}
                 </Dialog.Content>
             </Dialog.Portal>
@@ -61,6 +66,17 @@ const slideUpAnimation = `
             }
             100% {
                 transform: translateY(0);
+            }
+        }
+    `;
+
+const fadeInAnimation = `
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
             }
         }
     `;

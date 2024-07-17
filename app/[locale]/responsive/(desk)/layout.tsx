@@ -2,7 +2,6 @@ import { TopBarBox } from "../layout"
 import { Grid, Card, Box, Flex, Text, IconButton } from "@radix-ui/themes"
 import MenuDialog from "./_components/MenuDialog"
 import Menus from "./_components/Menus"
-import CardDialog from "./_components/CardDialog"
 import { MousePointer2, Pen, Type, Shapes, Image as ImageLucid, Eraser, Plus, ChevronRight, ChevronLeft} from "lucide-react"
 
 
@@ -41,7 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </MenuDialog>
                 </Box>
 
-                {/* Card dialog (outside the grid layout because of `absolute`)*/}
+                {/* A box to portan Card dialogs inside (outside the grid layout because of `absolute`)*/}
                 <Box position='absolute' height='100%' width='100%' id='card-dialog-box'></Box>
 
                 {/* Carousel + controls for desktop */}
