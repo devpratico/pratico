@@ -94,7 +94,7 @@ export default function MenuTabs({ tabs }: MenuTabsProps) {
  * * Make the active tab background white
  * * Make the tab height adapt to the content
  */
-function CustomTabStyle() {
+export function CustomTabStyle({padding}: {padding?: string}) {
     return (
         <style dangerouslySetInnerHTML={{__html: `
             .rt-BaseTabListTrigger:where([data-state="active"], [data-active])::before {
@@ -103,8 +103,10 @@ function CustomTabStyle() {
 
             .rt-BaseTabListTrigger{
                 height: unset;
+                ${padding ? `padding: ${padding};` : ''
             }
-                `,}}
+            `
+            }}
         />
     )
 }

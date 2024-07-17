@@ -1,13 +1,14 @@
 import { TopBarBox } from "../layout"
 import { Box, BoxProps, Flex, Grid, Text, Card } from "@radix-ui/themes"
 import { Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
-import { SideBarBtn, BottomBarBtnMobile } from "./_components/SideBarBtn";
+import { SideBarBtn } from "./_components/SideBarBtn";
+import DashboardTabs from "./_components/DashboardTabs";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <> 
             <TopBarBox>
-                <MobileTopBar  display={{ initial: 'block', xs: 'none' }} />
+                <MobileTopBar  display={{ initial: 'block', xs: 'none' }} pt='1'/>
                 <DesktopTopBar display={{ initial: 'none',  xs: 'block' }} py='3'/>
             </TopBarBox>
 
@@ -78,34 +79,12 @@ function DesktopTopBar(props: BoxProps) {
     )
 }
 
-
 function MobileTopBar(props: BoxProps) {
-    const iconSize = '25'
-    const strokeWidth = '1.5'
-
     return (
         <Box {...props}>
-            <Flex justify='between' pt='2'> {/*pb='max(env(safe-area-inset-bottom, 8px), 8px)'*/}
-                <BottomBarBtnMobile href='/responsive/capsules' message='Capsules'>
-                    <FlaskRound size={iconSize} strokeWidth={strokeWidth}/>
-                </BottomBarBtnMobile>
-
-                <BottomBarBtnMobile href='/responsive/activities' message='Activités'>
-                    <Puzzle size={iconSize} strokeWidth={strokeWidth}/>
-                </BottomBarBtnMobile>
-
-                <BottomBarBtnMobile href='#' message='Rapports'>
-                    <NotepadText size={iconSize} strokeWidth={strokeWidth}/>
-                </BottomBarBtnMobile>
-
-                <BottomBarBtnMobile href='#' message='Ressources'>
-                    <BookOpen size={iconSize} strokeWidth={strokeWidth}/>
-                </BottomBarBtnMobile>
-
-                <BottomBarBtnMobile href='#' message='Paramètres'>
-                    <Cog size={iconSize} strokeWidth={strokeWidth}/>
-                </BottomBarBtnMobile>  
-            </Flex>
+            <Flex justify='center'>
+                <DashboardTabs />
+            </Flex> 
         </Box>
     )
 }
