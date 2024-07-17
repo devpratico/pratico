@@ -36,26 +36,3 @@ export function SideBarBtn({ href, message, children }: SideBarBtnProps) {
         </Box>
     )
 }
-
-
-export function BottomBarBtnMobile({ href, message, children }: SideBarBtnProps) {
-    const pathName = usePathname();
-    const active = pathName === href;
-
-    const style = {
-        textDecoration: 'none',
-        color: 'var(--accent-contrast)',
-        opacity: active ? '1' : '0.5'
-    }
-
-    return (
-        <Box style={style} asChild>
-            <Link href={href}>
-                <Flex align='center' gap='1' direction='column'>
-                    {children}
-                    <Text as='label' size='1' truncate>{message}</Text>
-                </Flex>
-            </Link>
-        </Box>
-    )
-}

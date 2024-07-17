@@ -7,7 +7,7 @@ export default function TopBarPortal({children}: {children: React.ReactNode}) {
     const [container, setContainer] = useState<HTMLElement | null>(null)
 
     useEffect(() => {
-        setContainer(document.getElementById('top-bar'))
+        setContainer(document.getElementById('top-bar-box'))
     }, [])
 
     return (

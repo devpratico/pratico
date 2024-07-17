@@ -12,7 +12,7 @@ export default function Layout({children }: { children: React.ReactNode }) {
 export function TopBarBox({ children, ...props }: { children?: React.ReactNode } & BoxProps) {
     return (
         <Box
-            id='top-bar'
+            id='top-bar-box'
             pl='calc(12px + env(safe-area-inset-left))'
             pr='calc(12px + env(safe-area-inset-right))'
             gridRow={{initial: '2', xs: '1'}}

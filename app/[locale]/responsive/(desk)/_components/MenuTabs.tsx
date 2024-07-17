@@ -103,7 +103,12 @@ export function CustomTabStyle({padding}: {padding?: string}) {
 
             .rt-BaseTabListTrigger{
                 height: unset;
-                ${padding ? `padding: ${padding};` : ''
+                ${padding ?
+                `padding-left: ${padding};
+                 padding-right: ${padding};
+                `
+                :
+                ''
             }
             `
             }}
