@@ -6,7 +6,7 @@ import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
 import { doesCustomerExist } from '@/app/_stripe/services/customer';
-import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card } from '@radix-ui/themes';
+import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
 import { redirect } from '@/app/_intl/intlNavigation';
 
 
@@ -27,7 +27,8 @@ export default async function AccountPage() {
     //const customerExists = await doesCustomerExist(stripe_id)
 
     return (
-        <Container px={{ initial: '3', xs: '0' }}>
+        <ScrollArea>
+            <Container pr='3' px={{ initial: '3', xs: '0' }}>
 
                 <Section>
 
@@ -108,5 +109,6 @@ export default async function AccountPage() {
                 </Section>*/}
 
             </Container>
+        </ScrollArea>
     )
 }
