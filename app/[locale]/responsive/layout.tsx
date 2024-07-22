@@ -21,7 +21,6 @@ export function TopBarBox({ children, ...props }: { children?: React.ReactNode }
                 color:           'var(--accent-contrast)',
                 boxShadow:       'var(--shadow-3)',
                 position:        'relative',
-                //zIndex:          '3'
             }}
             {...props}
         >

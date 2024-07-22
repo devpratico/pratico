@@ -19,7 +19,9 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
 
             <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
-            <Dialog.Portal container={document.getElementsByClassName('radix-themes')[0] as HTMLElement}>
+            {/* Default portal puts element in `body`, but then styling is missing https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
+            {/* To fix that, we choose the `radix-theme` element instead, which is in the root layout.*/}
+            <Dialog.Portal container={document.getElementById('radix-theme')!}>
 
                 <Dialog.Overlay style={{
                     position: 'fixed',
@@ -34,7 +36,6 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                         bottom:'0',
                         top: 'var(--space-9)',
                         width: '100%',
-                        //zIndex: '1',
                         paddingRight: 'env(safe-area-inset-right)',
                         paddingLeft: 'env(safe-area-inset-left)',
                         backgroundColor: 'var(--accent-1)',
