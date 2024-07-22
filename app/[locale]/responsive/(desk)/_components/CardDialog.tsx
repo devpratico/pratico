@@ -5,11 +5,19 @@ import { useState } from 'react';
 
 interface CardDialogProps {
     trigger: React.ReactNode
+
+    /**
+     * If `true`, the dialog will not close when clicking outside of it.
+     */
+    preventClose?: boolean
+
     children: React.ReactNode
 }
 
-export default function CardDialog({trigger, children}: CardDialogProps) {
-    const [open, setOpen] = useState(false)
+export default function CardDialog({trigger, preventClose=false, children}: CardDialogProps) {
+    const [open, setOpen] = useState(true)
+    const viewPortWidth = window.innerWidth
+    const topPosition = viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)'
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -26,7 +34,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                 <Dialog.Overlay style={{
                     position: 'fixed',
                     inset: 0,
-                    backgroundColor: 'rgba(0,0,0,.3)',
+                    backgroundColor: 'var(--gray-a10)',
                     animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 }} />
 
@@ -34,7 +42,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                     style={{
                         position: 'absolute',
                         bottom:'0',
-                        top: 'var(--space-9)',
+                        top: topPosition,
                         width: '100%',
                         paddingRight: 'env(safe-area-inset-right)',
                         paddingLeft: 'env(safe-area-inset-left)',
@@ -43,6 +51,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                         borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
                         animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
+                    onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
                 >   
                     {children}
                 </Dialog.Content>
