@@ -15,7 +15,7 @@ interface CardDialogProps {
 }
 
 export default function CardDialog({trigger, preventClose=false, children}: CardDialogProps) {
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
     const viewPortWidth = window.innerWidth
     const topPosition = viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)'
 
