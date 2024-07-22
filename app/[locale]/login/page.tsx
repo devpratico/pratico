@@ -3,10 +3,16 @@ import AuthForm from "./_components/AuthForm";
 import { getTranslations } from 'next-intl/server';
 import en from '@/app/_intl/messages/en.json';
 import { Card, Box, Flex } from "@radix-ui/themes";
-import Image from "next/image";
-import loginImage from '@/public/illustrations/login.svg';
+//import Image from "next/image";
+//import loginImage from '@/public/illustrations/login.svg';
+import { Container, Section } from "@radix-ui/themes";
+import { Viewport } from "next";
 
 
+export const viewport: Viewport = {
+    maximumScale: 1,
+    userScalable: false,
+}
 
 
 export default async function Login({searchParams}: {searchParams: { [key: string]: string | string[] | undefined}}) {
@@ -30,33 +36,14 @@ export default async function Login({searchParams}: {searchParams: { [key: strin
 
 
     return (
-        <main style={{backgroundColor: 'var(--secondary)'}} >
-            <Flex align='center' justify='center' gap={{initial: '0', md:'9'}}  direction={{initial:'column', md:'row'}} style={{height: '100dvh'}}>
-
-                <Box width={{md:'400px', initial:'300px'}} height={{md:'400px', initial:'300px'}} display={{initial: 'none', sm:'block'}}  style={{position: 'relative'}}>
-                    <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
-                </Box>
-
-
-                {/* Tablet and desktop view */}
-                <Box asChild width='400px' display={{initial: 'none', sm:'block'}} >
+        <main style={{backgroundColor:'var(--accent-2)', height:'100dvh', overflow:'scroll'}}>
+            <Container size='1' p='2'>
+                <Section>
                     <Card size='5'>
                         <AuthForm messages={messages} />
                     </Card>
-                </Box>
-
-
-                {/* Mobile view */}
-                <Box p='5'  width='100%' height='100dvh' display={{initial: 'block', sm:'none'}} style={{backgroundColor:'var(--background)'}}>
-                    <Flex direction='column' height='100%' justify='between' >
-                        <Box width='100%' height='40%'   style={{position: 'relative'}}>
-                            <Image src={loginImage} sizes='100px' fill style={{objectFit: 'contain'}} alt='log in' />
-                        </Box>
-                        <AuthForm messages={messages} />
-                    </Flex>
-                </Box>
-
-            </Flex>
+                </Section>
+            </Container>
         </main>
     );
 }

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
     width: 'device-width',
     viewportFit: 'cover',
-    //themeColor: 'var(--accent-10)',
+    themeColor: 'var(--accent-10)',
 }
 
 interface RootLayoutProps {
@@ -28,7 +28,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <Theme accentColor="violet" appearance='light' id="radix-theme">
+                <Theme accentColor="violet" appearance='light'>
                     <DisableProvider>
                         {children}
                     </DisableProvider>

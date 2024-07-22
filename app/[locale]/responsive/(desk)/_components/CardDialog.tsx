@@ -1,5 +1,6 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
+import { Theme } from '@radix-ui/themes';
 import { useState } from 'react';
 
 
@@ -27,35 +28,36 @@ export default function CardDialog({trigger, preventClose=false, children}: Card
 
             <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
-            {/* Default portal puts element in `body`, but then styling is missing https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
-            {/* To fix that, we choose the `radix-theme` element instead, which is in the root layout.*/}
-            <Dialog.Portal container={document.getElementById('radix-theme')!}>
+            <Dialog.Portal>
+                {/* The portal puts its content out of the Theme provider, so we need to wrap it in a Theme provider */}
+                {/* No need to configure the theme, it will inherit the parent theme */}
+                {/* https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
+                <Theme>
+                    <Dialog.Overlay style={{
+                        position: 'fixed',
+                        inset: 0,
+                        backgroundColor: 'var(--gray-a10)',
+                        animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }} />
 
-                <Dialog.Overlay style={{
-                    position: 'fixed',
-                    inset: 0,
-                    backgroundColor: 'var(--gray-a10)',
-                    animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                }} />
-
-                <Dialog.Content
-                    style={{
-                        position: 'absolute',
-                        bottom:'0',
-                        top: topPosition,
-                        width: '100%',
-                        paddingRight: 'env(safe-area-inset-right)',
-                        paddingLeft: 'env(safe-area-inset-left)',
-                        backgroundColor: 'var(--accent-1)',
-                        boxShadow: 'var(--shadow-6)',
-                        borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
-                        animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
-                    onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
-                >   
-                    {children}
-                </Dialog.Content>
-
+                    <Dialog.Content
+                        style={{
+                            position: 'absolute',
+                            bottom:'0',
+                            top: topPosition,
+                            width: '100%',
+                            paddingRight: 'env(safe-area-inset-right)',
+                            paddingLeft: 'env(safe-area-inset-left)',
+                            backgroundColor: 'var(--accent-1)',
+                            boxShadow: 'var(--shadow-6)',
+                            borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
+                            animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}
+                        onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
+                    >   
+                        {children}
+                    </Dialog.Content>
+                </Theme>
             </Dialog.Portal>
 
         </Dialog.Root>

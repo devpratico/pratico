@@ -1,7 +1,7 @@
 import { Avatar } from '@radix-ui/themes';
-import { fetchUser, fetchNames } from '../../_actions/user';
+import { fetchUser, fetchNames } from '../../../_actions/user';
 import { Link } from "@/app/_intl/intlNavigation";
-import LoginBtn from "../../_components/LoginBtn";
+import LoginBtn from "../../../_components/LoginBtn";
 import { getTranslations } from 'next-intl/server';
 import { CircleUser } from "lucide-react";
 

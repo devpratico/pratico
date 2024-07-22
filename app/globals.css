@@ -4,14 +4,6 @@
   margin: 0;
 }
 
-
-
-main {
-    background-color: var(--secondary);
-}
-
-
-
 .radix-themes {
     --default-font-family: var(--font-luciole) !important;
     --cursor-button: pointer !important;

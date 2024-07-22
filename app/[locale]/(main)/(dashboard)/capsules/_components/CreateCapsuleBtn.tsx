@@ -28,7 +28,7 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
     }
 
     return (
-        <Button onClick={handleClick} loading={loading} my='4'>
+        <Button onClick={handleClick} loading={loading}>
             <Plus />
             {message}
         </Button>

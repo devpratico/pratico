@@ -27,11 +27,9 @@ export default async function AccountPage() {
     //const customerExists = await doesCustomerExist(stripe_id)
 
     return (
-        <main style={{ padding: '2rem' }}>
+        <Container px={{ initial: '3', xs: '0' }}>
 
-            <Container size="3">
-
-                <Section size='1' pt='0'>
+                <Section>
 
                         <Heading as='h1' mb='2'>{t('information')}</Heading>
 
@@ -70,7 +68,7 @@ export default async function AccountPage() {
 
                 </Section>
 
-                <Section size='1'>
+                <Section>
                     <Heading as='h1' mb='2'>{t('subscription')}</Heading>
                     <Card size='4'>
 
@@ -110,7 +108,5 @@ export default async function AccountPage() {
                 </Section>*/}
 
             </Container>
-
-        </main>
     )
 }
