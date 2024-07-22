@@ -1,6 +1,6 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 
 interface CardDialogProps {
@@ -10,11 +10,6 @@ interface CardDialogProps {
 
 export default function CardDialog({trigger, children}: CardDialogProps) {
     const [open, setOpen] = useState(false)
-    const [container, setContainer] = useState<HTMLElement | null>(null)
-
-    useEffect(() => {
-        setContainer(document.getElementById('card-dialog-box'))
-    }, [])
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -24,9 +19,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
 
             <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
-            
-
-            <Dialog.Portal container={container}>
+            <Dialog.Portal container={document.getElementsByClassName('radix-themes')[0] as HTMLElement}>
 
                 <Dialog.Overlay style={{
                     position: 'fixed',
@@ -36,13 +29,12 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                 }} />
 
                 <Dialog.Content
-                    id= 'card-dialog'
                     style={{
                         position: 'absolute',
                         bottom:'0',
-                        top: 'var(--space-1)',
+                        top: 'var(--space-9)',
                         width: '100%',
-                        zIndex: '1',
+                        //zIndex: '1',
                         paddingRight: 'env(safe-area-inset-right)',
                         paddingLeft: 'env(safe-area-inset-left)',
                         backgroundColor: 'var(--accent-1)',
@@ -53,6 +45,7 @@ export default function CardDialog({trigger, children}: CardDialogProps) {
                 >   
                     {children}
                 </Dialog.Content>
+
             </Dialog.Portal>
 
         </Dialog.Root>

@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Box>
 
                 {/* A box to portan Card dialogs inside (outside the grid layout because of `absolute`)*/}
-                <Box position='absolute' height='100%' width='100%' id='card-dialog-box'></Box>
+                {/*<Box position='absolute' height='100%' width='100%' id='card-dialog-box'></Box>*/}
 
                 {/* Carousel + controls for desktop */}
                 <Grid columns='1fr auto' gap='3' height='90px' display={{initial: 'none', xs: 'grid'}}>

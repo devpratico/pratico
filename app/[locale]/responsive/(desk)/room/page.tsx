@@ -1,5 +1,5 @@
 import MenuTabs from "../_components/MenuTabs"
-import { Flex, Box, IconButton } from "@radix-ui/themes"
+import { Flex, Box, IconButton, Dialog } from "@radix-ui/themes"
 import TopBarPortal from "../_components/TopBarPortal"
 import { Puzzle, MessageSquareText, Users, Ellipsis, QrCode } from 'lucide-react';
 import CardDialog from "../_components/CardDialog";
@@ -17,6 +17,15 @@ export default function Page() {
                         <CardDialog trigger={<IconButton><QrCode /></IconButton>}>
                             <p>Hello</p>
                         </CardDialog>
+
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <IconButton><QrCode /></IconButton>
+                            </Dialog.Trigger>
+                            <Dialog.Content>
+                                <p>Hello</p>
+                            </Dialog.Content>
+                        </Dialog.Root>
 
                         
                     </Flex>
