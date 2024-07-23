@@ -93,7 +93,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {/*<Resizer/>*/}
             <EmbedHint/>
             <KeyboardShortcuts/>
-            <style>{`.tl-canvas { z-index: unset }`}</style>
+            <style>{`.tl-canvas { z-index: 1 }`}</style>
         </Tldraw>
     )
 }

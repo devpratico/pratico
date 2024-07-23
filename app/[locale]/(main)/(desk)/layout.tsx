@@ -7,6 +7,7 @@ import Carousel from "./_components/Carousel"
 import Controls from "./_components/Controls"
 import { TLEditorProvider } from "@/app/_hooks/useTLEditor"
 import { NavProvider } from "@/app/_hooks/useNav"
+import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 
 
 
@@ -33,19 +34,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 pl='max(env(safe-area-inset-left), 12px)'
                 pr='max(env(safe-area-inset-right), 12px)'
                 position='relative'
+                overflowY='clip'
             >
 
-                {/* Canvas will go here */}
-                {children}
+                {/* Main content. Canvas will go here */}
+                <Flex gap='3' overflowY='clip'>
+                    <Flex direction='column' gap='3' justify='center' display={{ initial: 'none', xs: 'flex' }} style={{zIndex:'1'}}>
+                        <TLToolbar />
+                    </Flex>
+                    {children}
+                </Flex>
 
                 {/* Menus layout (outside the grid layout because of `absolute`)*/}
-                <Box position='absolute' height='100%' width='100%'>
+                <Box position='absolute' top='0' bottom='0' right='0' width='100%'>
                     <MenuDialog>
                         <Menus />
                     </MenuDialog>
                 </Box>
 
-                {/* A box to portan Card dialogs inside (outside the grid layout because of `absolute`)*/}
+                {/* A box to portal Card dialogs inside (outside the grid layout because of `absolute`)*/}
                 {/*<Box position='absolute' height='100%' width='100%' id='card-dialog-box'></Box>*/}
 
                 {/* Carousel + controls for desktop */}
