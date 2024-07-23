@@ -1,7 +1,7 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '../_actions/user';
-import config from '@/app/_stripe/stripe.config';
+import { fetchUser } from '@/app/api/_actions/user';
+import config from '@/app/api/stripe/stripe.config';
 
 declare global {
     namespace JSX {

@@ -1,9 +1,9 @@
 import StudentCanvas from './_components/StudentCanvas'
-import { fetchUser, fetchNames } from '@/app/[locale]/_actions/user'
+import { fetchUser, fetchNames } from '@/app/api/_actions/user'
 import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchRoomByCode } from '../_actions/actions'
+import { fetchRoomByCode } from '../../../../_actions/room3'
 
 
 // TODO: Simplify that mess? No need to use a server component to fetch data to pass to client components

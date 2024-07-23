@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/[locale]/_actions/user'
+import { fetchUser } from '@/app/api/_actions/user'
 import { fetchProfile, fetchStripeId } from './actions';
 import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
@@ -61,7 +61,7 @@ export default async function AccountPage() {
 
                             <Separator size='4' my='4'/>
 
-                            <Flex gap='4'>
+                            <Flex gap='4' wrap='wrap'>
                                 <ResetPasswordBtn message={t("change password")}/>
                                 {!isAnon && <SignOutBtn message={t("sign out")}/>}
                             </Flex>

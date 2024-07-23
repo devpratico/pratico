@@ -1,5 +1,5 @@
 'use client'
-import DeskMenuLayout from "../../../../../capsule/[capsule_id]/_components/menus/DeskMenuLayout"
+import DeskMenuLayout from "../../../../../oldcapsule/[capsule_id]/_components/menus/DeskMenuLayout"
 import { Section, Heading, Callout } from '@radix-ui/themes'
 
 

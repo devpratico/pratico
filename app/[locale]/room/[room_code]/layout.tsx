@@ -1,10 +1,10 @@
-import { fetchRoomCreator } from "./_actions/actions";
+import { fetchRoomCreator } from "../../../_actions/room3";
 import { TLEditorProvider } from '@/app/[locale]/_hooks/useTLEditor';
 import { NavProvider } from '@/app/[locale]/_hooks/useNav';
 import { RoomProvider } from '@/app/[locale]/_hooks/useRoom';
 import { PresencesProvider } from "../../_hooks/usePresences";
 import { MenusProvider } from "../../_hooks/useMenus";
-import { fetchUser } from "../../_actions/user";
+import { fetchUser } from "../../../_actions/user";
 
 
 interface LayoutProps {

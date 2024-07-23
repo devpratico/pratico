@@ -1,8 +1,8 @@
 'use client'
-import DeskMenuLayout from "@/app/[locale]/capsule/[capsule_id]/_components/menus/DeskMenuLayout";
+import DeskMenuLayout from "@/app/[locale]/oldcapsule/[capsule_id]/_components/menus/DeskMenuLayout";
 import { Section, Heading, RadioCards, Flex, Text, Box, Badge, Button } from '@radix-ui/themes'
 import { ChevronLeft } from 'lucide-react'
-import { useMenus } from "@/app/[locale]/_hooks/useMenus";
+import { useMenus } from "@/app/_hooks/useMenus";
 
 
 export default function DefilementMenu() {

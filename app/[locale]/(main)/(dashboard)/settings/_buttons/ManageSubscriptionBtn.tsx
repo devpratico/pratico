@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from "next/navigation";
-import config from "@/app/_stripe/stripe.config";
+import config from "@/app/api/stripe/stripe.config";
 import { Button, ButtonProps } from "@radix-ui/themes";
 
 

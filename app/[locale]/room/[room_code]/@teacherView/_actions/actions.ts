@@ -2,7 +2,7 @@
 import createClient from "@/supabase/clients/server"
 import { redirect } from "@/app/_intl/intlNavigation"
 import logger from "@/app/_utils/logger"
-import { fetchRoomParams, saveRoomParams } from "@/app/[locale]/capsule/[capsule_id]/actions"
+import { fetchRoomParams, saveRoomParams } from "@/app/[locale]/oldcapsule/[capsule_id]/actions"
 
 
 interface stopRoomArgs {

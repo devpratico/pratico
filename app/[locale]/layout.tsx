@@ -4,7 +4,7 @@ import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
 import { luciole } from '../Fonts'
-import { DisableProvider } from './_hooks/useDisable';
+import { DisableProvider } from '@/app/_hooks/useDisable';
 
 
 export const metadata: Metadata = {

@@ -1,4 +1,5 @@
 import localFont from 'next/font/local'
+import { Inter } from 'next/font/google'
 
 export const luciole = localFont({
     src: [
@@ -24,5 +25,12 @@ export const luciole = localFont({
         },
     ],
     variable: '--font-luciole',
+    display: 'swap',
+})
+
+
+export const inter = Inter({
+    variable: '--font-inter',
+    subsets: ['latin', 'latin-ext'],
     display: 'swap',
 })

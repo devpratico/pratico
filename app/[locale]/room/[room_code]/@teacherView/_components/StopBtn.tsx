@@ -1,11 +1,11 @@
 'use client'
 import logger from "@/app/_utils/logger";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
+import { useRoom } from "@/app/_hooks/useRoom";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { stopRoom } from '../_actions/actions';
 import { useState } from "react";
-import { useDisable } from "@/app/[locale]/_hooks/useDisable";
+import { useDisable } from "@/app/_hooks/useDisable";
 
 
 interface StopBtnProps {

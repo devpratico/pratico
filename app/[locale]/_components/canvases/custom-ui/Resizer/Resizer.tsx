@@ -3,8 +3,8 @@ import { useEffect, useMemo, useCallback } from "react"
 import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/app/_utils/tldraw/zoomToBounds"
 import logger from "@/app/_utils/logger"
-import useWindow from "@/app/[locale]/_hooks/useWindow"
-import { useNav } from "@/app/[locale]/_hooks/useNav"
+//import useWindow from "@/app/_hooks/useWindow"
+import { useNav } from "@/app/_hooks/useNav"
 
 
 

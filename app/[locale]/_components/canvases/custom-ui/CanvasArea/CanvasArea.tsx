@@ -1,8 +1,8 @@
-import styles from './CanvasArea.module.css'
+import { Card } from '@radix-ui/themes'
 
 /**
  * This is the white rectangle on the canvas.
  */
 export default function CanvasArea() {
-    return <div className={styles.toileDeFond}/>
+    return <Card variant='classic' style={{width:'1920px', height:'1080px', position:'absolute'}}/>
 }

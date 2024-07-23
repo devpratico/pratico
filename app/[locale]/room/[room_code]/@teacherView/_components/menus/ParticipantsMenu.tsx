@@ -1,13 +1,13 @@
 'use client'
-import DeskMenuLayout from "@/app/[locale]/capsule/[capsule_id]/_components/menus/DeskMenuLayout";
+import DeskMenuLayout from "@/app/[locale]/oldcapsule/[capsule_id]/_components/menus/DeskMenuLayout";
 import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout } from '@radix-ui/themes'
 import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
-import { usePresences } from "@/app/[locale]/_hooks/usePresences"
+import { usePresences } from "@/app/_hooks/usePresences"
 import CollabSwitch from "../CollabSwitch"
 import CollabSwitchGlobal from "../CollabSwitchGlobal"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { useMenus } from "@/app/[locale]/_hooks/useMenus";
+import { useMenus } from "@/app/_hooks/useMenus";
 
 
 export default function ParticipantMenu() {

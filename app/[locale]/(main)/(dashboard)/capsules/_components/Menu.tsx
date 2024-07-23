@@ -1,7 +1,7 @@
 'use client';
 import { DropdownMenu, IconButton } from '@radix-ui/themes'
 import { Ellipsis, TextCursor, Copy, Trash2 } from 'lucide-react';
-import { deleteCapsule } from '../actions';
+import { deleteCapsule } from '@/app/api/_actions/capsule2';
 import { Spinner } from '@radix-ui/themes';
 import { useState } from 'react';
 import { useRouter } from '@/app/_intl/intlNavigation';

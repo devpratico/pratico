@@ -15,7 +15,7 @@ import {
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background/Background'
 import CanvasArea from './custom-ui/CanvasArea/CanvasArea'
-import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
+import { useTLEditor } from '@/app/_hooks/useTLEditor'
 import { useCallback } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
@@ -93,6 +93,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {/*<Resizer/>*/}
             <EmbedHint/>
             <KeyboardShortcuts/>
+            <style>{`.tl-canvas { z-index: unset }`}</style>
         </Tldraw>
     )
 }

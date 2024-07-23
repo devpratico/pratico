@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@radix-ui/themes"
 import { useRouter } from "@/app/_intl/intlNavigation"
-import { useDisable } from "../_hooks/useDisable"
+import { useDisable } from "@/app/_hooks/useDisable"
 
 
 interface LoginBtnProps {
