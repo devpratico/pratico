@@ -84,7 +84,7 @@ function Miniature({ snapshot, pageId, selected, onClick }: MiniatureProps) {
                 <DropdownMenu.Trigger>
                     <IconButton
                         radius='full' size='1'
-                        style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: showEllipsis ? 1 : 0 }}
+                        style={{ position: 'absolute', top: '-10px', right: '-10px',boxShadow:'var(--shadow-3)', opacity: showEllipsis ? 1 : 0 }}
                     >
                         <Ellipsis size='18' />
                     </IconButton>

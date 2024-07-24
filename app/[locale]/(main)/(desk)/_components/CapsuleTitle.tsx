@@ -25,7 +25,6 @@ function EditButton() {
 
 
 async function CapsuleTitleS({ capsuleId, editable=true , ...props }: TitleProps & TextProps) {
-
     const title = await fetchCapsuleTitle(capsuleId)
 
     return (

@@ -1,11 +1,14 @@
-import { Box, Flex, Text, Tooltip } from '@radix-ui/themes';
+import { Flex, Text, Tooltip, Box } from '@radix-ui/themes';
 import Link from 'next/link';
 import Image from 'next/image';
 import TopBarPortal from '../../_components/TopBarPortal';
 import MenuTabs from '../../_components/MenuTabs';
-import { Puzzle, Ellipsis } from 'lucide-react';
+import { Puzzle, Ellipsis, Presentation } from 'lucide-react';
 import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
+import LoginBtn from '@/app/[locale]/_components/LoginBtn';
+import DoneBtn from './_components/DoneBtn';
+import StartBtn from './_components/StartBtn';
 
 
 
@@ -27,14 +30,45 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
 
                         <CapsuleTitle capsuleId={capsule_id}/>
 
+                        <StartBtn message='lancer la session'/>
+
                     </Flex>
 
                     
 
-                    <MenuTabs tabs={[
-                        { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
-                        { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
-                    ]} />
+                    <Flex gap='3' align='center' justify='between' width={{ initial: '100%', xs: 'auto' }}>
+
+                        <Box display={{ initial: 'block', xs: 'none' }}>
+                            <StartBtn message='lancer la session' />
+                        </Box>
+
+                        {/* MenuTabs for Desktop */}
+                        <Box display={{ initial: 'none', xs: 'block' }}>
+                            <MenuTabs tabs={[
+                                { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
+                                { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
+                            ]} />
+                        </Box>
+
+                        {/* MenuTabs for Mobile - it has a Home tab and a smaller padding */}
+                        <Box display={{ initial: 'block', xs: 'none' }}>
+                            <MenuTabs padding='3px' tabs={[
+                                { menu: undefined, label: 'Présentation', icon: <Presentation /> },
+                                { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
+                                { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
+                            ]} />
+                        </Box>
+
+                        <DoneBtn message='terminer'/>
+
+                        <Box display={{ initial: 'none', xs: 'block' }}>
+                            <LoginBtn message='se connecter'/>
+                        </Box>
+                    </Flex>
+
+
+
+
                 </Flex>
             </TopBarPortal>
 

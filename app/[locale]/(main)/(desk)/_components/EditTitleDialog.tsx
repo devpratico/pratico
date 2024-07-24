@@ -1,8 +1,10 @@
 'use client'
-import { Dialog, TextField, Button, Flex, Text } from "@radix-ui/themes";
+import {Popover, Dialog, TextField, Button, IconButton, Flex, Text, Heading, Tooltip } from "@radix-ui/themes";
 import { saveCapsuleTitle } from '@/app/api/_actions/room2';
 import { useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
+import { useRouter } from "@/app/_intl/intlNavigation";
+import { Check } from "lucide-react";
 
 
 interface EditDialogProps {
@@ -16,6 +18,7 @@ export default function EditDialog({ capsuleId, trigger }: EditDialogProps) {
     const [title, setTitle] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const router = useRouter()
 
     async function handleSave() {
         setLoading(true)
@@ -23,6 +26,7 @@ export default function EditDialog({ capsuleId, trigger }: EditDialogProps) {
             await saveCapsuleTitle(capsuleId, title)
             setOpen(false)
             setLoading(false)
+            router.refresh()
         } catch (error) {
             setError((error as PostgrestError).message)
             setLoading(false)
@@ -34,25 +38,36 @@ export default function EditDialog({ capsuleId, trigger }: EditDialogProps) {
     }
 
     return (
-        <Dialog.Root open={open} onOpenChange={setOpen}>
-            <Dialog.Trigger>{trigger}</Dialog.Trigger>
-            <Dialog.Content>
-                <Dialog.Title>Renommer la capsule</Dialog.Title>
+        <Popover.Root open={open} onOpenChange={setOpen}>
 
-                <TextField.Root placeholder='Titre de la capsule' value={title} onChange={e => setTitle(e.target.value)} onKeyDown={handleKeyDown} />
+            <Tooltip content='Renommer la capsule'>
+                <Popover.Trigger>{trigger}</Popover.Trigger>
+            </Tooltip>
 
-                <Flex justify='end' align='center' gap='2' mt='5'>
 
-                    <Text color='red' size='2'>{error}</Text>
+            <Popover.Content size='1'>
+                
+                <TextField.Root
+                    placeholder='Titre de la capsule'
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                >
+                    <TextField.Slot/>
+                        
+                    <TextField.Slot>
+                        <IconButton size='1' variant='ghost' loading={loading} onClick={handleSave} type='submit'><Check size='16'/></IconButton>
+                    </TextField.Slot>
+                </TextField.Root>
 
-                    <Dialog.Close tabIndex={-1}>
-                        <Button variant='soft'>Annuler</Button>
-                    </Dialog.Close>
 
-                    <Button loading={loading} onClick={handleSave} type='submit'>Enregistrer</Button>
 
-                </Flex>
-            </Dialog.Content>
-        </Dialog.Root>
+                <Text color='red' size='2'>{error}</Text>
+
+                    
+
+
+            </Popover.Content>
+        </Popover.Root>
     )
 }

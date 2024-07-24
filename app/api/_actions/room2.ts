@@ -7,6 +7,7 @@ import { Tables, TablesInsert, Json } from "@/supabase/types/database.types";
 import { TLStoreSnapshot } from "tldraw";
 import { revalidatePath } from 'next/cache';
 import { PostgrestError } from '@supabase/supabase-js';
+import { cache } from 'react';
 
 
 export type RoomInsert = TablesInsert<'rooms'>
@@ -56,7 +57,8 @@ export async function fetchCapsuleSnapshot(capsuleId: string): Promise<TLStoreSn
     }
 }
 
-export async function fetchCapsuleTitle(capsuleId: string): Promise<string> {
+//export async function fetchCapsuleTitle(capsuleId: string): Promise<string> {
+export const fetchCapsuleTitle = cache(async (capsuleId: string): Promise<string> => {
     const supabase = createClient()
     const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
     if (error) {
@@ -64,7 +66,7 @@ export async function fetchCapsuleTitle(capsuleId: string): Promise<string> {
     } else {
         return data.title || ''
     }
-}
+})
 
 export async function saveCapsuleTitle(capsuleId: string, title: string) {
     const supabase = createClient()

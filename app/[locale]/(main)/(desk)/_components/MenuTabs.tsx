@@ -56,33 +56,64 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
     )
 }
 
+/**
+ * A tab element for when no menu is selected.
+ */
+function HomeTabElement({ children }: { children: React.ReactNode }) {
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
+
+    return (
+        <TabNav.Link active={!searchParams.get('menu')} asChild>
+            <Link href={pathname + '?' + removeSearchParam(searchParams, 'menu')} shallow={false}>
+                {children}
+            </Link>
+        </TabNav.Link>
+    )
+}
+
 
 
 interface MenuTab {
-    menu: string
+    menu?: string
     label: string
     icon: React.ReactNode
 }
 
 interface MenuTabsProps {
+    padding?: string
     tabs: MenuTab[]
 }
 
-export default function MenuTabs({ tabs }: MenuTabsProps) {
+export default function MenuTabs({ padding, tabs }: MenuTabsProps) {
 
 
     return (
         <TabNav.Root className="dark" id='menu-tabs'>
-            <CustomTabStyle />
+            <CustomTabStyle padding={padding} />
 
-            {tabs.map(tab => (
-                <TabElement key={tab.menu} menu={tab.menu}>
-                    <Flex direction='column' align='center' gap='1' pt='1'>
-                        {tab.icon}
-                        <Text as='label' size='1'>{tab.label}</Text>
-                    </Flex>
-                </TabElement>
-            ))}
+            {tabs.map(tab => {
+                // If a menu ("chat", "activities", etc.) is defined, use the TabElement
+                if (tab.menu) {
+                    return (
+                        <TabElement key={tab.menu} menu={tab.menu}>
+                            <Flex direction='column' align='center' gap='1' pt='1'>
+                                {tab.icon}
+                                <Text as='label' size='1'>{tab.label}</Text>
+                            </Flex>
+                        </TabElement>
+                        // If no menu is defined, use the HomeTabElement
+                    )} else {
+                    return (
+                        <HomeTabElement key='home'>
+                            <Flex direction='column' align='center' gap='1' pt='1'>
+                                {tab.icon}
+                                <Text as='label' size='1'>{tab.label}</Text>
+                            </Flex>
+                        </HomeTabElement>
+                    )
+                }
+        })}
 
         </TabNav.Root>
     )
