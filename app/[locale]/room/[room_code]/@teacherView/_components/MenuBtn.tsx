@@ -1,6 +1,6 @@
 'use client'
 import { Button, Flex, Text } from "@radix-ui/themes"
-import { useMenus, DeskMenu } from "../../../../_hooks/useMenus";
+import { useMenus, DeskMenu } from "@/app/_hooks/useMenus";
 
 
 interface MenuBtnProps {

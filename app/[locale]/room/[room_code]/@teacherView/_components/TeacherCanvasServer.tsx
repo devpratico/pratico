@@ -3,7 +3,7 @@ import { fetchUser, fetchNames } from '@/app/api/_actions/user'
 //import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchRoomByCode } from '../../../../../_actions/room3'
+import { fetchRoomByCode } from '@/app/api/_actions/room3'
 
 
 interface TeacherCanvasServerProps {

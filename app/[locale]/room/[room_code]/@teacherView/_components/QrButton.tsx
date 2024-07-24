@@ -1,7 +1,7 @@
 'use client'
 import { IconButton} from "@radix-ui/themes";
 import { QrCode } from 'lucide-react';
-import { useMenus } from "@/app/[locale]/_hooks/useMenus";
+import { useMenus } from "@/app/_hooks/useMenus";
 import TooltipL from "@/app/[locale]/_components/TooltipL";
 
 

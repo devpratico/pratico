@@ -1,15 +1,15 @@
 'use client'
 import Canvas from "@/app/[locale]/_components/canvases/Canvas";
-import useBroadcastStore from "@/app/[locale]/_hooks/useBroadcastStore";
+import useBroadcastStore from "@/app/_hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import TLToolbar from "@/app/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/[locale]/_components/canvases/custom-ui/AutoSaver/AutoSaver";
 import NavigatorSync from "@/app/[locale]/_components/canvases/custom-ui/NavigatorSync/NavigatorSync";
 import Resizer from "@/app/[locale]/_components/canvases/custom-ui/Resizer/Resizer";
 import { CanvasUser } from "@/app/[locale]/_components/canvases/Canvas";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
+import { useRoom } from "@/app/_hooks/useRoom";
 import { useState, useEffect } from "react";
-import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor";
+import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { setUserPreferences } from "tldraw";
 
 

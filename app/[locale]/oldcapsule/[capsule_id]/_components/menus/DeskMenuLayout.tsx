@@ -1,6 +1,6 @@
 'use client'
-import { useMenus } from '@/app/[locale]/_hooks/useMenus'
-import type { DeskMenu } from '@/app/[locale]/_hooks/useMenus'
+import { useMenus } from '@/app/_hooks/useMenus'
+import type { DeskMenu } from '@/app/_hooks/useMenus'
 import * as Dialog from '@radix-ui/react-dialog';
 
 

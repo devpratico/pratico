@@ -4,8 +4,8 @@ import { Pen } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import logger from '@/app/_utils/logger'
 import { toggleCollaborationForAll } from '../_actions/actions'
-import { useRoom } from '@/app/[locale]/_hooks/useRoom'
-import { usePresences } from '@/app/[locale]/_hooks/usePresences'
+import { useRoom } from '@/app/_hooks/useRoom'
+import { usePresences } from '@/app/_hooks/usePresences'
 import TooltipL from '@/app/[locale]/_components/TooltipL'
 
 

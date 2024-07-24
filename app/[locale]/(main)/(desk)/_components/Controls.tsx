@@ -20,7 +20,7 @@ export default function Controls() {
 
 
     return (
-        <Flex gap='4' justify='between' align='center'>
+        <Flex gap='4' justify='between' align='center' height='100%'>
             <IconButton size='3' onPointerDown={() => console.log('Put action here')}>
                 <Plus size={iconSize} />
             </IconButton>

@@ -5,7 +5,7 @@ import { Copy } from "lucide-react";
 import QRCode from 'react-qr-code';
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useMenus } from "@/app/[locale]/_hooks/useMenus";
+import { useMenus } from "@/app/_hooks/useMenus";
 import TooltipL from "@/app/[locale]/_components/TooltipL";
 
 

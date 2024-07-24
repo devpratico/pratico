@@ -28,13 +28,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
              * The menus layout is also defined here.
              */}
             <Grid
-                rows='1fr auto'
+                rows={{ initial: '1fr auto', xs: '1fr 60px' }}
                 py='3'
                 gap='3'
                 pl='max(env(safe-area-inset-left), 12px)'
                 pr='max(env(safe-area-inset-right), 12px)'
                 position='relative'
-                overflowY='clip'
+                overflowY='clip' // Necessary for mobile landscape - the toolbar overflows
             >
 
                 {/* Main content. Canvas will go here */}
@@ -57,7 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 {/* Carousel + controls for desktop */}
                 <Grid columns='1fr auto' gap='3' height='auto' display={{initial: 'none', xs: 'grid'}}>
-                    <Card variant='classic'><Carousel/></Card>
+                    <Carousel/>
                     <Card variant='classic'><Controls/></Card>
                 </Grid>
 
