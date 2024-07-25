@@ -69,12 +69,17 @@ export const fetchCapsuleTitle = cache(async (capsuleId: string): Promise<string
 })
 
 export async function saveCapsuleTitle(capsuleId: string, title: string) {
+    if (title.length === 0) throw new Error('Title cannot be empty')
+    if (title.length > 100) throw new Error('Title cannot be longer than 100 characters')
+    if (title.length < 3)   throw new Error('Title must be at least 3 characters long')
+
     const supabase = createClient()
-    const { data, error } = await supabase.from('capsules').update({ title }).eq('id', capsuleId)
+    const { error } = await supabase.from('capsules').update({ title }).eq('id', capsuleId)
+
     if (error) {
-        throw error as PostgrestError
+        throw error
     } else {
-        return data
+        return
     }
 }
 

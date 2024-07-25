@@ -1,7 +1,8 @@
 'use client'
-import { Flex, IconButton, Text } from "@radix-ui/themes"
+import { Flex, IconButton, Text, Popover } from "@radix-ui/themes"
 import { Plus, ChevronLeft, ChevronRight, Maximize } from "lucide-react"
 import { useNav } from "@/app/_hooks/useNav"
+import AddMenu from "./menus/AddMenu"
 
 
 export default function Controls() {
@@ -21,9 +22,20 @@ export default function Controls() {
 
     return (
         <Flex gap='4' justify='between' align='center' height='100%'>
-            <IconButton size='3' onPointerDown={() => console.log('Put action here')}>
-                <Plus size={iconSize} />
-            </IconButton>
+
+            <Popover.Root>
+                <Popover.Trigger>
+                    <IconButton size='3' onPointerDown={() => console.log('Put action here')}>
+                        <Plus size={iconSize} />
+                    </IconButton>
+                </Popover.Trigger>
+
+                <Popover.Content size='3'>
+                    <AddMenu />
+                </Popover.Content>
+            </Popover.Root>
+
+            
 
             <IconButton variant='ghost' size='3' onClick={goPrevPage}>
                 <ChevronLeft size={iconSize} />

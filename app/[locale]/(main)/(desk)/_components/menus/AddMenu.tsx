@@ -2,8 +2,8 @@
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { useTLEditor } from "@/app/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
-import { Card, Grid, AspectRatio, Section, Heading, Flex, Button, Text, Progress } from "@radix-ui/themes"
-import { ArrowDown } from "lucide-react"
+import { Flex, Button, Progress } from "@radix-ui/themes"
+import { ArrowDown, Plus } from "lucide-react"
 import { useRef, useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/_hooks/useNav"
@@ -41,90 +41,34 @@ export default function AddMenu() {
         fileInputRef.current?.click();
     };
 
-    if (!editor) return null
+
 
 
     return (
-            <>
+            <Flex gap='3' direction='column'>
 
-            <Section size='1'>
-                <Heading size='3' as="h3" mb='2' trim='both'>DOCUMENTS</Heading>
+                    <Button onClick={handleClick} disabled={disabled}>
+                        <ArrowDown size='15'/> Document .pdf
+                    </Button> 
 
-                <Grid columns="2" gap='2' pt='2'>
+                    { pdfImportProgress && <Progress value={pdfImportProgress} /> }
 
-                    <TemplateCard>
-                        <Flex direction='column' gap='2'>
-                            <Text align='center' weight='bold' color='violet'>PDF</Text>
+                    {/* This is an invisible input button */} 
+                    <input
+                        type="file"
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                    />
 
-                            {pdfImportProgress === null && 
-                                <Button size='1' variant='soft' onClick={handleClick} disabled={disabled}>
-                                    <ArrowDown size='15'/>
-                                    Importer
-                                </Button>
-                            }
+                    <Button variant='outline' onClick={() => newPage?.()} disabled={disabled}>
+                        <Plus size='15' /> Page blanche
+                    </Button>
 
-                            {pdfImportProgress !== null &&
-                                <Progress value={pdfImportProgress} />
-                            }
-
-                        </Flex>
-                        <input
-                            type="file"
-                            accept="application/pdf"
-                            style={{ display: 'none' }}
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                        />
-                    </TemplateCard>
-
-
-                    {/*<TemplateCard>
-                        <Flex direction='column' gap='2'>
-                            <Text align='center' weight='bold' color='violet'>PowerPoint</Text>
-                            <Button size='1' variant='soft' disabled><ArrowDown size='15'/>Importer</Button>
-                        </Flex>
-                    </TemplateCard>*/}
-
-                    <TemplateCard>
-                        <Flex direction='column' gap='2'>
-                            <Text align='center' weight='bold' color='violet'>Image</Text>
-                            <Button size='1' variant='soft' disabled><ArrowDown size='15'/>Importer</Button>
-                        </Flex>
-                    </TemplateCard>
-
-                </Grid>
-            </Section>
-
-            <Section size='1'>
-                <Heading size='3' as="h3" mb='2' trim='both'>PAGES</Heading>
-                <Grid columns="2" gap='2' pt='2'>
-                    <button onClick={() => newPage?.()} disabled={disabled} style={{all:'unset', cursor: disabled ? 'not-allowed' : 'pointer'}}>
-                        <Flex direction='column' align='center' gap='1'>
-                            <TemplateCard/>
-                            <Text size='1' color='gray'>Page blanche</Text>
-                        </Flex>
-                    </button>
-                </Grid>
-            </Section>
-
-            </>
+            </Flex>
         
     )
 }
 
 
-
-interface TemplateCardProps {
-    backgroundColor?: string
-    children?: React.ReactNode
-}
-
-function TemplateCard({ backgroundColor, children }: TemplateCardProps) {
-    return (
-        <AspectRatio ratio={16/9}>
-            <Card variant='classic' style={{height:'100%', backgroundColor: backgroundColor}}>
-                {children}
-            </Card>
-        </AspectRatio>
-    )
-}

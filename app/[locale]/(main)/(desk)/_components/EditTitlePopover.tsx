@@ -1,10 +1,10 @@
 'use client'
-import {Popover, TextField, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import {Popover, TextField, IconButton, Text, Callout } from "@radix-ui/themes";
+import Tooltip from '@/app/[locale]/_components/TooltipL';
 import { saveCapsuleTitle } from '@/app/api/_actions/room2';
 import { useState } from "react";
-import { PostgrestError } from "@supabase/supabase-js";
 import { useRouter } from "@/app/_intl/intlNavigation";
-import { Check } from "lucide-react";
+import { Check, TriangleAlert } from "lucide-react";
 
 
 interface EditPopoverProps {
@@ -17,18 +17,19 @@ export default function EditPopover({ capsuleId, trigger }: EditPopoverProps) {
     const [open, setOpen] = useState(false)
     const [title, setTitle] = useState('')
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
+    const [error, setError] = useState<string | null>(null)
     const router = useRouter()
 
     async function handleSave() {
         setLoading(true)
+        setError(null)
         try {
             await saveCapsuleTitle(capsuleId, title)
             setOpen(false)
             setLoading(false)
             router.refresh()
         } catch (error) {
-            setError((error as PostgrestError).message)
+            setError((error as Error).message)
             setLoading(false)
         }
     }
@@ -43,7 +44,6 @@ export default function EditPopover({ capsuleId, trigger }: EditPopoverProps) {
             <Tooltip content='Renommer la capsule'>
                 <Popover.Trigger>{trigger}</Popover.Trigger>
             </Tooltip>
-
 
             <Popover.Content size='1'>
                 
@@ -60,12 +60,17 @@ export default function EditPopover({ capsuleId, trigger }: EditPopoverProps) {
                     </TextField.Slot>
                 </TextField.Root>
 
-
-
-                <Text color='red' size='2'>{error}</Text>
-
-                    
-
+                {
+                    error &&
+                    <Callout.Root color='red' role='alert' size='1' mt='3'>
+                        <Callout.Icon>
+                            <TriangleAlert size='16'/>
+                        </Callout.Icon>
+                        <Callout.Text>
+                            {error}
+                        </Callout.Text>
+                    </Callout.Root>
+                }
 
             </Popover.Content>
         </Popover.Root>
