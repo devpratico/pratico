@@ -25,7 +25,7 @@ export default function Controls() {
 
             <Popover.Root>
                 <Popover.Trigger>
-                    <IconButton size='3' onPointerDown={() => console.log('Put action here')}>
+                    <IconButton size='3'>
                         <Plus size={iconSize} />
                     </IconButton>
                 </Popover.Trigger>

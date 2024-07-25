@@ -11,13 +11,12 @@ import { useState, useEffect } from 'react'
 
 interface MiniatureProps {
     pageId: TLPageId
-    selected: boolean
     onClick: () => void
 }
 
 
 export default function Carousel() {
-    const { pageIds, currentPageId, setCurrentPage } = useNav()
+    const { pageIds, setCurrentPage } = useNav()
 
     return (
         <Card variant='classic' style={{padding:'0'}} asChild>
@@ -27,7 +26,6 @@ export default function Carousel() {
                         <Miniature
                             key={`${id}`}
                             pageId={id}
-                            selected={currentPageId === id}
                             onClick={() => setCurrentPage(id)}
                         />
                     ))}
@@ -38,10 +36,10 @@ export default function Carousel() {
 }
 
 
-function Miniature({ pageId, selected, onClick }: MiniatureProps) {
+function Miniature({ pageId, onClick }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
-    const { editor } = useTLEditor()
+    const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 
     useEffect(() => {
         setShowEllipsis(showMenu)
@@ -52,7 +50,9 @@ function Miniature({ pageId, selected, onClick }: MiniatureProps) {
         <Box
             width='55px'
             height='36px'
-            style={{borderRadius:'var(--radius-2)', boxShadow: selected ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'}}
+            style={{
+                borderRadius:'var(--radius-2)',
+                boxShadow: currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'}}
             position='relative'
             onClick={onClick}
             onMouseEnter={() => setShowEllipsis(true)}
@@ -72,21 +72,23 @@ function Miniature({ pageId, selected, onClick }: MiniatureProps) {
                     </IconButton>
                 </DropdownMenu.Trigger>
 
-                <DropdownMenu.Content>
+                <DropdownMenu.Content onClick={(e) => e.stopPropagation()}>
+
                     <DropdownMenu.Item onSelect={() => console.log('Duplicate')} disabled={true}>
-                        <Copy size='18' />
-                        Dupliquer
+                        <Copy size='18' /> Dupliquer
                     </DropdownMenu.Item>
 
                     <DropdownMenu.Item color='red' onSelect={() => {
-                        if (confirm('Êtes-vous sûr de vouloir supprimer cette page ?')) {
-                            editor?.deletePage(pageId)
-                            logger.log('tldraw:editor', `Page ${pageId} deleted successfully`)
+                        // Before deleting the page, move to the next or previous page
+                        if (currentPageId === pageId) {
+                            if (nextPageId) {goNextPage()} 
+                            else if (prevPageId) {goPrevPage()}
                         }
+                        deletePage(pageId)
                     }}>
-                        <Trash2 size='18' />
-                        Supprimer
+                        <Trash2 size='18' /> Supprimer
                     </DropdownMenu.Item>
+                    
                 </DropdownMenu.Content>
                 
             </DropdownMenu.Root>

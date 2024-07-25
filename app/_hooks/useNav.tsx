@@ -14,6 +14,7 @@ type NavContextType = {
     goNextPage: () => void;
     goPrevPage: () => void;
     newPage: (position?: 'next' | 'last') => void;
+    deletePage: (id: TLPageId) => void;
 };
 
 const emptyContext: NavContextType = {
@@ -24,7 +25,8 @@ const emptyContext: NavContextType = {
     setCurrentPage: (id: TLPageId) => { },
     goNextPage: () => { },
     goPrevPage: () => { },
-    newPage: (position?: 'next' | 'last') => { }
+    newPage: (position?: 'next' | 'last') => { },
+    deletePage: (id: TLPageId) => { }
 }
 
 const NavContext = createContext<NavContextType>(emptyContext);
@@ -85,7 +87,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         try {
             editor.setCurrentPage(id)
             const index = editor.getCurrentPage().index
-            logger.log('tldraw:editor', `Set current page to index: ${index} - id:${id}`)
+            logger.log('tldraw:editor', `Current page set to index: ${index}`, `id: ${id}`)
         } catch (error) {
             logger.error('tldraw:editor', `Page ${id} not found`, (error as Error).message)
         }
@@ -96,6 +98,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         const currentPageIdx = pages.indexOf(editor.getCurrentPage())
         const nextPageIdx = currentPageIdx + 1
         if (nextPageIdx < pages.length) {
+            logger.log('tldraw:editor', `Going to next page`)
             setCurrentPage(pages[nextPageIdx].id)
         } else {
             logger.log('tldraw:editor', `No next page`)
@@ -107,6 +110,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         const currentPageIdx = pages.indexOf(editor.getCurrentPage())
         const prevPageIdx = currentPageIdx - 1
         if (prevPageIdx >= 0) {
+            logger.log('tldraw:editor', `Going to previous page`)
             setCurrentPage(pages[prevPageIdx].id)
         } else {
             logger.log('tldraw:editor', `No previous page`)
@@ -132,7 +136,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
             // If the current page is the last page, create a new page at the end of the pages list:
             if (currentPageIndex.inArray === pages.length - 1) {
-                newPage('last')
+                editor.createPage({ id: newPageId })
+                setCurrentPage(newPageId)
                 return
             }
 
@@ -149,7 +154,13 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
             logger.log('tldraw:editor', `Created page at ${newPageIndex.inFract} in between ${currentPageIndex.inFract} and ${nextPageIndex.inFract}`, editor.getPages().map(p => p.index))
         }
+        
         setCurrentPage(newPageId)
+    }
+
+    const deletePage = (id: TLPageId) => {
+        logger.log('tldraw:editor', `Deleting page with id: ${id}`)
+        editor.deletePage(id)
     }
 
     return (
@@ -161,12 +172,15 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             setCurrentPage,
             goNextPage,
             goPrevPage,
-            newPage
+            newPage,
+            deletePage
         }}>
             {children}
         </NavContext.Provider>
     );
 }
+
+
 
 export function useNav() {
     const context = useContext(NavContext);

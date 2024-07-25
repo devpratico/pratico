@@ -1,5 +1,5 @@
 'use client'
-import { Editor, StoreSnapshot, TLRecord, TLEditorSnapshot } from 'tldraw';
+import { Editor, TLEditorSnapshot } from 'tldraw';
 import { createContext, useContext, useState, useEffect } from 'react';
 //import logger from '../_utils/logger';
 import debounce from '../_utils/debounce';
@@ -39,7 +39,7 @@ export function TLEditorProvider({ children }: { children: React.ReactNode }) {
         }, 50)
 
         // React to the changes of the snapshot
-        const unlisten = editor?.store.listen(() => {
+        const unlisten = editor?.store.listen((event) => {
             debouncedSetSnapshot(editor?.getSnapshot());
         },{ scope: 'document', source: 'all' });
 
