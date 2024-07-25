@@ -5,6 +5,7 @@ import AddMenu from './menus/AddMenu'
 import { useNav } from '@/app/_hooks/useNav'
 import Thumbnail from '@/app/[locale]/_components/Thumbnail'
 import { useTLEditor } from '@/app/_hooks/useTLEditor'
+import MobileToolbar from './MobileToolbar'
 
 
 
@@ -19,17 +20,10 @@ export default function MobileControls() {
     return (
         <Flex direction='column' gap='3'>
 
-            <Card variant='classic'>
-                <Flex justify='between'>
-                    <MousePointer2 />
-                    <Pen />
-                    <Type />
-                    <Shapes />
-                    <ImageLucid />
-                    <Eraser />
-                </Flex>
-            </Card>
+            {/* MOBILE TOOLBAR */}
+            <MobileToolbar />
 
+            {/* MOBILE PAGES NUMBERS AND + BUTTON */}
             <Grid columns='2' gap='3'>
                 <Flex align='center' justify='center'>
                     <Text size='7'>
@@ -47,10 +41,9 @@ export default function MobileControls() {
                         <AddMenu />
                     </Popover.Content>
                 </Popover.Root>
-                
-
             </Grid>
 
+            {/* MOBILE THUMBNAILS FOR NAVIGATION */}
             <Grid columns='2' gap='3'>
 
                 { snapshot && prevPageId &&
