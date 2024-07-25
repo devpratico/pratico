@@ -30,6 +30,7 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
     return (
         <Dialog.Root open={open} onOpenChange={setOpenAndReplace} modal={false}>
             <Dialog.Content style={{
+                pointerEvents:'auto',
                 position:'absolute',
                 right:'0',
                 width:'100%',

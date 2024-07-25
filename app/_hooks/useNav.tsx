@@ -8,6 +8,8 @@ import { useTLEditor } from './useTLEditor';
 type NavContextType = {
     pageIds: TLPageId[];
     currentPageId: TLPageId | undefined;
+    nextPageId: TLPageId | undefined;
+    prevPageId: TLPageId | undefined;
     setCurrentPage: (id: TLPageId) => void;
     goNextPage: () => void;
     goPrevPage: () => void;
@@ -17,6 +19,8 @@ type NavContextType = {
 const emptyContext: NavContextType = {
     pageIds: [],
     currentPageId: undefined,
+    nextPageId: undefined,
+    prevPageId: undefined,
     setCurrentPage: (id: TLPageId) => { },
     goNextPage: () => { },
     goPrevPage: () => { },
@@ -46,6 +50,28 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     const currentPageId = useValue('Current page ID', () => {
         if (!editor) return undefined
         return editor.getCurrentPage().id
+    }, [editor])
+
+    const nextPageId = useValue('Next page ID', () => {
+        if (!editor) return undefined
+        const pages = editor.getPages()
+        const currentPageIdx = pages.indexOf(editor.getCurrentPage())
+        const nextPageIdx = currentPageIdx + 1
+        if (nextPageIdx < pages.length) {
+            return pages[nextPageIdx].id
+        }
+        return undefined
+    }, [editor])
+
+    const prevPageId = useValue('Previous page ID', () => {
+        if (!editor) return undefined
+        const pages = editor.getPages()
+        const currentPageIdx = pages.indexOf(editor.getCurrentPage())
+        const prevPageIdx = currentPageIdx - 1
+        if (prevPageIdx >= 0) {
+            return pages[prevPageIdx].id
+        }
+        return undefined
     }, [editor])
 
 
@@ -130,6 +156,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         <NavContext.Provider value={{
             pageIds,
             currentPageId,
+            nextPageId,
+            prevPageId,
             setCurrentPage,
             goNextPage,
             goPrevPage,
@@ -142,6 +170,6 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
 export function useNav() {
     const context = useContext(NavContext);
-    if (!context) throw new Error('useNav must be used within a NavProvider');
+    //if (!context) throw new Error('useNav must be used within a NavProvider');
     return context;
 }
