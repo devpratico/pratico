@@ -36,7 +36,7 @@ const Thumbnail = ({ snapshot, scale=0.05, pageId }: ThumbnailProps) => {
             background={false}
             pageId={pageId}
             bounds={new Box(0, 0, 1920, 1080)}
-            preserveAspectRatio={'true'}
+            //preserveAspectRatio={'true'}
         />
     );
 }
