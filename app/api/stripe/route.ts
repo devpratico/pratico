@@ -1,10 +1,10 @@
-import getStripeClient from '@/app/_stripe/getStripeClient'
+import Stripe from "stripe";
 import createClient from '@/supabase/clients/server'
 
 
 // Respond to a POST request sent to the /api/stripe endpoint by a Stripe webhook
 export async function POST(request: Request) {
-  const stripe = await getStripeClient()
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   
     try {
       const body = await request.text()

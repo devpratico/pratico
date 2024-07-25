@@ -1,5 +1,5 @@
 'use client'
-import {Popover, Dialog, TextField, Button, IconButton, Flex, Text, Heading, Tooltip } from "@radix-ui/themes";
+import {Popover, TextField, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import { saveCapsuleTitle } from '@/app/api/_actions/room2';
 import { useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -7,13 +7,13 @@ import { useRouter } from "@/app/_intl/intlNavigation";
 import { Check } from "lucide-react";
 
 
-interface EditDialogProps {
+interface EditPopoverProps {
     capsuleId: string;
     trigger: React.ReactNode;
 }
 
 
-export default function EditDialog({ capsuleId, trigger }: EditDialogProps) {
+export default function EditPopover({ capsuleId, trigger }: EditPopoverProps) {
     const [open, setOpen] = useState(false)
     const [title, setTitle] = useState('')
     const [loading, setLoading] = useState(false)

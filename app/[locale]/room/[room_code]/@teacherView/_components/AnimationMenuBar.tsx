@@ -6,7 +6,7 @@ import { Puzzle, MessageSquareText, Users, Ellipsis } from 'lucide-react';
 import LoginBtn from '@/app/[locale]/_components/LoginBtn';
 import { isUserAnonymous } from '@/app/[locale]/login/_actions/actions';
 import MenuBtn from './MenuBtn';
-import FeedbackBtn from '@/app/[locale]/capsule/[capsule_id]/_components/CreationMenuBar/buttons/FeedbackBtn';
+import FeedbackBtn from '@/app/[locale]/oldcapsule/[capsule_id]/_components/CreationMenuBar/buttons/FeedbackBtn';
 import QrButton from './QrButton';
 import { Link } from '@/app/_intl/intlNavigation';
 

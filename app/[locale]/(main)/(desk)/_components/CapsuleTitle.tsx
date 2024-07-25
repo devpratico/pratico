@@ -1,9 +1,8 @@
 import { fetchCapsuleTitle } from '@/app/api/_actions/room2';
-import { Text, TextProps, Skeleton, IconButton, Flex, Dialog, TextField, Button } from '@radix-ui/themes';
-import logger from '@/app/_utils/logger'
+import { Text, TextProps, Skeleton, IconButton, Flex } from '@radix-ui/themes';
 import { Suspense } from 'react';
 import { SquarePen } from 'lucide-react';
-import EditTitleDialog from './EditTitleDialog';
+import EditTitlePopover from './EditTitlePopover';
 
 interface TitleProps  {
     capsuleId: string;
@@ -31,7 +30,7 @@ async function CapsuleTitleS({ capsuleId, editable=true , ...props }: TitleProps
         <Flex gap='2' align='center'>
             <Text {...props} >{title}</Text>
             {editable &&
-                <EditTitleDialog capsuleId={capsuleId} trigger={<EditButton />} />
+                <EditTitlePopover capsuleId={capsuleId} trigger={<EditButton />} />
             }
         </Flex>
     )

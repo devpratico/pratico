@@ -1,9 +1,9 @@
 'use client'
 import Canvas from "./Canvas";
-import useBroadcastStore from "@/app/[locale]/_hooks/useBroadcastStore";
+import useBroadcastStore from "@/app/_hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import  AutoSaver from "./custom-ui/AutoSaver/AutoSaver";
-import { useRoom } from "@/app/[locale]/_hooks/useRoom";
+import { useRoom } from "@/app/_hooks/useRoom";
 import { useMemo } from "react";
 import Resizer from "./custom-ui/Resizer/Resizer";
 import { CanvasUser } from "./Canvas";
