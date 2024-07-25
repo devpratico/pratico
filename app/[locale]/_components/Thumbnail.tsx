@@ -28,18 +28,20 @@ const Thumbnail = ({ snapshot, scale=0.05, pageId }: ThumbnailProps) => {
     if (!_snapshot) return null;
 
     /**
-     * The hookSnapshot may not contain the desired pageId yet,
+     * When using the hookSnapshot, it may not contain the desired pageId yet,
      * because we debounce its updates for performance reasons.
      * In that case, we show a spinner until the pageId is available.
      */
-    const store = _snapshot.document.store as any
-    const pageIds = getPageKeys(store)
-    if (!pageIds.includes(pageId as string)) {
-        return (
-            <Flex align='center' justify='center' height='100%'>
-                <Spinner />
-            </Flex>
-        )
+    if (!snapshot) {
+        const store = _snapshot.document.store as any
+        const pageIds = getPageKeys(store)
+        if (!pageIds.includes(pageId as string)) {
+            return (
+                <Flex align='center' justify='center' height='100%'>
+                    <Spinner />
+                </Flex>
+            )
+        }
     }
 
     return (
