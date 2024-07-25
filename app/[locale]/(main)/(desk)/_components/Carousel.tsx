@@ -1,6 +1,5 @@
 'use client'
 import Thumbnail from '@/app/[locale]/_components/Thumbnail'
-//import { useMemo, useState } from 'react'
 import { useNav } from '@/app/_hooks/useNav'
 import { useTLEditor } from '@/app/_hooks/useTLEditor'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
@@ -11,7 +10,6 @@ import { useState, useEffect } from 'react'
 
 
 interface MiniatureProps {
-    snapshot: any
     pageId: TLPageId
     selected: boolean
     onClick: () => void
@@ -19,22 +17,7 @@ interface MiniatureProps {
 
 
 export default function Carousel() {
-    const { editor } = useTLEditor()
     const { pageIds, currentPageId, setCurrentPage } = useNav()
-
-    // TODO: Update the thumbnail when new object added
-    //const snapshot = useMemo(() => editor?.store?.getSnapshot(), [editor]) // currentPageId so that it updates when the current page changes
-    const snapshot = editor?.store?.getSnapshot()
-
-    /*
-    editor?.sideEffects.registerAfterChangeHandler(''
-        console.log('Document changed')
-    })*/
-
-    /*
-if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
-    return <></> // TODO: Make a loading animation
-}*/
 
     return (
         <Card variant='classic' style={{padding:'0'}} asChild>
@@ -43,7 +26,6 @@ if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
                     {pageIds.map((id, i) => (
                         <Miniature
                             key={`${id}`}
-                            snapshot={snapshot}
                             pageId={id}
                             selected={currentPageId === id}
                             onClick={() => setCurrentPage(id)}
@@ -56,7 +38,7 @@ if ( !(editor && pageIds && currentPageId && setCurrentPage && snapshot) ) {
 }
 
 
-function Miniature({ snapshot, pageId, selected, onClick }: MiniatureProps) {
+function Miniature({ pageId, selected, onClick }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { editor } = useTLEditor()
@@ -77,7 +59,7 @@ function Miniature({ snapshot, pageId, selected, onClick }: MiniatureProps) {
             onMouseLeave={() => setShowEllipsis(showMenu)}
         >
 
-            <Thumbnail snapshot={snapshot} pageId={pageId} />
+            <Thumbnail pageId={pageId} />
 
             <DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
