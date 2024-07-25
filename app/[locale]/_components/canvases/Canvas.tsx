@@ -75,7 +75,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         })
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
 
-        editor.updateInstanceState({ canMoveCamera: false })
+        //editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
     }, [setEditor, onMount])

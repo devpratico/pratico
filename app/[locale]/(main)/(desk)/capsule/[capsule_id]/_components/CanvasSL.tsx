@@ -51,6 +51,7 @@ export default function CanvasSL() {
 
 
     // Create the store
+    /*
     const [store, setStore] = useState(createTLStore({shapeUtils: defaultShapeUtils}))
     useEffect(() => {
         if (initialSnapshot) {
@@ -58,11 +59,11 @@ export default function CanvasSL() {
             _store.loadSnapshot(initialSnapshot)
             setStore(_store)
         }
-    }, [initialSnapshot])
+    }, [initialSnapshot])*/
 
     
     return (
-        <Canvas store={store}>
+        <Canvas initialSnapshot={initialSnapshot}>
             <Resizer insets={{top: 0, right: 0, bottom: 0, left: 0}} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>

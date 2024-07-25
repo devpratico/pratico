@@ -1,15 +1,14 @@
 'use client'
-import { useEditor, track } from 'tldraw'
+import { track, TLEditorSnapshot } from 'tldraw'
 import { saveCapsuleSnapshot, saveRoomSnapshot } from '@/app/api/_actions/room2'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
 import { useEffect } from 'react';
+import { useTLEditor } from '@/app/_hooks/useTLEditor';
 
-// TODO: Remove local storage as we use tldraw's persistenceKey
 
 export type AutoSaverProps = {
     saveTo:
-        //  { destination: 'local storage',  snapshotId: string }
           { destination: 'remote capsule', capsuleId: string }
         | { destination: 'remote room',    roomId:    number }
 }
@@ -20,14 +19,13 @@ export type AutoSaverProps = {
  * You can choose to save to:
  * * A room (while in collaboration mode)
  * * A capsule (while in solo edit mode)
- * * Browser Llocal storage (for loginless users)
  */
 const AutoSaver = track(({saveTo}: AutoSaverProps) => {
-    const { store } = useEditor()
+    const { editor } = useTLEditor()
 
     useEffect(() => {
-        const save = async () => {
-            const snapshot = store.getSnapshot()
+        const save = async (snapshot: TLEditorSnapshot) => {
+
             let _id: string | number
 
             try {
@@ -41,13 +39,6 @@ const AutoSaver = track(({saveTo}: AutoSaverProps) => {
                         _id = saveTo.roomId
                         await saveRoomSnapshot(_id, snapshot)
                         break
-                    
-                    /*
-                    case 'local storage':
-                        _id = saveTo.snapshotId
-                        localStorage.setItem(`snapshot-${_id}`, JSON.stringify(snapshot))
-                        break
-                    */
                 }
                 logger.log('supabase:database', `Saved snapshot to ${saveTo.destination} ${_id}`)
             } catch (error) {
@@ -56,20 +47,20 @@ const AutoSaver = track(({saveTo}: AutoSaverProps) => {
         }
 
         let timeout: NodeJS.Timeout
-        const debouncedSave = () => {
+        const debouncedSave = (snapshot: TLEditorSnapshot) => {
             clearTimeout(timeout)
-            timeout = setTimeout(save, 1000)
+            timeout = setTimeout(() => save(snapshot), 1000)
         }
 
-        const listener = store.listen(({changes}) => {
-            debouncedSave()
+        const listener = editor?.store.listen(({changes}) => {
+            debouncedSave(editor.getSnapshot())
         }, {source: 'user', scope: 'document'})
     
         return () => {
             clearTimeout(timeout)
-            listener() // Removes the listener (returned from store.listen())
+            listener?.() // Removes the listener (returned from store.listen())
         }
-    }, [store, saveTo])
+    }, [editor, saveTo])
 
     return null
 })

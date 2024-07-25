@@ -18,7 +18,7 @@ interface DoneBtnProps {
  */
 export default function DoneBtn({ message }: DoneBtnProps) {
     const router = useRouter()
-    const { editor } = useTLEditor()
+    const { editor, snapshot } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const [loading, setLoading] = useState(false)
 
@@ -30,7 +30,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             router.push('/capsules')
             return
         }
-        const snapshot = editor.store.getSnapshot()
+
         try {
             await saveCapsuleSnapshot(capsuleId!, snapshot)
             router.push('/capsules')
@@ -40,7 +40,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             logger.error('react:component', 'Error saving snapshot', (error as Error).message)
             setLoading(false)
         }
-    }, [capsuleId, editor, router])
+    }, [capsuleId, editor, router, snapshot])
 
     return (
         <Button

@@ -1,15 +1,15 @@
 'use client'
-import { Editor, StoreSnapshot, TLRecord } from 'tldraw';
+import { Editor, StoreSnapshot, TLRecord, TLEditorSnapshot } from 'tldraw';
 import { createContext, useContext, useState, useEffect } from 'react';
 //import logger from '../_utils/logger';
 import debounce from '../_utils/debounce';
-import { react } from 'tldraw';
 
 
 type TLEditorContextType = {
     editor: Editor | undefined; // There is no editor until tldraw is ready
     setEditor: (editor: Editor) => void;
-    snapshot: StoreSnapshot<TLRecord> | undefined;
+    //snapshot: StoreSnapshot<TLRecord> | undefined;
+    snapshot: TLEditorSnapshot | undefined;
 };
 
 
@@ -26,21 +26,26 @@ const TLEditorContext = createContext<TLEditorContextType>(emptyTLEditorContext)
 export function TLEditorProvider({ children }: { children: React.ReactNode }) {
 
     const [editor, setEditor] = useState<Editor | undefined>(undefined);
-    const [snapshot, setSnapshot] = useState<StoreSnapshot<TLRecord> | undefined>(undefined);
+    //const [snapshot, setSnapshot] = useState<StoreSnapshot<TLRecord> | undefined>(undefined);
+    const [snapshot, setSnapshot] = useState<TLEditorSnapshot | undefined>(undefined);
 
     useEffect(() => {
         // Get the new snapshot
-        setSnapshot(editor?.store.getSnapshot());
+        setSnapshot(editor?.getSnapshot());
 
         // Create a debounced function to update the snapshot
-        const debouncedSetSnapshot = debounce((snapshot?: StoreSnapshot<TLRecord>) => {
+        const debouncedSetSnapshot = debounce((snapshot?: TLEditorSnapshot) => {
             setSnapshot(snapshot);
         }, 50)
 
         // React to the changes of the snapshot
-        react('new snapshot', () => {
-            debouncedSetSnapshot(editor?.store.getSnapshot());
-        });
+        const unlisten = editor?.store.listen(() => {
+            debouncedSetSnapshot(editor?.getSnapshot());
+        },{ scope: 'document', source: 'all' });
+
+        return () => {
+            unlisten?.();
+        }
 
     }, [editor]);
 
