@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import TopBarPortal from '../../_components/TopBarPortal';
 import MenuTabs from '../../_components/MenuTabs';
-import { Puzzle, Ellipsis, Presentation } from 'lucide-react';
+import { Puzzle, Ellipsis, FlaskRound } from 'lucide-react';
 import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
 import LoginBtnIfAnonymous from '@/app/[locale]/_components/LoginBtn';
@@ -53,7 +53,7 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
                         {/* MenuTabs for Mobile - it has a Home tab and a smaller padding */}
                         <Box display={{ initial: 'block', xs: 'none' }}>
                             <MenuTabs padding='3px' tabs={[
-                                { menu: undefined, label: 'Présentation', icon: <Presentation /> },
+                                { menu: undefined, label: 'Capsule', icon: <FlaskRound /> },
                                 { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
                                 { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
                             ]} />
