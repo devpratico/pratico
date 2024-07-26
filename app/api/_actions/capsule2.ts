@@ -1,12 +1,12 @@
 'use server'
 import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert } from "@/supabase/types/database.types"
-import { TLStoreSnapshot } from "tldraw";
+import { TLStoreSnapshot, TLEditorSnapshot } from "tldraw";
 import logger from "@/app/_utils/logger";
 
 
 export type Capsule = Tables<'capsules'>
-export type Snapshot = TLStoreSnapshot
+export type Snapshot = TLEditorSnapshot //TLStoreSnapshot
 
 
 export async function fetchCapsulesData(userId: string): Promise<Capsule[]> {
