@@ -13,7 +13,8 @@ import {
     createPresenceStateDerivation,
     react,
     TLInstancePresence,
-    throttle
+    throttle,
+    loadSnapshot
 } from 'tldraw';
 import { useEffect, useState } from "react";
 import logger from "@/app/_utils/logger";
@@ -48,7 +49,8 @@ export default function useBroadcastStore({roomId, initialSnapshot, broadcastPre
     // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
         const _store = createTLStore({shapeUtils: defaultShapeUtils})
-        if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
+        //if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
+        if (initialSnapshot) loadSnapshot(_store, initialSnapshot)
         return _store
     })
 
