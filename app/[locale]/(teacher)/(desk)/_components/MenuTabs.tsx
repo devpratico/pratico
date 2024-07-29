@@ -32,7 +32,7 @@ function removeSearchParam(searchParams: URLSearchParams, name: string) {
 /**
  * Returns the href for the tab. It is different if the tab is active or not.
  */
-function hrefFor(searchParams: URLSearchParams, pathname: string, menu: string) {
+export function hrefFor(searchParams: URLSearchParams, pathname: string, menu: string) {
     return searchParams.get('menu') == menu ?
         // If the tab is already active, remove the query parameter (closes the tab)
         pathname + '?' + removeSearchParam(searchParams, 'menu')

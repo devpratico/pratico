@@ -4,6 +4,7 @@ import { Box } from "@radix-ui/themes"
 import ActivitiesMenu from "./menus/ActivitiesMenu"
 import MoreMenu from "./menus/MoreMenu"
 import ParticipantMenu from "./menus/ParticipantsMenu"
+import DefilementMenu from "./menus/DefilementMenu"
 import ChatMenu from "./menus/ChatMenu"
 
 /**
@@ -21,6 +22,10 @@ export default function Menus() {
 
             <Box display={menu == 'participants' ? 'block' : 'none'}>
                 <ParticipantMenu />
+            </Box>
+
+            <Box display={menu == 'defilement' ? 'block' : 'none'}>
+                <DefilementMenu />
             </Box>
 
             <Box display={menu == 'chat' ? 'block' : 'none'}>

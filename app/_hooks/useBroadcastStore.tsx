@@ -49,7 +49,6 @@ export default function useBroadcastStore({roomId, initialSnapshot, broadcastPre
     // Initialize the store that will be returned
     const [store, setStore] = useState(() => {
         const _store = createTLStore({shapeUtils: defaultShapeUtils})
-        //if (initialSnapshot) _store.loadSnapshot(initialSnapshot)
         if (initialSnapshot) loadSnapshot(_store, initialSnapshot)
         return _store
     })

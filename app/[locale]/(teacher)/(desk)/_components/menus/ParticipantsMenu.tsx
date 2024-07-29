@@ -4,29 +4,34 @@ import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
 import { usePresences } from "@/app/_hooks/usePresences"
 import CollabSwitch from "./ui/CollabSwitch"
 import CollabSwitchGlobal from "./ui/CollabSwitchGlobal"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { Link, usePathname } from '@/app/_intl/intlNavigation'
+import { hrefFor } from '../MenuTabs'
 
 
 export default function ParticipantMenu() {
     const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
+    const pathName = usePathname()
+    const searchParams = useSearchParams()
 
     return (
         <>
             <Section size='1'>
 
-                {/*<Heading size='3' as="h3" mb='4' trim='both'>OPTIONS</Heading>*/}
-
                 <Flex direction='column' gap='2'>
-                    <Button variant='soft' size='3' color='gray'>
-                        <Flex justify='between' align='center' width='100%'>
-                            <Text wrap='nowrap'>Défilement</Text>
-                            <Box flexGrow='1'/>
-                            <Badge color='violet'>Animateur</Badge>
-                            <ChevronRight/>
-                        </Flex>
+
+                    <Button variant='soft' size='3' color='gray' asChild>
+                        <Link href={hrefFor(searchParams, pathName, 'defilement')} shallow={true}>
+                            <Flex justify='between' align='center' width='100%'>
+                                <Text wrap='nowrap'>Défilement</Text>
+                                <Box flexGrow='1'/>
+                                <Badge color='violet'>Animateur</Badge>
+                                <ChevronRight/>
+                            </Flex>
+                        </Link>
                     </Button>
 
                     <Button variant='soft' size='3' disabled>
@@ -44,24 +49,23 @@ export default function ParticipantMenu() {
             <Section size='1'>
                 {/*<Heading size='3' as="h3" mb='4' trim='both'>PARTICIPANTS</Heading>*/}
 
-                <Box width='100%'>
-                    <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} onValueChange={(value) => setTab(value as any)}>
 
-                        <SegmentedControl.Item value='collaborer'>
-                            <Flex align='center' gap='2'>
-                                <Pen size='20' color='var(--pink)'/>
-                                <Text>Collaborer</Text>
-                            </Flex>
-                        </SegmentedControl.Item>
+                <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
+                    <SegmentedControl.Item value='collaborer'>
+                        <Flex align='center' gap='2'>
+                            <Pen size='20' color='var(--pink)'/>
+                            <Text>Collaborer</Text>
+                        </Flex>
+                    </SegmentedControl.Item>
 
-                        <SegmentedControl.Item value='recompenser'>
-                            <Flex align='center' gap='2'>
-                                <Coins size='20' color='var(--orange)'/>
-                                <Text>Récompenser</Text>
-                            </Flex>
-                        </SegmentedControl.Item>
-                    </SegmentedControl.Root>
-                </Box>
+                    <SegmentedControl.Item value='recompenser'>
+                        <Flex align='center' gap='2'>
+                            <Coins size='20' color='var(--orange)'/>
+                            <Text>Récompenser</Text>
+                        </Flex>
+                    </SegmentedControl.Item>
+                </SegmentedControl.Root>
+
 
 
                 {
