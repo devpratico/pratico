@@ -12,11 +12,15 @@ interface CardDialogProps {
      */
     preventClose?: boolean
 
+    open?: boolean
+
+    setOpen?: (open: boolean) => void
+
     children: React.ReactNode
 }
 
-export default function CardDialog({trigger, preventClose=false, children}: CardDialogProps) {
-    const [open, setOpen] = useState(false)
+export default function CardDialog({trigger, preventClose=false, open, setOpen, children}: CardDialogProps) {
+    //const [open, setOpen] = useState(false)
     const viewPortWidth = window.innerWidth
     const topPosition = viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)'
 
