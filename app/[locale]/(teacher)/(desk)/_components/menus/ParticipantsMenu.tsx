@@ -5,7 +5,7 @@ import { usePresences } from "@/app/_hooks/usePresences"
 import CollabSwitch from "./ui/CollabSwitch"
 import CollabSwitchGlobal from "./ui/CollabSwitchGlobal"
 import { useParams, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, usePathname } from '@/app/_intl/intlNavigation'
 import { hrefFor } from '../MenuTabs'
 
@@ -16,6 +16,10 @@ export default function ParticipantMenu() {
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
     const pathName = usePathname()
     const searchParams = useSearchParams()
+
+    useEffect(() => {
+        console.log(presences)
+    }, [presences])
 
     return (
         <>

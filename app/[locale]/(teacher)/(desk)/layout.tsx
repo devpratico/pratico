@@ -8,6 +8,8 @@ import { TLEditorProvider } from "@/app/_hooks/useTLEditor"
 import { NavProvider } from "@/app/_hooks/useNav"
 import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 import MobileControls from "./_components/MobileControls"
+import { PresencesProvider } from "@/app/_hooks/usePresences"
+import { RoomProvider } from "@/app/_hooks/useRoom"
 
 
 
@@ -15,6 +17,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <TLEditorProvider>
         <NavProvider>
+        <PresencesProvider>
+        <RoomProvider>
             {/**
              * Top bar, as defined in the parent layout
              * It is empty because the content is defined in the children
@@ -68,6 +72,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 
 
             </Grid>
+        </RoomProvider>
+        </PresencesProvider>
         </NavProvider>
         </TLEditorProvider>
     )

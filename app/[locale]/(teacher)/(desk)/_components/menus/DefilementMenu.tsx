@@ -17,7 +17,7 @@ export default function DefilementMenu() {
 
 
                 <Button variant='ghost' size='2' mb='8' style={{boxSizing: 'border-box'}} asChild>
-                    <Link href={hrefFor(searchParams, pathName, 'participants')} shallow={true}>
+                    <Link href={hrefFor(searchParams, pathName, 'participants')} shallow={false}>
                         <ChevronLeft />Participants
                     </Link>
                 </Button>

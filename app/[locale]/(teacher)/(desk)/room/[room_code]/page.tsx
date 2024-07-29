@@ -7,12 +7,13 @@ import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { RoomProvider } from "@/app/_hooks/useRoom";
 
 
+
 export default function Page({ params: { room_code } }: { params: { room_code: string } }) {
     return (
         <RoomProvider>
             <TopBarPortal>
                 <Flex justify={{initial:'center', xs:'between'}} align='center'>
-                    
+                        
                     <Flex align='center' gap='4' display={{ initial: 'none', xs: 'flex' }}>
                         <Box >Logo</Box>
 
@@ -21,7 +22,7 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
                         <CardDialog trigger={<IconButton><QrCode /></IconButton>}>
                             <p>Hello</p>
                         </CardDialog>
-                 
+                
                     </Flex>
 
                     <MenuTabs tabs={[
@@ -30,10 +31,13 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
                         { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
                         { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
                     ]} />
+
                 </Flex>
+
             </TopBarPortal>
 
             <TeacherCanvas roomCode={room_code} />
+
         </RoomProvider>
     )
 }

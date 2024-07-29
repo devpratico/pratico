@@ -1,7 +1,7 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box } from '@radix-ui/themes';
-import { signInAnonymously, setNames } from '../../login/_actions/actions';
+import { signInAnonymously, setNames } from '@/app/api/_actions/auth';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -30,7 +30,7 @@ export default function StudentForm() {
                     router.push(nextUrl);
                 } else {
                     logger.error('next:page', 'No nextUrl found in query params');
-                    router.push('/room');
+                    router.push('/classroom');
                 }
 
             } catch (error) {
