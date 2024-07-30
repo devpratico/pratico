@@ -22,10 +22,6 @@ interface StudentCanvasProps {
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
-    //const [canCollab, setCanCollab] = useState(false)
-    useEffect(() => {
-        console.log('canCollab', canCollab)
-    }, [canCollab])
 
     // TODO: remove the server side fetch and use a server action
     useEffect(() => {

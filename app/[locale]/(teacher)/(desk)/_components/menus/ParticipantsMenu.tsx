@@ -17,10 +17,6 @@ export default function ParticipantMenu() {
     const pathName = usePathname()
     const searchParams = useSearchParams()
 
-    useEffect(() => {
-        console.log(presences)
-    }, [presences])
-
     return (
         <>
             <Section size='1'>
