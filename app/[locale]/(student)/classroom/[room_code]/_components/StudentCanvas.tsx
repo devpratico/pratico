@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import { Box } from "@radix-ui/themes";
+import useWindow from "@/app/_hooks/useWindow";
 
 
 interface StudentCanvasProps {
@@ -20,7 +21,9 @@ interface StudentCanvasProps {
 }
 
 
+// TODO: Put the toolbar in the page or a layout
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
+    const { widerThan } = useWindow()
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
@@ -49,20 +52,13 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
             store={store}
         >
 
-            {/* For Desktop, show toolbar on collab with correct resizer */}
+            {/* Show toolbar only on desktop */}
             <Box display={{initial: 'none', xs: 'block'}}>
-                {canCollab && 
-                    <>
-                        <ToolBar />
-                        <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 60 : 0 }} margin={10} />
-                    </>
-                }
+                {canCollab &&  <ToolBar />}
             </Box>
 
-            {/* For Mobile, don't show toolbar and resize differently */}
-            <Box display={{initial: 'block', xs: 'none'}}>
-                <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
-            </Box>
+
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: (canCollab && widerThan('xs')) ? 60 : 0 }} margin={10} />
 
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
             <NavigatorSync />
@@ -75,7 +71,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
 
 function ToolBar() {
     return (
-        <div style={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', left: '10px', zIndex: 1000 }}>
+        <div style={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', left: '10px', zIndex: 1 }}>
             <TLToolbar />
         </div>
     )
