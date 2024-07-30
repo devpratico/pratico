@@ -13,8 +13,8 @@ import {
     useKeyboardShortcuts,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
-import Background from './custom-ui/Background/Background'
-import CanvasArea from './custom-ui/CanvasArea/CanvasArea'
+import Background from './custom-ui/Background'
+import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/_hooks/useTLEditor'
 import { useCallback } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
@@ -58,6 +58,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
+
+        editor.setCameraOptions({
+            wheelBehavior: 'none'
+        })
 
         
         /**
