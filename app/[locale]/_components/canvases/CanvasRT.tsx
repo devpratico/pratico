@@ -2,10 +2,10 @@
 import Canvas from "./Canvas";
 import useBroadcastStore from "@/app/_hooks/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
-import  AutoSaver from "./custom-ui/AutoSaver/AutoSaver";
+import  AutoSaver from "./custom-ui/AutoSaver";
 import { useRoom } from "@/app/_hooks/useRoom";
 import { useMemo } from "react";
-import Resizer from "./custom-ui/Resizer/Resizer";
+import Resizer from "./custom-ui/Resizer";
 import { CanvasUser } from "./Canvas";
 
 

@@ -1,11 +1,11 @@
 'use client'
 import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
-import AutoSaver from "@/app/[locale]//_components/canvases/custom-ui/AutoSaver/AutoSaver";
+import AutoSaver from "@/app/[locale]//_components/canvases/custom-ui/AutoSaver";
 import { useParams } from "next/navigation";
 import { fetchCapsuleSnapshot } from "@/app/api/_actions/room2";
 import { useEffect, useState } from "react";
-import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer/Resizer";
+import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
 //import { CanvasUser } from "../../../_components/canvases/Canvas";
 //import { fetchUser, fetchNames } from "@/app/api/_actions/user";
 //import { getRandomColor } from "@/app/_utils/codeGen";

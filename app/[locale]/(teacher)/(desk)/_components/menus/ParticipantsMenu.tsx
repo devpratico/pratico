@@ -47,7 +47,6 @@ export default function ParticipantMenu() {
             </Section>
 
             <Section size='1'>
-                {/*<Heading size='3' as="h3" mb='4' trim='both'>PARTICIPANTS</Heading>*/}
 
 
                 <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
@@ -87,7 +86,7 @@ export default function ParticipantMenu() {
                             <Info size='20' />
                         </Callout.Icon>
                         <Callout.Text>
-                            Bientôt, vous pourrez récompenser les participants pour leur participation.
+                            Bientôt, vous pourrez récompenser les participants.
                         </Callout.Text>
                     </Callout.Root>
                 }
