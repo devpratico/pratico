@@ -23,7 +23,10 @@ export default function StartDialog() {
     }, [setBaseUrl])
 
     return (
-        <CardDialog trigger={<IconButton><QrCode /></IconButton>} open={open} setOpen={setOpen}>
+        <CardDialog
+            open={open} setOpen={setOpen}
+            trigger={<IconButton style={{backgroundColor:'transparent'}}><QrCode /></IconButton>}
+        >
 
             <Grid
                 columns={{ initial: '1', xs: '2' }}
