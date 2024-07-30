@@ -30,7 +30,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     const snapshot = room?.capsule_snapshot || undefined
 
     return (
-        <main style={{ height: '100dvh' }}>
+        <main style={{ height: '100dvh', backgroundColor:'black' }}>
             <RoomProvider>
                 <PresencesProvider>
                     <StudentCanvas user={user} snapshot={snapshot} />
