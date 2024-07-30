@@ -1,7 +1,7 @@
 import MenuTabs from "../../_components/MenuTabs"
 import { Flex, Box, IconButton, Text } from "@radix-ui/themes"
 import TopBarPortal from "../../_components/TopBarPortal"
-import { Puzzle, MessageSquareText, Users, Ellipsis, QrCode } from 'lucide-react';
+import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
 import CardDialog from "../../_components/CardDialog";
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { RoomProvider } from "@/app/_hooks/useRoom";
@@ -35,12 +35,27 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
                 
                     </Flex>
 
-                    <MenuTabs tabs={[
-                        { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
-                        { menu: 'participants', label: 'Participants', icon: <Users /> },
-                        { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
-                        { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
-                    ]} />
+                    {/* MenuTabs for Desktop */}
+                    <Box display={{ initial: 'none', xs: 'block' }}>
+                        <MenuTabs tabs={[
+                            { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
+                            { menu: 'participants', label: 'Participants', icon: <Users /> },
+                            { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
+                            { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
+                        ]} />
+                    </Box>
+
+                    {/* MenuTabs for Mobile - it has a Home tab and a smaller padding */}
+                    <Box display={{ initial: 'block', xs: 'none' }}>
+                        <MenuTabs padding='3px' tabs={[
+                            { menu: undefined, label: 'Capsule', icon: <FlaskRound /> },
+                            { menu: 'activities', label: 'Activités', icon: <Puzzle /> },
+                            { menu: 'participants', label: 'Participants', icon: <Users /> },
+                            { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
+                            { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
+                        ]} />
+                    </Box>
+                        
 
                 </Flex>
 
