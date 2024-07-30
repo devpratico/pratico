@@ -8,9 +8,14 @@ import { RoomProvider } from '@/app/_hooks/useRoom'
 import { PresencesProvider } from '@/app/_hooks/usePresences'
 import { NavProvider } from '@/app/_hooks/useNav'
 import { TLEditorProvider } from '@/app/_hooks/useTLEditor'
+import { Viewport } from 'next'
 
 
-// TODO: Simplify that mess? No need to use a server component to fetch data to pass to client components
+export const viewport: Viewport = {
+    themeColor: 'black',
+    maximumScale: 1,
+    userScalable: false,
+}
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const userId = (await fetchUser()).id

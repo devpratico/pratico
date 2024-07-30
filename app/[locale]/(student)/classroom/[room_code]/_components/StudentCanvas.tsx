@@ -11,6 +11,7 @@ import { useRoom } from "@/app/_hooks/useRoom";
 import { useState, useEffect } from "react";
 import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { setUserPreferences } from "tldraw";
+import { Box } from "@radix-ui/themes";
 
 
 interface StudentCanvasProps {
@@ -47,10 +48,25 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
             //user={user}
             store={store}
         >
-            {canCollab && <ToolBar />}
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 60 : 0 }} margin={10} />
+
+            {/* For Desktop, show toolbar on collab with correct resizer */}
+            <Box display={{initial: 'none', xs: 'block'}}>
+                {canCollab && 
+                    <>
+                        <ToolBar />
+                        <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 60 : 0 }} margin={10} />
+                    </>
+                }
+            </Box>
+
+            {/* For Mobile, don't show toolbar and resize differently */}
+            <Box display={{initial: 'block', xs: 'none'}}>
+                <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
+            </Box>
+
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
             <NavigatorSync />
+            
         </Canvas>
     )
 }
