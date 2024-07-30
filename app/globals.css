@@ -9,3 +9,8 @@
     --cursor-button: pointer !important;
     --cursor-checkbox: pointer !important;
 }
+
+/* Removes default weird focus outline on tldraw component */
+.tl-container__focused {
+    outline: none !important;
+}
