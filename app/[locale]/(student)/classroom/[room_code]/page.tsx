@@ -6,6 +6,8 @@ import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '@/app/api/_actions/room3'
 import { RoomProvider } from '@/app/_hooks/useRoom'
 import { PresencesProvider } from '@/app/_hooks/usePresences'
+import { NavProvider } from '@/app/_hooks/useNav'
+import { TLEditorProvider } from '@/app/_hooks/useTLEditor'
 
 
 // TODO: Simplify that mess? No need to use a server component to fetch data to pass to client components
@@ -33,7 +35,11 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         <main style={{ height: '100dvh', backgroundColor:'black' }}>
             <RoomProvider>
                 <PresencesProvider>
-                    <StudentCanvas user={user} snapshot={snapshot} />
+                    <TLEditorProvider>
+                    <NavProvider>
+                        <StudentCanvas user={user} snapshot={snapshot} />
+                    </NavProvider>
+                    </TLEditorProvider>
                 </PresencesProvider>
             </RoomProvider>
         </main>

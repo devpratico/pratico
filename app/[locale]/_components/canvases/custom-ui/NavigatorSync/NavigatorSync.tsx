@@ -1,7 +1,6 @@
 'use client'
 import { useEditor, useComputed, useValue } from 'tldraw'
 import { useRoom } from '@/app/_hooks/useRoom'
-import { RoomParams } from '@/app/api/_actions/room2'
 import { useEffect, useMemo } from 'react'
 import logger from '@/app/_utils/logger'
 

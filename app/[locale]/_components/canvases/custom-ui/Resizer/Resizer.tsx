@@ -3,7 +3,6 @@ import { useEffect, useMemo, useCallback } from "react"
 import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/app/_utils/tldraw/zoomToBounds"
 import logger from "@/app/_utils/logger"
-//import useWindow from "@/app/_hooks/useWindow"
 import { useNav } from "@/app/_hooks/useNav"
 
 
@@ -20,20 +19,7 @@ interface ResizerProps {
  */
 export default function Resizer({ insets, margin }: ResizerProps) {
     const editor = useEditor()
-    //const { isMobile, orientation } = useWindow()
     const { currentPageId } = useNav()
-
-    
-    /*
-    const insets = useMemo(() => {
-        if (isMobile && orientation === 'landscape') {
-            return {top: 0, right: 50, bottom: 0, left: 50}
-        } else if (isMobile && orientation === 'portrait') {
-            return {top: 0, right: 0, bottom: 0, left: 0}
-        } else {
-            return {top: 60, right: 0, bottom: 70, left: 60}
-        }
-    }, [isMobile, orientation])*/
 
 
     const updateSize = useCallback(() => {
@@ -42,7 +28,12 @@ export default function Resizer({ insets, margin }: ResizerProps) {
         logger.log('tldraw:editor', 'Resized')
     }, [editor, insets, margin])
 
+    // Update size on mount
+    useEffect(() => {
+        updateSize()
+    }, [updateSize])
 
+    // Update size on window resize
     useEffect(() => {
         let timeout: NodeJS.Timeout
         const debouncedUpdateSize = () => {
@@ -50,15 +41,18 @@ export default function Resizer({ insets, margin }: ResizerProps) {
             timeout = setTimeout(updateSize, 10)
         }
 
-        updateSize()
         window.addEventListener('resize', debouncedUpdateSize);
-        //window.addEventListener('resize', updateSize)
+
         return () => {
             window.removeEventListener('resize', debouncedUpdateSize)
             clearTimeout(timeout)
-            //window.removeEventListener('resize', updateSize)
         }
-    }, [currentPageId, insets, updateSize]) // TODO: there's a dependency array warning here
+    }, [updateSize])
+
+    // Update size when the current page changes
+    useEffect(() => {
+        updateSize()
+    }, [currentPageId, updateSize])
 
     return null
 }
