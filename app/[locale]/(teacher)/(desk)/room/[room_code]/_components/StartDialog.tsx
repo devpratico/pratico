@@ -24,39 +24,53 @@ export default function StartDialog() {
 
     return (
         <CardDialog trigger={<IconButton><QrCode /></IconButton>} open={open} setOpen={setOpen}>
-            <Grid columns='2' rows='1' p='5' style={{width:'100%', height:'100%'}}>
-                <QRCode value={link} size={200} style={{ height: "100%", width: "100%" }} />
 
-                    <Flex direction='column'  align='center' gap='3'>
+            <Grid
+                columns={{ initial: '1', xs: '2' }}
+                rows='1'
+                p='5'
+                width='100%'
+                height='100%'
+            >
 
-                    <Box height='100%' />
+                <Box display={{ initial: 'none', xs: 'block' }}>
+                    <QRCode value={link} size={200} style={{ height: "100%", width: "100%" }} />
+                </Box>
 
-                    <Image src='/illustrations/rocket.svg' height={100} width={100} alt='rocket' style={{minWidth:'40%', minHeight:'40%'}}/>
+                <Flex direction='column'  align='center' gap='3' justify='between'>
+
+
+                    <Box position='relative' width='100%' height='40%'>
+                        <Image src='/illustrations/rocket.svg' alt='rocket' layout='fill' objectFit='contain' />
+                    </Box>
 
                     <Heading size='8' align='center'>{`La session est en cours`}</Heading>
-                    <Text align='center'>{`Envoyez le lien suivant aux participants :`}</Text>
 
-                    <Flex align='center' gap='3'>
-                        <Text align='center' ><Code size='5'>{link}</Code></Text>
-                        <TooltipL content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
-                            <IconButton
-                                variant='ghost'
-                                tabIndex={-1}
-                                onClick={() => {
-                                    navigator.clipboard.writeText(link)
-                                    setShowCopied(true)
-                                    setCopyMessage('Copié !')
-                                    setTimeout(() => {
-                                        setShowCopied(false)
-                                        setCopyMessage('Copier')
-                                }, 2000)
-                            }}>
-                                <Copy size={16} />
-                            </IconButton>
-                        </TooltipL>
+                    <Flex direction='column' align='center'>
+                        <Text align='center'>{`Envoyez le lien suivant aux participants :`}</Text>
+
+                        <Flex align='center' gap='3'>
+                            <Text align='center' ><Code size='5'>{link}</Code></Text>
+                            <TooltipL content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
+                                <IconButton
+                                    variant='ghost'
+                                    tabIndex={-1}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(link)
+                                        setShowCopied(true)
+                                        setCopyMessage('Copié !')
+                                        setTimeout(() => {
+                                            setShowCopied(false)
+                                            setCopyMessage('Copier')
+                                    }, 2000)
+                                }}>
+                                    <Copy size={16} />
+                                </IconButton>
+                            </TooltipL>
+                        </Flex>
                     </Flex>
 
-                    <Box height='100%' />
+
 
                     <TooltipL content='Bientôt' side='left'>
                         <Flex as='span' gap='2' align='center'>
@@ -65,13 +79,13 @@ export default function StartDialog() {
                         </Flex>
                     </TooltipL>
 
-                    <Box height='100%' />
+
 
                     <Button size='4' id='OkBtn' onClick={() => setOpen(false)}>
                         {`C'est parti !`}
                     </Button>
 
-                    <Box height='100%' />
+
 
                 </Flex>
 
