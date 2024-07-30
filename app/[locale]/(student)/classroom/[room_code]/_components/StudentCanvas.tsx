@@ -52,7 +52,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
             store={store}
         >
             {canCollab && <ToolBar />}
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 70 : 0 }} margin={10} />
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: canCollab ? 60 : 0 }} margin={10} />
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
             <NavigatorSync />
         </Canvas>
