@@ -17,7 +17,7 @@ const MobileToolbar = track(() => {
     }, [editor])
 
     return (
-        <Card variant='classic'>
+        <Card variant='classic' style={{width:'100%'}}>
             <Flex justify='between'>
 
                 <IconButton

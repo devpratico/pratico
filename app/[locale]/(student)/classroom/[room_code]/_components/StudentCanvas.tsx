@@ -1,7 +1,7 @@
 'use client'
 import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import useBroadcastStore from "@/app/_hooks/useBroadcastStore";
-import { TLStoreSnapshot } from "tldraw";
+import { T, TLStoreSnapshot } from "tldraw";
 import TLToolbar from "@/app/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/[locale]/_components/canvases/custom-ui/AutoSaver";
 import NavigatorSync from "@/app/[locale]/_components/canvases/custom-ui/NavigatorSync";
@@ -13,6 +13,8 @@ import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import { Box } from "@radix-ui/themes";
 import useWindow from "@/app/_hooks/useWindow";
+import { ToolbarBox } from "../layout";
+import MobileToolbar from "@/app/[locale]/(teacher)/(desk)/_components/MobileToolbar";
 
 
 interface StudentCanvasProps {
@@ -47,32 +49,16 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     }, [canCollab, editor])
 
     return (
-        <Canvas
-            //user={user}
-            store={store}
-        >
+        <>
+            <ToolbarBox>
+                { canCollab && (widerThan('xs') ? <TLToolbar /> : <MobileToolbar />)}
+            </ToolbarBox>
 
-            {/* Show toolbar only on desktop */}
-            <Box display={{initial: 'none', xs: 'block'}}>
-                {canCollab &&  <ToolBar />}
-            </Box>
-
-
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: (canCollab && widerThan('xs')) ? 60 : 0 }} margin={10} />
-
-            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
-            <NavigatorSync />
-            
-        </Canvas>
-    )
-}
-
-
-
-function ToolBar() {
-    return (
-        <div style={{ position: 'absolute', height: '100%', display: 'flex', alignItems: 'center', left: '10px', zIndex: 1 }}>
-            <TLToolbar />
-        </div>
+            <Canvas store={store}>
+                <Resizer />
+                <NavigatorSync />
+                { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
+            </Canvas>
+        </>
     )
 }
