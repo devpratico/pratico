@@ -14,3 +14,8 @@
 .tl-container__focused {
     outline: none !important;
 }
+
+/* Fixes z-index issue with tldraw component */
+.tl-canvas {
+    z-index: 1 !important;
+}
