@@ -4,8 +4,9 @@ import getTldrawState from "@/app/_utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/app/_utils/tldraw/toolBarState"
 import * as tlDispatch from '@/app/_utils/tldraw/toolbarDispatch'
 import ToolBar from "@/app/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar/ToolBar"
-import { useTLEditor } from "@/app/[locale]/_hooks/useTLEditor"
+import { useTLEditor } from "@/app/_hooks/useTLEditor"
 import { useCallback } from "react"
+import logger from "@/app/_utils/logger"
 
 /*
 /**
@@ -17,7 +18,10 @@ const  TLToolbar = track(() => {
     const { editor } = useTLEditor()
 
     const dispatch = useCallback((action: string, payload: string) => {
-        if (!editor) return
+        if (!editor) {
+            logger.warn('react:hook', 'TLToolbar', 'dispatch', 'editor is not defined')
+            return
+        }
         tlDispatch.toolbarDispatch({editor, action, payload})
     }, [editor])
        

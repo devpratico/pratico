@@ -1,15 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
 import { luciole } from '../Fonts'
-import { DisableProvider } from './_hooks/useDisable';
+import { DisableProvider } from '@/app/_hooks/useDisable';
 
 
 export const metadata: Metadata = {
     title: 'Pratico',
     description: '',
+}
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    viewportFit: 'cover',
+    themeColor: 'var(--accent-10)',
 }
 
 interface RootLayoutProps {
@@ -22,7 +28,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <Theme accentColor="violet">
+                <Theme accentColor="violet" appearance='light' panelBackground='solid'>
                     <DisableProvider>
                         {children}
                     </DisableProvider>

@@ -13,9 +13,9 @@ import {
     useKeyboardShortcuts,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
-import Background from './custom-ui/Background/Background'
-import CanvasArea from './custom-ui/CanvasArea/CanvasArea'
-import { useTLEditor } from '@/app/[locale]/_hooks/useTLEditor'
+import Background from './custom-ui/Background'
+import CanvasArea from './custom-ui/CanvasArea'
+import { useTLEditor } from '@/app/_hooks/useTLEditor'
 import { useCallback } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
@@ -59,6 +59,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             onMount(editor)
         }
 
+        editor.setCameraOptions({
+            wheelBehavior: 'none'
+        })
+
         
         /**
          * Set the user preferences
@@ -75,13 +79,14 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         })
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
 
-        editor.updateInstanceState({ canMoveCamera: false })
+        //editor.updateInstanceState({ canMoveCamera: false })
         editor.setStyleForNextShapes(DefaultColorStyle, "black");
         editor.setStyleForNextShapes(DefaultSizeStyle , "m");
     }, [setEditor, onMount])
 
     return (
         <Tldraw
+            className='tldraw-canvas'
             hideUi={true}
             onMount={handleMount}
             components={{Background: Background, OnTheCanvas: CanvasArea}}

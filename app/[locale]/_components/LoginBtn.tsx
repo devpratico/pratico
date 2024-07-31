@@ -1,28 +1,37 @@
-'use client'
-import { Button } from "@radix-ui/themes"
-import { useRouter } from "@/app/_intl/intlNavigation"
-import { useDisable } from "../_hooks/useDisable"
+import { Button, Spinner, BoxProps, Box } from "@radix-ui/themes"
+import { Link } from "@/app/_intl/intlNavigation"
+import { isUserAnonymous } from "../login/_actions/actions"
+import { Suspense } from "react"
 
 
-interface LoginBtnProps {
-    message: string;
+type LoginBtnProps = BoxProps & {
     nextUrl?: string;
 }
 
-export default function LoginBtn({ message, nextUrl }: LoginBtnProps) {
-    const router = useRouter()
-    const { disabled } = useDisable()
 
+export function LoginBtn({ nextUrl, ...props }: LoginBtnProps) {
     return (
-        <Button
-            variant='solid'
-            radius='large'
-            color='yellow'
-            style={{ backgroundColor: 'var(--yellow)' }}
-            disabled={disabled}
-            onClick={() => router.push('/login' + (nextUrl ? '?nextUrl=' + nextUrl : ''))}
-        >
-            {message}
-        </Button>
+        <Box {...props}>
+            <Button color='yellow' style={{ backgroundColor: 'var(--yellow)' }} asChild>
+                <Link href={'/login' + (nextUrl ? '?nextUrl=' + nextUrl : '')}>
+                    se connecter
+                </Link>
+            </Button>
+        </Box>
+    )
+}
+
+
+async function LoginBtnIfAnonymousS({ nextUrl, ...props }: LoginBtnProps) {
+    const isAnonymous = await isUserAnonymous()
+    return isAnonymous ? <LoginBtn nextUrl={nextUrl} {...props} /> : null
+}
+
+
+export default function LoginBtnIfAnonymous({ nextUrl, ...props }: LoginBtnProps) {
+    return (
+        <Suspense fallback={<Spinner />}>
+            <LoginBtnIfAnonymousS nextUrl={nextUrl} {...props} />
+        </Suspense>
     )
 }

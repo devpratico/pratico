@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@tldraw/editor@2.1.4':
-    hash: pl656xy35tzbmpvfqpuhtxyeza
-    path: patches/@tldraw__editor@2.1.4.patch
-
 importers:
 
   .:
@@ -71,8 +66,8 @@ importers:
         specifier: ^2.43.2
         version: 2.43.4
       lucide-react:
-        specifier: ^0.395.0
-        version: 0.395.0(react@18.3.1)
+        specifier: ^0.416.0
+        version: 0.416.0(react@18.3.1)
       next:
         specifier: ^14.2.3
         version: 14.2.3(@babel/core@7.24.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -95,8 +90,8 @@ importers:
         specifier: ^15.6.0
         version: 15.8.0
       tldraw:
-        specifier: ^2.1.4
-        version: 2.1.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.4.1
+        version: 2.4.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@storybook/addon-essentials':
         specifier: ^8.1.1
@@ -2398,32 +2393,35 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@tldraw/editor@2.1.4':
-    resolution: {integrity: sha512-zeifkXS//2X/oonr2YYIIrRt6PRwri6c60sPzx0djhNK5LC9b0um8Lu1lLcIZip468WEeBYpcc9cPui1OXi7qQ==}
+  '@tldraw/editor@2.4.1':
+    resolution: {integrity: sha512-3/ti+qJWkak4jlP/jmHTd/2PK8amYLyPyb6GuCCtjMhKsCHOlEHc3BIdzdx3ldIE3cAAx7qYHS328RcWituB0Q==}
     peerDependencies:
       react: ^18
       react-dom: ^18
 
-  '@tldraw/state@2.1.4':
-    resolution: {integrity: sha512-eLgeIz76hobnOhvBobeo3iYhEpsNVH7ozUYyH4VIYFfNy9TuRi7klAJ55bA86iCNAnBIgqhXvsCn5VDlVu9rTA==}
+  '@tldraw/state-react@2.4.1':
+    resolution: {integrity: sha512-K9PL2N/9e9cbbgx9H+yq1EOehNUpjXOItapEDewMF4UJT0r6EjRXTdfdUoL6O+EYabfQuDGTR67pLbfbTDfEbw==}
     peerDependencies:
       react: ^18
 
-  '@tldraw/store@2.1.4':
-    resolution: {integrity: sha512-g9jYNObGVgd4TXKDCSLm4Hs0xKYPVQVq6hSGL6zY26EYvpa7RV1JQ6vc+gO3da/NtaYsLBJ0UoXpb61e/hyumQ==}
+  '@tldraw/state@2.4.1':
+    resolution: {integrity: sha512-yaNkHr3yCf+F3txpYD+50UaPvM7fQIFX+Q9XMWwKjEjDnNOEjynOxn7Ehct9hgv8FyCVLihNVVNSItn90/Zctg==}
+
+  '@tldraw/store@2.4.1':
+    resolution: {integrity: sha512-dSpeUZN94JOzvevAX5bRnZpiDI/Klv+dzJkzGDp2T++tDN4O+HjQ5HfaTfsy02XgduOLK4REQKL+9lXn2NWxCg==}
     peerDependencies:
       react: ^18
 
-  '@tldraw/tlschema@2.1.4':
-    resolution: {integrity: sha512-IRb7AJmsvMFQl2G+BXB3eWdWX053KwLryHq+UI4FmJ/Xl0M6td9b3XZcv33UpwRrhsZISM97xRKCuglLuKu9nA==}
+  '@tldraw/tlschema@2.4.1':
+    resolution: {integrity: sha512-zMs+3MUBqf8rlN1Ras0Ck6lB2xq8sHvU5NZrY18wsB3iK9e6SBLcy9WT+JNA433BuvTFbONo2sbIa4GPcXNkhg==}
     peerDependencies:
       react: ^18
 
-  '@tldraw/utils@2.1.4':
-    resolution: {integrity: sha512-C1py+hHpLdqTLWraua4f4U1FRonQtwzTJozeOpKZbmBaYT5x6I6WtNKBZpAIY752HCbj0CnoMDf7oY8Mf1TkpA==}
+  '@tldraw/utils@2.4.1':
+    resolution: {integrity: sha512-FtHnoy/Aj8Q9hyX5ud+uE9W0vxpo+Yrzr/GT+weQHSCzjt7gkQQvKbHizu8ykksCuS/wuzehGWM4LGrDtbGdzg==}
 
-  '@tldraw/validate@2.1.4':
-    resolution: {integrity: sha512-m1GUyCzaInw1USaMVaIPSnYbEbPPusNcpi91ql05DCDUnHO28XI+C7LNBQ+kWk2Z7LNtvrtCwD3N80xaSEPIzg==}
+  '@tldraw/validate@2.4.1':
+    resolution: {integrity: sha512-PaWM6L5jvxeglqz/BLte7+Nhne9db1dFRnJS9Ts+ka7EvhqPvble9jWOk/HhSHhB25QeqBeo0Re5MCBtib3H1w==}
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -4935,10 +4933,10 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@0.395.0:
-    resolution: {integrity: sha512-6hzdNH5723A4FLaYZWpK50iyZH8iS2Jq5zuPRRotOFkhu6kxxJiebVdJ72tCR5XkiIeYFOU5NUawFZOac+VeYw==}
+  lucide-react@0.416.0:
+    resolution: {integrity: sha512-wPWxTzdss1CTz2aqcNWNlbh4YSnH9neJWP3RaeXepxpLCTW+pmu7WcT/wxJe+Q7Y7DqGOxAqakJv0pIK3431Ag==}
     peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -5554,8 +5552,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+  prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6326,8 +6324,8 @@ packages:
     resolution: {integrity: sha512-KYad6Vy5VDWV4GH3fjpseMQ/XU2BhIYP7Vzd0LG44qRWm/Yt2WCOTicFdvmgo6gWaqooMQCawTtILVQJupKu7A==}
     engines: {node: '>=14.0.0'}
 
-  tldraw@2.1.4:
-    resolution: {integrity: sha512-ApmZW7HcP4w2ixJyvGkE3ZJyQ7gu8Fgc6qTiGVbu7zyOBo+0bABahOTf1dMY5xM+BLIwyWf+znlazAmtqKMb3Q==}
+  tldraw@2.4.1:
+    resolution: {integrity: sha512-oo07//cQZ5W7ovheiw30KOwawrQryLYnTD/8QwzaF/Bgqf4Oz0RmrOMLVd1R3pJzx1RsS7ArloyWS2Aae6p2Vw==}
     peerDependencies:
       react: ^18
       react-dom: ^18
@@ -9322,7 +9320,7 @@ snapshots:
       node-fetch: 2.7.0
       picomatch: 2.3.1
       pkg-dir: 5.0.0
-      prettier-fallback: prettier@3.3.2
+      prettier-fallback: prettier@3.3.3
       pretty-hrtime: 1.0.3
       resolve-from: 5.0.0
       semver: 7.6.2
@@ -9832,13 +9830,14 @@ snapshots:
     dependencies:
       '@testing-library/dom': 9.3.4
 
-  '@tldraw/editor@2.1.4(patch_hash=pl656xy35tzbmpvfqpuhtxyeza)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tldraw/editor@2.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@tldraw/state': 2.1.4(react@18.3.1)
-      '@tldraw/store': 2.1.4(react@18.3.1)
-      '@tldraw/tlschema': 2.1.4(react@18.3.1)
-      '@tldraw/utils': 2.1.4
-      '@tldraw/validate': 2.1.4
+      '@tldraw/state': 2.4.1
+      '@tldraw/state-react': 2.4.1(react@18.3.1)
+      '@tldraw/store': 2.4.1(react@18.3.1)
+      '@tldraw/tlschema': 2.4.1(react@18.3.1)
+      '@tldraw/utils': 2.4.1
+      '@tldraw/validate': 2.4.1
       '@types/core-js': 2.5.8
       '@use-gesture/react': 10.3.1(react@18.3.1)
       classnames: 2.5.1
@@ -9846,38 +9845,42 @@ snapshots:
       eventemitter3: 4.0.7
       idb: 7.1.1
       is-plain-object: 5.0.0
-      lodash.throttle: 4.1.1
-      lodash.uniq: 4.5.0
       nanoid: 4.0.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@tldraw/state@2.1.4(react@18.3.1)':
+  '@tldraw/state-react@2.4.1(react@18.3.1)':
     dependencies:
+      '@tldraw/state': 2.4.1
       react: 18.3.1
 
-  '@tldraw/store@2.1.4(react@18.3.1)':
+  '@tldraw/state@2.4.1': {}
+
+  '@tldraw/store@2.4.1(react@18.3.1)':
     dependencies:
-      '@tldraw/state': 2.1.4(react@18.3.1)
-      '@tldraw/utils': 2.1.4
+      '@tldraw/state': 2.4.1
+      '@tldraw/utils': 2.4.1
       lodash.isequal: 4.5.0
       nanoid: 4.0.2
       react: 18.3.1
 
-  '@tldraw/tlschema@2.1.4(react@18.3.1)':
+  '@tldraw/tlschema@2.4.1(react@18.3.1)':
     dependencies:
-      '@tldraw/state': 2.1.4(react@18.3.1)
-      '@tldraw/store': 2.1.4(react@18.3.1)
-      '@tldraw/utils': 2.1.4
-      '@tldraw/validate': 2.1.4
+      '@tldraw/state': 2.4.1
+      '@tldraw/store': 2.4.1(react@18.3.1)
+      '@tldraw/utils': 2.4.1
+      '@tldraw/validate': 2.4.1
       nanoid: 4.0.2
       react: 18.3.1
 
-  '@tldraw/utils@2.1.4': {}
-
-  '@tldraw/validate@2.1.4':
+  '@tldraw/utils@2.4.1':
     dependencies:
-      '@tldraw/utils': 2.1.4
+      lodash.throttle: 4.1.1
+      lodash.uniq: 4.5.0
+
+  '@tldraw/validate@2.4.1':
+    dependencies:
+      '@tldraw/utils': 2.4.1
 
   '@types/aria-query@5.0.4': {}
 
@@ -11546,7 +11549,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.57.0)
       eslint-plugin-react: 7.34.1(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -11570,7 +11573,7 @@ snapshots:
       enhanced-resolve: 5.16.1
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.5
       is-core-module: 2.13.1
@@ -11592,7 +11595,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -13060,7 +13063,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.395.0(react@18.3.1):
+  lucide-react@0.416.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -13669,7 +13672,7 @@ snapshots:
 
   prettier@3.2.5: {}
 
-  prettier@3.3.2: {}
+  prettier@3.3.3: {}
 
   pretty-error@4.0.0:
     dependencies:
@@ -14568,7 +14571,7 @@ snapshots:
 
   tinyspy@2.2.1: {}
 
-  tldraw@2.1.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  tldraw@2.4.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@radix-ui/react-alert-dialog': 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-context-menu': 2.1.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -14578,11 +14581,12 @@ snapshots:
       '@radix-ui/react-select': 1.2.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-slider': 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-toast': 1.1.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tldraw/editor': 2.1.4(patch_hash=pl656xy35tzbmpvfqpuhtxyeza)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tldraw/store': 2.1.4(react@18.3.1)
+      '@tldraw/editor': 2.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tldraw/store': 2.4.1(react@18.3.1)
       canvas-size: 1.2.6
       classnames: 2.5.1
       hotkeys-js: 3.13.7
+      idb: 7.1.1
       lz-string: 1.5.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
