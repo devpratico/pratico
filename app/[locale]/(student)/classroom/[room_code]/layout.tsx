@@ -39,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
  */
 export function ToolbarBox({ children }: { children: React.ReactNode }) {
     return (
-        <Flex p='2' gridRow={{ initial: '2', xs: '1' }} align='center'>
+        <Flex gridRow={{ initial: '2', xs: '1' }} align='center'>
             {children}
         </Flex>
     )
