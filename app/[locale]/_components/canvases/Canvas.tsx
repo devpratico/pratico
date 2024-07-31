@@ -86,6 +86,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     return (
         <Tldraw
+            className='tldraw-canvas'
             hideUi={true}
             onMount={handleMount}
             components={{Background: Background, OnTheCanvas: CanvasArea}}
@@ -97,7 +98,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {/*<Resizer/>*/}
             <EmbedHint/>
             <KeyboardShortcuts/>
-            <style>{`.tl-canvas { z-index: 1 }`}</style>
         </Tldraw>
     )
 }

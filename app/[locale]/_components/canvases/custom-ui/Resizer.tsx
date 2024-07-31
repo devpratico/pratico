@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useMemo, useCallback } from "react"
+import { useEffect, useRef, useCallback } from "react"
 import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/app/_utils/tldraw/zoomToBounds"
 import logger from "@/app/_utils/logger"
@@ -20,6 +20,7 @@ interface ResizerProps {
 export default function Resizer({ insets, margin }: ResizerProps) {
     const editor = useEditor()
     const { currentPageId } = useNav()
+    const resizeObserverRef = useRef<ResizeObserver | null>(null)
 
 
     const updateSize = useCallback(() => {
@@ -34,6 +35,7 @@ export default function Resizer({ insets, margin }: ResizerProps) {
     }, [updateSize])
 
     // Update size on window resize
+    /*
     useEffect(() => {
         let timeout: NodeJS.Timeout
         const debouncedUpdateSize = () => {
@@ -46,6 +48,25 @@ export default function Resizer({ insets, margin }: ResizerProps) {
         return () => {
             window.removeEventListener('resize', debouncedUpdateSize)
             clearTimeout(timeout)
+        }
+    }, [updateSize])*/
+
+    // Update size when the element with the specific class is resized
+    useEffect(() => {
+        const element = document.getElementsByClassName('tldraw-canvas')[0]
+
+        if (element) {
+            resizeObserverRef.current = new ResizeObserver(() => {
+                updateSize()
+            })
+            resizeObserverRef.current.observe(element)
+        }
+
+        return () => {
+            if (resizeObserverRef.current && element) {
+                resizeObserverRef.current.unobserve(element)
+                resizeObserverRef.current.disconnect()
+            }
         }
     }, [updateSize])
 
