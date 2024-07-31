@@ -10,9 +10,10 @@ import { Play } from "lucide-react";
 
 interface StartBtnProps {
     message?: string;
+    variant?: "surface" | "outline" | "classic" | "solid" | "soft" | "ghost"
 }
 
-export default function StartBtn({ message }: StartBtnProps) {
+export default function StartBtn({ message, variant='surface' }: StartBtnProps) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
@@ -35,17 +36,15 @@ export default function StartBtn({ message }: StartBtnProps) {
     }
     return (
         <Button
-            variant='surface'
+            variant={variant}
             radius='large'
-            style={{ backgroundColor: 'var(--background)', boxShadow: 'none' }}
             loading={loading}
             disabled={!capsuleId}
             onClick={handleClick}
+            style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)'} : {}) }}
         >
             <Play size={15} strokeWidth='3' />
-            <Box display={{ initial: 'none', md: 'block' }}>
-                {message}
-            </Box>
+            {message}
         </Button>
     )
 }

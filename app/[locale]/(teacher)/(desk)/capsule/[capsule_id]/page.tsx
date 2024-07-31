@@ -38,10 +38,6 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
 
                     <Flex gap='3' align='center' justify='between' width={{ initial: '100%', xs: 'auto' }}>
 
-                        <Box display={{ initial: 'block', xs: 'none' }}>
-                            <StartBtn message='lancer la session' />
-                        </Box>
-
                         {/* MenuTabs for Desktop */}
                         <Box display={{ initial: 'none', xs: 'block' }}>
                             <MenuTabs tabs={[
@@ -49,6 +45,8 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
                                 { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
                             ]} />
                         </Box>
+
+                        <Box width='100%' display={{ initial: 'block', xs: 'none' }}/>
 
                         {/* MenuTabs for Mobile - it has a Home tab and a smaller padding */}
                         <Box display={{ initial: 'block', xs: 'none' }}>
