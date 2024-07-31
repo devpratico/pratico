@@ -3,7 +3,7 @@ import { PresencesProvider } from '@/app/_hooks/usePresences'
 import { NavProvider } from '@/app/_hooks/useNav'
 import { TLEditorProvider } from '@/app/_hooks/useTLEditor'
 import { Viewport } from 'next'
-import { Grid, Box, Flex } from '@radix-ui/themes'
+import { Grid } from '@radix-ui/themes'
 
 
 export const viewport: Viewport = {
@@ -34,13 +34,3 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     )
 }
 
-/**
- * Helps position the toolbar in the correct grid cell
- */
-export function ToolbarBox({ children }: { children: React.ReactNode }) {
-    return (
-        <Flex gridRow={{ initial: '2', xs: '1' }} align='center'>
-            {children}
-        </Flex>
-    )
-}

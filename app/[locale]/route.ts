@@ -1,6 +1,6 @@
 import { redirect } from "../_intl/intlNavigation"
 import { fetchUser } from "@/app/api/_actions/user"
-//import { saveCapsule } from "./_actions/capsule"
+import { saveCapsule } from "@/app/api/_actions/capsule"
 
 /**
  * The home page is the entry point for the app. There's no page actually,
@@ -14,9 +14,9 @@ export async function GET() {
 
     } else {
         // Create an empty capsule and redirect to it
-        //const newCapsule = await saveCapsule({ created_by: user.id })
-        //redirect(`/capsule/${newCapsule.id}`)
+        const newCapsule = await saveCapsule({ created_by: user.id })
+        redirect(`/capsule/${newCapsule.id}`)
 
-        redirect('/capsule')
+        //redirect('/capsule')
     }
 }

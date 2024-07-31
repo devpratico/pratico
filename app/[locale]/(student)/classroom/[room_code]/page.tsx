@@ -6,9 +6,6 @@ import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '@/app/api/_actions/room3'
 
 
-
-
-
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const userId = (await fetchUser()).id
     const { first_name, last_name } = await fetchNames(userId)

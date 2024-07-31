@@ -13,7 +13,7 @@ import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import { Box } from "@radix-ui/themes";
 import useWindow from "@/app/_hooks/useWindow";
-import { ToolbarBox } from "../layout";
+import ToolBarBox from "./ToolBarBox";
 import MobileToolbar from "@/app/[locale]/(teacher)/(desk)/_components/MobileToolbar";
 
 
@@ -50,9 +50,9 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
 
     return (
         <>
-            <ToolbarBox>
+            <ToolBarBox>
                 {canCollab && (widerThan('xs') ? <Box p='2'><TLToolbar /></Box> : <MobileToolbar />)}
-            </ToolbarBox>
+            </ToolBarBox>
 
             <Canvas store={store}>
                 <Resizer />
