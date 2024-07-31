@@ -52,7 +52,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 
 
                 {/* Menus layout (outside the grid layout because of `absolute`)*/}
-                <Box position='absolute' top='0' bottom='0' right='0' width='100%' style={{pointerEvents: 'none'}}>
+                <Box position='absolute' top='0' bottom='0' right='0' width='100%' overflow='clip' style={{pointerEvents: 'none'}}>
                     <MenuDialog>
                         <Menus />
                     </MenuDialog>
