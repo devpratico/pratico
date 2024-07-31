@@ -17,17 +17,24 @@ interface CollabSwitchProps {
 export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
-    
-    // Collaboration:
-    const _params = room?.params?.collaboration
-    const isActive =  _params?.active
-    const isForAll =  _params?.allowAll
-    const isAllowed = _params?.allowedUsersIds.includes(userId)
-    const [active, setActive] = useState(isActive && (isForAll || isAllowed))
+    const [active, setActive] = useState(false)
 
     useEffect(() => {
-        setActive(isActive && (isForAll || isAllowed))
-    }, [isActive, isForAll, isAllowed])
+        console.log('👉👉 room changed in component', room?.params?.collaboration)
+    }, [room]);
+    
+    useEffect(() => {
+        console.log('👉 room changed in component', room?.params?.collaboration)
+        if (!room?.params) return;
+        const _params = room.params.collaboration;
+        const isActive = _params.active;
+        const isForAll = _params.allowAll;
+        const isAllowed = _params.allowedUsersIds.includes(userId);
+
+        setActive(isActive && (isForAll || isAllowed));
+    }, [room, userId]);
+
+
 
     function handleClick() {
         setLoading(true)

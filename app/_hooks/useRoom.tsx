@@ -29,9 +29,10 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
     // Fetch the room data (happens once)
     useEffect(() => {
+        if (!room_code) return;
         fetchRoomByCode(room_code)
             .then((room) => {setRoom(room)})
-            .catch((error) => {logger.error('react:hook', `error getting room by code "${room_code}"`, (error as Error).message)})
+            .catch((error) => {logger.log('react:hook', `No room found for "${room_code}"`)})
     }, [room_code]);
 
     // Subscribe to room params changes
@@ -42,12 +43,14 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
                 (payload): void => {
                     logger.log('supabase:realtime', "room params updated", room_code)
-                    const newRecord = payload.new// as Room
+                    const newRecord = payload.new as Room
+
                     setRoom((prev) => {
                         if (prev) {
+                            console.log('⭐️ new params', newRecord.params?.collaboration)
                             return {...prev, params: newRecord.params}
                         } else {
-                            return prev
+                            return newRecord
                         }
                     })
                 }
@@ -56,7 +59,12 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
         return () => {supabase.removeChannel(channel)}
 
-    }, [room_code]);
+    }, [room_code, setRoom]);
+
+
+    useEffect(() => {
+        console.log('🟢 room changed in hook', room)
+    }, [room]);
 
     return (
         <RoomContext.Provider value={{ room }}>

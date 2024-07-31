@@ -1,10 +1,8 @@
 import MenuTabs from "../../_components/MenuTabs"
-import { Flex, Box, IconButton, Text } from "@radix-ui/themes"
+import { Flex, Box, Text } from "@radix-ui/themes"
 import TopBarPortal from "../../_components/TopBarPortal"
 import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
-import CardDialog from "../../_components/CardDialog";
 import TeacherCanvas from "./_components/TeacherCanvasServer";
-import { RoomProvider } from "@/app/_hooks/useRoom";
 import Image from "next/image";
 import StopBtn from "./_components/StopBtn";
 import StartDialog from "./_components/StartDialog";
@@ -16,7 +14,7 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
     const logoScale = 0.25
 
     return (
-        <RoomProvider>
+        <>
             <TopBarPortal>
                 <Flex justify={{initial:'center', xs:'between'}} align='center'>
                         
@@ -63,6 +61,6 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
 
             <TeacherCanvas roomCode={room_code} />
 
-        </RoomProvider>
+        </>
     )
 }
