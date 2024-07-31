@@ -10,9 +10,10 @@ import { useDisable } from "@/app/_hooks/useDisable";
 
 interface StopBtnProps {
     message?: string;
+    variant?: "surface" | "outline" | "classic" | "solid" | "soft" | "ghost"
 }
 
-export default function StopBtn({ message }: StopBtnProps) {
+export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
 
     const router = useRouter()
     const { room } = useRoom()
@@ -24,10 +25,10 @@ export default function StopBtn({ message }: StopBtnProps) {
 
     return(
         <Button
-            variant='surface'
+            variant={variant}
             radius='large'
             loading={loading}
-            style={{ backgroundColor: 'var(--background)', boxShadow:'none' }}
+            style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
             disabled={disabled}
             onClick={async () => { 
                 setLoading(true)

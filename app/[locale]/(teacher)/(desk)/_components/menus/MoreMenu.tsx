@@ -1,6 +1,7 @@
 'use client'
 import { Section, Callout, Box, Flex } from '@radix-ui/themes'
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
+import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
 
 /**
@@ -9,7 +10,7 @@ import { useParams } from 'next/navigation'
 function CreationMenu() {
     return (
         <Flex display={{ initial: 'flex', xs: 'none' }} justify='center'>
-            <StartBtn message='lancer la session' variant='solid' />
+            <StartBtn message='Lancer la session' variant='solid' />
         </Flex>
     )
 }
@@ -19,7 +20,11 @@ function CreationMenu() {
  * Content of the 'More' menu that only hsows during the session
  */
 function AnimationMenu() {
-    return null
+    return (
+        <Flex display={{ initial: 'flex', xs: 'none' }} justify='center'>
+            <StopBtn message='Arrêter la session' variant='solid' />
+        </Flex>
+    )
 }
 
 
