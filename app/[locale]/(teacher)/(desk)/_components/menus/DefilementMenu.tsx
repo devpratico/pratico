@@ -1,5 +1,5 @@
 'use client'
-import { Section, Heading, RadioCards, Flex, Text, Box, Badge, Button } from '@radix-ui/themes'
+import { Section, RadioCards, Flex, Text, Box, Badge, Button } from '@radix-ui/themes'
 import { ChevronLeft } from 'lucide-react'
 import { Link, usePathname } from '@/app/_intl/intlNavigation'
 import { useSearchParams } from "next/navigation"
@@ -21,8 +21,6 @@ export default function DefilementMenu() {
                         <ChevronLeft />Participants
                     </Link>
                 </Button>
-
-                <Heading size='3' as="h3" mb='4' trim='both'>DÉFILEMENT</Heading>
 
                 <RadioCards.Root defaultValue='2' columns='1'>
                     <RadioCards.Item value='1' disabled={true}>
