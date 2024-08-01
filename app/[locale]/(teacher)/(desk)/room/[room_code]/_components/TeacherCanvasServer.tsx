@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import logger from "@/app/_utils/logger";
 import { Callout, Flex, Spinner } from "@radix-ui/themes";
 import { TriangleAlert } from "lucide-react";
+import { randomUUID } from "crypto";
 
 
 interface TeacherCanvasServerProps {
@@ -14,12 +15,16 @@ interface TeacherCanvasServerProps {
 }
 
 async function TeacherCanvasS({ roomCode }: TeacherCanvasServerProps) {
-    const userId = (await fetchUser()).id
-    const { first_name, last_name } = await fetchNames(userId)
+    const { user, error } = await fetchUser()
+    const { first_name, last_name } = user ? await fetchNames(user.id) : { first_name: null, last_name: null }
 
     let name = `${first_name} ${last_name}`
     if (!first_name || !last_name) { name = 'Animateur' }
-    const user: CanvasUser = { id: userId, name: name += ' ⭐️', color:'#674ACF'}
+    const canvasUser: CanvasUser = {
+        id: user?.id || randomUUID() as string,
+        name: name += ' ⭐️',
+        color:'#674ACF'
+    }
 
     
     let room: Room | undefined = undefined
@@ -48,7 +53,7 @@ async function TeacherCanvasS({ roomCode }: TeacherCanvasServerProps) {
 
     const snapshot = room?.capsule_snapshot || undefined
 
-    return <TeacherCanvasClient user={user} roomId={room.id} snapshot={snapshot} />
+    return <TeacherCanvasClient user={canvasUser} roomId={room.id} snapshot={snapshot} />
 }
 
 

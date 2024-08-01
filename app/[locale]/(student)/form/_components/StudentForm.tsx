@@ -22,9 +22,9 @@ export default function StudentForm() {
             const lastName  = formData.get('last-name')  as string;
 
             try {
-                const { user } = await signInAnonymously();
-                if (!user) throw new Error('No user returned from sign in anonymously');
-                await setNames({ id: user.id, first_name: firstName, last_name: lastName });
+                const { data, error } = await signInAnonymously();
+                if (!data.user) throw new Error('No user returned from sign in anonymously');
+                await setNames({ id: data.user.id, first_name: firstName, last_name: lastName });
 
                 if (nextUrl) {
                     router.push(nextUrl);

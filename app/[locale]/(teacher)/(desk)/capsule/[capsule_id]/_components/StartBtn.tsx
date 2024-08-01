@@ -23,17 +23,15 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
         logger.log('react:component', 'Clicked start button', capsuleId)
 
         if (!capsuleId) return logger.error('supabase:database', 'No capsule id provided for start button')
-        try {
-            setLoading(true)
-            // Start the session and get the room that is created
-            const createdRoom = await createRoom(capsuleId)
+    
+        setLoading(true)
+        // Start the session and get the room that is created
+        const { room: createdRoom, error} = await createRoom(capsuleId)
 
-            // Redirect to the room page
-            router.push(`/room/${createdRoom.code}`)
-        } catch (error) {
-            logger.error('supabase:database', 'Error starting session', (error as Error).message)
-        }
+        // Redirect to the room page
+        if (createdRoom) router.push(`/room/${createdRoom.code}`)
     }
+
     return (
         <Button
             variant={variant}

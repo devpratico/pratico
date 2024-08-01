@@ -127,8 +127,12 @@ export async function fetchRoomsCodes() {
 }
 
 
-export async function createRoom(capsuleId: string): Promise<Room> {
+export async function createRoom(capsuleId: string): Promise<{ room: Room | null, error: string | null }> {
     if (!capsuleId) throw new Error('No capsule id provided for start button')
+
+    const { user, error } = await fetchUser()
+    if (error) return { room: null, error: error }
+    if (!user) return { room: null, error: 'No user' }
 
     const snapshot = await fetchCapsuleSnapshot(capsuleId)
     let code = generateRandomCode()
@@ -140,9 +144,8 @@ export async function createRoom(capsuleId: string): Promise<Room> {
     }
 
     // generate room params
-    const userId = (await fetchUser()).id
     const params: RoomParams = { 
-        navigation: { type: 'animateur', follow: userId },
+        navigation: { type: 'animateur', follow: user.id},
         collaboration: { active: true, allowAll: false, allowedUsersIds: [] }
     }
 
@@ -156,9 +159,9 @@ export async function createRoom(capsuleId: string): Promise<Room> {
         // Revalidate cache
         revalidatePath('/', 'layout')
 
-        return createdRoom // We'll need this to set the room in the context
+        return { room: createdRoom, error: null }
     } catch (error) {
-        throw error
+        return { room: null, error: (error as PostgrestError).message }
     }
 }
 

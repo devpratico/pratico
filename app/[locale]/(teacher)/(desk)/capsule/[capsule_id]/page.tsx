@@ -6,7 +6,6 @@ import MenuTabs from '../../_components/MenuTabs';
 import { Puzzle, Ellipsis, FlaskRound } from 'lucide-react';
 import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
-import LoginBtnIfAnonymous from '@/app/[locale]/_components/LoginBtn';
 import DoneBtn from './_components/DoneBtn';
 import StartBtn from './_components/StartBtn';
 
@@ -58,8 +57,6 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
                         </Box>
 
                         <DoneBtn message='terminer'/>
-
-                        <LoginBtnIfAnonymous display={{ initial: 'none', xs: 'block' }}/>
 
                     </Flex>
 

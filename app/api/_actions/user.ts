@@ -1,18 +1,17 @@
 'use server'
 import createClient from '@/supabase/clients/server'
 import logger from "@/app/_utils/logger";
-import { User as SupabaseUser } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { Tables } from "@/supabase/types/database.types";
+import { cache } from 'react';
 
-
-export type User = SupabaseUser
 
 export interface Names {
     first_name: string | null
     last_name: string  | null
 }
 
-export async function getSession(): Promise<SupabaseUser> {
+export async function getSession(): Promise<User> {
     const supabase = createClient()
     try {
         // Using getSession instead of getUser to avoid a server call. I think it is safe because the auth token
@@ -22,7 +21,7 @@ export async function getSession(): Promise<SupabaseUser> {
             throw error || new Error("No session")
         } else {
             logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous " + session.user.id)
-            return session.user as SupabaseUser
+            return session.user as User
         }
     } catch (err) {
         logger.error('supabase:auth', `error fetching session`, (err as Error).message)
@@ -31,21 +30,15 @@ export async function getSession(): Promise<SupabaseUser> {
 }
 
 
-export async function fetchUser(): Promise<SupabaseUser> {
+export const fetchUser =  cache(async () => {
     const supabase = createClient()
-    try {
-        const { data, error } = await supabase.auth.getUser()
-        if (error || !data.user) {
-            throw error || new Error("No session")
-        } else {
-            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous " + data.user.id)
-            return data.user as SupabaseUser
-        }
-    } catch (error) {
-        logger.error('supabase:auth', `error fetching user`, (error as Error).message)
-        throw error
-    }
-}
+    const { data: {user}, error } = await supabase.auth.getUser()
+    if (error) logger.error('supabase:auth', `error fetching user`, error.message)
+    if (user)  logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
+    return ({ user, error: error?.message})
+})
+
+
 
 
 

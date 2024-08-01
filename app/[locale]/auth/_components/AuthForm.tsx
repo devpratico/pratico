@@ -4,21 +4,21 @@ import { TextField, Flex } from '@radix-ui/themes';
 import { Button, Tabs, Separator, Callout } from '@radix-ui/themes';
 import { Mail, RectangleEllipsis, TriangleAlert, ArrowRight } from 'lucide-react';
 import en from '@/app/_intl/messages/en.json';
-import { login, signup, signInAnonymously, isUserAnonymous, setNames } from '../_actions/actions';
-import signInWithGoogle from '../_actions/signInWithGoogle';
+import { login, signup, signInAnonymously, isUserAnonymous, setNames } from '@/app/api/_actions/auth';
+import signInWithGoogle from '../../../api/_actions/signInWithGoogle';
 import logger from '@/app/_utils/logger';
-import { useRouter } from '@/app/_intl/intlNavigation';
+import { useRouter, usePathname } from '@/app/_intl/intlNavigation';
 import { useState, useEffect } from 'react';
-
-
-// TODO: utiliser searchParams pour afficher login ou signup avec des radix tabnav
+import { useSearchParams } from 'next/navigation';
 
 export default function AuthForm({ messages }: { messages: typeof en.AuthForm }) {
-
+    const searchParams = useSearchParams();
+    const authTab = searchParams.get('authTab');
+    const nextUrl = searchParams.get('nextUrl');
     const router = useRouter();
+    const pathname = usePathname();
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
-    //const [isLogged, setIsLogged] = useState(false);
     const [isAnon, setIsAnon] = useState(false);
 
     useEffect(() => {
@@ -52,8 +52,12 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     return (
         <Flex direction='column' gap='2'>
             <Tabs.Root
-                defaultValue='signup'
-                onValueChange={() => {
+                value={authTab || 'signup'}
+                onValueChange={(value) => {
+
+                    const params = new URLSearchParams(searchParams.toString())
+                    params.set('authTab', value)
+                    router.push(pathname + '?' + params.toString())
                     setServerError(null)
                     setIsLoading(false)
                 }}
@@ -61,7 +65,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
-                    <Tabs.Trigger value='signin'>{messages['sign in']}</Tabs.Trigger>
+                    <Tabs.Trigger value='login'>{messages['sign in']}</Tabs.Trigger>
                 </Tabs.List>
 
 
@@ -108,7 +112,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                             } else {
                                 await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
-                                router.push('/capsules');
+                                router.push(nextUrl || '/capsules');
                             }
                         }}
                     >
@@ -173,7 +177,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
 
                 {/************ SIGN IN ************/}
-                <Tabs.Content value='signin'>
+                <Tabs.Content value='login'>
 
                     {/*
                     <SocialProviders />
@@ -243,18 +247,19 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
 
             <Button
+                variant='ghost'
                 disabled={false}
-                variant='soft'
+                loading={isLoading}
                 onClick={() => {
                     setIsLoading(true);
                     // If already logged in a anonymously, don't sign in again (otherwise it creates a new anon account)
                     if (isAnon) {
-                        router.push('/capsules');
+                        router.push(nextUrl || '/capsules');
                         return
                     }
 
                     signInAnonymously()
-                        .then(() => router.push('/capsules'))
+                        .then(() => router.push(nextUrl || '/capsules'))
                         .catch(error => {
                             logger.error('supabase:auth', 'Error signing in anonymously', (error as Error).message);
                             setServerError((error as Error).message);
@@ -262,7 +267,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         })
                 }}
             >
-                {messages['try without an account']}
+                {messages['ignore']}
                 <ArrowRight />
             </Button>
 

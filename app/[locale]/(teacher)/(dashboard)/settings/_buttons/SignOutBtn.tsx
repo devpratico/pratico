@@ -1,7 +1,7 @@
 'use client'
-import { signOut } from '@/app/[locale]/login/_actions/actions';
+import { signOut } from '@/app/api/_actions/auth'
 import { Button } from "@radix-ui/themes";
-import { useRouter } from "next/navigation";
+import { useRouter } from '@/app/_intl/intlNavigation';
 
 
 interface SignOutBtnProps {
@@ -14,8 +14,8 @@ export function SignOutBtn({message, disabled}: SignOutBtnProps) {
 
     const handleSignOut = async () => {
         await signOut()
-        router.push('/login')
-        //router.refresh()
+        //router.push('/login')
+        router.refresh()
     }
 
     return (

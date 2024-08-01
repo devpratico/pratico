@@ -3,6 +3,8 @@ import { revalidatePath } from 'next/cache'
 import createClient from '@/supabase/clients/server'
 import { TablesInsert } from '@/supabase/types/database.types'
 import { cache } from 'react'
+import logger from '@/app/_utils/logger'
+import { fetchUser } from './user'
 
 
 interface Credentials {
@@ -60,21 +62,12 @@ export async function signup({ email, password }: Credentials) {
 
 export async function signInAnonymously() {
     const supabase = createClient()
+    const { data, error } = await supabase.auth.signInAnonymously({})
 
+    if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
+    revalidatePath('/', 'layout')
 
-    try {
-        const { data, error } = await supabase.auth.signInAnonymously({})
-        if (error) {
-            throw error
-        }
-
-        revalidatePath('/', 'layout')
-
-        return data
-
-    } catch (error) {
-        throw error
-    }
+    return { data, error: error?.message }
 }
 
 
@@ -118,7 +111,8 @@ export async function isLoggedIn() {
 }
 
 export const isUserAnonymous = cache(async () => {
-    const supabase = createClient()
-    const { data, error } = await supabase.auth.getUser()
-    return data?.user?.is_anonymous
+    //const supabase = createClient()
+    //const { data, error } = await supabase.auth.getUser()
+    const { user, error } = await fetchUser()
+    return !!(user?.is_anonymous)
 })

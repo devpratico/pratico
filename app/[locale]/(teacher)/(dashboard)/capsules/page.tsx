@@ -10,9 +10,13 @@ import CreateCapsuleBtn from "./_components/CreateCapsuleBtn";
 
 
 export default async function Page() {
+    const { user, error } = await fetchUser()
 
-    const userId = (await fetchUser()).id;
-    const capsules = await fetchCapsulesData(userId);
+    let capsules: any[] = []
+    if (user) {
+        capsules = await fetchCapsulesData(user.id)
+    }
+
 
     return (
         <ScrollArea>

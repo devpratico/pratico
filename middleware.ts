@@ -24,7 +24,7 @@ const nextIntlMiddleware = createMiddleware({
 * This middleware revalidates the user's session
 * @see https://supabase.com/docs/guides/auth/server-side/nextjs
 */
-export async function middleware(request: NextRequest, intlResponse: NextResponse) {
+export async function middleware(request: NextRequest) {
 
     const response = nextIntlMiddleware(request);
 
@@ -48,7 +48,32 @@ export async function middleware(request: NextRequest, intlResponse: NextRespons
         }
     );
 
-    await supabase.auth.getUser();
+    try { 
+        const { data: { user }, error} = await supabase.auth.getUser()
+        if (!user) logger.log('next:middleware', 'getUser returned null')
+        if (error) logger.log('next:middleware', 'getUser returned error:', error.message)
+    } catch (error) {
+        logger.log('next:middleware', 'getUser throw error:', error)
+    }
+
+    /*
+    const locale = response.headers.get('x-middleware-request-x-next-intl-locale')
+
+    if (
+        !user &&
+        !request.nextUrl.pathname.startsWith('/auth') &&
+        !request.nextUrl.pathname.startsWith(`/${locale}/auth`) &&
+        !request.nextUrl.pathname.startsWith('/form') &&
+        !request.nextUrl.pathname.startsWith(`/${locale}/form`)
+
+    ) {
+        // no user, respond by redirecting to the login page
+        const url = request.nextUrl.clone()
+        url.pathname = '/auth'
+        return NextResponse.redirect(url)
+    }
+    */
+
     return response;
 }
 

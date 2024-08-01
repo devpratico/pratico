@@ -48,7 +48,7 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
 
     useEffect(() => {
         try {
-            fetchUser().then((user) => {setUserId(user.id)})
+            fetchUser().then(({user, error}) => {setUserId(user?.id || null)})
         } catch (error) {
             logger.error('supabase:auth', 'Error fetching user', (error as Error).message)
         }
