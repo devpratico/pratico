@@ -3,11 +3,16 @@ import logger from '@/app/_utils/logger';
 import { pdfjs } from 'react-pdf';
 import { uploadCapsuleFile, getPublicUrl } from './capsules_files';
 import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from 'tldraw';
-import 'tldraw/tldraw.css';
+//import 'tldraw/tldraw.css';
 
 
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 //pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).toString();
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
+    import.meta.url,
+).toString();
 
 
 export interface ImportPdfBackgroundArgs {
@@ -18,7 +23,7 @@ export interface ImportPdfBackgroundArgs {
     progressCallback?: (progress: number) => void
 }
 
-/**
+/** 
  * Creates pages from a PDF file
  */
 export default async function importPdfBackground({ file, editor, destination, progressCallback }: ImportPdfBackgroundArgs) {
@@ -115,7 +120,7 @@ export default async function importPdfBackground({ file, editor, destination, p
     const currentPage = editor.getCurrentPage() // Save the current page to restore it later
 
     // Batch all the following operations
-    editor.batch(() => {
+    editor.run(() => {
         assetIds.forEach((assetId, index) => {
             incrementProgress()
             // Create a new page for each image, except the first image if the current page is empty

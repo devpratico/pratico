@@ -30,9 +30,12 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     // Fetch the room data (happens once)
     useEffect(() => {
         if (!room_code) return;
-        fetchRoomByCode(room_code)
-            .then((room) => {setRoom(room)})
-            .catch((error) => {logger.log('react:hook', `No room found for "${room_code}"`)})
+        fetchRoomByCode(room_code).then(({data, error}) => {
+            if (error || !data) return
+            const _room = data as Room
+            setRoom(_room)
+        })
+            //.catch((error) => {logger.log('react:hook', `No room found for "${room_code}"`)})
     }, [room_code]);
 
     // Subscribe to room params changes
@@ -60,11 +63,6 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
         return () => {supabase.removeChannel(channel)}
 
     }, [room_code, setRoom]);
-
-
-    useEffect(() => {
-        console.log('🟢 room changed in hook', room)
-    }, [room]);
 
     return (
         <RoomContext.Provider value={{ room }}>

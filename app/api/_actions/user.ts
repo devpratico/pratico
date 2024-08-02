@@ -11,7 +11,9 @@ export interface Names {
     last_name: string  | null
 }
 
-export async function getSession(): Promise<User> {
+//export async function getSession(): Promise<User> {
+/*
+export const getSession = cache(async () => {
     const supabase = createClient()
     try {
         // Using getSession instead of getUser to avoid a server call. I think it is safe because the auth token
@@ -27,7 +29,7 @@ export async function getSession(): Promise<User> {
         logger.error('supabase:auth', `error fetching session`, (err as Error).message)
         throw err
     }
-}
+})*/
 
 
 export const fetchUser =  cache(async () => {
@@ -39,10 +41,7 @@ export const fetchUser =  cache(async () => {
 })
 
 
-
-
-
-export async function fetchNames(userId: string): Promise<Names> {
+export const fetchNames = cache(async (userId: string): Promise<Names> => {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', userId).single()
     if (error) {
@@ -53,53 +52,37 @@ export async function fetchNames(userId: string): Promise<Names> {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name)
         return data as Names
     }
-}
+})
 
 
 /**
  * @returns Data from the `user_profiles` table
  */
-export async function fetchProfile(userId: string): Promise<Tables<'user_profiles'>> {
+export const fetchProfile = cache(async (userId: string)  => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).returns<Tables<'user_profiles'>>().single()
-    if (error) {
-        logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
-        throw error
-    } else {
-        logger.log('supabase:database', `fetched profile for user ${userId.slice(0, 5)}...`)
-        return data
-    }
-}
+    const {data, error} = await supabase.from('user_profiles').select('*').eq('id', userId).limit(1).single()
+    if (error) logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
+    return { data, error: error?.message }
+})
 
 
 /**
  * Get Stripe ID from the `user_profiles` table
  */
-export async function fetchStripeId(userId: string) {
+export const fetchStripeId = cache(async (userId: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
-    if (error || !data) {
-        logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error?.message)
-        throw error || new Error("No data")
-    } else {
-        logger.log('supabase:database', `fetched stripe id for user ${userId.slice(0, 5)}...`, data.stripe_id)
-        return data.stripe_id as string | null
-    }
-}
+    if (error) logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error.message)
+    return { data, error: error?.message }
+})
 
 
 /**
  * Completes the `stripe_id` column in the `user_profiles` table
  */
-export async function saveStripeId(userId: string, stripeId: string) {
+export const saveStripeId = cache(async (userId: string, stripeId: string) => {
     const supabase = createClient()
-    //const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
-    // Upsert instead (create row if it doesn't exist)
-    const { data, error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
-    if (error) {
-        console.error("error setting stripe id", error)
-        throw error
-    } else {
-        return data
-    }
-}
+    const { error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
+    if (error) logger.error('supabase:database', `error saving stripe id for user ${userId.slice(0, 5)}...`, error.message)
+    return { error: error?.message }
+})

@@ -24,11 +24,11 @@ function EditButton() {
 
 
 async function CapsuleTitleS({ capsuleId, editable=true , ...props }: TitleProps & TextProps) {
-    const title = await fetchCapsuleTitle(capsuleId)
+    const { data, error } = await fetchCapsuleTitle(capsuleId)
 
     return (
         <Flex gap='2' align='center'>
-            <Text {...props} >{title}</Text>
+            <Text {...props} >{data?.title}</Text>
             {editable &&
                 <EditTitlePopover capsuleId={capsuleId} trigger={<EditButton />} />
             }

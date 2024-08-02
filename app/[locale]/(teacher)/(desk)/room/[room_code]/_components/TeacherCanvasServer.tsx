@@ -30,7 +30,8 @@ async function TeacherCanvasS({ roomCode }: TeacherCanvasServerProps) {
     let room: Room | undefined = undefined
     
     try {
-         room = await fetchRoomByCode(roomCode)
+        const { data, error: roomError } = await fetchRoomByCode(roomCode)
+        if (data) room = data as Room
     } catch (error) {
         logger.error('react:component', 'TeacherCanvasS', error)
     }

@@ -27,7 +27,7 @@ export default function AddMenu() {
         const file = event.target.files ? event.target.files[0] : null;
         if (file && file.type === "application/pdf" && editor) {
             logger.log('system:file', 'File received', file.name, file.type)
-            await importPdfBackground({ file, editor, destination: { saveTo: 'supabase', capsuleId }, progressCallback: setPdfImportProgress})
+            importPdfBackground({ file, editor, destination: { saveTo: 'supabase', capsuleId }, progressCallback: setPdfImportProgress})
         } else {
             logger.log('system:file', 'File is not a PDF', file?.type)
             alert('Please select a PDF file.');

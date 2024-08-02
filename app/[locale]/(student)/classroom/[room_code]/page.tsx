@@ -7,7 +7,6 @@ import { fetchRoomByCode } from '@/app/api/_actions/room3'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
-    //const userId = (await fetchUser()).id
     const { user, error } = await fetchUser()
     if (error) throw error
     if (!user) throw new Error('No user')
@@ -26,8 +25,12 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         color: getRandomColor(),
     }
 
-    const room = await fetchRoomByCode(params.room_code)
-    const snapshot = room?.capsule_snapshot || undefined
+    //const room = await fetchRoomByCode(params.room_code)
+    //const snapshot = room?.capsule_snapshot || undefined
+
+    const { data, error: roomError } = await fetchRoomByCode(params.room_code)
+    if (roomError) throw roomError
+    const snapshot = data?.capsule_snapshot || undefined as any
 
     return (
         <StudentCanvas user={canvasUser} snapshot={snapshot} />

@@ -14,7 +14,8 @@ export default async function Page() {
 
     let capsules: any[] = []
     if (user) {
-        capsules = await fetchCapsulesData(user.id)
+        const { data, error } = await fetchCapsulesData(user.id)
+        if (data) capsules = data
     }
 
 

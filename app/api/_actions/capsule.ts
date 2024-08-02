@@ -3,13 +3,14 @@ import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert } from "@/supabase/types/database.types"
 import { TLStoreSnapshot } from "tldraw";
 import logger from "@/app/_utils/logger";
+import { cache } from "react";
 
 
 export type Capsule = Tables<'capsules'>
 export type Snapshot = TLStoreSnapshot
 
 
-export async function saveCapsule(capsule: TablesInsert<'capsules'>) {
+export const saveCapsule = cache(async (capsule: TablesInsert<'capsules'>) => {
     const supabase = createClient()
     logger.log('supabase:database', 'Saving capsule...')
     const { data, error } = await supabase.from('capsules').upsert(capsule).select().single()
@@ -19,4 +20,4 @@ export async function saveCapsule(capsule: TablesInsert<'capsules'>) {
         data: data as Capsule,
         error: error?.message
     })
-}
+})
