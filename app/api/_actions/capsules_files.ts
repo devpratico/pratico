@@ -1,8 +1,6 @@
-//'use server'
-//import createClient from "@/supabase/clients/server"
-'use client'
-import createClient from "@/supabase/clients/client"
-import logger from "../logger"
+'use server'
+import createClient from "@/supabase/clients/server"
+import logger from "../../_utils/logger"
 
 
 type UploadCapsuleFileArgs = {
@@ -44,36 +42,25 @@ export async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
     const path = `${userId}/${args.capsuleId}/${folderName ? folderName + '/' : ''}${fileName}`
     const { data, error } = await supabase.storage.from('capsules_files').upload(path, 'file' in args ? args.file : dataURLToBlob(args.dataUrl))
 
-    if (error) {
-        // For example, when the file name already exists
-        logger.error('supabase:storage', 'Error uploading file', error)
-        throw error
-    } else {
-        logger.log('supabase:storage', 'Uploaded file', path)
-        return data.path
-    }
+    if (error) logger.error('supabase:storage', 'Error uploading file', error)
+
+    return { data, error: error?.message }
 }
 
 
 export async function downloadCapsuleFile(fileUrl: string) {
     const supabase =  createClient()
     const { data, error } = await supabase.storage.from('capsules_files').download(fileUrl)
-    if (error) {
-        throw error
-    } else {
-        return data
-    }
+    if (error) logger.error('supabase:storage', 'Error downloading file', error)
+    return { data, error: error?.message }
 }
 
 
 export async function createSignedUrl(fileUrl: string) {
     const supabase =  createClient()
     const { data, error } = await supabase.storage.from('capsules_files').createSignedUrl(fileUrl, 60)
-    if (error) {
-        throw error
-    } else {
-        return data.signedUrl
-    }
+    if (error) logger.error('supabase:storage', 'Error creating signed URL', error)
+    return { data, error: error?.message }
 }
 
 

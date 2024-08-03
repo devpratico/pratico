@@ -35,9 +35,10 @@
     "lucide-react": "^0.424.0",
     "next": "^14.2.5",
     "next-intl": "^3.17.2",
+    "pdfjs-dist": "^4.5.136",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-pdf": "^9.1.0",
+    "react-pdf": "^7.7.3",
     "react-qr-code": "^2.0.15",
     "stripe": "^16.5.0",
     "tldraw": "^2.4.3"
@@ -64,5 +65,9 @@
     "storybook": "^8.2.7",
     "supabase": "^1.187.10",
     "typescript": "^5.5.4"
-  }
+  },
+  
+    "engines": {
+        "node": "20.x"
+    }
 }

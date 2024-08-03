@@ -1,18 +1,13 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { pdfjs } from 'react-pdf';
-import { uploadCapsuleFile, getPublicUrl } from './capsules_files';
+import { uploadCapsuleFile, getPublicUrl } from '../../api/_actions/capsules_files';
 import { Editor,  uniqueId, AssetRecordType, getHashForString, TLPageId, createShapeId } from 'tldraw';
 //import 'tldraw/tldraw.css';
 
 
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-//pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).toString();
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
-    import.meta.url,
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).toString();
 
 
 export interface ImportPdfBackgroundArgs {
@@ -71,8 +66,10 @@ export default async function importPdfBackground({ file, editor, destination, p
                 assetNames.push(fileName);
                 logger.log('system:file', `Uploading file ${fileName} to supabase`);
                 //const path = await uploadCapsuleFile({blob: blob, name: fileName, capsuleId: destination.capsuleId, folder: cleanName});
-                const path = await uploadCapsuleFile({ dataUrl: dataUrl, name: fileName, capsuleId: destination.capsuleId, folder: cleanName });
-                const url  = await getPublicUrl(path);
+                const { data, error } = await uploadCapsuleFile({ dataUrl: dataUrl, name: fileName, capsuleId: destination.capsuleId, folder: cleanName });
+                if (error) throw new Error(error);
+                if (!data) throw new Error('No data returned from uploadCapsuleFile');
+                const url  = await getPublicUrl(data.path);
                 urls.push(url);
                 logger.log('supabase:storage', `Uploaded page ${index}`);
             } catch (error) {
