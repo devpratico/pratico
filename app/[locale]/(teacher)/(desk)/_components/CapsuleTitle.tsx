@@ -28,7 +28,7 @@ async function CapsuleTitleS({ capsuleId, editable=true , ...props }: TitleProps
 
     return (
         <Flex gap='2' align='center'>
-            <Text {...props} >{data?.title}</Text>
+            <Text {...props} >{data?.title || 'Sans titre'}</Text>
             {editable &&
                 <EditTitlePopover capsuleId={capsuleId} trigger={<EditButton />} />
             }

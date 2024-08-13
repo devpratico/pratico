@@ -11,14 +11,14 @@ export async function GET() {
     const { user, error } = await fetchUser()
 
 
-    // If the user is registered, redirect to the capsules page
+    // If the user is registered, redirect to the dashboard (capsules) page
     if (user && !user.is_anonymous) {
         redirect('/capsules')
     }
 
     // If the user is anonymous, open an empty capsule
     if (user && user.is_anonymous) {
-        const { data, error } = await saveCapsule({ created_by: user.id })
+        const { data, error } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
         if (error || !data) throw error
         redirect(`/capsule/${data.id}`)
     }

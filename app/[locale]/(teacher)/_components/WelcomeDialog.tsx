@@ -5,11 +5,14 @@ import { Link } from "@/app/_intl/intlNavigation"
 import { fetchUser } from "@/app/api/_actions/user"
 import { usePathname } from "@/app/_intl/intlNavigation"
 import { signInAnonymously } from "@/app/api/_actions/auth"
+import { saveCapsule } from "@/app/api/_actions/capsule"
+import { useRouter } from "@/app/_intl/intlNavigation"
 
 
 export default function WelcomeDialog() {
     const [show, setShow] = useState(false)
     const pathname = usePathname()
+    const router = useRouter()
 
     // Show the dialog if the user is not authenticated
     useEffect(() => {
@@ -18,7 +21,15 @@ export default function WelcomeDialog() {
 
     async function handleLater() {
         setShow(false)
-        const { data, error } = await signInAnonymously()
+
+        const { data: userData, error: userError } = await signInAnonymously()
+        if (userError || !userData.user) throw userError || new Error('No user data')
+
+        // Create a new capsule and redirect to it
+        const { data: capsuleData, error: capsuleError } = await saveCapsule({ created_by: userData.user.id, title: 'Sans titre' })
+        if (capsuleError || !capsuleData) throw capsuleError || new Error('No capsule data')
+        
+        router.push(`/capsule/${capsuleData.id}`)
     }
 
     return (

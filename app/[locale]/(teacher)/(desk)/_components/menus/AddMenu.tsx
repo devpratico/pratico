@@ -14,6 +14,7 @@ import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
 
 
+
 interface ImageData {
     bitmap: string
     width: number
@@ -23,20 +24,40 @@ interface ImageData {
 
 
 export default function AddMenu() {
-    const { newPage } = useNav()
-    const { disabled } = useDisable()
 
     return (
         <Flex gap='3' direction='column'>
-
             <ImportDocumentBtn />
-
-            <Button variant='outline' style={{ justifyContent: 'start' }} onClick={() => newPage?.()} disabled={disabled}>
-                <Plus size='15' /> Page blanche
-            </Button>
-
+            <NewPageBtn />
         </Flex>
         
+    )
+}
+
+
+function NewPageBtn() {
+    const { newPage } = useNav()
+    const { disabled } = useDisable()
+
+    async function handleClick() {
+        /*
+        if (capsuleId) {
+            newPage?.()
+        } else {
+            // We are in the empty capsule page. Lets create a capsule first
+            const { user, error: userError } = await fetchUser()
+            if (userError || !user) return
+            const { data, error } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
+            if (error || !data) return
+            router.push(`/capsule/${data.id}`)
+        }*/
+        newPage?.()
+    }
+
+    return (
+        <Button variant='outline' style={{ justifyContent: 'start' }} onClick={handleClick} disabled={disabled}>
+            <Plus size='15' /> Page blanche
+        </Button>
     )
 }
 
@@ -85,8 +106,6 @@ function ImportDocumentBtn() {
     }
 
     const handleUpload = async () => {
-        if (!editor) return
-
         setState('uploading')
         setProgress(0)
         setPagesProgress({ loading: 0, total: images.length })
@@ -120,6 +139,10 @@ function ImportDocumentBtn() {
         })).then(async () => {
             logger.log('system:file', 'All pages uploaded')
             setState('inserting')
+            if (!editor) {
+                logger.error('tldraw:editor', 'No editor found - cannot insert images')
+                return
+            }
             await importPdfBackground({ images: assets, editor, position: pagesPosition })
             setState('idle')
         })
