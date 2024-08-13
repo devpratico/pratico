@@ -30,12 +30,8 @@ if (typeof Promise.withResolvers === "undefined") {
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/legacy/build/pdf.worker.min.mjs', import.meta.url).toString();
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-/**
- * @param page A PDF page as a `pdfjs.PDFPageProxy` object, returned from `pdfjs.getDocument().getPage()`
- * Unfortunatly, the `pdfjs.PDFPageProxy` type is not exported from the `react-pdf` package, so we can't use it here.
- * @returns A bitmap of the PDF page as a base64 string, and the width and height of the bitmap
- */
-async function convertPDFPageToBitmap(page: any) {
+
+async function convertPDFPageToBitmap(page: pdfjs.PDFPageProxy) {
     const viewport = page.getViewport({ scale: 2 })
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
@@ -52,15 +48,12 @@ async function convertPDFPageToBitmap(page: any) {
     await page.render(renderContext).promise
     const bitmap = canvas.toDataURL('image/png')
 
+    logger.log('system:file', 'Converted to bitmap', bitmap.slice(0, 20))
     return { bitmap, width: viewport.width, height: viewport.height }
 }
 
 
-/**
- * @param file A PDF file
- * @returns An array of PDF pages as `pdfjs.PDFPageProxy` objects
- */
-async function getPdfFilePages(file: File) {
+async function getPdfPages(file: File) {
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise
 
     let pagesPromises: Promise<pdfjs.PDFPageProxy>[] = []
@@ -69,18 +62,23 @@ async function getPdfFilePages(file: File) {
         pagesPromises.push(pdf.getPage(i))
     }
 
-    const pages = await Promise.all(pagesPromises)
-    return pages
+    return pagesPromises
 }
 
 
 export async function convertPdfToImages({ file }: { file: File }) {
-    const pages = await getPdfFilePages(file)
+    const pagesPromises = await getPdfPages(file)
 
-    // Convert each page to bitmap
-    const imagePromises = pages.map(convertPDFPageToBitmap);
-    const images = await Promise.all(imagePromises);
-    images.forEach((_, index) => logger.log('system:file', `Converted to bitmap page ${index}`));
+    const imagesPromises = pagesPromises.map(async (pagePromise, i) => {
+        const page = await pagePromise
+        logger.log('system:file', `Page ${i} extracted`)
+        return convertPDFPageToBitmap(page)
+    })
 
-    return images
+    return imagesPromises
+}
+
+export async function getPdfNumPages(file: File) {
+    const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise
+    return pdf.numPages
 }

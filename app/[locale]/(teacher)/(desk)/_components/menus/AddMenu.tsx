@@ -7,17 +7,24 @@ import { useRef, useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/_hooks/useNav"
 import { useDisable } from "@/app/_hooks/useDisable"
-//import importPdfBackground2 from "@/app/api/_actions/importPdfBackground2"
+import { convertPdfToImages, getPdfNumPages } from "@/app/_utils/pdfUtils"
+import { getPublicUrl } from "@/app/api/_actions/capsules_files"
+import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
+import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
+import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
 
-import { convertPdfToImages } from "@/app/_utils/pdfUtils"
+
+interface ImageData {
+    bitmap: string
+    width: number
+    height: number
+}
 
 
 
 export default function AddMenu() {
-    //const { editor } = useTLEditor()
-    //const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const { newPage } = useNav()
-    const { disabled, setDisabled } = useDisable()
+    const { disabled } = useDisable()
 
     return (
         <Flex gap='3' direction='column'>
@@ -37,10 +44,15 @@ export default function AddMenu() {
 
 
 function ImportDocumentBtn() {
+    const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const { disabled, setDisabled } = useDisable()
+    const { disabled } = useDisable()
     const [fileName, setFileName] = useState<string | undefined>(undefined)
-    const [state, setState] = useState<'idle' | 'loading' | 'success'>('idle')
+    const [state, setState] = useState<'idle' | 'loading' | 'success' | 'uploading' | 'inserting' >('idle')
+    const [progress, setProgress] = useState<number>(0)
+    const [pagesProgress, setPagesProgress] = useState<{ loading: number, total: number }>({ loading: 0, total: 0 })
+    const [images, setImages] = useState<ImageData[]>([])
+    const [pagesPosition, setPagesPosition] = useState<'next' | 'last'>('next')
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         setState('loading')
@@ -51,9 +63,66 @@ function ImportDocumentBtn() {
         setFileName(name)
         logger.log('system:file', 'File received locally', name, file?.type)
 
-        const images = await convertPdfToImages({ file })
+        const numPages = await getPdfNumPages(file)
+        setPagesProgress({ loading: 0, total: numPages })
 
-        logger.log('system:file', 'Images received', images)
+        const imagesPromises = await convertPdfToImages({ file })
+
+        Promise.all(imagesPromises.map(async (promise, index) => {
+            return promise.then((image) => {
+                setImages((prev) => [...prev, image])
+                logger.log('system:file', `Loaded page ${index}`)
+                setProgress((prev) => prev + 100 / numPages)
+                setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
+            })
+        }).map(async (promise) => {
+            await promise
+
+        })).then(() => {
+            logger.log('system:file', 'Images received', images.length)
+            setState('success')
+        })
+    }
+
+    const handleUpload = async () => {
+        if (!editor) return
+
+        setState('uploading')
+        setProgress(0)
+        setPagesProgress({ loading: 0, total: images.length })
+
+        if (images.length == 0) return
+
+        let assets: AssetData[] = []
+
+        Promise.all(images.map(async (image, index) => {
+            setProgress((prev) => prev + 100 / images.length)
+            setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
+
+            const cleanPdfName = fileName?.split('.')[0].substring(0, 50);
+            const pageFileName = cleanPdfName + '-' + index + '.png';
+
+            const { data, error } = await uploadCapsuleFile({dataUrl: image.bitmap, name: pageFileName, capsuleId: capsuleId, folder: cleanPdfName });
+            if (error || !data) {
+                logger.error('system:file', 'Error uploading file', error)
+                return
+            }
+
+            const url = await getPublicUrl(data.path);
+            if (!url || url == '') {
+                logger.error('system:file', 'Error getting public URL')
+                return
+            }
+
+            logger.log('supabase:storage', `Uploaded page ${index}`)
+            assets.push({ width: image.width, height: image.height, publicUrl: url, name: pageFileName })
+
+        })).then(async () => {
+            logger.log('system:file', 'All pages uploaded')
+            setState('inserting')
+            await importPdfBackground({ images: assets, editor, position: pagesPosition })
+            setState('idle')
+        })
     }
 
     return (
@@ -67,23 +136,18 @@ function ImportDocumentBtn() {
 
             <AlertDialog.Content>
                 <AlertDialog.Title>Importer un document</AlertDialog.Title>
-                <AlertDialog.Description>
-                    Vous pouvez importer un document PDF pour l'ajouter à votre capsule.
-                </AlertDialog.Description>
-
-
-
-
+                
                 <Card variant='surface' my='4'>
 
-                    <Flex justify='center' display={state=='idle' ? 'flex' : 'none'}>
+                    {/* IDLE */}
+                    <Flex align='center' gap='3' display={state=='idle' ? 'flex' : 'none'}>
 
                         {/*<Box p='3' style={{ border: '2px dashed var(--gray-6)', borderRadius: 'var(--radius-3)' }}>
                             <Text color='gray'>Déposer ici</Text>
                         </Box>*/}
 
                         <Button asChild>
-                            <label htmlFor='input'>Importer</label>
+                            <label htmlFor='input'>Choisir un fichier</label>
                         </Button>
 
                         <input
@@ -93,33 +157,62 @@ function ImportDocumentBtn() {
                             accept="application/pdf"
                             onChange={handleFileChange}
                         />
+
+                        
+
+                        <AlertDialog.Description size='1' align='center' color='gray'>
+                            Vous pouvez importer un document PDF pour l'ajouter à votre capsule.
+                        </AlertDialog.Description>
+
+                        
+
                     </Flex>
 
+                    {/* LOADING */}
                     <Flex direction='column' align='center' gap='3' display={state=='loading' ? 'flex' : 'none'}>
-                        <Flex align='center' gap='1' style={{color:'var(--gray-10)'}}>
-                            <File size='18' />
+
+                        <Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
                             <Text trim='both'>{fileName}</Text>
+                            <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
                         </Flex>
+
                         <Box width='100%'>
-                            <Progress/>
+                            <Progress value={progress} />
                         </Box> 
                     </Flex>
 
-                    <Flex direction='column' align='center' gap='3' display={state == 'success' ? 'flex' : 'none'}>
-                        <CircleCheck size='30' style={{ color: 'var(--green)' }} />
+
+                    {/* SUCCESS */}
+                    <Flex align='center' style={{justifyContent:'space-around'}} gap='3' display={state == 'success' ? 'flex' : 'none'}>
+                        <img src={images[0]?.bitmap} style={{ width: '100px', height:'auto', boxShadow:('var(--shadow-2)'), borderRadius:'var(--radius-3)' }} />
+
                         <Flex align='center' gap='1' style={{ color: 'var(--green)' }}>
-                            <File size='18' />
+                            <CircleCheck size='15' style={{ color: 'var(--green)' }} />
                             <Text trim='both'>{fileName}</Text>
                         </Flex>
+                    </Flex>
+
+                    {/* UPLOADING */}
+                    <Flex direction='column' align='center' gap='3' display={state == 'uploading' ? 'flex' : 'none'}>
+
+                        <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
+                            <Text trim='both'>{fileName}</Text>
+                            <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+                        </Flex>
+
+                        <Box width='100%'>
+                            <Progress value={progress} />
+                        </Box>
                     </Flex>
 
                 </Card>
 
 
                 <Heading size='2'>Positionner les pages</Heading>
-                <RadioGroup.Root defaultValue='end' disabled>
-                    <RadioGroup.Item value='end'>À la fin</RadioGroup.Item>
-                    <RadioGroup.Item value='current'>À la position actuelle</RadioGroup.Item>
+
+                <RadioGroup.Root value={pagesPosition} onValueChange={(value) => setPagesPosition(value as 'next' | 'last')} name='position'>
+                    <RadioGroup.Item value='next'>À la position actuelle</RadioGroup.Item>
+                    <RadioGroup.Item value='last'>À la fin</RadioGroup.Item>
                 </RadioGroup.Root>
 
                 <Flex justify='between' mt='4'>
@@ -127,10 +220,12 @@ function ImportDocumentBtn() {
                         <Button variant='soft'>Annuler</Button>
                     </AlertDialog.Cancel>
                 
-
                     <AlertDialog.Action>
-                        <Button disabled={state != 'success'}>Ok</Button>
+                        <Button disabled={state != 'success'} onClick={handleUpload}>
+                            Importer
+                        </Button>
                     </AlertDialog.Action>
+
 
                 </Flex>
 

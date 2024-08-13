@@ -12,7 +12,8 @@ import {
     StyleProp,
 } from 'tldraw'
 import logger from '../logger'
-import { uploadCapsuleFile, getPublicUrl } from '../../api/_actions/capsules_files'
+import { getPublicUrl } from '../../api/_actions/capsules_files'
+import uploadCapsuleFile from '../uploadCapsuleFile'
 
 
 interface DispatchArgs {
@@ -190,7 +191,7 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             image.onload = async () => {
 
                 //Upload to supabase
-                const path = await uploadCapsuleFile(
+                const { data, error } = await uploadCapsuleFile(
                     {
                         dataUrl: payload.dataUrl,
                         name:    payload.name,
@@ -198,7 +199,12 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
                         folder:    'images',
                     }
                 )
-                const publicUrl = await getPublicUrl(path)
+
+                if (error || !data) {
+                    logger.error('system:file', 'Error uploading file', error)
+                    return
+                }
+                const publicUrl = await getPublicUrl(data.fullPath)
 
                 const imageWidth  = image.width
                 const imageHeight = image.height
