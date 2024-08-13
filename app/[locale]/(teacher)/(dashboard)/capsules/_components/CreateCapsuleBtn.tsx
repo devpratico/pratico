@@ -24,7 +24,7 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
             return
         }
 
-        const { data, error: saveError } = await saveCapsule({ created_by: user.id })
+        const { data, error: saveError } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
 
         if (saveError || !data) {
             setLoading(false)
