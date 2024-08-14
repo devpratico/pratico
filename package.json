@@ -65,9 +65,7 @@
     "storybook": "^8.2.7",
     "supabase": "^1.187.10",
     "typescript": "^5.5.4"
-  },
+  }
   
-    "engines": {
-        "node": "20.x"
-    }
+    
 }
