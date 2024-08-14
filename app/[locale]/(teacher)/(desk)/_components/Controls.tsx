@@ -2,9 +2,9 @@
 import { Flex, IconButton, Text, Popover } from "@radix-ui/themes"
 import { Plus, ChevronLeft, ChevronRight, Maximize } from "lucide-react"
 import { useNav } from "@/app/_hooks/useNav"
-//import AddMenu from "./menus/AddMenu"
-import dynamic from "next/dynamic"
-const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
+import AddMenu from "./menus/AddMenu"
+//import dynamic from "next/dynamic"
+//const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
 
 
 export default function Controls() {

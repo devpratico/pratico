@@ -50,13 +50,15 @@ setupWorker()*/
 //const pdfWorkerSrc = import('public/pdf.worker.min.mjs');
 //pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
 
-
+/*
 async function setupWorker() {
     const workerSrc = await import('public/pdf.worker.min.mjs')
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
 }
 
-setupWorker()
+setupWorker()*/
+
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 
 async function convertPDFPageToBitmap(page: pdfjs.PDFPageProxy) {
