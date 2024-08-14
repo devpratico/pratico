@@ -36,7 +36,27 @@ if (typeof Promise.withResolvers === "undefined") {
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 })();
 */
-pdfjs.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.min.js');
+//pdfjs.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.min.mjs');
+
+/*
+async function setupWorker() {
+    const workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.min.mjs')
+    //const workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.min.mjs')
+    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+}
+
+setupWorker()*/
+
+//const pdfWorkerSrc = import('public/pdf.worker.min.mjs');
+//pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+
+
+async function setupWorker() {
+    const workerSrc = await import('public/pdf.worker.min.mjs')
+    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
+}
+
+setupWorker()
 
 
 async function convertPDFPageToBitmap(page: pdfjs.PDFPageProxy) {
