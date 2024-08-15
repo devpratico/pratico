@@ -20,6 +20,7 @@ import { useCallback } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import { MapPinX } from 'lucide-react'
 
 
 export interface CanvasUser {
@@ -93,6 +94,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             store={store}
             snapshot={ store ? undefined : initialSnapshot }
             persistenceKey={persistenceKey}
+            options={{maxPages: 500}}
         >
             {children}
             {/*<Resizer/>*/}
