@@ -44,7 +44,7 @@ async function setupWorker() {
     //const workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.min.mjs')
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 }
-
+//.
 setupWorker()*/
 
 //const pdfWorkerSrc = import('public/pdf.worker.min.mjs');
