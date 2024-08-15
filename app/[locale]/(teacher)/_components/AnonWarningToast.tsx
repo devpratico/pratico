@@ -27,7 +27,7 @@ export default function AnonWarningToast() {
                 <Card variant='classic' style={{boxShadow:'var(--shadow-5)'}}>
 
                     <Toast.Title>
-                        <Text size='2' weight='bold'>⚠️ Vous n'êtes pas connecté</Text>
+                        <Text size='2' weight='bold'>{`⚠️ Vous n'êtes pas connecté`}</Text>
                     </Toast.Title>
 
 

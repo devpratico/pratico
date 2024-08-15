@@ -184,7 +184,7 @@ function ImportDocumentBtn() {
                         
 
                         <AlertDialog.Description size='1' align='center' color='gray'>
-                            Vous pouvez importer un document PDF pour l'ajouter à votre capsule.
+                            {`Vous pouvez importer un document PDF pour l'ajouter à votre capsule.`}
                         </AlertDialog.Description>
 
                         
