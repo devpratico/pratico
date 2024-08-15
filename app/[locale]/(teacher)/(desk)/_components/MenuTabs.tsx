@@ -49,7 +49,7 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
 
     return (
         <TabNav.Link active={searchParams.get('menu') == menu} asChild>
-            <Link href={hrefFor(searchParams, pathname, menu)} shallow={false}>
+            <Link href={hrefFor(searchParams, pathname, menu)} shallow={true}>
                 {children}
             </Link>
         </TabNav.Link>
@@ -65,7 +65,7 @@ function HomeTabElement({ children }: { children: React.ReactNode }) {
 
     return (
         <TabNav.Link active={!searchParams.get('menu')} asChild>
-            <Link href={pathname + '?' + removeSearchParam(searchParams, 'menu')} shallow={false}>
+            <Link href={pathname + '?' + removeSearchParam(searchParams, 'menu')} shallow={true}>
                 {children}
             </Link>
         </TabNav.Link>
