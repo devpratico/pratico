@@ -219,11 +219,24 @@ function ImportDocumentBtn() {
                     </Flex>
 
                     {/* UPLOADING */}
-                    <Flex direction='column' align='center' gap='3' display={state == ('uploading' || 'inserting') ? 'flex' : 'none'}>
+                    <Flex direction='column' align='center' gap='3' display={state == 'uploading' ? 'flex' : 'none'}>
 
                         <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
                             <Text trim='both'>{fileName}</Text>
                             <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+                        </Flex>
+
+                        <Box width='100%'>
+                            <Progress value={progress} />
+                        </Box>
+                    </Flex>
+
+                    {/* INSERTING */}
+                    <Flex direction='column' align='center' gap='3' display={state == 'inserting' ? 'flex' : 'none'}>
+
+                        <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
+                            <Text trim='both'>{fileName}</Text>
+                            <Text size='1'>{`Insertion des pages...`}</Text>
                         </Flex>
 
                         <Box width='100%'>
