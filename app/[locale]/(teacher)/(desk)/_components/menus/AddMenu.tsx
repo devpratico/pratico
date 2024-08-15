@@ -65,12 +65,13 @@ function NewPageBtn() {
 
 
 function ImportDocumentBtn() {
+    const [ openDialog, setOpenDialog ] = useState(false)
     const { editor } = useTLEditor()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const { disabled } = useDisable()
     const [fileName, setFileName] = useState<string | undefined>(undefined)
     const [state, setState] = useState<'idle' | 'loading' | 'success' | 'uploading' | 'inserting' >('idle')
-    const [progress, setProgress] = useState<number>(0)
+    const [progress, setProgress] = useState<number | undefined>(0)
     const [pagesProgress, setPagesProgress] = useState<{ loading: number, total: number }>({ loading: 0, total: 0 })
     const [images, setImages] = useState<ImageData[]>([])
     const [pagesPosition, setPagesPosition] = useState<'next' | 'last'>('next')
@@ -93,7 +94,7 @@ function ImportDocumentBtn() {
             return promise.then((image) => {
                 setImages((prev) => [...prev, image])
                 logger.log('system:file', `Loaded page ${index}`)
-                setProgress((prev) => prev + 100 / numPages)
+                setProgress((prev) => (prev || 0) + 100 / numPages)
                 setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
             })
         }).map(async (promise) => {
@@ -115,7 +116,7 @@ function ImportDocumentBtn() {
         let assets: AssetData[] = []
 
         Promise.all(images.map(async (image, index) => {
-            setProgress((prev) => prev + 100 / images.length)
+            setProgress((prev) => (prev || 0) + 100 / images.length)
             setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
 
             const cleanPdfName = fileName?.split('.')[0].substring(0, 50);
@@ -139,17 +140,19 @@ function ImportDocumentBtn() {
         })).then(async () => {
             logger.log('system:file', 'All pages uploaded')
             setState('inserting')
+            setProgress(undefined)
             if (!editor) {
                 logger.error('tldraw:editor', 'No editor found - cannot insert images')
                 return
             }
             await importPdfBackground({ images: assets, editor, position: pagesPosition })
             setState('idle')
+            setOpenDialog(false)
         })
     }
 
     return (
-        <AlertDialog.Root>
+        <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
             <AlertDialog.Trigger>
                 <Button disabled={disabled} style={{ justifyContent: 'start' }}>
@@ -216,7 +219,7 @@ function ImportDocumentBtn() {
                     </Flex>
 
                     {/* UPLOADING */}
-                    <Flex direction='column' align='center' gap='3' display={state == 'uploading' ? 'flex' : 'none'}>
+                    <Flex direction='column' align='center' gap='3' display={state == ('uploading' || 'inserting') ? 'flex' : 'none'}>
 
                         <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
                             <Text trim='both'>{fileName}</Text>
@@ -243,11 +246,9 @@ function ImportDocumentBtn() {
                         <Button variant='soft'>Annuler</Button>
                     </AlertDialog.Cancel>
                 
-                    <AlertDialog.Action>
-                        <Button disabled={state != 'success'} onClick={handleUpload}>
-                            Importer
-                        </Button>
-                    </AlertDialog.Action>
+                    <Button disabled={state != 'success'} onClick={handleUpload}>
+                        Importer
+                    </Button>
 
 
                 </Flex>

@@ -88,7 +88,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     }, [setEditor, onMount])
 
 
-    const options = useMemo(() => ({ maxPages: 3 }), []);
+    const options = useMemo(() => ({ maxPages: 300 }), []);
 
     return (
         <Tldraw
