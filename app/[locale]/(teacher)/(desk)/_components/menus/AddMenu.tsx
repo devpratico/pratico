@@ -116,9 +116,6 @@ function ImportDocumentBtn() {
         let assets: AssetData[] = []
 
         Promise.all(images.map(async (image, index) => {
-            setProgress((prev) => (prev || 0) + 100 / images.length)
-            setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
-
             const cleanPdfName = fileName?.split('.')[0].substring(0, 50);
             const pageFileName = cleanPdfName + '-' + index + '.png';
 
@@ -136,6 +133,9 @@ function ImportDocumentBtn() {
 
             logger.log('supabase:storage', `Uploaded page ${index}`)
             assets.push({ width: image.width, height: image.height, publicUrl: url, name: pageFileName })
+
+            setProgress((prev) => (prev || 0) + 100 / images.length)
+            setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
 
         })).then(async () => {
             logger.log('system:file', 'All pages uploaded')
@@ -199,7 +199,7 @@ function ImportDocumentBtn() {
 
                         <Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
                             <Text trim='both'>{fileName}</Text>
-                            <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+                            <Text size='1'>{`Conversion page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
                         </Flex>
 
                         <Box width='100%'>
