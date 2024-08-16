@@ -6,6 +6,7 @@ import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@radix-ui/themes";
+import { useSnapshot } from "@/app/_hooks/useSnapshot";
 
 
 interface DoneBtnProps {
@@ -18,7 +19,8 @@ interface DoneBtnProps {
  */
 export default function DoneBtn({ message }: DoneBtnProps) {
     const router = useRouter()
-    const { editor, snapshot } = useTLEditor()
+    const { editor } = useTLEditor()
+    const { snapshot } = useSnapshot()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const [loading, setLoading] = useState(false)
 

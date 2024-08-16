@@ -1,6 +1,6 @@
 'use client'
 import logger from '@/app/_utils/logger';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
@@ -40,6 +40,10 @@ const NavContext = createContext<NavContextType>(emptyContext);
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
 
+    useEffect(() => {
+        console.log('editor changed in NavProvider')
+    }, [editor])
+
     const pageIds$ = useComputed('Page ids', () => {
         if (!editor) return []
         return editor.getPages().map((p) => p.id)
@@ -77,13 +81,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     }, [editor])
 
 
-    // If no editor available, return an empty context
-    if (!editor) return <NavContext.Provider value={emptyContext}>{children}</NavContext.Provider>
-
-
-
-
-    const setCurrentPage = (id: TLPageId) => {
+    const setCurrentPage = useCallback((id: TLPageId) => {
+        if (!editor) return
         try {
             editor.setCurrentPage(id)
             const index = editor.getCurrentPage().index
@@ -91,9 +90,11 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         } catch (error) {
             logger.error('tldraw:editor', `Page ${id} not found`, (error as Error).message)
         }
-    }
+    }, [editor])
 
-    const goNextPage = () => {
+
+    const goNextPage = useCallback(() => {
+        if (!editor) return
         const pages = editor.getPages()
         const currentPageIdx = pages.indexOf(editor.getCurrentPage())
         const nextPageIdx = currentPageIdx + 1
@@ -103,9 +104,11 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         } else {
             logger.log('tldraw:editor', `No next page`)
         }
-    }
+    }, [editor, setCurrentPage])
 
-    const goPrevPage = () => {
+
+    const goPrevPage = useCallback(() => {
+        if (!editor) return
         const pages = editor.getPages()
         const currentPageIdx = pages.indexOf(editor.getCurrentPage())
         const prevPageIdx = currentPageIdx - 1
@@ -115,10 +118,12 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         } else {
             logger.log('tldraw:editor', `No previous page`)
         }
-    }
+    }, [editor, setCurrentPage])
 
-    const newPage = (position: 'next' | 'last' = 'next') => {
 
+
+    const newPage = useCallback((position: 'next' | 'last' = 'next') => {
+        if (!editor) return
         const newPageId = 'page:' + uniqueId() as TLPageId
         logger.log('tldraw:editor', `Creating new page with id: ${newPageId}`)
 
@@ -156,12 +161,14 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         }
         
         setCurrentPage(newPageId)
-    }
+    }, [editor, setCurrentPage])
 
-    const deletePage = (id: TLPageId) => {
+
+    const deletePage = useCallback((id: TLPageId) => {
+        if (!editor) return
         logger.log('tldraw:editor', `Deleting page with id: ${id}`)
         editor.deletePage(id)
-    }
+    }, [editor])
 
     return (
         <NavContext.Provider value={{
