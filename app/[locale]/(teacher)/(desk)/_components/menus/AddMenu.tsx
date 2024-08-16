@@ -86,13 +86,17 @@ function ImportDocumentBtn() {
         logger.log('system:file', 'File received locally', name, file?.type)
 
         const numPages = await getPdfNumPages(file)
+        setImages(new Array(numPages))
         setPagesProgress({ loading: 0, total: numPages })
 
         const imagesPromises = await convertPdfToImages({ file })
 
         Promise.all(imagesPromises.map(async (promise, index) => {
             return promise.then((image) => {
-                setImages((prev) => [...prev, image])
+                setImages((prev) => {
+                    prev[index] = image
+                    return prev
+                })
                 logger.log('system:file', `Loaded page ${index}`)
                 setProgress((prev) => (prev || 0) + 100 / numPages)
                 setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
@@ -113,7 +117,7 @@ function ImportDocumentBtn() {
 
         if (images.length == 0) return
 
-        let assets: AssetData[] = []
+        let assets: AssetData[] = new Array(images.length);
 
         Promise.all(images.map(async (image, index) => {
             const cleanPdfName = fileName?.split('.')[0].substring(0, 50);
@@ -132,7 +136,7 @@ function ImportDocumentBtn() {
             }
 
             logger.log('supabase:storage', `Uploaded page ${index}`)
-            assets.push({ width: image.width, height: image.height, publicUrl: url, name: pageFileName })
+            assets[index] = { width: image.width, height: image.height, publicUrl: url, name: pageFileName }
 
             setProgress((prev) => (prev || 0) + 100 / images.length)
             setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
