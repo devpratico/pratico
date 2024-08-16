@@ -24,9 +24,7 @@ const TLEditorContext = createContext<TLEditorContextType>(emptyTLEditorContext)
 
 
 export function TLEditorProvider({ children }: { children: React.ReactNode }) {
-
     const [editor, setEditor] = useState<Editor | undefined>(undefined);
-    //const [snapshot, setSnapshot] = useState<StoreSnapshot<TLRecord> | undefined>(undefined);
     const [snapshot, setSnapshot] = useState<TLEditorSnapshot | undefined>(undefined);
 
     useEffect(() => {
