@@ -1,20 +1,45 @@
 'use client'
-import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box } from '@radix-ui/themes'
+import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, ScrollArea } from '@radix-ui/themes'
 import { Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import CardDialog from '../CardDialog'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useState } from 'react'
-import { Quiz } from '@/app/_utils/quiz'
+import { Quiz, Answer } from '@/app/_utils/quiz'
+import { Dispatch, SetStateAction } from 'react';
+import { set } from 'lodash'
+
+
+const testQuiz: Quiz = {
+    title: 'Mon super quiz',
+    questions: [
+        {
+            text: 'Quelle est la capitale de la France ?',
+            answers: [
+                { text: 'Madrid', correct: false },
+                { text: 'Londres', correct: false },
+                { text: 'Paris', correct: true },
+            ]
+        },
+        {
+            text: 'Quel est le plus petit pays du monde ?',
+            answers: [
+                { text: 'Monaco', correct: false },
+                { text: 'Le Vatican', correct: true },
+                { text: 'Saint-Marin', correct: false },
+            ]
+        }
+    ]
+}
 
 
 interface AnswerRowProps {
     placeholder?: string
-    text?: string
-    correct?: boolean
+    answer: Answer
+    setAnswer?: (newAnswer: Answer) => void
+    deleteAnswer?: () => void
     hideOptions?: boolean
 }
 
-import { Dispatch, SetStateAction } from 'react';
 
 interface NavigatorProps {
     total: number
@@ -39,86 +64,156 @@ export default function ActivitiesMenu() {
 }
 
 function ActivityCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
-
-    const testQuiz: Quiz = {
-        title: 'Mon super quiz',
-        questions: [
-            {
-                text: 'Quelle est la capitale de la France ?',
-                answers: [
-                    { text: 'Madrid', correct: false },
-                    { text: 'Londres', correct: false },
-                    { text: 'Paris', correct: true },
-                ]
-            },
-            {
-                text: 'Quel est le plus petit pays du monde ?',
-                answers: [
-                    { text: 'Monaco', correct: false },
-                    { text: 'Le Vatican', correct: true },
-                    { text: 'Saint-Marin', correct: false },
-                ]
-            }
-        ]
-    }
-
     const [quiz, setQuiz] = useState<Quiz | undefined>(testQuiz)
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+    const [newAnswerText, setNewAnswerText] = useState('')
+
+    function setCurrentQuestionText(text: string) {
+        setQuiz((prev) => {
+            if (!prev) return
+            const newQuiz = {...prev}
+            if (newQuiz.questions?.[currentQuestionIndex]) {
+                newQuiz.questions[currentQuestionIndex].text = text
+                return newQuiz
+            }
+        })
+    }
+
+    function setCQAnswer(index: number, answer: Answer) {
+        setQuiz((prev) => {
+            if (!prev) return
+            const newQuiz = {...prev}
+            if (newQuiz.questions?.[currentQuestionIndex].answers[index]) {
+                newQuiz.questions[currentQuestionIndex].answers[index] = answer
+                return newQuiz
+            }
+        })
+    }
+
+    function addAnswer() {
+        setQuiz((prev) => {
+            if (!prev) return
+            setNewAnswerText('')
+            return {
+                ...prev,
+                questions: prev?.questions.map((question, index) => {
+                    if (index === currentQuestionIndex) {
+                        return { ...question, answers: [...question.answers, { text: newAnswerText }]}
+                    }
+                    return question
+                })
+            }
+        })
+    }
+
+    function deleteAnswer(index: number) {
+        setQuiz((prev) => {
+            if (!prev) return
+            const newQuiz = {...prev}
+            if (newQuiz.questions?.[currentQuestionIndex]) {
+                newQuiz.questions[currentQuestionIndex].answers.splice(index, 1)
+                return newQuiz
+            }
+        })
+    }
 
     return (
         <Container size='3' px='3'>
 
-            <Section size='1'>
+                <Section size='1'>
 
-                <Flex justify='between' gap='3' align='center'>
+                    <Flex justify='between' gap='3' align='center'>
 
-                    <Dialog.Title>{quiz?.title || 'Créer un quiz'}</Dialog.Title>
-                    <VisuallyHidden><Dialog.Description>Créez un quiz ou un sondage</Dialog.Description></VisuallyHidden>
+                        <Dialog.Title>{quiz?.title || 'Créer un quiz'}</Dialog.Title>
+                        <VisuallyHidden><Dialog.Description>Créez un quiz ou un sondage</Dialog.Description></VisuallyHidden>
 
-                    <Flex gap='3' align='baseline'>
-                        <CancelButton onCancel={() => setOpen(false)}/>
-                        <Button onClick={() => setOpen(false)}>Terminer</Button>
+                        <Flex gap='3' align='baseline'>
+                            <CancelButton onCancel={() => setOpen(false)}/>
+                            <Button onClick={() => setOpen(false)}>Terminer</Button>
+                        </Flex>
                     </Flex>
-                </Flex>
 
-                <Flex direction='column' gap='3' mt='7' align='stretch'>
-                    <TextArea mb='6' placeholder="Question" value={quiz?.questions[currentQuestionIndex].text} />
+                    <Flex direction='column' gap='3' mt='7' align='stretch'>
+                        <TextArea
+                            mb='6'
+                            placeholder="Question"
+                            value={quiz?.questions[currentQuestionIndex].text}
+                            onChange={(event) => {setCurrentQuestionText(event.target.value)}}
+                        />
 
-                    {quiz?.questions[currentQuestionIndex].answers.map((answer, index) => (
-                        <AnswerRow key={index} placeholder="Réponse" text={answer.text} correct={answer.correct} />
-                    ))}
+                        {quiz?.questions[currentQuestionIndex].answers.map((answer, index) => (
+                            <AnswerRow
+                                key={index}
+                                placeholder="Réponse"
+                                answer={answer}
+                                setAnswer={(newAnswer) => {setCQAnswer(index, newAnswer)}}
+                                deleteAnswer={() => {deleteAnswer(index)}}
+                            />
+                        ))}
 
-                    <AnswerRow key={quiz?.questions.length} placeholder="Ajouter une réponse..." hideOptions />
+                    <Flex align='center' gap='2' width='100%' mt='7'>
+                        <TextField.Root
+                            value={newAnswerText}
+                            placeholder="Ajouter une réponse"
+                            style={{ width: '100%' }}
+                            onChange={(event) => {setNewAnswerText(event.target.value)}}
+                        />
+                        <Button onClick={() => {addAnswer()}}>Ajouter</Button>
+                    </Flex>
 
-                </Flex>
+                        
 
-                <Flex gap='3' align='center' mt='7' width='100%'>
-                    <Navigator total={quiz?.questions.length || 0} current={currentQuestionIndex} setCurrent={setCurrentQuestionIndex} />
-                    <Button variant='ghost' color='gray'>Supprimer cette question</Button>
-                </Flex>
+                    </Flex>
 
-            </Section>
+                    <Flex gap='3' align='center' mt='7' width='100%'>
+                        <Navigator total={quiz?.questions.length || 0} current={currentQuestionIndex} setCurrent={setCurrentQuestionIndex} />
+                        <Button variant='ghost' color='gray'>Supprimer cette question</Button>
+                    </Flex>
+
+                </Section>
+
         </Container>
     )
 }
 
 
-function AnswerRow({ placeholder, text, correct, hideOptions }: AnswerRowProps) {
+function AnswerRow({ placeholder, answer, setAnswer, deleteAnswer, hideOptions }: AnswerRowProps) {
+    function setAnswerText(text: string) { setAnswer?.({...answer, text}) }
+    function setAnswerCorrect(correct: boolean) { setAnswer?.({...answer, correct})}
+
     return (
         <Flex align='center' gap='2' width='100%'>
-            <TextField.Root value={text} placeholder={placeholder} style={{width: '100%'}} color={correct ? 'green' : 'red'}/>
+            <TextField.Root
+                value={answer.text}
+                placeholder={placeholder}
+                style={{width: '100%'}} color={answer?.correct ? 'green' : 'red'}
+                onChange={(event) => {setAnswerText(event.target.value)}}
+            />
 
             <Flex gap='3' width='100px' justify='between'>
 
                 <Flex as="span" gap="2" display={!hideOptions ? 'flex' : 'none'}>
-                    <Checkbox checked={correct} size='3' color={correct ? 'green' : 'red'}/>
-                    <Text size='2' color={correct ? 'green' : 'red'}>
-                        {correct ? 'Vrai' : 'Faux'}
+
+                    <Checkbox
+                        checked={answer.correct}
+                        onCheckedChange={(checked) => {setAnswerCorrect(!!checked)}}
+                        size='3'
+                        color={answer.correct ? 'green' : 'red'}
+                    />
+
+                    <Text size='2' color={answer.correct ? 'green' : 'red'}>
+                        {answer.correct ? 'Vrai' : 'Faux'}
                     </Text>
                 </Flex>
 
                 <Box display={!hideOptions ? 'block' : 'none'}>
-                    <IconButton variant='ghost' color='gray'><Trash2 size={18}/></IconButton>
+                    <IconButton
+                        variant='ghost'
+                        color='gray'
+                        onClick={() => {deleteAnswer?.()}}
+                    >
+                            <Trash2 size={18}/>
+                    </IconButton>
                 </Box>
 
             </Flex>
