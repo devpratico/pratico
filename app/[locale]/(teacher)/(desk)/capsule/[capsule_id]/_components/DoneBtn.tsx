@@ -6,7 +6,7 @@ import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@radix-ui/themes";
-import { useSnapshot } from "@/app/_hooks/useSnapshot";
+//import { useSnapshot } from "@/app/_hooks/useSnapshot";
 
 
 interface DoneBtnProps {
@@ -20,7 +20,7 @@ interface DoneBtnProps {
 export default function DoneBtn({ message }: DoneBtnProps) {
     const router = useRouter()
     const { editor } = useTLEditor()
-    const { snapshot } = useSnapshot()
+    //const { snapshot } = useSnapshot()
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const [loading, setLoading] = useState(false)
 
@@ -28,21 +28,21 @@ export default function DoneBtn({ message }: DoneBtnProps) {
     const handleClick = useCallback(async () => {
         logger.log('react:component', 'Clicked save button', { capsuleId })
         setLoading(true)
-        if (!capsuleId || !editor) {
+
+        const snapshot = editor?.getSnapshot()
+
+        if (!capsuleId || !editor || !snapshot) {
+            logger.warn('react:component', 'No capsuleId or editor or snapshot to save.')
             router.push('/capsules')
             return
         }
+    
+        await saveCapsuleSnapshot(capsuleId!, snapshot)
+        router.push('/capsules')
+        router.refresh()
 
-        try {
-            await saveCapsuleSnapshot(capsuleId!, snapshot)
-            router.push('/capsules')
-            router.refresh() // This is to force the revalidation of the cache
-
-        } catch (error) {
-            logger.error('react:component', 'Error saving snapshot', (error as Error).message)
-            setLoading(false)
-        }
-    }, [capsuleId, editor, router, snapshot])
+      
+    }, [capsuleId, editor, router])
 
     return (
         <Button

@@ -119,11 +119,15 @@ export const fetchRoomsCodes = cache(async () => {
 
 
 export const createRoom = cache(async (capsuleId: string) => {
-    const { user, error } = await fetchUser()
-    if (error) return { room: null, error: error }
+    const { user, error: userError } = await fetchUser()
+    if (userError) return { room: null, error: userError }
     if (!user) return { room: null, error: 'No user' }
 
-    const snapshot = await fetchCapsuleSnapshot(capsuleId)
+    const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+    const snapshot = data?.tld_snapshot?.[0]
+    if (error) return { room: null, error }
+    if (!snapshot) return { room: null, error: 'No capsule snapshot to use for room' }
+
     let code = generateRandomCode()
     
     // Ensure the code is unique
@@ -141,7 +145,7 @@ export const createRoom = cache(async (capsuleId: string) => {
     }
 
     // Generate the room object
-    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: snapshot as unknown as Json, params: params as unknown as Json }
+    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: snapshot, params: params as unknown as Json }
 
     // Set the room in the database, and get the room that is created
     const { data: createdRoomA, error: errorRoom } = await saveRoom(room)
@@ -153,7 +157,7 @@ export const createRoom = cache(async (capsuleId: string) => {
     const createdRoom = createdRoomA[0]
 
     // Revalidate cache
-    revalidatePath('/', 'layout')
+   //revalidatePath(`/room/${createdRoom.code}`)
 
     return { room: createdRoom, error: null }
 })

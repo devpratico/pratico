@@ -44,10 +44,14 @@ export default function CanvasSL() {
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function _setInitialSnapshot() {
+            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...')
             const { data, error } = await fetchCapsuleSnapshot(capsuleId)
             const snapshot = data?.tld_snapshot?.[0]
             if (snapshot) {
+                logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
                 setInitialSnapshot(snapshot as any)
+            } else {
+                logger.log('react:component', 'CanvasSL', 'No initial snapshot')
             }
         }
         _setInitialSnapshot()
