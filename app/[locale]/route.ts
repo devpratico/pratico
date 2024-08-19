@@ -7,16 +7,24 @@ import { saveCapsule } from "@/app/api/_actions/capsule"
  * it just redirects to the capsules page if the user is a full account, or to a new capsule if not.
  */
 export async function GET() {
-    const user = await fetchUser()
 
-    if (!user.is_anonymous) {
+    const { user, error } = await fetchUser()
+
+
+    // If the user is registered, redirect to the dashboard (capsules) page
+    if (user && !user.is_anonymous) {
         redirect('/capsules')
+    }
 
-    } else {
-        // Create an empty capsule and redirect to it
-        const newCapsule = await saveCapsule({ created_by: user.id })
-        redirect(`/capsule/${newCapsule.id}`)
+    // If the user is anonymous, open an empty capsule
+    if (user && user.is_anonymous) {
+        const { data, error } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
+        if (error || !data) throw error
+        redirect(`/capsule/${data.id}`)
+    }
 
-        //redirect('/capsule')
+    // If there's no user (or an error), redirect to empty capsule page
+    if (!user || error) {
+        redirect('/capsule')
     }
 }

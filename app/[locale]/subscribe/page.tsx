@@ -2,6 +2,7 @@ import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/app/api/_actions/user';
 import config from '@/app/api/stripe/stripe.config';
+import { redirect } from '@/app/_intl/intlNavigation';
 
 declare global {
     namespace JSX {
@@ -16,7 +17,12 @@ export default async function SubScribePage() {
     const t = await getTranslations("subscribe")
     // On passe l'id de l'utilisateur à stripe afin de pouvoir facilement le retrouver parmis
     // les events émis par le webhook de stripe.
-    const userId = (await fetchUser()).id
+    const { user, error } = await fetchUser()
+
+    if (error || !user) {
+        redirect('/auth?nextUrl=/subscribe')
+        return null
+    }
 
     return (
         <div className={styles.container}>
@@ -24,7 +30,7 @@ export default async function SubScribePage() {
             <div className={styles.card}>
                 <h1 className={styles.title}>{t('subscribe to pratico')}</h1>
                 <stripe-pricing-table
-                    client-reference-id={userId}
+                    client-reference-id={user.id}
                     pricing-table-id={config.pricingTableId[process.env.NODE_ENV]}
                     publishable-key={process.env.STRIPE_PUBLIC_KEY}
                 />

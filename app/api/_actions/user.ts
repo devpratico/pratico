@@ -1,18 +1,19 @@
 'use server'
 import createClient from '@/supabase/clients/server'
 import logger from "@/app/_utils/logger";
-import { User as SupabaseUser } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { Tables } from "@/supabase/types/database.types";
+import { cache } from 'react';
 
-
-export type User = SupabaseUser
 
 export interface Names {
     first_name: string | null
     last_name: string  | null
 }
 
-export async function getSession(): Promise<SupabaseUser> {
+//export async function getSession(): Promise<User> {
+/*
+export const getSession = cache(async () => {
     const supabase = createClient()
     try {
         // Using getSession instead of getUser to avoid a server call. I think it is safe because the auth token
@@ -22,34 +23,25 @@ export async function getSession(): Promise<SupabaseUser> {
             throw error || new Error("No session")
         } else {
             logger.log('supabase:auth', `fetched session`, session.user.email || session.user.is_anonymous && "Anonymous " + session.user.id)
-            return session.user as SupabaseUser
+            return session.user as User
         }
     } catch (err) {
         logger.error('supabase:auth', `error fetching session`, (err as Error).message)
         throw err
     }
-}
+})*/
 
 
-export async function fetchUser(): Promise<SupabaseUser> {
+export const fetchUser =  cache(async () => {
     const supabase = createClient()
-    try {
-        const { data, error } = await supabase.auth.getUser()
-        if (error || !data.user) {
-            throw error || new Error("No session")
-        } else {
-            logger.log('supabase:auth', `fetched user`, data.user.email || data.user.is_anonymous && "Anonymous " + data.user.id)
-            return data.user as SupabaseUser
-        }
-    } catch (error) {
-        logger.error('supabase:auth', `error fetching user`, (error as Error).message)
-        throw error
-    }
-}
+    const { data: {user}, error } = await supabase.auth.getUser()
+    if (error) logger.error('supabase:auth', `error fetching user`, error.message)
+    if (user)  logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
+    return ({ user, error: error?.message})
+})
 
 
-
-export async function fetchNames(userId: string): Promise<Names> {
+export const fetchNames = cache(async (userId: string): Promise<Names> => {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', userId).single()
     if (error) {
@@ -60,53 +52,37 @@ export async function fetchNames(userId: string): Promise<Names> {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name)
         return data as Names
     }
-}
+})
 
 
 /**
  * @returns Data from the `user_profiles` table
  */
-export async function fetchProfile(userId: string): Promise<Tables<'user_profiles'>> {
+export const fetchProfile = cache(async (userId: string)  => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).returns<Tables<'user_profiles'>>().single()
-    if (error) {
-        logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
-        throw error
-    } else {
-        logger.log('supabase:database', `fetched profile for user ${userId.slice(0, 5)}...`)
-        return data
-    }
-}
+    const {data, error} = await supabase.from('user_profiles').select('*').eq('id', userId).limit(1).single()
+    if (error) logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
+    return { data, error: error?.message }
+})
 
 
 /**
  * Get Stripe ID from the `user_profiles` table
  */
-export async function fetchStripeId(userId: string) {
+export const fetchStripeId = cache(async (userId: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
-    if (error || !data) {
-        logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error?.message)
-        throw error || new Error("No data")
-    } else {
-        logger.log('supabase:database', `fetched stripe id for user ${userId.slice(0, 5)}...`, data.stripe_id)
-        return data.stripe_id as string | null
-    }
-}
+    if (error) logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error.message)
+    return { data, error: error?.message }
+})
 
 
 /**
  * Completes the `stripe_id` column in the `user_profiles` table
  */
-export async function saveStripeId(userId: string, stripeId: string) {
+export const saveStripeId = cache(async (userId: string, stripeId: string) => {
     const supabase = createClient()
-    //const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
-    // Upsert instead (create row if it doesn't exist)
-    const { data, error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
-    if (error) {
-        console.error("error setting stripe id", error)
-        throw error
-    } else {
-        return data
-    }
-}
+    const { error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
+    if (error) logger.error('supabase:database', `error saving stripe id for user ${userId.slice(0, 5)}...`, error.message)
+    return { error: error?.message }
+})

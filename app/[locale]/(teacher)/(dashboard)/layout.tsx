@@ -1,4 +1,4 @@
-import { TopBarBox } from "../layout"
+import TopBarBox from "../_components/TopBarBox";
 import { Box, BoxProps, Flex, Grid, Text, Card } from "@radix-ui/themes"
 import { Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
 import { SideBarBtn } from "./_components/SideBarBtn";

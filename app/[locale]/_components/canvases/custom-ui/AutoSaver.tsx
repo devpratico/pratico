@@ -1,10 +1,9 @@
 'use client'
-import { track, TLEditorSnapshot } from 'tldraw'
+import { track, TLEditorSnapshot, useEditor } from 'tldraw'
 import { saveCapsuleSnapshot, saveRoomSnapshot } from '@/app/api/_actions/room2'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
 import { useEffect } from 'react';
-import { useTLEditor } from '@/app/_hooks/useTLEditor';
 
 
 export type AutoSaverProps = {
@@ -21,7 +20,7 @@ export type AutoSaverProps = {
  * * A capsule (while in solo edit mode)
  */
 const AutoSaver = track(({saveTo}: AutoSaverProps) => {
-    const { editor } = useTLEditor()
+    const editor  = useEditor()
 
     useEffect(() => {
         const save = async (snapshot: TLEditorSnapshot) => {

@@ -5,24 +5,23 @@ import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
-import { doesCustomerExist } from '@/app/api/_actions/stripe';
+//import { doesCustomerExist } from '@/app/api/_actions/stripe';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
-import { redirect } from '@/app/_intl/intlNavigation';
+
 
 
 export default async function AccountPage() {
     const t = await getTranslations("settings")
-    
-    const user = await fetchUser()
-    const isAnon = user.is_anonymous
 
-    if (!user || isAnon) {
-        redirect('/login')
-        return null
+    const { user, error } = await fetchUser()
+    let profileData: any = undefined
+
+    if (user) {
+        profileData = (await fetchProfile(user.id)).data
     }
+    
 
 
-    const { data: profileData, error: profileError } = await fetchProfile(user.id)
     //const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
     //const customerExists = await doesCustomerExist(stripe_id)
 
@@ -63,7 +62,7 @@ export default async function AccountPage() {
 
                             <Flex gap='4' wrap='wrap'>
                                 <ResetPasswordBtn message={t("change password")}/>
-                                {!isAnon && <SignOutBtn message={t("sign out")}/>}
+                                <SignOutBtn message={t("sign out")}/>
                             </Flex>
                         </Card>
 

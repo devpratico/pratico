@@ -16,7 +16,7 @@ import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/_hooks/useTLEditor'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
@@ -59,6 +59,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             onMount(editor)
         }
 
+        
         editor.setCameraOptions({
             wheelBehavior: 'none'
         })
@@ -70,6 +71,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
          * This is useful if the user has already set its `name` before - we don't redirect him to the student-form page.
          * For the user id, we take the supabase user id (if it exists) or the already existing id (if it exists - if not, tldraw will generate a new one)
          */
+        
         setUserPreferences({
             ...getUserPreferences(),
             //id: user.id,
@@ -80,9 +82,13 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         logger.log('tldraw:editor', 'Canvas mounted with usePreferences', getUserPreferences())
 
         //editor.updateInstanceState({ canMoveCamera: false })
-        editor.setStyleForNextShapes(DefaultColorStyle, "black");
-        editor.setStyleForNextShapes(DefaultSizeStyle , "m");
+        //editor.setStyleForNextShapes(DefaultColorStyle, "black");
+        //editor.setStyleForNextShapes(DefaultSizeStyle , "m");
+
     }, [setEditor, onMount])
+
+
+    const options = useMemo(() => ({ maxPages: 300 }), []);
 
     return (
         <Tldraw
@@ -93,6 +99,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             store={store}
             snapshot={ store ? undefined : initialSnapshot }
             persistenceKey={persistenceKey}
+            options={options}
         >
             {children}
             {/*<Resizer/>*/}

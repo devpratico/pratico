@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { fetchCapsuleSnapshot } from "@/app/api/_actions/room2";
 import { useEffect, useState } from "react";
 import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
+import logger from "@/app/_utils/logger";
 //import { CanvasUser } from "../../../_components/canvases/Canvas";
 //import { fetchUser, fetchNames } from "@/app/api/_actions/user";
 //import { getRandomColor } from "@/app/_utils/codeGen";
@@ -43,8 +44,15 @@ export default function CanvasSL() {
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function _setInitialSnapshot() {
-            const snapshot = await fetchCapsuleSnapshot(capsuleId)
-            setInitialSnapshot(snapshot)
+            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...')
+            const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+            const snapshot = data?.tld_snapshot?.[0]
+            if (snapshot) {
+                logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
+                setInitialSnapshot(snapshot as any)
+            } else {
+                logger.log('react:component', 'CanvasSL', 'No initial snapshot')
+            }
         }
         _setInitialSnapshot()
     }, [capsuleId])

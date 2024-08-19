@@ -17,14 +17,21 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
     
     async function handleClick() {
         setLoading(true)
-        try {
-            const userId = (await fetchUser()).id;
-            const newCapsule = await saveCapsule({ created_by: userId })
-            router.push('/capsule/' + newCapsule.id)
-        } catch (error) {
+
+        const { user, error } = await fetchUser()
+        if (error || !user) {
             setLoading(false)
-            console.error("Error creating capsule", error)
+            return
         }
+
+        const { data, error: saveError } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
+
+        if (saveError || !data) {
+            setLoading(false)
+            return
+        }
+
+        router.push('/capsule/' + data.id)
     }
 
     return (

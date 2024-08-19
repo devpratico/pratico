@@ -1,12 +1,11 @@
 'use client'
 import Thumbnail from '@/app/[locale]/_components/Thumbnail'
 import { useNav } from '@/app/_hooks/useNav'
-import { useTLEditor } from '@/app/_hooks/useTLEditor'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
-import logger from '@/app/_utils/logger'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { SnapshotProvider } from '@/app/_hooks/useSnapshot'
 
 
 interface MiniatureProps {
@@ -14,24 +13,29 @@ interface MiniatureProps {
     onClick: () => void
 }
 
+const MemoizedThumbnail = memo(Thumbnail)
+const MemoizedMiniature = memo(Miniature)
+
 
 export default function Carousel() {
     const { pageIds, setCurrentPage } = useNav()
 
     return (
-        <Card variant='classic' style={{padding:'0'}} asChild>
-            <ScrollArea>
-                <Flex gap='3' p='3' height='100%' align='center'>
-                    {pageIds.map((id, i) => (
-                        <Miniature
-                            key={`${id}`}
-                            pageId={id}
-                            onClick={() => setCurrentPage(id)}
-                        />
-                    ))}
-                </Flex>
-            </ScrollArea>
-        </Card>
+        <SnapshotProvider>
+            <Card variant='classic' style={{padding:'0'}} asChild>
+                <ScrollArea>
+                    <Flex gap='3' p='3' height='100%' align='center'>
+                        {pageIds.map((id, i) => (
+                            <MemoizedMiniature
+                                key={`${id}`}
+                                pageId={id}
+                                onClick={() => setCurrentPage(id)}
+                            />
+                        ))}
+                    </Flex>
+                </ScrollArea>
+            </Card>
+        </SnapshotProvider>
     )
 }
 
@@ -41,32 +45,60 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 
+
+    const shadow = useMemo(() => {
+        return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
+    }, [currentPageId, pageId])
+
+    const onSelect = useCallback(() => {
+        if (currentPageId === pageId) {
+            if (nextPageId) { goNextPage() }
+            else if (prevPageId) { goPrevPage() }
+        }
+        deletePage(pageId)
+    }, [currentPageId, pageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage])
+
+    const ellipsisOpacities = useMemo(() => {
+        return showEllipsis ? 1 : 0
+    }, [showEllipsis])
+
     useEffect(() => {
         setShowEllipsis(showMenu)
     }, [showMenu])
 
 
     return (
+
         <Box
+            position='relative'
             width='55px'
             height='36px'
-            style={{
-                borderRadius:'var(--radius-2)',
-                boxShadow: currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'}}
-            position='relative'
             onClick={onClick}
             onMouseEnter={() => setShowEllipsis(true)}
             onMouseLeave={() => setShowEllipsis(showMenu)}
         >
 
-            <Thumbnail pageId={pageId} />
+            <Box
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    overflow: 'hidden',
+                    borderRadius: 'var(--radius-2)',
+                    boxShadow: shadow,
+                }} 
+            >
+                <MemoizedThumbnail pageId={pageId}/>
+            </Box>
+
+
+
 
             <DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
                 <DropdownMenu.Trigger>
                     <IconButton
                         radius='full' size='1'
-                        style={{ position: 'absolute', top: '-10px', right: '-10px',boxShadow:'var(--shadow-3)', opacity: showEllipsis ? 1 : 0 }}
+                        style={{ position: 'absolute', top: '-10px', right: '-10px',boxShadow:'var(--shadow-3)', opacity: ellipsisOpacities }}
                     >
                         <Ellipsis size='18' />
                     </IconButton>
@@ -78,19 +110,12 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
                         <Copy size='18' /> Dupliquer
                     </DropdownMenu.Item>
 
-                    <DropdownMenu.Item color='red' onSelect={() => {
-                        // Before deleting the page, move to the next or previous page
-                        if (currentPageId === pageId) {
-                            if (nextPageId) {goNextPage()} 
-                            else if (prevPageId) {goPrevPage()}
-                        }
-                        deletePage(pageId)
-                    }}>
+                    <DropdownMenu.Item color='red' onSelect={onSelect}>
                         <Trash2 size='18' /> Supprimer
                     </DropdownMenu.Item>
                     
                 </DropdownMenu.Content>
-                
+                    
             </DropdownMenu.Root>
 
         </Box>

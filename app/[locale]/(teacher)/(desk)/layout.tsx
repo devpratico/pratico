@@ -1,4 +1,4 @@
-import { TopBarBox } from "../layout"
+import TopBarBox from "../_components/TopBarBox"
 import { Grid, Card, Box, Flex } from "@radix-ui/themes"
 import MenuDialog from "./_components/MenuDialog"
 import Menus from "./_components/Menus"

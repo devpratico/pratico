@@ -2,12 +2,13 @@
 import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box } from '@radix-ui/themes';
 import { signInAnonymously, setNames } from '@/app/api/_actions/auth';
+import { fetchUser } from '@/app/api/_actions/user';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function StudentForm() {
 
+export default function StudentForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const nextUrl = searchParams.get('nextUrl');
@@ -17,25 +18,27 @@ export default function StudentForm() {
         <Form.Root onSubmit={async (event) => {
             event.preventDefault();
             setIsLoading(true);
+
             const formData = new FormData(event.currentTarget);
+
+            // Fetch user or sign in anonymously
+            const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
+            if (!user) {
+                logger.error('next:page', 'Impossible to fetch user or sign in anonymously');
+                return;
+            }
+
             const firstName = formData.get('first-name') as string;
             const lastName  = formData.get('last-name')  as string;
+            await setNames({ id: user.id, first_name: firstName, last_name: lastName });
 
-            try {
-                const { user } = await signInAnonymously();
-                if (!user) throw new Error('No user returned from sign in anonymously');
-                await setNames({ id: user.id, first_name: firstName, last_name: lastName });
-
-                if (nextUrl) {
-                    router.push(nextUrl);
-                } else {
-                    logger.error('next:page', 'No nextUrl found in query params');
-                    router.push('/classroom');
-                }
-
-            } catch (error) {
-                logger.error('supabase:auth', 'Error signing in anonymously', (error as Error).message);
+            if (nextUrl) {
+                router.push(nextUrl);
+            } else {
+                logger.error('next:page', 'No nextUrl found in query params');
+                router.push('/classroom');
             }
+
         }}>
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>

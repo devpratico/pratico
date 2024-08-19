@@ -1,5 +1,7 @@
 'use server'
 import Stripe from "stripe";
+import { cache } from "react";
+//import logger from "@/app/_utils/logger";
 
 
 const getStripeClient = async () => {
@@ -7,18 +9,16 @@ const getStripeClient = async () => {
 };
 
 
-export async function doesCustomerExist(id: string): Promise<boolean>{
+export const doesCustomerExist = cache(async (id: string) => {
   const stripe = await getStripeClient();
   try {
       const response = await stripe.customers.retrieve(id);
       return true;
   } catch (error) {
-    if (error instanceof Stripe.errors.StripeError) {
-      //console.error(error.message);
-    }
+        //logger.error('next:api', 'doesCustomerExist', error.message);
     return false;
   }
-}
+})
 
 /*
 export async function getCustomerByEmail(email: string) {

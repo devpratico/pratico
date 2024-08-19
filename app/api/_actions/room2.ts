@@ -36,199 +36,172 @@ export type Room = Omit<Tables<'rooms'>, 'params' | 'capsule_snapshot'> & {
 }
 
 
-export async function fetchCapsule(capsuleId: string): Promise<Capsule> {
+export const fetchCapsule = cache(async(capsuleId: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('capsules').select('*').eq('id', capsuleId).single()
-    if (error) {
-        throw error
-    } else {
-        logger.log('supabase:database', 'got capsule', (data as Capsule).title)
-        return data
-    }
-}
-
-export async function fetchCapsuleSnapshot(capsuleId: string): Promise<TLStoreSnapshot | undefined> {
-    const supabase = createClient()
-    const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
-    if (error) {
-        throw error
-    } else {
-        return data.tld_snapshot?.[0] as TLStoreSnapshot || undefined
-    }
-}
-
-//export async function fetchCapsuleTitle(capsuleId: string): Promise<string> {
-export const fetchCapsuleTitle = cache(async (capsuleId: string): Promise<string> => {
-    const supabase = createClient()
-    const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
-    if (error) {
-        throw error
-    } else {
-        return data.title || ''
-    }
+    if (error) logger.error('supabase:database', 'Error fetching capsule', error.message)
+    return { data, error: error?.message }
 })
 
-export async function saveCapsuleTitle(capsuleId: string, title: string) {
-    if (title.length === 0) throw new Error('Title cannot be empty')
-    if (title.length > 100) throw new Error('Title cannot be longer than 100 characters')
-    if (title.length < 3)   throw new Error('Title must be at least 3 characters long')
+
+export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
+    if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
+    return { data, error: error?.message }
+})
+
+
+export const fetchCapsuleTitle = cache(async (capsuleId: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
+    if (error) logger.error('supabase:database', 'Error fetching capsule title', error.message)
+    return { data, error: error?.message }
+})
+
+
+export const saveCapsuleTitle = cache(async (capsuleId: string, title: string) => {
+    let result: {error: string | null} = { error: null }
+
+    if (title.length === 0) result = { error: 'Title cannot be empty' }
+    if (title.length > 100) result = { error: 'Title cannot be longer than 100 characters' }
+    if (title.length < 3)   result = { error: 'Title must be at least 3 characters long' }
+
+    if (result.error) {
+        logger.error('supabase:database', 'Error saving capsule title', result.error)
+        return result
+    }
 
     const supabase = createClient()
     const { error } = await supabase.from('capsules').update({ title }).eq('id', capsuleId)
 
     if (error) {
-        throw error
+        logger.error('supabase:database', 'Error saving capsule title', error.message)
+        return { error: error.message }
     } else {
-        return
+        return { error: null }
     }
-}
+})
 
-export async function saveSnapshotToCapsules(capsuleId: string, snapshot: TLStoreSnapshot) {
+
+const saveSnapshotToCapsules = cache(async (capsuleId: string, snapshot: TLStoreSnapshot) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('capsules').update({ tld_snapshot: [snapshot] }).eq('id', capsuleId)
-    if (error) {
-        throw error
-    } else {
-        return data
-    }
-}
+    const jsonSnapshot = snapshot as unknown as Json
+    const { data, error } = await supabase.from('capsules').update({ tld_snapshot: [jsonSnapshot] }).eq('id', capsuleId)
+    if (error) logger.error('supabase:database', 'Error saving snapshot to capsule', error.message)
+    return { data, error: error?.message }
+})
 
-export async function saveRoom(room: TablesInsert<'rooms'>) {
+
+const saveRoom = cache(async (room: RoomInsert) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select()
-    if (error) {
-        throw error
-    } else {
-        return data[0] as Room // TODO: not sure about this
-    }
-}
+    if (error) logger.error('supabase:database', 'Error saving room', error.message)
+    return { data, error: error?.message }
+})
 
-export async function deleteRoom(roomId: number) {
+//export async function deleteRoom(roomId: number) {
+export const deleteRoom = cache(async (roomId: number) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
-    if (error) {
-        throw error
-    } else {
-        // Revalidate cache
-        revalidatePath('/', 'layout')
-        return data
-    }
-}
+    if (error) logger.error('supabase:database', 'Error deleting room', error.message)
+    if (!error) revalidatePath('/', 'layout')
+    return { data, error: error?.message }
+})
 
-export async function fetchRoomsCodes() {
+
+export const fetchRoomsCodes = cache(async () => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('code')
-    if (error) {
-        throw error
-    } else {
-        const codesArray = data.map((e: { code: string }) => e.code)
-        return codesArray
-    }
-}
+    if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
+    return { data, error: error?.message }
+})
 
 
-export async function createRoom(capsuleId: string): Promise<Room> {
-    if (!capsuleId) throw new Error('No capsule id provided for start button')
+export const createRoom = cache(async (capsuleId: string) => {
+    const { user, error: userError } = await fetchUser()
+    if (userError) return { room: null, error: userError }
+    if (!user) return { room: null, error: 'No user' }
 
-    const snapshot = await fetchCapsuleSnapshot(capsuleId)
+    const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+    const snapshot = data?.tld_snapshot?.[0]
+    if (error) return { room: null, error }
+    if (!snapshot) return { room: null, error: 'No capsule snapshot to use for room' }
+
     let code = generateRandomCode()
     
     // Ensure the code is unique
-    const existingCodes = await fetchRoomsCodes()
-    while (existingCodes.includes(code)) {
-        code = generateRandomCode()
+    const { data: existingCodes, error: errorCodes } = await fetchRoomsCodes()
+    if (existingCodes) {
+        while (existingCodes.includes({ code })) {
+            code = generateRandomCode()
+        }
     }
 
     // generate room params
-    const userId = (await fetchUser()).id
     const params: RoomParams = { 
-        navigation: { type: 'animateur', follow: userId },
+        navigation: { type: 'animateur', follow: user.id},
         collaboration: { active: true, allowAll: false, allowedUsersIds: [] }
     }
 
     // Generate the room object
-    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: snapshot as unknown as Json, params: params as unknown as Json }
+    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: snapshot, params: params as unknown as Json }
 
-    try {
-        // Set the room in the database, and get the room that is created
-        const createdRoom = await saveRoom(room)
+    // Set the room in the database, and get the room that is created
+    const { data: createdRoomA, error: errorRoom } = await saveRoom(room)
 
-        // Revalidate cache
-        revalidatePath('/', 'layout')
+    if (errorRoom) return { room: null, error: errorRoom }
+    if (!createdRoomA) return { room: null, error: 'saveRomm returned no room' }
 
-        return createdRoom // We'll need this to set the room in the context
-    } catch (error) {
-        throw error
-    }
-}
+    // Not sure why this is an array, but we only want the first element
+    const createdRoom = createdRoomA[0]
+
+    // Revalidate cache
+   //revalidatePath(`/room/${createdRoom.code}`)
+
+    return { room: createdRoom, error: null }
+})
 
 
-export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
-    try {
-        await saveSnapshotToCapsules(capsuleId, snapshot)
-    } catch (error) {
-        throw error
-    }
-}
+//export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
+export const saveCapsuleSnapshot = cache(async (capsuleId: string, snapshot: any) => {
+    const { data, error } = await saveSnapshotToCapsules(capsuleId, snapshot)
+    return { data, error }
+})
 
-export async function saveRoomSnapshot(roomId: number, snapshot: any) {
+
+export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
     const supabase = createClient()
-    const { error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
-    if (error) {
-        logger.log('supabase:database', 'Error saving room snapshot', error.message)
-        throw error
-    } else {
-        logger.log('supabase:database', 'Saved room snapshot to', roomId)
-    }
-}
+    const { data, error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
+    if (error) logger.error('supabase:database', 'Error saving room snapshot', error.message)
+    return { data, error: error?.message }
+})
 
 /**
  * Get rooms related to a capsule
  */
-export async function fetchRoomsByCapsuleId(capsuleId: string): Promise<Room[]> {
+export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
+    const supabase = createClient()    
+    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
+    if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
+    return { data, error: error?.message }
+})
+
+
+export const fetchRoomParams = cache(async (roomId: number) => {
     const supabase = createClient()
-
-    try {
-        const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
-        if (error) {
-            throw error
-        } else {
-            const result = data as Room[]
-            logger.log('supabase:database', 'fetchRoomsByCapsuleId', capsuleId)
-            return result
-        }
-    } catch (error) {
-        logger.error('supabase:database', 'Error fetchRoomsByCapsuleId', (error as Error).message)
-        throw error
-    }
-}
-
-
-export async function fetchRoomParams(roomId: number): Promise<RoomParams> {
-    const supabase = createClient()
-    logger.log('supabase:database', 'fetching room params for', roomId, '...')
     const { data, error } = await supabase.from('rooms').select('params').eq('id', roomId).single()
-    if (error) {
-        logger.error('supabase:database', 'Error fetchRoomParams', error.message)
-        throw error
-    } else {
-        logger.log('supabase:database', 'fetched room params for', roomId, data.params)
-        return data.params as RoomParams
-    }
-}
+    if (error) logger.error('supabase:database', 'Error fetchRoomParams', error.message)
+    return { data, error: error?.message }
+})
 
 
-export async function saveRoomParams(roomId: number, params: RoomParams) {
+export const saveRoomParams = cache(async (roomId: number, params: RoomParams) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').update({ params: params as unknown as Json }).eq('id', roomId)
-    if (error) {
-        logger.error('supabase:database', 'Error saveRoomParams', error.message)
-        throw error
-    } else {
-        logger.log('supabase:database', 'Saved room params for', roomId)
-        return data
-    }
-}
+    if (error) logger.error('supabase:database', 'Error saveRoomParams', error.message)
+    return { data, error: error?.message }
+})
 
 
 

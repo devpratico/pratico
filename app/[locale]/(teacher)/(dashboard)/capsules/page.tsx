@@ -10,9 +10,14 @@ import CreateCapsuleBtn from "./_components/CreateCapsuleBtn";
 
 
 export default async function Page() {
+    const { user, error } = await fetchUser()
 
-    const userId = (await fetchUser()).id;
-    const capsules = await fetchCapsulesData(userId);
+    let capsules: any[] = []
+    if (user) {
+        const { data, error } = await fetchCapsulesData(user.id)
+        if (data) capsules = data
+    }
+
 
     return (
         <ScrollArea>
@@ -86,7 +91,7 @@ interface MiniatureProps {
 function Miniature({ title, createdAt, children }: MiniatureProps) {
     return (
         <Flex direction='column' gap='1'>
-            <Card>
+            <Card style={{padding:'0'}}>
                 <AspectRatio ratio={16 / 9}>
                     {children}
                 </AspectRatio>

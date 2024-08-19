@@ -4,9 +4,13 @@ import {
   Box,
   TLPageId,
   TLEditorSnapshot,
+  exportAs
 } from "tldraw";
 import { useTLEditor } from "@/app/_hooks/useTLEditor";
 import { Flex, Spinner } from "@radix-ui/themes";
+import { useMemo, useState, useEffect, useTransition, useRef } from "react";
+import { useSnapshot } from "@/app/_hooks/useSnapshot";
+import { useNav } from "@/app/_hooks/useNav";
 
 
 interface ThumbnailProps {
@@ -21,19 +25,48 @@ interface ThumbnailProps {
  * @param snapshot - The snapshot of the tldraw store (optional). If not provided, the snapshot from the useTLEditor hook will be used.
  * @param pageId - The id of the page (optional). If not provided, the first page will be used.
  */
-const Thumbnail = ({ snapshot, scale=0.05, pageId }: ThumbnailProps) => {
-    const {snapshot: hookSnapshot } = useTLEditor();
+const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps) => {
+    const bounds = useMemo(() => new Box(0, 0, 1920, 1080), []);
 
-    const _snapshot = snapshot || hookSnapshot;
-    if (!_snapshot) return null;
+    // The snapshot used will be either the one passed as a prop or the one from the hook
+    const {snapshot: hookSnapshot } = useSnapshot()
+    const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
+    //const { currentPageId } = useNav()
+
+    //const isFirstRender = useRef(true);
+
+    /*
+    // Initialize the snapshot on the first render
+    const [snapshot, setSnapshot] = useState<TLEditorSnapshot | undefined>(argSnapshot);
+
+    useEffect(() => {
+        if (argSnapshot) {
+            return;
+
+        } else if (isFirstRender.current && hookSnapshot) {
+            // Set the snapshot only on the first render
+            setSnapshot(hookSnapshot);
+            isFirstRender.current = false;
+
+        } else if (currentPageId === pageId) {
+            // Update the snapshot only when the currentPageId matches pageId
+            setSnapshot(hookSnapshot);
+        }
+        
+    }, [argSnapshot, hookSnapshot, currentPageId, pageId]);
+    */
+
+    if (!snapshot) {
+        return null;
+    }
 
     /**
      * When using the hookSnapshot, it may not contain the desired pageId yet,
      * because we debounce its updates for performance reasons.
      * In that case, we show a spinner until the pageId is available.
      */
-    if (!snapshot) {
-        const store = _snapshot.document.store as any
+    if (!argSnapshot && hookSnapshot) {
+        const store = hookSnapshot.document.store as any
         const pageIds = getPageKeys(store)
         if (!pageIds.includes(pageId as string)) {
             return (
@@ -46,13 +79,14 @@ const Thumbnail = ({ snapshot, scale=0.05, pageId }: ThumbnailProps) => {
 
     return (
         <TldrawImage
-            snapshot={_snapshot}
+            snapshot={snapshot}
             format='png'
             scale={scale}
             //background={false}
             pageId={pageId}
-            bounds={new Box(0, 0, 1920, 1080)}
+            bounds={bounds}
             //preserveAspectRatio={'true'}
+            padding={0}
         />
     );
 }

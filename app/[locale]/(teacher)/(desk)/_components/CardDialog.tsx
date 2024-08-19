@@ -1,7 +1,6 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
 import { Theme } from '@radix-ui/themes';
-import { useState } from 'react';
 
 
 interface CardDialogProps {

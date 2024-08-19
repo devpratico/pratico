@@ -1,7 +1,7 @@
 import { Avatar } from '@radix-ui/themes';
 import { fetchUser, fetchNames } from '@/app/api/_actions/user';
 import { Link } from "@/app/_intl/intlNavigation";
-import { LoginBtn } from "../../../_components/LoginBtn";
+import { LoginBtn, SignUpBtn } from "../../../_components/AuthBtns";
 import { getTranslations } from 'next-intl/server';
 import { CircleUser } from "lucide-react";
 
@@ -9,17 +9,12 @@ import { CircleUser } from "lucide-react";
 export const revalidate = 0
 
 export default async function UserInfo() {
+    //const t = await getTranslations("dashboard")
 
-    const t = await getTranslations("dashboard")
+    const { user, error } = await fetchUser()
 
-    let user
-    try {
-        user = await fetchUser()
-        if (!user || user.is_anonymous) throw new Error("User not found")
-    } catch (error) {
-        return <LoginBtn />
-    }
-
+    if (!user) return <LoginBtn />
+    if (user.is_anonymous) return <SignUpBtn />
 
     const names = await fetchNames(user.id)
 
