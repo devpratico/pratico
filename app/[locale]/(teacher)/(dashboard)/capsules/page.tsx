@@ -91,7 +91,7 @@ interface MiniatureProps {
 function Miniature({ title, createdAt, children }: MiniatureProps) {
     return (
         <Flex direction='column' gap='1'>
-            <Card>
+            <Card style={{padding:'0'}}>
                 <AspectRatio ratio={16 / 9}>
                     {children}
                 </AspectRatio>
