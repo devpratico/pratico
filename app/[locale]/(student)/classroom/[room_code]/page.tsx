@@ -4,16 +4,15 @@ import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '@/app/api/_actions/room3'
+import logger from '@/app/_utils/logger'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const { user, error } = await fetchUser()
-    if (error) throw error
-    if (!user) throw new Error('No user')
+    const { first_name, last_name } = user?.id ? await fetchNames(user.id) : {first_name: null, last_name: null}
 
-    const { first_name, last_name } = await fetchNames(user.id)
-
-    if (!first_name || !last_name) {
+    if (!user || error || !first_name || !last_name) {
+        logger.log('next:page', 'User info missing, redirecting to form')
         const nextUrl = `/classroom/${params.room_code}`
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString())
         return null
