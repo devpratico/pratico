@@ -30,10 +30,12 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
 
     // The snapshot used will be either the one passed as a prop or the one from the hook
     const {snapshot: hookSnapshot } = useSnapshot()
-    const { currentPageId } = useNav()
+    const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
+    //const { currentPageId } = useNav()
 
-    const isFirstRender = useRef(true);
+    //const isFirstRender = useRef(true);
 
+    /*
     // Initialize the snapshot on the first render
     const [snapshot, setSnapshot] = useState<TLEditorSnapshot | undefined>(argSnapshot);
 
@@ -52,6 +54,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
         }
         
     }, [argSnapshot, hookSnapshot, currentPageId, pageId]);
+    */
 
     if (!snapshot) {
         return null;
