@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Heading, Flex, Button, Text, Code, Box, Switch, IconButton } from "@radix-ui/themes";
+import { Grid, Heading, Flex, Button, Text, Code, Box, Switch, IconButton, VisuallyHidden } from "@radix-ui/themes";
 import { Copy, QrCode } from "lucide-react";
 import QRCode from 'react-qr-code';
 import { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import TooltipL from "@/app/[locale]/_components/TooltipL";
 import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
+import * as Dialog from '@radix-ui/react-dialog';
 
 
 export default function StartDialog() {
@@ -47,7 +48,15 @@ export default function StartDialog() {
                         <Image src='/illustrations/rocket.svg' alt='rocket' layout='fill' objectFit='contain' />
                     </Box>
 
-                    <Heading size='8' align='center'>{`La session est en cours`}</Heading>
+                    <Dialog.Title asChild>
+                        <Heading size='8' align='center'>{`La session est en cours`}</Heading>
+                    </Dialog.Title>
+
+                    <VisuallyHidden>
+                        <Dialog.Description>
+                            {`Vous pouvez maintenant partager le lien de la session avec les participants.`}
+                        </Dialog.Description>
+                    </VisuallyHidden>
 
                     <Flex direction='column' align='center'>
                         <Text align='center'>{`Envoyez le lien suivant aux participants :`}</Text>
