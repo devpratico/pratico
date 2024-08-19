@@ -49,7 +49,7 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
 
     return (
         <TabNav.Link active={searchParams.get('menu') == menu} asChild>
-            <Link href={hrefFor(searchParams, pathname, menu)} shallow={true}>
+            <Link href={hrefFor(searchParams, pathname, menu)} shallow={true} prefetch>
                 {children}
             </Link>
         </TabNav.Link>
