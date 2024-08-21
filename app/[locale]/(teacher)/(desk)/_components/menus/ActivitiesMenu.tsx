@@ -1,70 +1,107 @@
 'use client'
-import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, ScrollArea, Switch } from '@radix-ui/themes'
-import { Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, ScrollArea, Switch, Heading, Callout, Separator, Em } from '@radix-ui/themes'
+import { Plus, Trash2, ChevronLeft, ChevronRight, Telescope, Star, Clock } from 'lucide-react'
 import CardDialog from '../CardDialog'
 import * as Dialog from '@radix-ui/react-dialog'
-import { useState, useMemo, use } from 'react'
-import { Quiz, QuizCreationProvider, useQuizCreation } from '@/app/_hooks/useQuizCreation'
+import { useState, useMemo } from 'react'
+import { QuizCreationProvider, useQuizCreation, testQuiz, testPoll, PollCreationProvider, usePollCreation } from '@/app/_hooks/usePollQuizCreation'
 
 
-const testQuiz: Quiz = {
-    title: 'Mon super quiz',
-    questions: [
-        {
-            text: 'Quelle est la capitale de la France ?',
-            answers: [
-                { text: 'Madrid', correct: false },
-                { text: 'Londres', correct: false },
-                { text: 'Paris', correct: true },
-            ]
-        },
-        {
-            text: 'Quel est le plus petit pays du monde ?',
-            answers: [
-                { text: 'Monaco', correct: false },
-                { text: 'Le Vatican', correct: true },
-                { text: 'Saint-Marin', correct: false },
-            ]
-        }
-    ]
-}
-
-interface AnswerStyle {
-    checked: boolean | 'indeterminate',
-    color: string,
-    text: string
+function EmptyCallout({ message, ...props }: { message: string } & Callout.RootProps) {
+    return (
+        <Callout.Root color='gray' {...props}>
+            <Callout.Text>{message}</Callout.Text>
+        </Callout.Root>
+    )
 }
 
 
 export default function ActivitiesMenu() {
-    const [open, setOpen] = useState(false)
+    const [openQuizCreation, setOpenQuizCreation] = useState(false)
+    const [openPollCreation, setOpenPollCreation] = useState(false)
 
     return (
+        <>
+            <Section size='1'>
+                <Flex align='center' gap='2'>
+                    <Star size={18}/><Heading size='3' trim='end'>Favoris</Heading>
+                </Flex>
+                <EmptyCallout message="Aucun favori" mt='2'/>
+            </Section>
 
-        <Section size='1'>
-            <CardDialog trigger={<Button><Plus/>Créer</Button>} preventClose open={open} setOpen={setOpen}>
-                <QuizCreationProvider initialQuiz={testQuiz}>
-                    <ActivityCreation setOpen={setOpen}/>
-                </QuizCreationProvider>
-            </CardDialog>
 
-        </Section>
 
+
+            <Section size='1'>
+                <Flex align='center' gap='2'>
+                    <Clock size={18}/><Heading size='3' trim='end'>Récents</Heading>
+                </Flex>
+                <EmptyCallout message="Aucun élément récent" mt='2' />
+            </Section>
+
+
+            <Separator size='4' my='5'/>
+
+
+            <Section size='1'>
+
+                <Flex justify='between' align='center' gap='3'>
+                    <Heading size='3'>Quiz</Heading>
+                    <CardDialog trigger={<Button size='1'><Plus size={18}/>Créer un quiz</Button>} preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
+                        <QuizCreationProvider initialQuiz={testQuiz}>
+                            <QuizCreation setOpen={setOpenQuizCreation} />
+                        </QuizCreationProvider>
+                    </CardDialog>
+                </Flex>
+
+
+                <EmptyCallout message="Aucun quiz" mt='2' />
+
+                <Flex justify='end' mt='1'>
+                    <Button variant='ghost' disabled>Voir tout</Button>
+                </Flex>
+
+                
+            </Section>
+
+
+
+
+            <Section size='1'>
+
+                <Flex justify='between' align='center' gap='3'>
+                    <Heading size='3'>Sondages</Heading>
+                    <CardDialog trigger={<Button size='1'><Plus size={18} />Créer un sondage</Button>} open={openPollCreation} setOpen={setOpenPollCreation}>
+                        <PollCreationProvider initialPoll={testPoll}>
+                            {/*<QuizCreation setOpen={setOpenPollCreation} />*/}
+                            <p>Poll Creation</p>
+                        </PollCreationProvider>
+                    </CardDialog>
+                </Flex>
+
+                <EmptyCallout message="Aucun sondage" mt='2' />
+
+                <Flex justify='end' mt='1'>
+                    <Button variant='ghost' disabled>Voir tout</Button>
+                </Flex>
+
+            </Section>
+
+        </>
     )
 }
 
-function ActivityCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
+function QuizCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
     const {
         quiz,
         currentQuestionIndex,
         setQuestionText,
-        setAnswerCorrect,
         addNewAnswer,
         deleteQuestion,
     } = useQuizCreation()
 
     const [newAnswerText, setNewAnswerText] = useState('')
-    const [type, setType] = useState<'quiz' | 'poll'>('quiz')
+
 
     return (
         <Container size='3' px='3'>
@@ -73,7 +110,7 @@ function ActivityCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
 
                     <Flex justify='between' gap='3' align='center'>
 
-                        <Dialog.Title>{quiz?.title || 'Créer un quiz'}</Dialog.Title>
+                        <Dialog.Title>{quiz.title || 'Créer un quiz'}</Dialog.Title>
                         <VisuallyHidden><Dialog.Description>Créez un quiz ou un sondage</Dialog.Description></VisuallyHidden>
 
                         <Flex gap='3' align='baseline'>
@@ -88,36 +125,13 @@ function ActivityCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
                         <TextArea
                             mb='6'
                             placeholder="Question"
-                            value={quiz?.questions[currentQuestionIndex].text}
-                            onChange={(event) => {setQuestionText({ index: currentQuestionIndex, text: event.target.value })}}
+                            value={quiz.questions[currentQuestionIndex].question.text}
+                            onChange={(event) => {setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value })}}
                         />
 
-                        {/* QUIZ/POLL SWITCH  OPTION */}
-                        <Flex gap='2' style={{alignSelf:'end'}} display={(quiz?.questions?.[currentQuestionIndex].answers?.length ?? 0) > 0 ? 'flex' : 'none'}>
-                            <Switch
-                                checked={type === 'quiz'}
-                                onCheckedChange={(checked) =>  {
-                                    setType(checked ? 'quiz' : 'poll')
-                                    // If poll, set all answers 'correctness' to undefined
-                                    if (!checked) {
-                                        quiz?.questions[currentQuestionIndex].answers.forEach((answer, index) => {
-                                            setAnswerCorrect({ questionIndex: currentQuestionIndex, answerIndex: index, correct: undefined })
-                                        })
-                                    } else {
-                                        // If quiz, set all answers 'correctness' to false
-                                        quiz?.questions[currentQuestionIndex].answers.forEach((answer, index) => {
-                                            setAnswerCorrect({ questionIndex: currentQuestionIndex, answerIndex: index, correct: false })
-                                        })
-                                    }
-                                }
-                                }
-                            />
-                            <Text size='2' color='gray'>{`Vrai/Faux`}</Text>
-                        </Flex>
-
                         {/* ANSWERS */}
-                        {quiz?.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <AnswerRow key={index} answerIndex={index} showVraiFaux={type === 'quiz'}/>
+                        {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
+                            <AnswerRow key={index} answerIndex={index}/>
                         ))}
 
                         {/* ADD NEW ANSWER AREA*/}
@@ -160,40 +174,34 @@ function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, sh
     const { quiz, currentQuestionIndex, setAnswerText, setAnswerCorrect, deleteAnswer } = useQuizCreation()
     const answer = useMemo(() => quiz?.questions[currentQuestionIndex].answers[answerIndex], [quiz, currentQuestionIndex, answerIndex])
 
-    const style: AnswerStyle = useMemo(() => {
-        switch (answer?.correct) {
-            case true:  return { checked: true, color: 'green', text: 'Vrai' }
-            case false: return { checked: false, color: 'red', text: 'Faux' }
-            default:    return { checked: 'indeterminate', color: 'gray', text: 'Neutre' }
-        }
-    },[answer])
-
     return (
         <Flex align='center' gap='2' width='100%'>
             <TextField.Root
-                value={answer?.text}
+                value={answer.text}
                 placeholder={'Réponse ' + (answerIndex + 1) + '...'}
                 style={{width: '100%'}}
-                color={style.color as any}
+                color={answer.correct ? 'green' : 'red'}
                 onChange={(event) => {setAnswerText({ questionIndex: currentQuestionIndex, answerIndex, text: event.target.value })}}
             />
 
             <Flex gap='3' justify='between'>
 
-                <Flex as="span" gap="2" width='70px' display={showVraiFaux ? 'flex' : 'none'}>
+                <Flex as="span" gap="2" width='100px' display={showVraiFaux ? 'flex' : 'none'}>
 
                     <Checkbox
-                        checked={style.checked}
+                        checked={answer.correct}
                         onCheckedChange={(checked) => setAnswerCorrect({
                             questionIndex: currentQuestionIndex,
                             answerIndex,
-                            correct: checked == 'indeterminate' ? undefined : checked
+                            correct: !!checked
                         })}
                         size='3'
-                        color={style.color as any}
+                        color={answer.correct ? 'green' : 'red'}
                     />
 
-                    <Text size='2' color={style.color as any}>{style.text}</Text>
+                    <Text size='2' color={answer.correct ? 'green' : 'red'}>
+                        {answer.correct ? 'Correcte' : 'Incorrecte'}
+                    </Text>
                 </Flex>
 
 
@@ -213,7 +221,7 @@ function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, sh
 
 
 function Navigator() {
-    const { quiz, currentQuestionIndex, setCurrentQuestionIndex, addNewQuestion } = useQuizCreation()
+    const { quiz, currentQuestionIndex, setCurrentQuestionIndex, addEmptyQuestion } = useQuizCreation()
     const total = useMemo(() => quiz?.questions.length || 0, [quiz])
     const canGoNext = currentQuestionIndex < total - 1
     const canGoPrevious = currentQuestionIndex > 0
@@ -227,7 +235,7 @@ function Navigator() {
     }
 
     function handleAddQuestion() {
-        addNewQuestion()
+        addEmptyQuestion()
         setCurrentQuestionIndex(total) // Move to the newly added question
     }
 
