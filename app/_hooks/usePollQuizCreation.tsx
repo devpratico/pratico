@@ -77,7 +77,7 @@ type QuizPollCommonContextType = {
      * Sets the index of the current question being edited.
      * (We typically display one question at a time during quiz creation.)
      */
-    setCurrentQuestionIndex: (index: number) => void
+    setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>
     setQuestionText: ({ questionIndex, text }: { questionIndex: number, text: string }) => void
     setAnswerText: ({ questionIndex, answerIndex, text }: { questionIndex: number, answerIndex: number, text: string }) => void
     setAnswerSymbol: ({ questionIndex, answerIndex, symbol }: { questionIndex: number, answerIndex: number, symbol: string }) => void

@@ -1,19 +1,10 @@
 'use client'
 import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, ScrollArea, Switch, Heading, Callout, Separator, Em } from '@radix-ui/themes'
-import { Plus, Trash2, ChevronLeft, ChevronRight, Telescope, Star, Clock } from 'lucide-react'
+import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock } from 'lucide-react'
 import CardDialog from '../CardDialog'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useState, useMemo } from 'react'
 import { QuizCreationProvider, useQuizCreation, testQuiz, testPoll, PollCreationProvider, usePollCreation } from '@/app/_hooks/usePollQuizCreation'
-
-
-function EmptyCallout({ message, ...props }: { message: string } & Callout.RootProps) {
-    return (
-        <Callout.Root color='gray' {...props}>
-            <Callout.Text>{message}</Callout.Text>
-        </Callout.Root>
-    )
-}
 
 
 export default function ActivitiesMenu() {
@@ -49,7 +40,7 @@ export default function ActivitiesMenu() {
                     <Heading size='3'>Quiz</Heading>
                     <CardDialog trigger={<Button size='1'><Plus size={18}/>Créer un quiz</Button>} preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
                         <QuizCreationProvider initialQuiz={testQuiz}>
-                            <QuizCreation setOpen={setOpenQuizCreation} />
+                            <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
                         </QuizCreationProvider>
                     </CardDialog>
                 </Flex>
@@ -73,8 +64,7 @@ export default function ActivitiesMenu() {
                     <Heading size='3'>Sondages</Heading>
                     <CardDialog trigger={<Button size='1'><Plus size={18} />Créer un sondage</Button>} open={openPollCreation} setOpen={setOpenPollCreation}>
                         <PollCreationProvider initialPoll={testPoll}>
-                            {/*<QuizCreation setOpen={setOpenPollCreation} />*/}
-                            <p>Poll Creation</p>
+                            <PollCreation closeDialog={() => setOpenPollCreation(false)} />
                         </PollCreationProvider>
                     </CardDialog>
                 </Flex>
@@ -91,12 +81,26 @@ export default function ActivitiesMenu() {
     )
 }
 
-function QuizCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
+
+function EmptyCallout({ message, ...props }: { message: string } & Callout.RootProps) {
+    return (
+        <Callout.Root color='gray' {...props}>
+            <Callout.Text>{message}</Callout.Text>
+        </Callout.Root>
+    )
+}
+
+
+
+
+function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
     const {
         quiz,
         currentQuestionIndex,
+        setCurrentQuestionIndex,
         setQuestionText,
         addNewAnswer,
+        addEmptyQuestion,
         deleteQuestion,
     } = useQuizCreation()
 
@@ -104,75 +108,192 @@ function QuizCreation({ setOpen }: { setOpen: (open: boolean) => void }) {
 
 
     return (
-        <Container size='3' px='3'>
+        <>
+            <Flex justify='between' gap='3' align='center' p='4'>
+                <Dialog.Title>{quiz.title || 'Quiz sans titre'}</Dialog.Title>
+                <VisuallyHidden><Dialog.Description>{quiz.title || 'Quiz sans titre'}</Dialog.Description></VisuallyHidden>
+
+                <Flex gap='3' align='baseline'>
+                    <CancelButton onCancel={closeDialog} />
+                    <Button onClick={closeDialog}>Terminer</Button>
+                </Flex>
+            </Flex>
+
+            <Container size='3' px='3'>
 
                 <Section size='1'>
-
-                    <Flex justify='between' gap='3' align='center'>
-
-                        <Dialog.Title>{quiz.title || 'Créer un quiz'}</Dialog.Title>
-                        <VisuallyHidden><Dialog.Description>Créez un quiz ou un sondage</Dialog.Description></VisuallyHidden>
-
-                        <Flex gap='3' align='baseline'>
-                            <CancelButton onCancel={() => setOpen(false)}/>
-                            <Button onClick={() => setOpen(false)}>Terminer</Button>
-                        </Flex>
-                    </Flex>
 
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
-                            mb='6'
                             placeholder="Question"
                             value={quiz.questions[currentQuestionIndex].question.text}
                             onChange={(event) => {setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value })}}
                         />
 
+                        <Button
+                            mb='8'
+                            style={{alignSelf: 'flex-end'}}
+                            size='1'
+                            variant='soft'
+                            color='gray'
+                            onClick={() => { deleteQuestion(currentQuestionIndex) }}
+                            disabled={quiz.questions.length <= 1}
+                        >Supprimer la question</Button>
+
                         {/* ANSWERS */}
                         {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <AnswerRow key={index} answerIndex={index}/>
+                            <QuizAnswerRow key={index} answerIndex={index}/>
                         ))}
 
                         {/* ADD NEW ANSWER AREA*/}
                         <Flex align='center' gap='2' width='100%' mt='7'>
                             <TextField.Root
+                                size='3'
                                 value={newAnswerText}
                                 placeholder="Ajouter une réponse"
                                 style={{ width: '100%' }}
                                 onChange={(event) => {setNewAnswerText(event.target.value)}}
                             />
-                            <Button
+                            <IconButton
+                                size='3'
                                 onClick={() => {
                                     addNewAnswer({ questionIndex: currentQuestionIndex, answer: { text: newAnswerText, correct: false } });
                                     setNewAnswerText('');
                                 }}
-                            >Ajouter</Button>
+                            ><Plus/></IconButton>
                         </Flex>
 
                         
 
                     </Flex>
 
-                    <Flex gap='3' align='center' mt='7' width='100%'>
-                        <Navigator/>
-                        <Button
-                            variant='ghost'
-                            color='gray'
-                            onClick={() => {deleteQuestion(currentQuestionIndex)}}
-                        >Supprimer cette question</Button>
+                    <Separator size='4' mb='3' mt='8' />
+
+                    <Flex justify='center' gap='3'>
+                        <Navigator total={quiz.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
+                        <Button onClick={addEmptyQuestion}>Nouvelle question</Button>
                     </Flex>
 
                 </Section>
 
-        </Container>
+            </Container>          
+
+        </>
     )
 }
 
 
-function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, showVraiFaux?: boolean }) {
+
+
+function PollCreation({ closeDialog }: { closeDialog: () => void }) {
+    const {
+        poll,
+        currentQuestionIndex,
+        setCurrentQuestionIndex,
+        setQuestionText,
+        addNewAnswer,
+        addEmptyQuestion,
+        deleteQuestion,
+    } = usePollCreation()
+
+    const [newAnswerText, setNewAnswerText] = useState('')
+
+
+    return (
+        <>
+            <Flex justify='between' gap='3' align='center' p='4'>
+                <Dialog.Title>{poll.title || 'Sondage sans titre'}</Dialog.Title>
+                <VisuallyHidden><Dialog.Description>{poll.title || 'Sondage sans titre'}</Dialog.Description></VisuallyHidden>
+
+                <Flex gap='3' align='baseline'>
+                    <CancelButton onCancel={closeDialog} />
+                    <Button onClick={closeDialog}>Terminer</Button>
+                </Flex>
+            </Flex>
+
+            <Container size='3' px='3'>
+
+                <Section size='1'>
+
+                    <Flex direction='column' gap='3' mt='7' align='stretch'>
+
+                        {/* QUESTION TEXT AREA */}
+                        <TextArea
+                            placeholder="Question"
+                            value={poll.questions[currentQuestionIndex].question.text}
+                            onChange={(event) => { setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value }) }}
+                        />
+
+                        <Button
+                            mb='8'
+                            style={{ alignSelf: 'flex-end' }}
+                            size='1'
+                            variant='soft'
+                            color='gray'
+                            onClick={() => { deleteQuestion(currentQuestionIndex) }}
+                            disabled={poll.questions.length <= 1}
+                        >Supprimer la question</Button>
+
+                        {/* ANSWERS */}
+                        {poll.questions[currentQuestionIndex].answers.map((answer, index) => (
+                            <PollAnswerRow key={index} answerIndex={index} />
+                        ))}
+
+                        {/* ADD NEW ANSWER AREA*/}
+                        <Flex align='center' gap='2' width='100%' mt='7'>
+                            <TextField.Root
+                                size='3'
+                                value={newAnswerText}
+                                placeholder="Ajouter une réponse"
+                                style={{ width: '100%' }}
+                                onChange={(event) => { setNewAnswerText(event.target.value) }}
+                            />
+                            <IconButton
+                                size='3'
+                                onClick={() => {
+                                    addNewAnswer({ questionIndex: currentQuestionIndex, answer: { text: newAnswerText} });
+                                    setNewAnswerText('');
+                                }}
+                            ><Plus /></IconButton>
+                        </Flex>
+
+
+
+                    </Flex>
+
+                    <Separator size='4' mb='3' mt='8' />
+
+                    <Flex justify='center' gap='3'>
+                        <Navigator total={poll.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
+                        <Button onClick={addEmptyQuestion}>Nouvelle question</Button>
+                    </Flex>
+
+                </Section>
+
+            </Container>
+
+        </>
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function QuizAnswerRow({ answerIndex }: { answerIndex: number }) {
     const { quiz, currentQuestionIndex, setAnswerText, setAnswerCorrect, deleteAnswer } = useQuizCreation()
-    const answer = useMemo(() => quiz?.questions[currentQuestionIndex].answers[answerIndex], [quiz, currentQuestionIndex, answerIndex])
+    const answer = useMemo(() => quiz.questions[currentQuestionIndex].answers[answerIndex], [quiz, currentQuestionIndex, answerIndex])
 
     return (
         <Flex align='center' gap='2' width='100%'>
@@ -186,7 +307,7 @@ function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, sh
 
             <Flex gap='3' justify='between'>
 
-                <Flex as="span" gap="2" width='100px' display={showVraiFaux ? 'flex' : 'none'}>
+                <Flex as="span" gap="2" width='100px'>
 
                     <Checkbox
                         checked={answer.correct}
@@ -200,7 +321,7 @@ function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, sh
                     />
 
                     <Text size='2' color={answer.correct ? 'green' : 'red'}>
-                        {answer.correct ? 'Correcte' : 'Incorrecte'}
+                        {answer.correct ? 'Correct' : 'Incorrect'}
                     </Text>
                 </Flex>
 
@@ -220,44 +341,68 @@ function AnswerRow({ answerIndex, showVraiFaux=true }: { answerIndex: number, sh
 }
 
 
-function Navigator() {
-    const { quiz, currentQuestionIndex, setCurrentQuestionIndex, addEmptyQuestion } = useQuizCreation()
-    const total = useMemo(() => quiz?.questions.length || 0, [quiz])
+function PollAnswerRow({ answerIndex }: { answerIndex: number }) {
+    const { poll, currentQuestionIndex, setAnswerText, deleteAnswer } = usePollCreation()
+    const answer = useMemo(() => poll.questions[currentQuestionIndex].answers[answerIndex], [poll, currentQuestionIndex, answerIndex])
+
+    return (
+        <Flex align='center' gap='2' width='100%'>
+            <TextField.Root
+                value={answer.text}
+                placeholder={'Réponse ' + (answerIndex + 1) + '...'}
+                style={{ width: '100%' }}
+                onChange={(event) => { setAnswerText({ questionIndex: currentQuestionIndex, answerIndex, text: event.target.value }) }}
+            />
+
+            <Flex gap='3' justify='between'>
+                <IconButton
+                    variant='ghost'
+                    color='gray'
+                    onClick={() => { deleteAnswer({ questionIndex: currentQuestionIndex, answerIndex }) }}
+                >
+                    <Trash2 size={18} />
+                </IconButton>
+            </Flex>
+        </Flex>
+    )
+}
+
+
+
+
+
+interface NavigatorProps {
+    total: number
+    currentQuestionIndex: number
+    setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>
+}
+
+function Navigator({ total, currentQuestionIndex, setCurrentQuestionIndex }: NavigatorProps) {
     const canGoNext = currentQuestionIndex < total - 1
     const canGoPrevious = currentQuestionIndex > 0
-
-    function handleNext() {
-        if (canGoNext) setCurrentQuestionIndex(currentQuestionIndex + 1)
-    }
-
-    function handlePrevious() {
-        if (canGoPrevious) setCurrentQuestionIndex(currentQuestionIndex - 1)
-    }
-
-    function handleAddQuestion() {
-        addEmptyQuestion()
-        setCurrentQuestionIndex(total) // Move to the newly added question
-    }
+    function handleNext() { if (canGoNext) setCurrentQuestionIndex((prev) => prev + 1) }
+    function handlePrevious() { if (canGoPrevious) setCurrentQuestionIndex((prev) => prev - 1) }
 
     return (
         <Flex gap='3' align='center' justify='center' flexGrow='1'>
 
-            <IconButton radius='full' variant='ghost' onClick={handlePrevious} disabled={!canGoPrevious}>
+            <IconButton radius='full' variant='ghost' onClick={handlePrevious} disabled={!canGoPrevious} style={{display: total > 1 ? 'flex' : 'none'}}>
                 <ChevronLeft/>
             </IconButton>
 
             {Array.from({ length: total }).map((_, index) => (
-                <Box key={index} width='6px' height='6px' style={{borderRadius: '50%', backgroundColor: index === currentQuestionIndex ? 'var(--accent-10)' : 'var(--gray-7)'}}/>
+                <Box
+                    key={index} width='6px' height='6px'
+                    style={{borderRadius: '50%', backgroundColor: index === currentQuestionIndex ? 'var(--accent-10)' : 'var(--gray-7)'}}
+                    display={total > 1 ? 'block' : 'none'}
+                />
             ))}
 
-            {canGoNext ?
-                <IconButton radius='full' variant='ghost' onClick={handleNext}>
-                    <ChevronRight/>
-                </IconButton>
-                :
-                <Button radius='full' onClick={handleAddQuestion}><Plus/>Ajouter une question</Button>
-            }
 
+            <IconButton radius='full' variant='ghost' onClick={handleNext} disabled={!canGoNext} style={{display: total > 1 ? 'flex' : 'none'}}>
+                <ChevronRight/>
+            </IconButton>
+                
         </Flex>
     )
 }
