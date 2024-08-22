@@ -1,6 +1,6 @@
 'use client'
-import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, Heading, Callout, Separator, Dialog, DropdownMenu } from '@radix-ui/themes'
-import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock } from 'lucide-react'
+import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, Heading, Callout, Separator, Dialog, DropdownMenu, Card, ScrollArea, Grid } from '@radix-ui/themes'
+import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock, Scroll } from 'lucide-react'
 import CardDialog from '../CardDialog'
 import { useState, useMemo, useCallback } from 'react'
 import { QuizCreationProvider, useQuizCreation, testQuiz, testPoll, PollCreationProvider, usePollCreation } from '@/app/_hooks/usePollQuizCreation'
@@ -121,9 +121,10 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
 
 
     return (
-        <>
+        <Grid rows='auto 1fr auto' height='100%'>
+
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title>{quiz.title || 'Quiz sans titre'}</Dialog.Title>
+                <Dialog.Title style={{margin:0}} trim='both'>{quiz.title || 'Quiz sans titre'}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>{quiz.title || 'Quiz sans titre'}</Dialog.Description></VisuallyHidden>
 
                 <Flex gap='3' align='baseline'>
@@ -132,9 +133,10 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
                 </Flex>
             </Flex>
 
-            <Container size='3' px='3'>
 
+            <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
                 <Section size='1'>
+
 
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
 
@@ -177,23 +179,22 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
                                 }}
                             ><Plus/></IconButton>
                         </Flex>
-
-                        
-
                     </Flex>
 
-                    <Separator size='4' mb='3' mt='8' />
+                </Section>
+            </Container>
 
+
+            <Box p='3' pt='0'>
+                <Card variant='classic'>
                     <Flex justify='center' gap='3'>
                         <Navigator total={quiz.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
+                </Card>
+            </Box>   
 
-                </Section>
-
-            </Container>          
-
-        </>
+        </Grid>
     )
 }
 
@@ -220,9 +221,10 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
 
 
     return (
-        <>
+        <Grid rows='auto 1fr auto' height='100%'>
+
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title>{poll.title || 'Sondage sans titre'}</Dialog.Title>
+                <Dialog.Title style={{ margin: 0 }} trim='both'>{poll.title || 'Sondage sans titre'}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>{poll.title || 'Sondage sans titre'}</Dialog.Description></VisuallyHidden>
 
                 <Flex gap='3' align='baseline'>
@@ -231,7 +233,7 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
                 </Flex>
             </Flex>
 
-            <Container size='3' px='3'>
+            <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
 
@@ -281,18 +283,19 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
 
                     </Flex>
 
-                    <Separator size='4' mb='3' mt='8' />
+                </Section>
+            </Container>
 
+            <Box p='3' pt='0'>
+                <Card variant='classic'>
                     <Flex justify='center' gap='3'>
                         <Navigator total={poll.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
+                </Card>
+            </Box>  
 
-                </Section>
-
-            </Container>
-
-        </>
+        </Grid>
     )
 }
 

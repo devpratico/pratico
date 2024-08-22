@@ -139,7 +139,7 @@ function _deleteAnswer<T extends Quiz | Poll>({ questionIndex, answerIndex, setQ
 function _deleteQuestion<T extends Quiz | Poll>({ questionIndex, currentQuestionIndex, quizPoll, setQuizPoll, setCurrentQuestionIndex }: { questionIndex: number, currentQuestionIndex: number, quizPoll: T, setQuizPoll: React.Dispatch<React.SetStateAction<T>>, setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>> }) {
     // No need to change currentQuestionIndex, except if we're deleting the last question.
     if (currentQuestionIndex === quizPoll.questions.length - 1) {
-        setCurrentQuestionIndex(questionIndex - 1);
+        setCurrentQuestionIndex(questionIndex - 1); // Move to the previous question
     }
     setQuizPoll((prev) => produce(prev, draft => { draft.questions.splice(questionIndex, 1) }));
 }
