@@ -1,9 +1,8 @@
 'use client'
-import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, ScrollArea, Switch, Heading, Callout, Separator, Em } from '@radix-ui/themes'
+import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, Heading, Callout, Separator, Dialog, DropdownMenu } from '@radix-ui/themes'
 import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock } from 'lucide-react'
 import CardDialog from '../CardDialog'
-import * as Dialog from '@radix-ui/react-dialog'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { QuizCreationProvider, useQuizCreation, testQuiz, testPoll, PollCreationProvider, usePollCreation } from '@/app/_hooks/usePollQuizCreation'
 
 
@@ -13,68 +12,77 @@ export default function ActivitiesMenu() {
 
     return (
         <>
+
             <Section size='1'>
-                <Flex align='center' gap='2'>
+
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <Button>Créer une activité<DropdownMenu.TriggerIcon /></Button>
+                    </DropdownMenu.Trigger>
+
+                    <DropdownMenu.Content>
+                        <DropdownMenu.Item onClick={() => setOpenQuizCreation(true)}>Quiz</DropdownMenu.Item>
+                        <DropdownMenu.Item onClick={() => setOpenPollCreation(true)}>Sondage</DropdownMenu.Item>
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+
+
+                <CardDialog preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
+                    <QuizCreationProvider initialQuiz={testQuiz}>
+                        <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
+                    </QuizCreationProvider>
+                </CardDialog>
+
+                <CardDialog preventClose open={openPollCreation} setOpen={setOpenPollCreation}>
+                    <PollCreationProvider initialPoll={testPoll}>
+                        <PollCreation closeDialog={() => setOpenPollCreation(false)} />
+                    </PollCreationProvider>
+                </CardDialog>
+
+            </Section>
+
+
+
+            <Section size='1'>
+
+                <Heading size='3' trim='end' mb='2'>Mes activités</Heading>
+
+                <Flex direction='column' gap='2'>
+
+                    <Button variant='soft' >
+                        <Flex justify='between' align='center' gap='2' width='100%'>
+                            Quiz
+                            <ChevronRight/>
+                        </Flex>
+                    </Button>
+
+                    <Button variant='soft' >
+                        <Flex justify='between' align='center' gap='2' width='100%'>
+                            Sondages
+                            <ChevronRight />
+                        </Flex>
+                    </Button>
+                    
+                </Flex>
+            </Section>
+
+
+
+
+
+            <Section size='1'>
+                <Flex align='center' gap='2' mb='2'>
                     <Star size={18}/><Heading size='3' trim='end'>Favoris</Heading>
                 </Flex>
-                <EmptyCallout message="Aucun favori" mt='2'/>
+                <EmptyCallout message="Aucun favori"/>
             </Section>
 
 
-
-
             <Section size='1'>
-                <Flex align='center' gap='2'>
+                <Flex align='center' gap='2' mb='2'>
                     <Clock size={18}/><Heading size='3' trim='end'>Récents</Heading>
                 </Flex>
-                <EmptyCallout message="Aucun élément récent" mt='2' />
-            </Section>
-
-
-            <Separator size='4' my='5'/>
-
-
-            <Section size='1'>
-
-                <Flex justify='between' align='center' gap='3'>
-                    <Heading size='3'>Quiz</Heading>
-                    <CardDialog trigger={<Button size='1'><Plus size={18}/>Créer un quiz</Button>} preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
-                        <QuizCreationProvider initialQuiz={testQuiz}>
-                            <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
-                        </QuizCreationProvider>
-                    </CardDialog>
-                </Flex>
-
-
-                <EmptyCallout message="Aucun quiz" mt='2' />
-
-                <Flex justify='end' mt='1'>
-                    <Button variant='ghost' disabled>Voir tout</Button>
-                </Flex>
-
-                
-            </Section>
-
-
-
-
-            <Section size='1'>
-
-                <Flex justify='between' align='center' gap='3'>
-                    <Heading size='3'>Sondages</Heading>
-                    <CardDialog trigger={<Button size='1'><Plus size={18} />Créer un sondage</Button>} open={openPollCreation} setOpen={setOpenPollCreation}>
-                        <PollCreationProvider initialPoll={testPoll}>
-                            <PollCreation closeDialog={() => setOpenPollCreation(false)} />
-                        </PollCreationProvider>
-                    </CardDialog>
-                </Flex>
-
-                <EmptyCallout message="Aucun sondage" mt='2' />
-
-                <Flex justify='end' mt='1'>
-                    <Button variant='ghost' disabled>Voir tout</Button>
-                </Flex>
-
+                <EmptyCallout message="Aucun élément récent"/>
             </Section>
 
         </>
@@ -106,6 +114,11 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
+    const handleAddNewQuestion = useCallback(() => {
+        addEmptyQuestion()
+        setCurrentQuestionIndex(quiz.questions.length)
+    }, [addEmptyQuestion, setCurrentQuestionIndex, quiz.questions.length])
+
 
     return (
         <>
@@ -115,7 +128,7 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button onClick={closeDialog}>Terminer</Button>
+                    <Button variant='soft'onClick={closeDialog}>Terminer</Button>
                 </Flex>
             </Flex>
 
@@ -173,7 +186,7 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
 
                     <Flex justify='center' gap='3'>
                         <Navigator total={quiz.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
-                        <Button onClick={addEmptyQuestion}>Nouvelle question</Button>
+                        <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
 
                 </Section>
@@ -200,6 +213,11 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
+    const handleAddNewQuestion = useCallback(() => {
+        addEmptyQuestion()
+        setCurrentQuestionIndex(poll.questions.length)
+    }, [addEmptyQuestion, setCurrentQuestionIndex, poll.questions.length])
+
 
     return (
         <>
@@ -209,7 +227,7 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button onClick={closeDialog}>Terminer</Button>
+                    <Button variant='soft' onClick={closeDialog}>Terminer</Button>
                 </Flex>
             </Flex>
 
@@ -267,7 +285,7 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
 
                     <Flex justify='center' gap='3'>
                         <Navigator total={poll.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
-                        <Button onClick={addEmptyQuestion}>Nouvelle question</Button>
+                        <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
 
                 </Section>
@@ -277,17 +295,6 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
         </>
     )
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -416,7 +423,7 @@ function CancelButton({ onCancel }: { onCancel: () => void }) {
     return (
         <AlertDialog.Root>
             <AlertDialog.Trigger>
-                <Button variant='ghost'>Annuler</Button>
+                <Button variant='ghost' color='gray'>Annuler</Button>
             </AlertDialog.Trigger>
 
             <AlertDialog.Content>

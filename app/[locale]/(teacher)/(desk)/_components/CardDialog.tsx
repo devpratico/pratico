@@ -4,7 +4,7 @@ import { Theme } from '@radix-ui/themes';
 
 
 interface CardDialogProps {
-    trigger: React.ReactNode
+    trigger?: React.ReactNode
 
     /**
      * If `true`, the dialog will not close when clicking outside of it.
