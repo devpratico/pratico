@@ -19,3 +19,14 @@
 .tl-canvas {
     z-index: 1 !important;
 }
+
+/* Changes default styling of lucide icons */
+.lucide {
+    width:  18px;
+    height: 18px;
+    stroke-width: 1.8;
+}
+
+.lucide * {
+    vector-effect: non-scaling-stroke;
+}
