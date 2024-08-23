@@ -37,7 +37,7 @@ export const fetchUser =  cache(async () => {
     const { data: {user}, error } = await supabase.auth.getUser()
     if (error) logger.error('supabase:auth', `error fetching user`, error.message)
     if (user)  logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
-    return ({ user, error: error?.message})
+    return ({ user, error: error?.message || null })
 })
 
 

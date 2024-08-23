@@ -2,12 +2,12 @@
 import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout } from '@radix-ui/themes'
 import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
 import { usePresences } from "@/app/_hooks/usePresences"
-import CollabSwitch from "./ui/CollabSwitch"
-import CollabSwitchGlobal from "./ui/CollabSwitchGlobal"
+import CollabSwitch from "./CollabSwitch"
+import CollabSwitchGlobal from "./CollabSwitchGlobal"
 import { useParams, useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Link, usePathname } from '@/app/_intl/intlNavigation'
-import { hrefFor } from '../MenuTabs'
+import { hrefFor } from '../../MenuTabs'
 
 
 export default function ParticipantMenu() {

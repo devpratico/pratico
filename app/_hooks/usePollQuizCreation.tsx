@@ -1,11 +1,20 @@
 'use client'
 import { useState, useContext, createContext } from "react"
-import {produce } from 'immer'
-
+import { produce } from 'immer'
 
 
 // BASE TYPES
 // Used by both Polls and Quizzes
+// May be used in the future for other types of activities.
+
+export type ActivityType = 'quiz' | 'poll'
+
+export interface Activity {
+    type: ActivityType
+    title: string
+    schemaVersion: string
+}
+
 
 export interface BaseQuestion {
     text: string
@@ -34,8 +43,10 @@ export interface PollQuestion {
     answers: PollAnswer[]
 }
 
-export interface Poll {
-    title: string
+
+export interface Poll extends Activity {
+    type: 'poll'
+    schemaVersion: '1'
     questions: PollQuestion[]
 }
 
@@ -55,10 +66,12 @@ export interface QuizQuestion {
     hint?: string
 }
 
-export interface Quiz {
-    title: string
+export interface Quiz extends Activity {
+    type: 'quiz'
+    schemaVersion: '1'
     questions: QuizQuestion[]
 }
+
 
 
 
@@ -67,6 +80,13 @@ export interface Quiz {
  * that will be used in the hooks.
  */
 type QuizPollCommonContextType = {
+
+    /**
+     * While creating an activity, we need to know which id to save to in Supabase.
+     * If undefined, we're creating a new activity.
+     */
+    idToSaveTo?: number
+
     /**
      * This is the index of the current question being displayed and edited.
      * (We typically display one question at a time during quiz creation.
@@ -161,7 +181,7 @@ function _addEmptyQuestion<T extends Quiz | Poll>({ setQuizPoll }: { setQuizPoll
 
 const PollCreationContext = createContext<PollCreationContextType | undefined>(undefined);
 
-export function PollCreationProvider({ initialPoll, children }: { initialPoll: Poll, children: React.ReactNode }) {
+export function PollCreationProvider({ initialPoll, idToSaveTo, children }: { initialPoll: Poll, idToSaveTo?: number, children: React.ReactNode }) {
     const [poll, setPoll] = useState<Poll>(initialPoll);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -208,6 +228,7 @@ export function PollCreationProvider({ initialPoll, children }: { initialPoll: P
         <PollCreationContext.Provider value={{
             poll,
             setPoll,
+            idToSaveTo,
             setTitle,
             currentQuestionIndex,
             setCurrentQuestionIndex,
@@ -239,7 +260,7 @@ export function usePollCreation() {
 
 const QuizCreationContext = createContext<QuizCreationContextType | undefined>(undefined);
 
-export function QuizCreationProvider({ initialQuiz, children }: { initialQuiz: Quiz, children: React.ReactNode }) {
+export function QuizCreationProvider({ initialQuiz, idToSaveTo, children }: { initialQuiz: Quiz, idToSaveTo?: number, children: React.ReactNode }) {
     const [quiz, setQuiz] = useState<Quiz>(initialQuiz);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -295,6 +316,7 @@ export function QuizCreationProvider({ initialQuiz, children }: { initialQuiz: Q
         <QuizCreationContext.Provider value={{
             quiz,
             setQuiz,
+            idToSaveTo,
             setTitle,
             currentQuestionIndex,
             setCurrentQuestionIndex,
@@ -325,6 +347,8 @@ export function useQuizCreation() {
 // Mock data
 
 export const testQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '1',
     title: 'Mon super quiz',
     questions: [
         {
@@ -352,6 +376,8 @@ export const testQuiz: Quiz = {
 
 
 export const testPoll: Poll = {
+    type: 'poll',
+    schemaVersion: '1',
     title: 'Mon super sondage',
     questions: [
         {
@@ -373,6 +399,34 @@ export const testPoll: Poll = {
                 { text: 'Chat', symbol: '2', color: 'gray' },
                 { text: 'Poisson', symbol: '3', color: 'blue' },
             ]
+        }
+    ]
+}
+
+export const emptyQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '1',
+    title: '',
+    questions: [
+        {
+            question: {
+                text: '',
+            },
+            answers: []
+        }
+    ]
+}
+
+export const emptyPoll: Poll = {
+    type: 'poll',
+    schemaVersion: '1',
+    title: '',
+    questions: [
+        {
+            question: {
+                text: '',
+            },
+            answers: []
         }
     ]
 }

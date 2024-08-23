@@ -34,6 +34,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: number
+          object: Json
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: number
+          object: Json
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: number
+          object?: Json
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Activities_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       capsules: {
         Row: {
           created_at: string

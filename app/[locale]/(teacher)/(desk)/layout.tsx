@@ -10,6 +10,11 @@ import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 import MobileControls from "./_components/MobileControls"
 import { PresencesProvider } from "@/app/_hooks/usePresences"
 import { RoomProvider } from "@/app/_hooks/useRoom"
+import ActivitiesMenu from "./_components/menus/ActivitiesMenu/ActivitiesMenu"
+import ParticipantsMenu from "./_components/menus/ParticipantsMenu/ParticipantsMenu"
+import DefilementMenu from "./_components/menus/DefilementMenu"
+import ChatMenu from "./_components/menus/ChatMenu"
+import MoreMenu from "./_components/menus/MoreMenu"
 
 
 
@@ -54,7 +59,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Menus layout (outside the grid layout because of `absolute`)*/}
                 <Box position='absolute' top='0' bottom='0' right='0' width='100%' overflow='clip' style={{pointerEvents: 'none'}}>
                     <MenuDialog>
-                        <Menus />
+                        <Menus
+                            ActivitiesMenu={<ActivitiesMenu/>}
+                            ParticipantsMenu={<ParticipantsMenu/>}
+                            DefilementMenu={<DefilementMenu/>}
+                            ChatMenu={<ChatMenu/>}
+                            MoreMenu={<MoreMenu/>}
+                        />
                     </MenuDialog>
                 </Box>
 

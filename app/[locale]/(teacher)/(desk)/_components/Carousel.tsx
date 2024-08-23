@@ -107,11 +107,11 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
                 <DropdownMenu.Content onClick={(e) => e.stopPropagation()}>
 
                     <DropdownMenu.Item onSelect={() => console.log('Duplicate')} disabled={true}>
-                        <Copy size='18' /> Dupliquer
+                        <Copy size='15' /> Dupliquer
                     </DropdownMenu.Item>
 
                     <DropdownMenu.Item color='red' onSelect={onSelect}>
-                        <Trash2 size='18' /> Supprimer
+                        <Trash2 size='15' /> Supprimer
                     </DropdownMenu.Item>
                     
                 </DropdownMenu.Content>
