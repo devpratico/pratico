@@ -78,6 +78,7 @@ type QuizPollCommonContextType = {
      * (We typically display one question at a time during quiz creation.)
      */
     setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>
+    setTitle: (title: string) => void
     setQuestionText: ({ questionIndex, text }: { questionIndex: number, text: string }) => void
     setAnswerText: ({ questionIndex, answerIndex, text }: { questionIndex: number, answerIndex: number, text: string }) => void
     setAnswerSymbol: ({ questionIndex, answerIndex, symbol }: { questionIndex: number, answerIndex: number, symbol: string }) => void
@@ -120,6 +121,10 @@ type QuizCreationContextType = QuizPollCommonContextType & QuizExtraContextType
 
 // Let's implement the common methods used by both polls and quizzes.
 
+function _setTitle<T extends Quiz | Poll>({ title, setQuizPoll }: { title: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
+    setQuizPoll((prev) => produce(prev, draft => { draft.title = title }));
+}
+
 function _setQuestionText<T extends Quiz | Poll>({ questionIndex, text, setQuizPoll }: { questionIndex: number, text: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
     setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].question.text = text }));
 }
@@ -160,6 +165,9 @@ export function PollCreationProvider({ initialPoll, children }: { initialPoll: P
     const [poll, setPoll] = useState<Poll>(initialPoll);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+    function setTitle(title: string) {
+        _setTitle({ title, setQuizPoll: setPoll });
+    }
     
     function setQuestionText({ questionIndex, text }: { questionIndex: number, text: string }) {
         _setQuestionText({ questionIndex, text, setQuizPoll: setPoll });
@@ -200,6 +208,7 @@ export function PollCreationProvider({ initialPoll, children }: { initialPoll: P
         <PollCreationContext.Provider value={{
             poll,
             setPoll,
+            setTitle,
             currentQuestionIndex,
             setCurrentQuestionIndex,
             setQuestionText,
@@ -234,6 +243,10 @@ export function QuizCreationProvider({ initialQuiz, children }: { initialQuiz: Q
     const [quiz, setQuiz] = useState<Quiz>(initialQuiz);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+
+    function setTitle(title: string) {
+        _setTitle({ title, setQuizPoll: setQuiz });
+    }
 
     function setQuestionText({ questionIndex, text }: { questionIndex: number, text: string }) {
         _setQuestionText({ questionIndex, text, setQuizPoll: setQuiz });
@@ -282,6 +295,7 @@ export function QuizCreationProvider({ initialQuiz, children }: { initialQuiz: Q
         <QuizCreationContext.Provider value={{
             quiz,
             setQuiz,
+            setTitle,
             currentQuestionIndex,
             setCurrentQuestionIndex,
             setQuestionText,

@@ -1,6 +1,6 @@
 'use client'
-import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, Heading, Callout, Separator, Dialog, DropdownMenu, Card, ScrollArea, Grid } from '@radix-ui/themes'
-import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock, Scroll } from 'lucide-react'
+import { Section, Container, Button, Flex, AlertDialog, VisuallyHidden, TextArea, TextField, Checkbox, IconButton, Text, Box, Heading, Callout, Separator, Dialog, DropdownMenu, Card, ScrollArea, Grid, Popover } from '@radix-ui/themes'
+import { Plus, Trash2, ChevronLeft, ChevronRight, Star, Clock, SquarePen, Check } from 'lucide-react'
 import CardDialog from '../CardDialog'
 import { useState, useMemo, useCallback } from 'react'
 import { QuizCreationProvider, useQuizCreation, testQuiz, testPoll, PollCreationProvider, usePollCreation } from '@/app/_hooks/usePollQuizCreation'
@@ -99,11 +99,65 @@ function EmptyCallout({ message, ...props }: { message: string } & Callout.RootP
 }
 
 
+interface TitleProps {
+    type: 'quiz' | 'poll'
+    title: string
+    onEdit: (newTitle: string) => void
+}
+
+function Title({ type, title, onEdit }: TitleProps) {
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState(title)
+    const defaultTitle = type === 'quiz' ? 'Quiz sans titre' : 'Sondage sans titre'
+
+    function handleConfirm() {
+        onEdit(value)
+        setOpen(false)
+    }
+
+    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') handleConfirm();
+    }
+
+    return (
+        <Flex gap='3' align='center'>
+
+            <Dialog.Title style={{ margin: 0 }} trim='both'>{title || defaultTitle}</Dialog.Title>
+            <VisuallyHidden><Dialog.Description>{title || defaultTitle}</Dialog.Description></VisuallyHidden>
+
+            <Popover.Root open={open} onOpenChange={setOpen}>
+
+                <Popover.Trigger>
+                    <IconButton variant='ghost' size='2' color='gray'><SquarePen/></IconButton>
+                </Popover.Trigger>
+
+                <Popover.Content>
+                    <TextField.Root
+                        placeholder='Titre...' value={value}
+                        onChange={(event) => setValue(event.target.value)}
+                        onKeyDown={handleKeyDown}
+                    >
+                        <TextField.Slot></TextField.Slot>
+                        <TextField.Slot>
+                            <IconButton variant='ghost' size='1' onClick={handleConfirm}>
+                                <Check/>
+                            </IconButton>
+                        </TextField.Slot>
+                    </TextField.Root>
+                </Popover.Content>
+
+            </Popover.Root>
+
+        </Flex>
+    )
+}
+
 
 
 function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
     const {
         quiz,
+        setTitle,
         currentQuestionIndex,
         setCurrentQuestionIndex,
         setQuestionText,
@@ -124,8 +178,9 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
         <Grid rows='auto 1fr auto' height='100%'>
 
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title style={{margin:0}} trim='both'>{quiz.title || 'Quiz sans titre'}</Dialog.Title>
-                <VisuallyHidden><Dialog.Description>{quiz.title || 'Quiz sans titre'}</Dialog.Description></VisuallyHidden>
+                
+                <Title type='quiz' title={quiz.title} onEdit={(newTitle) => setTitle(newTitle)} />
+                
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
@@ -204,6 +259,7 @@ function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
 function PollCreation({ closeDialog }: { closeDialog: () => void }) {
     const {
         poll,
+        setTitle,
         currentQuestionIndex,
         setCurrentQuestionIndex,
         setQuestionText,
@@ -224,8 +280,8 @@ function PollCreation({ closeDialog }: { closeDialog: () => void }) {
         <Grid rows='auto 1fr auto' height='100%'>
 
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title style={{ margin: 0 }} trim='both'>{poll.title || 'Sondage sans titre'}</Dialog.Title>
-                <VisuallyHidden><Dialog.Description>{poll.title || 'Sondage sans titre'}</Dialog.Description></VisuallyHidden>
+                
+                <Title type='poll' title={poll.title} onEdit={(newTitle) => setTitle(newTitle)} />
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
@@ -341,7 +397,7 @@ function QuizAnswerRow({ answerIndex }: { answerIndex: number }) {
                     color='gray'
                     onClick={() => {deleteAnswer({ questionIndex: currentQuestionIndex, answerIndex })}}
                 >
-                    <Trash2 size={18}/>
+                    <Trash2/>
                 </IconButton>
 
 
@@ -370,7 +426,7 @@ function PollAnswerRow({ answerIndex }: { answerIndex: number }) {
                     color='gray'
                     onClick={() => { deleteAnswer({ questionIndex: currentQuestionIndex, answerIndex }) }}
                 >
-                    <Trash2 size={18} />
+                    <Trash2/>
                 </IconButton>
             </Flex>
         </Flex>
