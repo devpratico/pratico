@@ -4,18 +4,17 @@ import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
 import { usePresences } from "@/app/_hooks/usePresences"
 import CollabSwitch from "./CollabSwitch"
 import CollabSwitchGlobal from "./CollabSwitchGlobal"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams } from "next/navigation"
+import useSearchParams from '@/app/_hooks/useSearchParams'
 import { useState, useEffect } from "react"
 import { Link, usePathname } from '@/app/_intl/intlNavigation'
-import { hrefFor } from '../../MenuTabs'
 
 
 export default function ParticipantMenu() {
     const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
-    const pathName = usePathname()
-    const searchParams = useSearchParams()
+    const { getPathnameWithSearchParam } = useSearchParams()
 
     return (
         <>
@@ -23,18 +22,18 @@ export default function ParticipantMenu() {
 
                 <Flex direction='column' gap='2'>
 
-                    <Button variant='soft' size='3' color='gray' asChild>
-                        <Link href={hrefFor(searchParams, pathName, 'defilement')} shallow={true}>
+                    <Button variant='soft' asChild>
+                        <Link href={getPathnameWithSearchParam('menu', 'defilement')} shallow={true}>
                             <Flex justify='between' align='center' width='100%'>
                                 <Text wrap='nowrap'>Défilement</Text>
                                 <Box flexGrow='1'/>
-                                <Badge color='violet'>Animateur</Badge>
+                                <Badge>Animateur</Badge>
                                 <ChevronRight/>
                             </Flex>
                         </Link>
                     </Button>
 
-                    <Button variant='soft' size='3' disabled>
+                    <Button variant='soft' disabled>
                         <Flex justify='between' align='center' width='100%'>
                             <Text wrap='nowrap' >Créer des équipes</Text>
                             <Box flexGrow='1'/>
@@ -49,7 +48,7 @@ export default function ParticipantMenu() {
             <Section size='1'>
 
 
-                <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
+                <SegmentedControl.Root defaultValue='collaborer' size='1' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
                     <SegmentedControl.Item value='collaborer'>
                         <Flex align='center' gap='2'>
                             <Pen size='20' color='var(--pink)'/>

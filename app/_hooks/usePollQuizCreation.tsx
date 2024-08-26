@@ -81,6 +81,7 @@ export interface Quiz extends Activity {
  */
 type QuizPollCommonContextType = {
 
+    // TODO: Maybe idToSaveTo has nothing to do in this hook.
     /**
      * While creating an activity, we need to know which id to save to in Supabase.
      * If undefined, we're creating a new activity.

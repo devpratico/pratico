@@ -35,7 +35,7 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
     const handleSave = useCallback(async () => {
         await saveActivity({ id: idToSaveTo, activity: poll })
         closeDialog()
-    }, [poll, closeDialog])
+    }, [poll, closeDialog, idToSaveTo])
 
 
     return (

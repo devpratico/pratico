@@ -7,14 +7,30 @@ import EditButton from "./EditButton"
 
 
 
-async function RecentActivitiesS() {
-    const { data, error } = await fetchActivitiesOfCurrentUser(10)
+interface ActivitiesTableProps {
+    type?: 'quiz' | 'poll' | 'all'
+    showMax?: number
+    noneMessage: string
+}
+
+
+async function ActivitiesTableServer({ type = 'all', showMax, noneMessage }: ActivitiesTableProps) {
     const formatter = await getFormatter()
 
-    if (!data || data.length==0 || error) {
+    // It's ok to fetch all the activities even if we only need one type,
+    // because we already fetched all the activities in the previous page,
+    // and the result is cached. Might need more consider
+    let { data, error } = await fetchActivitiesOfCurrentUser(showMax)
+
+    // Filter the activities by type
+    if (type !== 'all') {
+        data = data.filter((activity) => activity.type === type)
+    }
+
+    if (!data || data.length == 0 || error) {
         return (
             <Callout.Root color='gray'>
-                <Callout.Text>Aucun favori</Callout.Text>
+                <Callout.Text>{noneMessage}</Callout.Text>
             </Callout.Root>
         )
     }
@@ -27,7 +43,7 @@ async function RecentActivitiesS() {
 
                         <Table.RowHeaderCell>
                             <Text trim='normal'>
-                                {activity.object.title}
+                                {activity.object.title !== '' ? activity.object.title : 'Sans titre'}
                             </Text>
                         </Table.RowHeaderCell>
 
@@ -39,13 +55,13 @@ async function RecentActivitiesS() {
 
                         <Table.Cell pr='0'>
                             <Flex align='center' justify='center' height='100%'>
-                                <StartButton />        
+                                <StartButton />
                             </Flex>
                         </Table.Cell>
 
                         <Table.Cell pl='1'>
                             <Flex align='center' justify='center' height='100%'>
-                                <EditButton activityId={activity.id} initialActivity={activity.object}/>
+                                <EditButton activityId={activity.id} initialActivity={activity.object} />
                             </Flex>
                         </Table.Cell>
 
@@ -56,13 +72,6 @@ async function RecentActivitiesS() {
     )
 }
 
-export default function RecentActivities() {
-    return (
-        <Suspense fallback={<Loading />}>
-            <RecentActivitiesS />
-        </Suspense>
-    )
-}
 
 function Loading() {
     return (
@@ -70,5 +79,14 @@ function Loading() {
             <Callout.Icon><Spinner /></Callout.Icon>
             <Callout.Text>Chargement...</Callout.Text>
         </Callout.Root>
+    )
+}
+
+
+export default function ActivitiesTable({ ...props }: ActivitiesTableProps) {
+    return (
+        <Suspense fallback={<Loading />}>
+            <ActivitiesTableServer {...props} />
+        </Suspense>
     )
 }

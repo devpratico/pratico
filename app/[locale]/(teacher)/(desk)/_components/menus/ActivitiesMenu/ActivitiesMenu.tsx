@@ -1,7 +1,8 @@
 import { Section, Button, Flex, Heading, Callout } from '@radix-ui/themes'
 import {  ChevronRight, Star, Clock} from 'lucide-react'
-import RecentActivities from './RecentActivities'
+import SearchParamLink from '../../SearchParamLink'
 import CreateActivityBtn from './CreateActivityBtn'
+import ActivitiesTable from './ActivitiesTable'
 
 
 export default function ActivitiesMenu() {
@@ -17,17 +18,21 @@ export default function ActivitiesMenu() {
 
                 <Flex direction='column' gap='2'>
 
-                    <Button variant='soft' >
-                        <Flex justify='between' align='center' gap='2' width='100%'>
-                            Quiz<ChevronRight/>
-                        </Flex>
-                    </Button>
+                    <SearchParamLink name='menu' value='quizes'>
+                        <Button variant='soft' asChild>
+                            <Flex justify='between' align='center' gap='2' width='100%'>
+                                Quiz <ChevronRight/>
+                            </Flex>
+                        </Button>
+                    </SearchParamLink>
 
-                    <Button variant='soft' >
-                        <Flex justify='between' align='center' gap='2' width='100%'>
-                            Sondages<ChevronRight />
-                        </Flex>
-                    </Button>
+                    <SearchParamLink name='menu' value='polls'>
+                        <Button variant='soft' asChild>
+                            <Flex justify='between' align='center' gap='2' width='100%'>
+                                Sondages <ChevronRight />
+                            </Flex>
+                        </Button>
+                    </SearchParamLink>
                     
                 </Flex>
             </Section>
@@ -47,7 +52,7 @@ export default function ActivitiesMenu() {
                 <Flex align='center' gap='2' mb='2'>
                     <Clock size={18}/><Heading size='3' trim='end'>Récents</Heading>
                 </Flex>
-                <RecentActivities />
+                <ActivitiesTable showMax={5} noneMessage='Aucune activité récente' />
             </Section>
 
         </>

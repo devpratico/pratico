@@ -35,7 +35,7 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
     const handleSave = useCallback(async () => {
         await saveActivity({ id: idToSaveTo, activity: quiz })
         closeDialog()
-    }, [quiz, closeDialog])
+    }, [quiz, closeDialog, idToSaveTo])
 
 
     return (

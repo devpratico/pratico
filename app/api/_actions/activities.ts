@@ -8,6 +8,9 @@ import { fetchUser } from "./user"
 import { revalidatePath } from "next/cache"
 
 
+// TODO: Remove the 'type' ('quiz' or 'poll') field from supabase and use the json content ('object' column) instead
+// Supabase allows to filter queries by the content of a JSON object field.
+
 const adapter = {
     toJson: (activity: Quiz | Poll) => activity as unknown as Json,
 
