@@ -53,6 +53,10 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
                             { menu: 'more', label: 'Plus', icon: <Ellipsis /> }
                         ]} />
                     </Box>
+
+
+                    {/* Activity Card, that automatically opens when an activity is running */}
+                    
                         
 
                 </Flex>

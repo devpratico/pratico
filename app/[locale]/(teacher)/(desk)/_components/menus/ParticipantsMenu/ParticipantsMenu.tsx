@@ -1,13 +1,13 @@
 'use client'
 import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout } from '@radix-ui/themes'
-import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
+import { Pen, Coins, ChevronRight, Info } from "lucide-react"
 import { usePresences } from "@/app/_hooks/usePresences"
 import CollabSwitch from "./CollabSwitch"
 import CollabSwitchGlobal from "./CollabSwitchGlobal"
 import { useParams } from "next/navigation"
 import useSearchParams from '@/app/_hooks/useSearchParams'
-import { useState, useEffect } from "react"
-import { Link, usePathname } from '@/app/_intl/intlNavigation'
+import { useState } from "react"
+import { Link } from '@/app/_intl/intlNavigation'
 
 
 export default function ParticipantMenu() {
@@ -48,7 +48,7 @@ export default function ParticipantMenu() {
             <Section size='1'>
 
 
-                <SegmentedControl.Root defaultValue='collaborer' size='1' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
+                <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
                     <SegmentedControl.Item value='collaborer'>
                         <Flex align='center' gap='2'>
                             <Pen size='20' color='var(--pink)'/>
@@ -92,10 +92,7 @@ export default function ParticipantMenu() {
 
                 {
                     presences.length < 2 &&
-                    <Callout.Root mt='2' size='1'>
-                        <Callout.Icon>
-                            <Telescope size='20' />
-                        </Callout.Icon>
+                    <Callout.Root mt='2' size='1' color='gray'>
                         <Callout.Text>
                             {`Aucun participant n'est connecté pour le moment.`}
                         </Callout.Text>

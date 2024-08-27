@@ -1,9 +1,8 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import type { Room } from '@/app/api/_actions/room2';
+import { Room, fetchRoomByCode } from '@/app/api/_actions/room';
 import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
-import { fetchRoomByCode } from '@/app/api/_actions/room3';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 

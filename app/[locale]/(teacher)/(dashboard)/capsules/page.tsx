@@ -1,8 +1,8 @@
 import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
 import { Plus, LayoutGrid, List, Search } from "lucide-react"
 import { fetchUser } from "@/app/api/_actions/user";
-import { fetchCapsulesData, Snapshot } from "@/app/api/_actions/capsule2";
-import { TLStoreSnapshot } from "tldraw";
+import { fetchCapsulesData } from "@/app/api/_actions/capsule";
+import { TLEditorSnapshot } from "tldraw";
 import { Link } from "@/app/_intl/intlNavigation";
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
 import Menu from "./_components/Menu";
@@ -59,7 +59,7 @@ export default async function Page() {
                             const id = cap.id
                             const title = cap.title || "Sans titre"
                             const created_at = new Date(cap.created_at)
-                            const snap = cap.tld_snapshot?.[0] as Snapshot | undefined// as TLStoreSnapshot | undefined
+                            const snap = cap.tld_snapshot?.[0] as TLEditorSnapshot | undefined// as TLStoreSnapshot | undefined
 
                             let url = `/capsule/${id}`
 
