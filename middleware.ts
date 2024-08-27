@@ -52,6 +52,9 @@ export async function middleware(request: NextRequest) {
         logger.log('next:middleware', 'getUser throw error:', error)
     }
 
+
+    // TODO: When going to a capsule page, we need to chack if a room is open, and redirect to the room page if it is
+
     /*
     const locale = response.headers.get('x-middleware-request-x-next-intl-locale')
 

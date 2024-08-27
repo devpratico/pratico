@@ -128,30 +128,30 @@ export type Database = {
         Row: {
           id: number
           payload: Json | null
+          room_id: number
           timestamp: string
           type: string | null
-          use_id: string | null
         }
         Insert: {
           id?: number
           payload?: Json | null
+          room_id: number
           timestamp?: string
           type?: string | null
-          use_id?: string | null
         }
         Update: {
           id?: number
           payload?: Json | null
+          room_id?: number
           timestamp?: string
           type?: string | null
-          use_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "room_events_use_id_fkey"
-            columns: ["use_id"]
+            foreignKeyName: "room_events_room_id_fkey"
+            columns: ["room_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "rooms"
             referencedColumns: ["id"]
           },
         ]
@@ -161,28 +161,28 @@ export type Database = {
           capsule_id: string | null
           capsule_snapshot: Json | null
           code: string | null
-          created_at: string
           created_by: string | null
           id: number
           params: Json | null
+          status: Database["public"]["Enums"]["RoomStatus"]
         }
         Insert: {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
-          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null
+          status?: Database["public"]["Enums"]["RoomStatus"]
         }
         Update: {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
-          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null
+          status?: Database["public"]["Enums"]["RoomStatus"]
         }
         Relationships: [
           {
@@ -241,7 +241,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      RoomStatus: "open" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -55,7 +55,7 @@ async function ActivitiesTableServer({ type = 'all', showMax, noneMessage }: Act
 
                         <Table.Cell pr='0'>
                             <Flex align='center' justify='center' height='100%'>
-                                <StartButton />
+                                <StartButton activity_id={activity.id} />
                             </Flex>
                         </Table.Cell>
 

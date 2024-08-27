@@ -1,6 +1,5 @@
 'use server'
 import createClient from "@/supabase/clients/server"
-import { redirect } from "@/app/_intl/intlNavigation"
 import logger from "@/app/_utils/logger"
 import { cache } from "react"
 import { fetchUser } from "./user"
@@ -37,21 +36,15 @@ export type Room = Omit<Tables<'rooms'>, 'params' | 'capsule_snapshot'> & {
 }
 
 
-interface stopRoomArgs {
-    roomId: number
-    capsuleId: string
-}
-
-
-export const stopRoom = cache(async ({ roomId, capsuleId }: stopRoomArgs) => {
+export const stopRoom = cache(async (roomId: number) => {
     const supabase = createClient()
-    const { error } = await supabase.from('rooms').delete().eq('id', roomId)
+
+    const { error } = await supabase.from('rooms').update({ status: 'closed' }).eq('id', roomId)
     if (error) {
         logger.error('supabase:database', 'Error stopping room', error)
         return { error: error.message }
     }
 
-    redirect(`/capsule/${capsuleId}`)
     return { error: null }
 })
 
@@ -159,14 +152,14 @@ export const deleteRoom = cache(async (roomId: number) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error deleting room', error.message)
-    if (!error) revalidatePath('/', 'layout')
+    if (!error) revalidatePath('/')
     return { data, error: error?.message }
 })
 
 
-export const fetchRoomsCodes = cache(async () => {
+export const fetchOpenRoomsCodes = cache(async () => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('code')
+    const { data, error } = await supabase.from('rooms').select('code').eq('status', 'open')
     if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
     return { data, error: error?.message }
 })
@@ -185,7 +178,7 @@ export const createRoom = cache(async (capsuleId: string) => {
     let code = generateRandomCode()
 
     // Ensure the code is unique
-    const { data: existingCodes, error: errorCodes } = await fetchRoomsCodes()
+    const { data: existingCodes, error: errorCodes } = await fetchOpenRoomsCodes()
     if (existingCodes) {
         while (existingCodes.includes({ code })) {
             code = generateRandomCode()
@@ -199,7 +192,13 @@ export const createRoom = cache(async (capsuleId: string) => {
     }
 
     // Generate the room object
-    const room: RoomInsert = { code: code, capsule_id: capsuleId, capsule_snapshot: snapshot, params: params as unknown as Json }
+    const room: RoomInsert = {
+        code: code,
+        capsule_id: capsuleId,
+        capsule_snapshot: snapshot,
+        params: params as unknown as Json,
+        status: 'open',
+    }
 
     // Set the room in the database, and get the room that is created
     const { data: createdRoomA, error: errorRoom } = await saveRoom(room)
@@ -254,9 +253,9 @@ export const saveRoomParams = cache(async (roomId: number, params: RoomParams) =
 })
 
 
-export const fetchRoomByCode = cache(async (code: string) => {
+export const fetchOpenRoomByCode = cache(async (code: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('code', code).single()
+    const { data, error } = await supabase.from('rooms').select('*').eq('code', code).eq('status', 'open').single()
 
     if (error) logger.error('supabase:database', `error getting room by code "${code}"`, error.message)
 

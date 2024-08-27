@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import { Room, fetchRoomByCode } from '@/app/api/_actions/room';
+import { Room, fetchOpenRoomByCode } from '@/app/api/_actions/room';
 import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
@@ -29,7 +29,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     // Fetch the room data (happens once)
     useEffect(() => {
         if (!room_code) return;
-        fetchRoomByCode(room_code).then(({data, error}) => {
+        fetchOpenRoomByCode(room_code).then(({data, error}) => {
             if (error || !data) return
             const _room = data as Room
             setRoom(_room)

@@ -3,7 +3,7 @@ import { fetchUser, fetchNames } from '@/app/api/_actions/user'
 import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchRoomByCode } from '@/app/api/_actions/room'
+import { fetchOpenRoomByCode } from '@/app/api/_actions/room'
 import logger from '@/app/_utils/logger'
 
 
@@ -27,7 +27,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     //const room = await fetchRoomByCode(params.room_code)
     //const snapshot = room?.capsule_snapshot || undefined
 
-    const { data, error: roomError } = await fetchRoomByCode(params.room_code)
+    const { data, error: roomError } = await fetchOpenRoomByCode(params.room_code)
     if (roomError) throw roomError
     const snapshot = data?.capsule_snapshot || undefined as any
 
