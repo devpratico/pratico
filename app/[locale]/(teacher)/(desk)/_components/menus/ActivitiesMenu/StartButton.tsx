@@ -10,11 +10,13 @@ import { useState } from "react"
 
 export default function StartButton({ activity_id }: { activity_id: number }) {
     const [loading, setLoading] = useState(false)
-    const { room_code } = useParams<{ room_code: string }>()
-    const inRoom = room_code.length > 0
+    const { room_code } = useParams<{ room_code?: string }>()
+    const inRoom = !!room_code
 
     // Adds a new event to the room_events table to start the activity.
     async function handleClick() {
+        if (!inRoom) return
+
         setLoading(true)
 
         // Fetch the room to provide the room_id field to the event
@@ -31,7 +33,7 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
             return
         }
 
-        const { error } = await sendRoomEvent({room_id: room.id, event: { type: 'start activity', started_by: user.id, activity_id } as ActivityStartEvent })
+        const { error } = await sendRoomEvent({room_id: room.id, event: { type: 'start activity', schemaVersion:'1', started_by: user.id, activity_id } as ActivityStartEvent })
         setLoading(false)
     }
 
