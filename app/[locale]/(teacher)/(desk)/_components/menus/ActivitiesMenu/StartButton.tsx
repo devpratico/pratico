@@ -5,13 +5,19 @@ import { useParams } from "next/navigation"
 import { sendRoomEvent, ActivityStartEvent } from "@/app/api/_actions/room_events"
 import { fetchOpenRoomByCode } from "@/app/api/_actions/room"
 import { fetchUser } from "@/app/api/_actions/user"
-import { useState } from "react"
+import { act, useState } from "react"
+import { useCardDialog } from "@/app/_hooks/useCardDialog"
+import QuizAnimation from "../../activities/QuizAnimation"
+import { fetchActivity } from "@/app/api/_actions/activities"
 
 
 export default function StartButton({ activity_id }: { activity_id: number }) {
     const [loading, setLoading] = useState(false)
     const { room_code } = useParams<{ room_code?: string }>()
     const inRoom = !!room_code
+
+    // Test
+    const { setOpen, setContent } = useCardDialog()
 
     // Adds a new event to the room_events table to start the activity.
     async function handleClick() {
@@ -35,6 +41,13 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
 
         const { error } = await sendRoomEvent({room_id: room.id, event: { type: 'start activity', schemaVersion:'1', started_by: user.id, activity_id } as ActivityStartEvent })
         setLoading(false)
+
+        const { data: activity, error: activityError } = await fetchActivity(activity_id)
+        if (activityError || !(activity?.object?.type === 'quiz')) return
+
+        const content = <QuizAnimation quiz={activity.object} />
+        setOpen(true)
+        setContent(content)
     }
 
 

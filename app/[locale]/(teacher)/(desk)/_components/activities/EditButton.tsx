@@ -2,7 +2,7 @@
 import { IconButton, DropdownMenu, AlertDialog, Button, Flex } from '@radix-ui/themes'
 import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
-import CardDialog from '../../CardDialog'
+import CardDialog from '../CardDialog'
 import { Quiz, Poll } from '@/app/_hooks/usePollQuizCreation'
 import { QuizCreationProvider, PollCreationProvider } from '@/app/_hooks/usePollQuizCreation'
 import QuizCreation from './QuizCreation'

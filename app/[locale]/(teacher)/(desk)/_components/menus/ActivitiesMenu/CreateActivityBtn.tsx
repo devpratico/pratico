@@ -3,8 +3,8 @@ import { DropdownMenu, Button } from "@radix-ui/themes"
 import { useState } from "react"
 import { emptyQuiz, emptyPoll } from "@/app/_hooks/usePollQuizCreation"
 import CardDialog from "../../CardDialog"
-import QuizCreation from "./QuizCreation"
-import PollCreation from "./PollCreation"
+import QuizCreation from "../../activities/QuizCreation"
+import PollCreation from "../../activities/PollCreation"
 import { QuizCreationProvider, PollCreationProvider } from "@/app/_hooks/usePollQuizCreation"
 
 

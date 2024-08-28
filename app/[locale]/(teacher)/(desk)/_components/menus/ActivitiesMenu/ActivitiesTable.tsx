@@ -3,7 +3,7 @@ import { Callout, Table, Text, Spinner, Flex } from "@radix-ui/themes"
 import { getFormatter } from "next-intl/server"
 import { Suspense } from "react"
 import StartButton from "./StartButton"
-import EditButton from "./EditButton"
+import EditButton from "../../activities/EditButton"
 
 
 

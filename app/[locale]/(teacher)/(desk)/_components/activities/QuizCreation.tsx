@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
+import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import { useQuizCreation } from '@/app/_hooks/usePollQuizCreation'
 import { saveActivity } from '@/app/api/_actions/activities'
@@ -104,14 +104,14 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
             </Container>
 
 
-            <Box p='3' pt='0'>
+            <Flex p='3' pt='0' justify='center'>
                 <Card variant='classic'>
                     <Flex justify='center' gap='3'>
                         <Navigator total={quiz.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
                 </Card>
-            </Box>
+            </Flex>
 
         </Grid>
     )

@@ -17,6 +17,8 @@ import ParticipantsMenu from "./_components/menus/ParticipantsMenu/ParticipantsM
 import DefilementMenu from "./_components/menus/ParticipantsMenu/DefilementMenu"
 import ChatMenu from "./_components/menus/ChatMenu"
 import MoreMenu from "./_components/menus/MoreMenu"
+import { CardDialogProvider } from "@/app/_hooks/useCardDialog"
+import GlobalCardDialog from "./_components/GlobalCardDialog"
 
 
 
@@ -26,6 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavProvider>
         <PresencesProvider>
         <RoomProvider>
+        <CardDialogProvider>
             {/**
              * Top bar, as defined in the parent layout
              * It is empty because the content is defined in the children
@@ -86,9 +89,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <MobileControls/>
                 </Box>
 
+
+                {/* Global card dialog */}
+                <Box position='absolute'>
+                    <GlobalCardDialog/>
+                </Box>
+
                 
 
             </Grid>
+        </CardDialogProvider>
         </RoomProvider>
         </PresencesProvider>
         </NavProvider>

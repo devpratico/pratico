@@ -4,6 +4,7 @@ import logger from "@/app/_utils/logger"
 import { cache } from "react"
 import { TablesInsert, Tables, Json } from "@/supabase/types/database.types"
 
+
 /**
  * Every event should have a `type` and a `schemaVersion` field.
  */

@@ -74,7 +74,17 @@ export async function saveActivity({ id, activity }: saveActivityArgs) {
     return { data, error: error?.message }
 }
 
+// Supabase returns `Json` instead of `Quiz` or `Poll` objects
+// Let's declare the type of data we want to return
+interface ReturnedData extends Omit<Tables<'activities'>, 'object'> {
+    object: Quiz | Poll
+}
+/*interface ReturnedData<T extends Quiz | Poll> extends Omit<Tables<'activities'>, 'object'> {
+    object: T
+}*/
 
+
+//export const fetchActivity = cache(async <T extends Quiz | Poll>(id: number): Promise<{ data: ReturnedData<T> | null, error: string | null }> => {
 export const fetchActivity = cache(async (id: number) => {
     const supabase = createClient()
     logger.log('supabase:database', `Fetching activity ${id}...`)
@@ -89,9 +99,9 @@ export const fetchActivity = cache(async (id: number) => {
 
     switch (type) {
         case 'quiz':
-            return { data: { ...data, object: adapter.toQuiz(data.object) }, error: undefined }
+            return { data: { ...data, object: adapter.toQuiz(data.object) }, error: null }
         case 'poll':
-            return { data: { ...data, object: adapter.toPoll(data.object) }, error: undefined }
+            return { data: { ...data, object: adapter.toPoll(data.object) }, error: null }
         default:
             return { data: null, error: 'Unknown activity type' }
     }
@@ -100,13 +110,9 @@ export const fetchActivity = cache(async (id: number) => {
 
 
 
-// Supabase returns `Json` instead of `Quiz` or `Poll` objects
-// Let's declare the type of data we want to return
-interface returnedData extends Omit<Tables<'activities'>, 'object'> {
-    object: Quiz | Poll
-}
 
-export const fetchActivitiesOfCurrentUser = cache(async (limit?: number): Promise<{ data: returnedData[], error: string | null }> => {
+
+export const fetchActivitiesOfCurrentUser = cache(async (limit?: number): Promise<{ data: ReturnedData[], error: string | null }> => {
     const { user: user, error: userError } = await fetchUser()
     const userId = user?.id
 
@@ -137,7 +143,7 @@ export const fetchActivitiesOfCurrentUser = cache(async (limit?: number): Promis
             default:
                 return { ...activity, object: undefined }
         }
-    }).filter((activity) => activity !== null && activity.object !== undefined) as returnedData[]
+    }).filter((activity) => activity !== null && activity.object !== undefined) as ReturnedData[]
 
     return { data: activities, error: null }
 })

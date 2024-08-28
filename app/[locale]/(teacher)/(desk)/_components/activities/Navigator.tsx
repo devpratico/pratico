@@ -16,10 +16,12 @@ export default function Navigator({ total, currentQuestionIndex, setCurrentQuest
     function handleNext() { if (canGoNext) setCurrentQuestionIndex((prev) => prev + 1) }
     function handlePrevious() { if (canGoPrevious) setCurrentQuestionIndex((prev) => prev - 1) }
 
-    return (
-        <Flex gap='3' align='center' justify='center' flexGrow='1'>
+    if (total <= 1) return null
 
-            <IconButton radius='full' variant='ghost' onClick={handlePrevious} disabled={!canGoPrevious} style={{ display: total > 1 ? 'flex' : 'none' }}>
+    return (
+        <Flex gap='3' align='center' width='min-content'>
+
+            <IconButton radius='full' variant='ghost' onClick={handlePrevious} disabled={!canGoPrevious}>
                 <ChevronLeft />
             </IconButton>
 
@@ -32,7 +34,7 @@ export default function Navigator({ total, currentQuestionIndex, setCurrentQuest
             ))}
 
 
-            <IconButton radius='full' variant='ghost' onClick={handleNext} disabled={!canGoNext} style={{ display: total > 1 ? 'flex' : 'none' }}>
+            <IconButton radius='full' variant='ghost' onClick={handleNext} disabled={!canGoNext}>
                 <ChevronRight />
             </IconButton>
 

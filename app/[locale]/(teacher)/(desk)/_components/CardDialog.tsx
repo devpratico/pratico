@@ -18,6 +18,12 @@ interface CardDialogProps {
     children: React.ReactNode
 }
 
+
+/**
+ * A dialog that slides up from the bottom of the screen.
+ * It can be used independently from the `GlobalCardDialog` system, with its own trigger or open state.
+ * Prefer using the `GlobalCardDialog` system when possible.
+ */
 export default function CardDialog({trigger, preventClose=false, open, setOpen, children}: CardDialogProps) {
     //const [open, setOpen] = useState(false)
     const viewPortWidth = window.innerWidth
@@ -26,16 +32,17 @@ export default function CardDialog({trigger, preventClose=false, open, setOpen, 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
 
-            <style>{slideUpAnimation}</style>
-            <style>{fadeInAnimation}</style>
-
-            <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+            { trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
             <Dialog.Portal>
                 {/* The portal puts its content out of the Theme provider, so we need to wrap it in a Theme provider */}
                 {/* No need to configure the theme, it will inherit the parent theme */}
                 {/* https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
                 <Theme>
+
+                    <style>{slideUpAnimation}</style>
+                    <style>{fadeInAnimation}</style>
+
                     <Dialog.Overlay style={{
                         position: 'fixed',
                         inset: 0,
