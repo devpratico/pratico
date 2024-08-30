@@ -18,13 +18,8 @@ export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
     const { room } = useRoom()
     const [loading, setLoading] = useState(false)
     const [active, setActive] = useState(false)
-
-    useEffect(() => {
-        console.log('👉👉 room changed in component', room?.params?.collaboration)
-    }, [room]);
     
     useEffect(() => {
-        console.log('👉 room changed in component', room?.params?.collaboration)
         if (!room?.params) return;
         const _params = room.params.collaboration;
         const isActive = _params.active;

@@ -5,10 +5,14 @@ import { useParams } from "next/navigation"
 import { sendRoomEvent, ActivityStartEvent } from "@/app/api/_actions/room_events"
 import { fetchOpenRoomByCode } from "@/app/api/_actions/room"
 import { fetchUser } from "@/app/api/_actions/user"
-import { act, useState } from "react"
+import { useState } from "react"
 import { useCardDialog } from "@/app/_hooks/useCardDialog"
 import QuizAnimation from "../../activities/QuizAnimation"
 import { fetchActivity } from "@/app/api/_actions/activities"
+import { saveRoomActivitySnapshot, ActivitySnapshot } from "@/app/api/_actions/room"
+import logger from "@/app/_utils/logger"
+import { Quiz, Poll } from "@/app/_hooks/usePollQuizCreation"
+import PollAnimation from "../../activities/PollAnimation"
 
 
 export default function StartButton({ activity_id }: { activity_id: number }) {
@@ -43,11 +47,45 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
         setLoading(false)
 
         const { data: activity, error: activityError } = await fetchActivity(activity_id)
-        if (activityError || !(activity?.object?.type === 'quiz')) return
+        if (activityError || !activity) return
 
-        const content = <QuizAnimation quiz={activity.object} />
-        setOpen(true)
-        setContent(content)
+        let activitySnapshot: ActivitySnapshot
+
+        // Save the activity snapshot in the room
+        if (activity.type === 'quiz') {
+            activitySnapshot = {
+                activityId: activity_id,
+                currentQuestionIndex: 0,
+                currentQuestionState: 'answering'
+            }
+        } else if (activity.type === 'poll') {
+            activitySnapshot = {
+                activityId: activity_id,
+                currentQuestionIndex: 0,
+                currentQuestionState: 'answering',
+                votes: (activity.object as Poll).questions.map(() => 0)
+            }
+        } else {
+            logger.log('react:component', 'StartButton', 'Impossible to set activity snapshot, type not recognized:', activity.type)
+            return
+        }
+        
+        const { error: saveActivityError } = await saveRoomActivitySnapshot(room.id, activitySnapshot)
+
+        // Open the card dialog with the correct content
+        // TODO: Don't do that, use a system like for students where we detect activity_snapshot
+        // in the room table and open the dialog. Otherwise, when refreshing the page, the dialog
+        // will not be opened.
+        if (activity.type === 'quiz') { 
+            const content = <QuizAnimation quiz={activity.object as Quiz} quizId={activity_id} roomId={room.id} />
+            setContent(content)
+            setOpen(true)
+
+        } else if (activity.type === 'poll') {
+            const content = <PollAnimation poll={activity.object as Poll} pollId={activity_id} roomId={room.id} />
+            setContent(content)
+            setOpen(true)
+        }
     }
 
 

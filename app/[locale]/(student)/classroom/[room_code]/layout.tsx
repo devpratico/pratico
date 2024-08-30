@@ -4,6 +4,7 @@ import { NavProvider } from '@/app/_hooks/useNav'
 import { TLEditorProvider } from '@/app/_hooks/useTLEditor'
 import { Viewport } from 'next'
 import { Grid } from '@radix-ui/themes'
+import ActivityCard from './_components/ActivityCard'
 
 
 export const viewport: Viewport = {
@@ -26,6 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <TLEditorProvider>
                         <NavProvider>
                             {children}
+                            <ActivityCard />
                         </NavProvider>
                     </TLEditorProvider>
                 </PresencesProvider>

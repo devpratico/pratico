@@ -6,7 +6,7 @@ import { usePollCreation, useQuizCreation } from '@/app/_hooks/usePollQuizCreati
 
 
 
-export function QuizAnswerRow({ answerIndex }: { answerIndex: number }) {
+export function QuizCreationAnswerRow({ answerIndex }: { answerIndex: number }) {
     const { quiz, currentQuestionIndex, setAnswerText, setAnswerCorrect, deleteAnswer } = useQuizCreation()
     const answer = useMemo(() => quiz.questions[currentQuestionIndex].answers[answerIndex], [quiz, currentQuestionIndex, answerIndex])
 
@@ -56,7 +56,7 @@ export function QuizAnswerRow({ answerIndex }: { answerIndex: number }) {
 }
 
 
-export function PollAnswerRow({ answerIndex }: { answerIndex: number }) {
+export function PollCreationAnswerRow({ answerIndex }: { answerIndex: number }) {
     const { poll, currentQuestionIndex, setAnswerText, deleteAnswer } = usePollCreation()
     const answer = useMemo(() => poll.questions[currentQuestionIndex].answers[answerIndex], [poll, currentQuestionIndex, answerIndex])
 

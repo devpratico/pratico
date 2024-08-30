@@ -1,6 +1,7 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
 import { Theme } from '@radix-ui/themes';
+import useWindow from '@/app/_hooks/useWindow';
 
 
 interface CardDialogProps {
@@ -15,6 +16,8 @@ interface CardDialogProps {
 
     setOpen?: (open: boolean) => void
 
+    topMargin?: string
+
     children: React.ReactNode
 }
 
@@ -24,10 +27,9 @@ interface CardDialogProps {
  * It can be used independently from the `GlobalCardDialog` system, with its own trigger or open state.
  * Prefer using the `GlobalCardDialog` system when possible.
  */
-export default function CardDialog({trigger, preventClose=false, open, setOpen, children}: CardDialogProps) {
-    //const [open, setOpen] = useState(false)
-    const viewPortWidth = window.innerWidth
-    const topPosition = viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)'
+export default function CardDialog({trigger, preventClose=false, open, setOpen, topMargin, children}: CardDialogProps) {
+    const { width: viewPortWidth } = useWindow()
+    const topPosition = topMargin || (viewPortWidth && viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)')
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>

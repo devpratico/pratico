@@ -158,6 +158,7 @@ export type Database = {
       }
       rooms: {
         Row: {
+          activity_snapshot: Json | null
           capsule_id: string | null
           capsule_snapshot: Json | null
           code: string | null
@@ -167,6 +168,7 @@ export type Database = {
           status: Database["public"]["Enums"]["RoomStatus"]
         }
         Insert: {
+          activity_snapshot?: Json | null
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
@@ -176,6 +178,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["RoomStatus"]
         }
         Update: {
+          activity_snapshot?: Json | null
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null

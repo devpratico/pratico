@@ -99,9 +99,15 @@ export const fetchActivity = cache(async (id: number) => {
 
     switch (type) {
         case 'quiz':
-            return { data: { ...data, object: adapter.toQuiz(data.object) }, error: null }
+            const quiz = adapter.toQuiz(data.object)
+            if (!quiz) return { data: null, error: 'Error parsing quiz' }
+            return { data: { ...data, object: quiz }, error: null }
+
         case 'poll':
-            return { data: { ...data, object: adapter.toPoll(data.object) }, error: null }
+            const poll = adapter.toPoll(data.object)
+            if (!poll) return { data: null, error: 'Error parsing poll' }
+            return { data: { ...data, object: poll }, error: null }
+
         default:
             return { data: null, error: 'Unknown activity type' }
     }

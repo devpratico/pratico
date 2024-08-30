@@ -7,8 +7,11 @@ import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 
 
-// TODO: Get rid of this. Fetch room data everywhere it's needed, and use cache.
-// Make a useRoomSettings for real-time settings.
+// TODO: There's a trick 🚩 here to only update the room when the params change - and do nothing
+// when the other fields change, especially the capsule_snapshot. This is not clear and should be simplified.
+// Change room context to somehting like: { params, activity } without the snapshot.
+// Or separate concernes : useRoomParams, useRoomActivity...
+// We may also need a handy roomId and roomCode
 
 
 export type RoomContext = {
@@ -39,25 +42,25 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
     // Subscribe to room params changes
     useEffect(() => {
+        logger.log('supabase:realtime', "useRoom", "Listening to room table realtime")
         const supabase = createClient();
-        const channel = supabase.channel(room_code + "_params");
+        const channel = supabase.channel(room_code + "_realtime");
         channel
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
                 (payload): void => {
-                    logger.log('supabase:realtime', "room params updated", room_code)
                     const newRecord = payload.new as Room
 
                     setRoom((prev) => {
+                        logger.log('supabase:realtime', "room row updated", newRecord.params)
                         if (prev) {
-                            console.log('⭐️ new params', newRecord.params?.collaboration)
-                            return {...prev, params: newRecord.params}
+                            // Trick here 🚩 : Only update the params and activity_snapshot
+                            return {...prev, params: newRecord.params, activity_snapshot: newRecord.activity_snapshot}
                         } else {
                             return newRecord
                         }
                     })
                 }
-            )
-            .subscribe()
+            ).subscribe()
 
         return () => {supabase.removeChannel(channel)}
 

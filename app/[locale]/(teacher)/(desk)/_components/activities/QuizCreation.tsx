@@ -5,7 +5,7 @@ import { useQuizCreation } from '@/app/_hooks/usePollQuizCreation'
 import { saveActivity } from '@/app/api/_actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
-import { QuizAnswerRow } from './AnswerRow'
+import { QuizAnswerRow } from './CreationAnswerRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 

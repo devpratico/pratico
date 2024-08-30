@@ -5,7 +5,7 @@ import { usePollCreation } from '@/app/_hooks/usePollQuizCreation'
 import { saveActivity } from '@/app/api/_actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
-import { PollAnswerRow } from './AnswerRow'
+import { PollAnswerRow } from './CreationAnswerRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 
@@ -104,14 +104,14 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                 </Section>
             </Container>
 
-            <Box p='3' pt='0'>
+            <Flex p='3' pt='0' justify='center'>
                 <Card variant='classic'>
                     <Flex justify='center' gap='3'>
                         <Navigator total={poll.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
                 </Card>
-            </Box>
+            </Flex>
 
         </Grid>
     )
