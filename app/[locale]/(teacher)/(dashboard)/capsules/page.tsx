@@ -64,12 +64,14 @@ export default async function Page() {
                             let url = `/capsule/${id}`
 
                             return (
-                                <Link href={url} key={id} style={{ all: 'unset', position: 'relative' }}>
-                                    <Miniature title={title} createdAt={created_at}>
-                                        {snap && <Thumbnail snapshot={snap} scale={0.2} />}
-                                    </Miniature>
+                                <Box position='relative' key={id}>
+                                    <Link href={url} style={{ all: 'unset'}}>
+                                        <Miniature title={title} createdAt={created_at}>
+                                            {snap && <Thumbnail snapshot={snap} scale={0.2} />}
+                                        </Miniature>
+                                    </Link>
                                     <Menu capsuleId={id} />
-                                </Link>
+                                </Box>
                             )
                         })}
                     </Grid>
