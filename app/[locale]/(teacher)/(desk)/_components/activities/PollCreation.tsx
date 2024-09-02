@@ -5,7 +5,7 @@ import { usePollCreation } from '@/app/_hooks/usePollQuizCreation'
 import { saveActivity } from '@/app/api/_actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
-import { PollAnswerRow } from './CreationAnswerRow'
+import { PollCreationAnswerRow } from './CreationAnswerRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 
@@ -76,7 +76,7 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
 
                         {/* ANSWERS */}
                         {poll.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <PollAnswerRow key={index} answerIndex={index} />
+                            <PollCreationAnswerRow key={index} answerIndex={index} />
                         ))}
 
                         {/* ADD NEW ANSWER AREA*/}
