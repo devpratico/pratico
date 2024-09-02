@@ -1,8 +1,7 @@
 import TeacherCanvasClient from "./TeacherCanvasClient";
 import { fetchUser, fetchNames } from '@/app/api/_actions/user'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
-import { fetchRoomByCode } from '@/app/api/_actions/room3'
-import { Room } from "@/app/api/_actions/room2";
+import { fetchOpenRoomByCode, Room } from '@/app/api/_actions/room'
 import { Suspense } from "react";
 import logger from "@/app/_utils/logger";
 import { Callout, Flex, Spinner } from "@radix-ui/themes";
@@ -30,7 +29,7 @@ async function TeacherCanvasS({ roomCode }: TeacherCanvasServerProps) {
     let room: Room | undefined = undefined
     
     try {
-        const { data, error: roomError } = await fetchRoomByCode(roomCode)
+        const { data, error: roomError } = await fetchOpenRoomByCode(roomCode)
         if (data) room = data as Room
     } catch (error) {
         logger.error('react:component', 'TeacherCanvasS', error)

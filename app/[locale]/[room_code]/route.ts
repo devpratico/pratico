@@ -1,5 +1,5 @@
 import { redirect } from "@/app/_intl/intlNavigation";
-import { fetchRoomCreator } from "@/app/api/_actions/room3";
+import { fetchRoomCreator } from "@/app/api/_actions/room";
 import { fetchUser } from "@/app/api/_actions/user";
 
 export async function GET(request: Request, { params }: { params: { room_code: string } }) {

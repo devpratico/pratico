@@ -1,14 +1,12 @@
 'use client'
 import { Section, RadioCards, Flex, Text, Box, Badge, Button } from '@radix-ui/themes'
 import { ChevronLeft } from 'lucide-react'
-import { Link, usePathname } from '@/app/_intl/intlNavigation'
-import { useSearchParams } from "next/navigation"
-import { hrefFor } from '../MenuTabs'
+import { Link } from '@/app/_intl/intlNavigation'
+import useSearchParams from '@/app/_hooks/useSearchParams'
 
 
 export default function DefilementMenu() {
-    const pathName = usePathname()
-    const searchParams = useSearchParams()
+    const { getPathnameWithSearchParam } = useSearchParams()
 
 
     return (
@@ -17,7 +15,7 @@ export default function DefilementMenu() {
 
 
                 <Button variant='ghost' size='2' mb='8' style={{boxSizing: 'border-box'}} asChild>
-                    <Link href={hrefFor(searchParams, pathName, 'participants')} shallow={false}>
+                    <Link href={getPathnameWithSearchParam('menu', 'participants')} shallow={false}>
                         <ChevronLeft />Participants
                     </Link>
                 </Button>

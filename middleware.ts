@@ -46,11 +46,13 @@ export async function middleware(request: NextRequest) {
 
     try { 
         const { data: { user }, error} = await supabase.auth.getUser()
-        if (!user) logger.log('next:middleware', 'getUser returned null')
-        if (error) logger.log('next:middleware', 'getUser returned error:', error.message)
-    } catch (error) {
+        if (!user || error) logger.log('next:middleware', 'getUser returned null', error?.message)
+    } catch (error) { // This catch may be useless
         logger.log('next:middleware', 'getUser throw error:', error)
     }
+
+
+    // TODO: When going to a capsule page, we need to chack if a room is open, and redirect to the room page if it is
 
     /*
     const locale = response.headers.get('x-middleware-request-x-next-intl-locale')

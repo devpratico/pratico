@@ -1,7 +1,7 @@
 import TopBarBox from "../_components/TopBarBox"
 import { Grid, Card, Box, Flex } from "@radix-ui/themes"
 import MenuDialog from "./_components/MenuDialog"
-import Menus from "./_components/Menus"
+import MenuSelector from "./_components/MenuSelector"
 import Carousel from "./_components/Carousel"
 import Controls from "./_components/Controls"
 import { TLEditorProvider } from "@/app/_hooks/useTLEditor"
@@ -10,6 +10,15 @@ import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 import MobileControls from "./_components/MobileControls"
 import { PresencesProvider } from "@/app/_hooks/usePresences"
 import { RoomProvider } from "@/app/_hooks/useRoom"
+import ActivitiesMenu from "./_components/menus/ActivitiesMenu/ActivitiesMenu"
+import AllQuizesMenu from "./_components/menus/ActivitiesMenu/AllQuizesMenu"
+import AllPollsMenu from "./_components/menus/ActivitiesMenu/AllPollsMenu"
+import ParticipantsMenu from "./_components/menus/ParticipantsMenu/ParticipantsMenu"
+import DefilementMenu from "./_components/menus/ParticipantsMenu/DefilementMenu"
+import ChatMenu from "./_components/menus/ChatMenu"
+import MoreMenu from "./_components/menus/MoreMenu"
+import { CardDialogProvider } from "@/app/_hooks/useCardDialog"
+import GlobalCardDialog from "./_components/GlobalCardDialog"
 
 
 
@@ -19,6 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavProvider>
         <PresencesProvider>
         <RoomProvider>
+        <CardDialogProvider>
             {/**
              * Top bar, as defined in the parent layout
              * It is empty because the content is defined in the children
@@ -54,7 +64,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Menus layout (outside the grid layout because of `absolute`)*/}
                 <Box position='absolute' top='0' bottom='0' right='0' width='100%' overflow='clip' style={{pointerEvents: 'none'}}>
                     <MenuDialog>
-                        <Menus />
+                        <MenuSelector
+                            menus={{
+                                'activities': <ActivitiesMenu />,
+                                'quizes': <AllQuizesMenu />,
+                                'polls': <AllPollsMenu />,
+                                'participants': <ParticipantsMenu />,
+                                'defilement': <DefilementMenu />,
+                                'chat': <ChatMenu />,
+                                'more': <MoreMenu />
+                            }}
+                        />
                     </MenuDialog>
                 </Box>
 
@@ -69,9 +89,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <MobileControls/>
                 </Box>
 
+
+                {/* Global card dialog */}
+                <Box position='absolute'>
+                    <GlobalCardDialog/>
+                </Box>
+
                 
 
             </Grid>
+        </CardDialogProvider>
         </RoomProvider>
         </PresencesProvider>
         </NavProvider>

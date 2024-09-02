@@ -1,21 +1,20 @@
 'use client'
 import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout } from '@radix-ui/themes'
-import { Pen, Coins, ChevronRight, Info, Telescope } from "lucide-react"
+import { Pen, Coins, ChevronRight, Info } from "lucide-react"
 import { usePresences } from "@/app/_hooks/usePresences"
-import CollabSwitch from "./ui/CollabSwitch"
-import CollabSwitchGlobal from "./ui/CollabSwitchGlobal"
-import { useParams, useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
-import { Link, usePathname } from '@/app/_intl/intlNavigation'
-import { hrefFor } from '../MenuTabs'
+import CollabSwitch from "./CollabSwitch"
+import CollabSwitchGlobal from "./CollabSwitchGlobal"
+import { useParams } from "next/navigation"
+import useSearchParams from '@/app/_hooks/useSearchParams'
+import { useState } from "react"
+import { Link } from '@/app/_intl/intlNavigation'
 
 
 export default function ParticipantMenu() {
     const { room_code } = useParams() as { room_code: string }
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
-    const pathName = usePathname()
-    const searchParams = useSearchParams()
+    const { getPathnameWithSearchParam } = useSearchParams()
 
     return (
         <>
@@ -23,18 +22,18 @@ export default function ParticipantMenu() {
 
                 <Flex direction='column' gap='2'>
 
-                    <Button variant='soft' size='3' color='gray' asChild>
-                        <Link href={hrefFor(searchParams, pathName, 'defilement')} shallow={true}>
+                    <Button variant='soft' asChild>
+                        <Link href={getPathnameWithSearchParam('menu', 'defilement')} shallow={true}>
                             <Flex justify='between' align='center' width='100%'>
                                 <Text wrap='nowrap'>Défilement</Text>
                                 <Box flexGrow='1'/>
-                                <Badge color='violet'>Animateur</Badge>
+                                <Badge>Animateur</Badge>
                                 <ChevronRight/>
                             </Flex>
                         </Link>
                     </Button>
 
-                    <Button variant='soft' size='3' disabled>
+                    <Button variant='soft' disabled>
                         <Flex justify='between' align='center' width='100%'>
                             <Text wrap='nowrap' >Créer des équipes</Text>
                             <Box flexGrow='1'/>
@@ -93,10 +92,7 @@ export default function ParticipantMenu() {
 
                 {
                     presences.length < 2 &&
-                    <Callout.Root mt='2' size='1'>
-                        <Callout.Icon>
-                            <Telescope size='20' />
-                        </Callout.Icon>
+                    <Callout.Root mt='2' size='1' color='gray'>
                         <Callout.Text>
                             {`Aucun participant n'est connecté pour le moment.`}
                         </Callout.Text>

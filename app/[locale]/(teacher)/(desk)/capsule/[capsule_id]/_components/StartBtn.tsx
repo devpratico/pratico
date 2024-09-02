@@ -1,6 +1,6 @@
 'use client'
 import logger from "@/app/_utils/logger";
-import { createRoom } from "@/app/api/_actions/room2";
+import { createRoom } from "@/app/api/_actions/room";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import { Button, Box } from "@radix-ui/themes";

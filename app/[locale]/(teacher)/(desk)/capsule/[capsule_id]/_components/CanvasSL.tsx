@@ -3,7 +3,7 @@ import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
 import AutoSaver from "@/app/[locale]//_components/canvases/custom-ui/AutoSaver";
 import { useParams } from "next/navigation";
-import { fetchCapsuleSnapshot } from "@/app/api/_actions/room2";
+import { fetchCapsuleSnapshot } from "@/app/api/_actions/capsule";
 import { useEffect, useState } from "react";
 import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";

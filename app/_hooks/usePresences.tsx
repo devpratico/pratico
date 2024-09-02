@@ -55,7 +55,7 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
     }, [])
 
     useEffect(() => {
-        logger.log('supabase:auth', 'usePresences', presences)
+        logger.log('supabase:realtime', 'usePresences', presences)
     }, [presences])
 
     useEffect(() => {
@@ -91,17 +91,8 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
             })
         })
 
-        /*
-        room.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-            logger.log('supabase:realtime', roomCode + "_presence", 'join', newPresences)
-        })
-
-        room.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-            logger.log('supabase:realtime', roomCode + "_presence", 'leave', leftPresences)
-        })*/
-
-        // Send my presence
-        room.subscribe(async (status) => {
+        // React to presence changes
+        .subscribe(async (status) => {
             logger.log('supabase:realtime', room_code + "_presence", 'Presence status', status)
             if (status !== 'SUBSCRIBED') { return }
 

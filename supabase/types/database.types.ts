@@ -34,6 +34,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: number
+          object: Json
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: number
+          object: Json
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: number
+          object?: Json
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Activities_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       capsules: {
         Row: {
           created_at: string
@@ -96,61 +128,64 @@ export type Database = {
         Row: {
           id: number
           payload: Json | null
+          room_id: number
           timestamp: string
           type: string | null
-          use_id: string | null
         }
         Insert: {
           id?: number
           payload?: Json | null
+          room_id: number
           timestamp?: string
           type?: string | null
-          use_id?: string | null
         }
         Update: {
           id?: number
           payload?: Json | null
+          room_id?: number
           timestamp?: string
           type?: string | null
-          use_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "room_events_use_id_fkey"
-            columns: ["use_id"]
+            foreignKeyName: "room_events_room_id_fkey"
+            columns: ["room_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "rooms"
             referencedColumns: ["id"]
           },
         ]
       }
       rooms: {
         Row: {
+          activity_snapshot: Json | null
           capsule_id: string | null
           capsule_snapshot: Json | null
           code: string | null
-          created_at: string
           created_by: string | null
           id: number
           params: Json | null
+          status: Database["public"]["Enums"]["RoomStatus"]
         }
         Insert: {
+          activity_snapshot?: Json | null
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
-          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null
+          status?: Database["public"]["Enums"]["RoomStatus"]
         }
         Update: {
+          activity_snapshot?: Json | null
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
-          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null
+          status?: Database["public"]["Enums"]["RoomStatus"]
         }
         Relationships: [
           {
@@ -209,7 +244,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      RoomStatus: "open" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -289,6 +324,7 @@ export type Database = {
           owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          user_metadata: Json | null
           version: string | null
         }
         Insert: {
@@ -302,6 +338,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Update: {
@@ -315,6 +352,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Relationships: [
@@ -336,6 +374,7 @@ export type Database = {
           key: string
           owner_id: string | null
           upload_signature: string
+          user_metadata: Json | null
           version: string
         }
         Insert: {
@@ -346,6 +385,7 @@ export type Database = {
           key: string
           owner_id?: string | null
           upload_signature: string
+          user_metadata?: Json | null
           version: string
         }
         Update: {
@@ -356,6 +396,7 @@ export type Database = {
           key?: string
           owner_id?: string | null
           upload_signature?: string
+          user_metadata?: Json | null
           version?: string
         }
         Relationships: [
@@ -491,6 +532,10 @@ export type Database = {
           metadata: Json
           updated_at: string
         }[]
+      }
+      operation: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       search: {
         Args: {

@@ -35,7 +35,7 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
                 setDisabled(true)
                 if (!roomId || !capsuleId) return
                 try {
-                    await stopRoom({ roomId, capsuleId })
+                    await stopRoom(roomId)
                     router.push(`/capsule/${capsuleId}`)
                 } catch (error) {
                     logger.error('supabase:database', 'Error stopping session', error)

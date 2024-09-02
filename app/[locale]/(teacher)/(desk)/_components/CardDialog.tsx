@@ -1,10 +1,11 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
 import { Theme } from '@radix-ui/themes';
+import useWindow from '@/app/_hooks/useWindow';
 
 
 interface CardDialogProps {
-    trigger: React.ReactNode
+    trigger?: React.ReactNode
 
     /**
      * If `true`, the dialog will not close when clicking outside of it.
@@ -15,27 +16,35 @@ interface CardDialogProps {
 
     setOpen?: (open: boolean) => void
 
+    topMargin?: string
+
     children: React.ReactNode
 }
 
-export default function CardDialog({trigger, preventClose=false, open, setOpen, children}: CardDialogProps) {
-    //const [open, setOpen] = useState(false)
-    const viewPortWidth = window.innerWidth
-    const topPosition = viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)'
+
+/**
+ * A dialog that slides up from the bottom of the screen.
+ * It can be used independently from the `GlobalCardDialog` system, with its own trigger or open state.
+ * Prefer using the `GlobalCardDialog` system when possible.
+ */
+export default function CardDialog({trigger, preventClose=false, open, setOpen, topMargin, children}: CardDialogProps) {
+    const { width: viewPortWidth } = useWindow()
+    const topPosition = topMargin || (viewPortWidth && viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)')
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
 
-            <style>{slideUpAnimation}</style>
-            <style>{fadeInAnimation}</style>
-
-            <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+            { trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
             <Dialog.Portal>
                 {/* The portal puts its content out of the Theme provider, so we need to wrap it in a Theme provider */}
                 {/* No need to configure the theme, it will inherit the parent theme */}
                 {/* https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
                 <Theme>
+
+                    <style>{slideUpAnimation}</style>
+                    <style>{fadeInAnimation}</style>
+
                     <Dialog.Overlay style={{
                         position: 'fixed',
                         inset: 0,

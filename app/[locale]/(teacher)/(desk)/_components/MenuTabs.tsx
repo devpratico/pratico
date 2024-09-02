@@ -7,49 +7,15 @@
 'use client'
 import { TabNav, Flex, Text } from "@radix-ui/themes"
 import { Link } from "@/app/_intl/intlNavigation"
-import { useSearchParams } from "next/navigation"
-import { usePathname } from "@/app/_intl/intlNavigation"
-
-
-/**
- * Adds a search param to the current ones without removing the others. Returns the new string.
- */
-function addSearchParam(searchParams: URLSearchParams, name: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(name, value)
-    return params.toString()
-}
-
-/**
- * Removes a search param from the current ones. Returns the new string.
- */
-function removeSearchParam(searchParams: URLSearchParams, name: string) {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete(name)
-    return params.toString()
-}
-
-/**
- * Returns the href for the tab. It is different if the tab is active or not.
- */
-export function hrefFor(searchParams: URLSearchParams, pathname: string, menu: string) {
-    return searchParams.get('menu') == menu ?
-        // If the tab is already active, remove the query parameter (closes the tab)
-        pathname + '?' + removeSearchParam(searchParams, 'menu')
-        :
-        // If the tab is not active, add the query parameter (opens the tab)
-        pathname + '?' + addSearchParam(searchParams, 'menu', menu)
-}
-
+import useSearchParams from "@/app/_hooks/useSearchParams"
 
 
 function TabElement({ menu, children }: { menu: string, children: React.ReactNode }) {
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
+    const { searchParams, getPathnameWithSearchParamToggled } = useSearchParams()
 
     return (
         <TabNav.Link active={searchParams.get('menu') == menu} asChild>
-            <Link href={hrefFor(searchParams, pathname, menu)} shallow={true} prefetch>
+            <Link href={getPathnameWithSearchParamToggled('menu', menu)} shallow={true} prefetch>
                 {children}
             </Link>
         </TabNav.Link>
@@ -60,12 +26,11 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
  * A tab element for when no menu is selected.
  */
 function HomeTabElement({ children }: { children: React.ReactNode }) {
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
+    const { searchParams, getPathnameWithoutSearchParam } = useSearchParams()
 
     return (
         <TabNav.Link active={!searchParams.get('menu')} asChild>
-            <Link href={pathname + '?' + removeSearchParam(searchParams, 'menu')} shallow={true}>
+            <Link href={getPathnameWithoutSearchParam('menu')} shallow={true} prefetch>
                 {children}
             </Link>
         </TabNav.Link>
