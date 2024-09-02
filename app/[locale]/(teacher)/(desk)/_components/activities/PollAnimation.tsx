@@ -80,7 +80,6 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
                 <Dialog.Close onClick={handleClose}>
                     <Button variant='soft' color='gray'>Terminer</Button>
                 </Dialog.Close>
-
             </Flex>
 
 
