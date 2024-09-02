@@ -70,7 +70,7 @@ export default async function Page() {
                                             {snap && <Thumbnail snapshot={snap} scale={0.2} />}
                                         </Miniature>
                                     </Link>
-                                    <Menu capsuleId={id} />
+                                    <Menu capsuleId={id} key={id} />
                                 </Box>
                             )
                         })}

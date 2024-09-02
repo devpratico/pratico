@@ -15,18 +15,20 @@ interface MenuProps {
 export default function Menu({ capsuleId }: MenuProps) {
     const router = useRouter()
     const [deleteLoading, setDeleteLoading] = useState(false)
+    const [open, setOpen] = useState(false)
 
     async function handleDelete(event:Event) {
         event.preventDefault()
         setDeleteLoading(true)
         await deleteCapsule(capsuleId)
+        setOpen(false)
         router.refresh()
     }
 
 
 
     return (
-        <DropdownMenu.Root>
+        <DropdownMenu.Root open={open} onOpenChange={setOpen}>
             <DropdownMenu.Trigger>
                 <IconButton radius='full' size='1' variant='soft' style={{ position: 'absolute', top: '0', right: '0', margin: '5px' }}>
                     <Ellipsis size='18' />
