@@ -6,6 +6,7 @@ import TeacherCanvas from "./_components/TeacherCanvasServer";
 import Image from "next/image";
 import StopBtn from "./_components/StopBtn";
 import StartDialog from "./_components/StartDialog";
+import ActivityCard from "./_components/ActivityCard";
 
 
 
@@ -64,6 +65,8 @@ export default function Page({ params: { room_code } }: { params: { room_code: s
             </TopBarPortal>
 
             <TeacherCanvas roomCode={room_code} />
+
+            <ActivityCard />
 
         </>
     )

@@ -19,9 +19,7 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
     const [loading, setLoading] = useState(false)
     const { room_code } = useParams<{ room_code?: string }>()
     const inRoom = !!room_code
-
-    // Test
-    const { setOpen, setContent } = useCardDialog()
+    
 
     // Adds a new event to the room_events table to start the activity.
     async function handleClick() {
@@ -71,21 +69,6 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
         }
         
         const { error: saveActivityError } = await saveRoomActivitySnapshot(room.id, activitySnapshot)
-
-        // Open the card dialog with the correct content
-        // TODO: Don't do that, use a system like for students where we detect activity_snapshot
-        // in the room table and open the dialog. Otherwise, when refreshing the page, the dialog
-        // will not be opened.
-        if (activity.type === 'quiz') { 
-            const content = <QuizAnimation quiz={activity.object as Quiz} quizId={activity_id} roomId={room.id} />
-            setContent(content)
-            setOpen(true)
-
-        } else if (activity.type === 'poll') {
-            const content = <PollAnimation poll={activity.object as Poll} pollId={activity_id} roomId={room.id} />
-            setContent(content)
-            setOpen(true)
-        }
     }
 
 
