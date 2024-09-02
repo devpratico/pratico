@@ -16,7 +16,7 @@ export default function Menu({ capsuleId }: MenuProps) {
     const router = useRouter()
     const [deleteLoading, setDeleteLoading] = useState(false)
 
-    async function handleDelete(event: React.MouseEvent) {
+    async function handleDelete(event:Event) {
         event.preventDefault()
         setDeleteLoading(true)
         await deleteCapsule(capsuleId)
@@ -47,7 +47,7 @@ export default function Menu({ capsuleId }: MenuProps) {
 
                 <DropdownMenu.Separator />
 
-                <DropdownMenu.Item color='red' onClick={handleDelete} disabled={deleteLoading}>
+                <DropdownMenu.Item color='red' onSelect={handleDelete} disabled={deleteLoading}>
                     <Spinner loading={deleteLoading}>
                         <Trash2 size='13' />
                     </Spinner>
