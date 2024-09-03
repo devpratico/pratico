@@ -31,7 +31,9 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
     }
 
     async function handleClose() {
+        setLoading(true)
         await saveRoomActivitySnapshot(roomId, null)
+        setLoading(false)
     }
 
     useEffect(() => {
