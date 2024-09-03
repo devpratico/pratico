@@ -1,12 +1,14 @@
 'use client'
 import { Poll } from "@/app/_hooks/usePollQuizCreation"
-import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch } from "@radix-ui/themes"
+import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { set } from "lodash"
 
 
 export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
+    const [loading, setLoading] = useState(false)
     const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [votesArray, setVotesArray] = useState<number[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 0)) // The number of votes for each answer
@@ -24,12 +26,19 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
 
     // Side effect: when the pollSnapshot changes, save it in Supabase
     useEffect(() => {
-        saveRoomActivitySnapshot(roomId, pollSnapshot)
+        async function _save() {
+            setLoading(true)
+            saveRoomActivitySnapshot(roomId, pollSnapshot)
+            setLoading(false)
+        }
+        _save()
     }, [pollSnapshot, roomId])
 
 
     async function handleClose() {
+        setLoading(true)
         await saveRoomActivitySnapshot(roomId, null)
+        setLoading(false)
     }
 
     function handleShowAnswer() {
@@ -77,9 +86,8 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
 
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
-                <Dialog.Close onClick={handleClose}>
-                    <Button variant='soft' color='gray'>Terminer</Button>
-                </Dialog.Close>
+                <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
+                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
             </Flex>
 
 
