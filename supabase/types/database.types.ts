@@ -98,32 +98,6 @@ export type Database = {
           },
         ]
       }
-      chat: {
-        Row: {
-          created_at: string
-          id: number
-          room_id: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          room_id?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          room_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "rooms"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       room_events: {
         Row: {
           id: number
