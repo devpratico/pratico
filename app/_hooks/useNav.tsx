@@ -40,10 +40,6 @@ const NavContext = createContext<NavContextType>(emptyContext);
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
 
-    useEffect(() => {
-        console.log('editor changed in NavProvider')
-    }, [editor])
-
     const pageIds$ = useComputed('Page ids', () => {
         if (!editor) return []
         return editor.getPages().map((p) => p.id)
