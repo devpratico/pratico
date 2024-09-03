@@ -1,6 +1,6 @@
 'use client'
 import { Poll } from "@/app/_hooks/usePollQuizCreation"
-import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch } from "@radix-ui/themes"
+import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
@@ -77,6 +77,7 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
 
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
+                <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
                 <Dialog.Close onClick={handleClose}>
                     <Button variant='soft' color='gray'>Terminer</Button>
                 </Dialog.Close>
