@@ -49,3 +49,4 @@ drop index if exists "public"."chat_pkey";
 drop table "public"."chat";
 
 
+-- This is a comment
