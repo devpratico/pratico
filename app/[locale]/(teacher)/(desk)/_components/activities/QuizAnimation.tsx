@@ -1,6 +1,6 @@
 'use client'
-import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog } from "@radix-ui/themes"
-import { useState, useEffect } from "react"
+import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden } from "@radix-ui/themes"
+import { useState, useEffect, useMemo } from "react"
 import Navigator from "./Navigator"
 import { Dispatch, SetStateAction } from "react"
 import { Quiz } from "@/app/_hooks/usePollQuizCreation"
@@ -8,8 +8,14 @@ import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
 
 export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizId: number, roomId: number}) {
+    const [loading, setLoading] = useState(false)
     const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+    const activitySnapshot = useMemo(() => ({
+        activityId: quizId,
+        currentQuestionIndex: currentQuestionIndex,
+        currentQuestionState: questionState
+    }), [quizId, currentQuestionIndex, questionState])
 
     function handleShowAnswer() {
         setQuestionState('results')
@@ -29,21 +35,22 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
     }
 
     useEffect(() => {
-        const activitySnapshot = {
-            activityId: quizId,
-            currentQuestionIndex,
-            currentQuestionState: questionState
+        async function _saveRoom() {
+            setLoading(true)
+            await saveRoomActivitySnapshot(roomId, activitySnapshot)
+            setLoading(false)
         }
-        saveRoomActivitySnapshot(roomId, activitySnapshot)
-    }, [quizId, roomId, currentQuestionIndex, questionState])
+        _saveRoom()
+    }, [roomId, activitySnapshot])
     
     return (
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{quiz.title}</Dialog.Title>
+                <VisuallyHidden><Dialog.Description>Acticité Quiz</Dialog.Description></VisuallyHidden>
                 <Dialog.Close onClick={handleClose}>
-                    <Button variant='soft' color='gray'>Terminer</Button>
+                    <Button variant='soft' color='gray' loading={loading}>Terminer</Button>
                 </Dialog.Close>
             </Flex>
 
