@@ -14,6 +14,7 @@ interface TeacherCanvasServerProps {
 }
 
 async function TeacherCanvasS({ roomCode }: TeacherCanvasServerProps) {
+    logger.log('react:component', 'Rendering server component', 'TeacherCanvasS')
     const { user, error } = await fetchUser()
     const { first_name, last_name } = user ? await fetchNames(user.id) : { first_name: null, last_name: null }
 

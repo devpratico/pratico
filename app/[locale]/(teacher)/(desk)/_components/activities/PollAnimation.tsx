@@ -7,6 +7,7 @@ import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
 
 export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
+    const [loading, setLoading] = useState(false)
     const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [votesArray, setVotesArray] = useState<number[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 0)) // The number of votes for each answer
@@ -24,7 +25,12 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
 
     // Side effect: when the pollSnapshot changes, save it in Supabase
     useEffect(() => {
-        saveRoomActivitySnapshot(roomId, pollSnapshot)
+        async function _save() {
+            setLoading(true)
+            saveRoomActivitySnapshot(roomId, pollSnapshot)
+            setLoading(false)
+        }
+        _save()
     }, [pollSnapshot, roomId])
 
 
@@ -78,9 +84,7 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
-                <Dialog.Close onClick={handleClose}>
-                    <Button variant='soft' color='gray'>Terminer</Button>
-                </Dialog.Close>
+                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
             </Flex>
 
 

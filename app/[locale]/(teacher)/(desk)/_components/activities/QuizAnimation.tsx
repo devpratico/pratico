@@ -49,9 +49,7 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{quiz.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Acticité Quiz</Dialog.Description></VisuallyHidden>
-                <Dialog.Close onClick={handleClose}>
-                    <Button variant='soft' color='gray' loading={loading}>Terminer</Button>
-                </Dialog.Close>
+                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
             </Flex>
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
