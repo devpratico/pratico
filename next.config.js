@@ -44,18 +44,7 @@ const nextConfig = {
             allowedOrigins: ['http://localhost:4000'],
         }
     },
-    // async headers() {
-    //     return [
-    //       {
-    //         source: '/settings',
-    //         headers: [
-    //           { key: 'Access-Control-Allow-Origin', value: 'https://pratico.live' },
-    //           { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
-    //           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
-    //         ],
-    //       },
-    //     ]
-    //   },
+   
 }
 
 module.exports = withNextIntl(nextConfig)

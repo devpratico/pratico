@@ -2,8 +2,6 @@
 import { signOut } from '@/app/api/_actions/auth'
 import { Button } from "@radix-ui/themes";
 import { useRouter } from '@/app/_intl/intlNavigation';
-import Link from 'next/link';
-
 
 interface SignOutBtnProps {
     message: string
