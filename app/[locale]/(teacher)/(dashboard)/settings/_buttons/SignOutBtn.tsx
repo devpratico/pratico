@@ -21,11 +21,10 @@ export function SignOutBtn({message, disabled}: SignOutBtnProps) {
 
     return (
         <Button
-                    color='red'
-                    variant='soft'
-                    onClick={handleSignOut}
-                    disabled={disabled}
-                >{message}</Button>
-       
+            color='red'
+            variant='soft'
+            onClick={handleSignOut}
+            disabled={disabled}
+        >{message}</Button>
     )
 }
