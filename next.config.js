@@ -44,7 +44,6 @@ const nextConfig = {
             allowedOrigins: ['http://localhost:4000'],
         }
     },
-   
 }
 
 module.exports = withNextIntl(nextConfig)
