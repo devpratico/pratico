@@ -60,7 +60,7 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
                             placeholder="Question"
-                            value={poll.questions[currentQuestionIndex].question.text}
+                            value={poll.questions[currentQuestionIndex].text}
                             onChange={(event) => { setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value }) }}
                         />
 

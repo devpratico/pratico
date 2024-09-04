@@ -62,7 +62,7 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
                             placeholder="Question"
-                            value={quiz.questions[currentQuestionIndex].question.text}
+                            value={quiz.questions[currentQuestionIndex].text}
                             onChange={(event) => { setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value }) }}
                         />
 

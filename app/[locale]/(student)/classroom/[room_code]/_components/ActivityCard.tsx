@@ -3,7 +3,8 @@ import CardDialog from '@/app/[locale]/(teacher)/(desk)/_components/CardDialog'
 import QuizAnswering from './QuizAnswering'
 import { useState, useEffect } from "react"
 import { useRoom } from '@/app/_hooks/useRoom'
-import { Quiz, Poll } from '@/app/_hooks/usePollQuizCreation'
+import { Quiz } from '@/app/_types/quiz'
+import { Poll } from '@/app/_types/poll'
 import { fetchActivity } from '@/app/api/_actions/activities'
 import PollAnswering from './PollAnswering'
 

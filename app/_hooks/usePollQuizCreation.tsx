@@ -1,78 +1,8 @@
 'use client'
 import { useState, useContext, createContext } from "react"
 import { produce } from 'immer'
-
-
-// BASE TYPES
-// Used by both Polls and Quizzes
-// May be used in the future for other types of activities.
-
-export type ActivityType = 'quiz' | 'poll'
-
-export interface Activity {
-    type: ActivityType
-    title: string
-    schemaVersion: string
-}
-
-
-export interface BaseQuestion {
-    text: string
-    photoUrl?: string
-}
-
-export interface BaseAnswer {
-    text: string
-    /**
-     * 'A' for 'Answer A', or an emoji, etc.
-     */
-    symbol: string
-}
-
-
-
-// POLL TYPES
-// Polls are just questions with possible answers. There is no right or wrong answer.
-
-export interface PollAnswer extends BaseAnswer {
-    color: string
-}
-
-export interface PollQuestion {
-    question: BaseQuestion
-    answers: PollAnswer[]
-}
-
-
-export interface Poll extends Activity {
-    type: 'poll'
-    schemaVersion: '1'
-    questions: PollQuestion[]
-}
-
-
-
-// QUIZ TYPES
-// Quizzes are questions with possible answers, but only one or more answers are correct.
-
-export interface QuizAnswer extends BaseAnswer {
-    correct: boolean
-    explanation?: string
-}
-
-export interface QuizQuestion {
-    question: BaseQuestion
-    answers: QuizAnswer[]
-    hint?: string
-}
-
-export interface Quiz extends Activity {
-    type: 'quiz'
-    schemaVersion: '1'
-    questions: QuizQuestion[]
-}
-
-
+import { Poll, PollAnswer } from "@/app/_types/poll"
+import { Quiz, QuizAnswer } from "@/app/_types/quiz"
 
 
 /**
@@ -147,7 +77,7 @@ function _setTitle<T extends Quiz | Poll>({ title, setQuizPoll }: { title: strin
 }
 
 function _setQuestionText<T extends Quiz | Poll>({ questionIndex, text, setQuizPoll }: { questionIndex: number, text: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].question.text = text }));
+    setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].text = text }));
 }
 
 function _setAnswerText<T extends Quiz | Poll>({ questionIndex, answerIndex, text, setQuizPoll }: { questionIndex: number, answerIndex: number, text: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
@@ -171,7 +101,7 @@ function _deleteQuestion<T extends Quiz | Poll>({ questionIndex, currentQuestion
 }
 
 function _addEmptyQuestion<T extends Quiz | Poll>({ setQuizPoll }: { setQuizPoll: React.Dispatch<React.SetStateAction<T>>}) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions.push({ question: { text: '' }, answers: [] }) }));
+    setQuizPoll((prev) => produce(prev, draft => { draft.questions.push({  text: '' , answers: [] }) }));
 }
 
 
@@ -353,9 +283,7 @@ export const testQuiz: Quiz = {
     title: 'Mon super quiz',
     questions: [
         {
-            question: {
-                text: 'Quelle est la capitale de la France ?',
-            },
+            text: 'Quelle est la capitale de la France ?',
             answers: [
                 { text: 'Madrid', symbol: 'A', correct: false },
                 { text: 'Londres', symbol: 'B', correct: false },
@@ -363,9 +291,7 @@ export const testQuiz: Quiz = {
             ]
         },
         {
-            question: {
-                text: 'Quel est le plus petit pays du monde ?',
-            },
+            text: 'Quel est le plus petit pays du monde ?',
             answers: [
                 { text: 'Monaco', symbol: '1', correct: false },
                 { text: 'Vatican', symbol: '2', correct: true },
@@ -382,9 +308,7 @@ export const testPoll: Poll = {
     title: 'Mon super sondage',
     questions: [
         {
-            question: {
-                text: 'Quelle est votre couleur préférée ?',
-            },
+            text: 'Quelle est votre couleur préférée ?',
             answers: [
                 { text: 'Rouge', symbol: 'A', color: 'red' },
                 { text: 'Vert', symbol: 'B', color: 'green' },
@@ -392,9 +316,7 @@ export const testPoll: Poll = {
             ]
         },
         {
-            question: {
-                text: 'Quel est votre animal préféré ?',
-            },
+            text: 'Quel est votre animal préféré ?',
             answers: [
                 { text: 'Chien', symbol: '1', color: 'brown' },
                 { text: 'Chat', symbol: '2', color: 'gray' },
@@ -410,9 +332,7 @@ export const emptyQuiz: Quiz = {
     title: '',
     questions: [
         {
-            question: {
-                text: '',
-            },
+            text: '',
             answers: []
         }
     ]
@@ -424,9 +344,7 @@ export const emptyPoll: Poll = {
     title: '',
     questions: [
         {
-            question: {
-                text: '',
-            },
+            text: '',
             answers: []
         }
     ]

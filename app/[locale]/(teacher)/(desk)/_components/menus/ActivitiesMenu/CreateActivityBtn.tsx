@@ -21,7 +21,7 @@ export default function CreateActivityBtn() {
 
                 <DropdownMenu.Content align='end'>
                     <DropdownMenu.Item onSelect={() => setOpenQuizCreation(true)}>Quiz</DropdownMenu.Item>
-                    <DropdownMenu.Item onSelect={() => setOpenPollCreation(true)} disabled>Sondage</DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={() => setOpenPollCreation(true)}>Sondage</DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
 

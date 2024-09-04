@@ -1,7 +1,8 @@
 'use server'
 import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert, Json } from "@/supabase/types/database.types"
-import { Quiz, Poll } from "@/app/_hooks/usePollQuizCreation"
+import { Quiz } from "@/app/_types/quiz"
+import { Poll } from "@/app/_types/poll"
 import logger from "@/app/_utils/logger"
 import { cache } from "react"
 import { fetchUser } from "./user"

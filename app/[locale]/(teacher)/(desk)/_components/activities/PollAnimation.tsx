@@ -1,9 +1,9 @@
 'use client'
-import { Poll } from "@/app/_hooks/usePollQuizCreation"
+import { Poll, PollSnapshot } from "@/app/_types/poll"
 import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
 
 export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
@@ -93,7 +93,7 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
-                    <Heading as='h2' size='5' align='center'>{poll.questions[currentQuestionIndex].question.text}</Heading>
+                    <Heading as='h2' size='5' align='center'>{poll.questions[currentQuestionIndex].text}</Heading>
                 </Section>
 
                 <Section size='1'>

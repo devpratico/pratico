@@ -3,7 +3,7 @@ import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, Vis
 import { useState, useEffect, useMemo } from "react"
 import Navigator from "./Navigator"
 import { Dispatch, SetStateAction } from "react"
-import { Quiz } from "@/app/_hooks/usePollQuizCreation"
+import { Quiz } from "@/app/_types/quiz"
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
 
@@ -57,7 +57,7 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
-                    <Heading as='h2' size='5' align='center'>{quiz.questions[currentQuestionIndex].question.text}</Heading>
+                    <Heading as='h2' size='5' align='center'>{quiz.questions[currentQuestionIndex].text}</Heading>
                 </Section>
 
                 <Section size='1'>

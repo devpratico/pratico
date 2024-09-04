@@ -1,12 +1,10 @@
 'use client'
 import { Container, Section, Dialog, Flex } from "@radix-ui/themes"
-//import { useState } from "react"
-import { Poll } from "@/app/_hooks/usePollQuizCreation"
+import { Poll, PollSnapshot } from "@/app/_types/poll"
 import { PollAnswerRow } from "@/app/[locale]/(teacher)/(desk)/_components/activities/PollAnimation"
 import { useRoom } from "@/app/_hooks/useRoom"
 import { useState, useEffect } from 'react'
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
-import { PollSnapshot } from "@/app/api/_actions/room"
 
 
 export default function PollAnswering({ poll }: { poll: Poll }) {
@@ -63,7 +61,7 @@ export default function PollAnswering({ poll }: { poll: Poll }) {
     return (
         <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
             <Section size='2'>
-                <Dialog.Title align='center'>{poll.questions[currentQuestionIndex].question.text}</Dialog.Title>
+                <Dialog.Title align='center'>{poll.questions[currentQuestionIndex].text}</Dialog.Title>
             </Section>
 
             <Section size='2'>

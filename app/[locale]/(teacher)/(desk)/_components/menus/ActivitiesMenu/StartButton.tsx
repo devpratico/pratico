@@ -6,13 +6,11 @@ import { sendRoomEvent, ActivityStartEvent } from "@/app/api/_actions/room_event
 import { fetchOpenRoomByCode } from "@/app/api/_actions/room"
 import { fetchUser } from "@/app/api/_actions/user"
 import { useState } from "react"
-import { useCardDialog } from "@/app/_hooks/useCardDialog"
-import QuizAnimation from "../../activities/QuizAnimation"
 import { fetchActivity } from "@/app/api/_actions/activities"
-import { saveRoomActivitySnapshot, ActivitySnapshot } from "@/app/api/_actions/room"
+import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 import logger from "@/app/_utils/logger"
-import { Quiz, Poll } from "@/app/_hooks/usePollQuizCreation"
-import PollAnimation from "../../activities/PollAnimation"
+import { ActivitySnapshot } from "@/app/_types/activity"
+import { Poll } from "@/app/_types/poll"
 
 
 export default function StartButton({ activity_id }: { activity_id: number }) {

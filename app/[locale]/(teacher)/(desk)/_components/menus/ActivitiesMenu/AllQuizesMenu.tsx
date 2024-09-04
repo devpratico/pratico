@@ -2,9 +2,7 @@ import { Section, Heading, Button } from "@radix-ui/themes"
 import { ChevronLeft } from "lucide-react"
 import ActivitiesTable from "./ActivitiesTable"
 import SearchParamLink from "../../SearchParamLink"
-import CreateActivityBtn from "./CreateActivityBtn"
 import CreateSpecificActivityBtn from "./CreateSpecificActivityBtn"
-import { ActivityType } from "@/app/_hooks/usePollQuizCreation"
 
 
 export default function AllQuizesMenu() {
@@ -17,7 +15,9 @@ export default function AllQuizesMenu() {
                     </Button>
                 </SearchParamLink>
             </Section>
-                <CreateSpecificActivityBtn type="quiz" />
+
+            <CreateSpecificActivityBtn type="quiz"/>
+
             <Section size='1'>
                 <Heading size='3' trim='end' mb='2'>Mes quiz</Heading>
                 <ActivitiesTable type='quiz' noneMessage='Aucun quiz'/>

@@ -1,7 +1,6 @@
 'use client'
 import { Container, Section, Dialog, Flex } from "@radix-ui/themes"
-//import { useState } from "react"
-import { Quiz } from "@/app/_hooks/usePollQuizCreation"
+import { Quiz } from "@/app/_types/quiz"
 import { QuizAnswerRow } from "@/app/[locale]/(teacher)/(desk)/_components/activities/QuizAnimation"
 import { useRoom } from "@/app/_hooks/useRoom"
 
@@ -17,7 +16,7 @@ export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
     return (
         <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
             <Section size='2'>
-                <Dialog.Title align='center'>{quiz.questions[currentQuestionIndex].question.text}</Dialog.Title>
+                <Dialog.Title align='center'>{quiz.questions[currentQuestionIndex].text}</Dialog.Title>
             </Section>
 
             <Section size='2'>
