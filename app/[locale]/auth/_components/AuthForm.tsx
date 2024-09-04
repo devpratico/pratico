@@ -10,6 +10,7 @@ import logger from '@/app/_utils/logger';
 import { useRouter, usePathname } from '@/app/_intl/intlNavigation';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import PasswordForgottenBtn from '../../(teacher)/(dashboard)/settings/_buttons/PasswordForgottenBtn';
 
 export default function AuthForm({ messages }: { messages: typeof en.AuthForm }) {
     const searchParams = useSearchParams();
@@ -232,7 +233,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                             </Form.Submit>
 
                         </Flex>
-
+                        <PasswordForgottenBtn />
                     </Form.Root>
                 </Tabs.Content>
 
