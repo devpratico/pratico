@@ -4,7 +4,6 @@ import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Ba
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
-import { set } from "lodash"
 
 
 export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
