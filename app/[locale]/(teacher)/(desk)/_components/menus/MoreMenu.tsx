@@ -1,5 +1,5 @@
 'use client'
-import { Section, Callout, Box, Flex } from '@radix-ui/themes'
+import { Section, Callout, Box, Flex, VisuallyHidden, Dialog } from '@radix-ui/themes'
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
@@ -33,18 +33,25 @@ export default function MoreMenu() {
     const isRoom = params.room_code !== undefined
 
     return (
-        <Section size='1'>
+        <>
+            <VisuallyHidden>
+                <Dialog.Title>Plus</Dialog.Title>
+                <Dialog.Description>{`Plus d'options`}</Dialog.Description>
+            </VisuallyHidden>
 
-            {isRoom ? <AnimationMenu /> : <CreationMenu />}
+            <Section size='1'>
 
-            <Box display={{ initial: 'none', xs: 'block' }}>
-                <Callout.Root variant='outline'>
-                    <Callout.Text>
-                        {`Ici, bientôt, vous retrouverez plus d'options !`}
-                    </Callout.Text>
-                </Callout.Root>
-            </Box>
+                {isRoom ? <AnimationMenu /> : <CreationMenu />}
 
-        </Section>
+                <Box display={{ initial: 'none', xs: 'block' }}>
+                    <Callout.Root variant='outline'>
+                        <Callout.Text>
+                            {`Ici, bientôt, vous retrouverez plus d'options !`}
+                        </Callout.Text>
+                    </Callout.Root>
+                </Box>
+
+            </Section>
+        </>
     )
 }
