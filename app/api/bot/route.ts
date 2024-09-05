@@ -1,8 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Client, Message, TextChannel } from 'discord.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const client = new Client({
   intents: [
@@ -38,7 +35,7 @@ client.on('messageCreate', async (message: Message) => {
         if (channel?.isTextBased())
             await channel.send(`Name : ${args.slice(1).join(' ')}`);
       } catch (error) {
-        console.error('Sending msg error:', error);
+        console.error('Sending msg error:', error, channelId);
       }
       break;
   }
