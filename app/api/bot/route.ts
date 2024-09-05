@@ -1,49 +1,64 @@
-// A VOIR PLUS TARD
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Client, Message, TextChannel } from 'discord.js';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
-// import type { NextApiRequest, NextApiResponse } from 'next';
-  
-// export const discordMessageHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  
-//   try {
-//     if (req.method !== 'POST') {
-//       return res.status(405).json({ error: 'Method not allowed' });
-//     }
+const client = new Client({
+  intents: [
+    'Guilds',
+    'GuildMessages'
+  ]
+});
 
-//     const { content } = await req.body.json();
-    
-//     console.log('Discord bot received:',content);
+client.once('ready', () => {
+  console.log('Bot ready!');
+});
 
-//     const channelID = process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID;
-//     const discordToken = process.env.NEXT_PUBLIC_DISCORD_BOT_TOKEN;
-//     const discordURL = `${process.env.NEXT_PUBLIC_DISCORD_API_URL}/channels/${channelID}/messages`;
-//     console.log('chanaanlele = ', channelID, "Message", content, discordToken);
+client.on('messageCreate', async (message: Message) => {
+  if (!message.content.startsWith('!')) return;
 
-//     if (!discordURL || !discordToken) {
-//       return res.status(500).json({ error: 'Missing required environment variables' });
-//     }
+  const [, , ...args] = message.content.split(' ');
 
-//     const response = await fetch(discordURL, {
-//       method: 'POST',
-//       headers: {
-//         Authorization: `Bot ${discordToken}`,
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         content: content
-//       }),
-//     });
+  switch(args[0]) {
+    case '!sendname':
+      const channelId = process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID;
+      if (!channelId) {
+        console.error('NEXT_PUBLIC_DISCORD_CHANNEL_ID environment variable is not set');
+        return;
+      }
 
-//     const data = await response.json();
-//     console.log('Discord API response:', data);
+      const channel = await client.channels.fetch(channelId) as TextChannel;
+      if (!channel) {
+        console.error(`Channel with ID ${channelId} not found`);
+        return ;
+      }
 
-//     if (data.status === 204) {
-//       res.status(data.status).json({ message: 'Message sent successfully' });
-//     } else {
-//       throw new Error(`Discord API error: ${JSON.stringify(data)}`);
-//     }
-//   } catch (error) {
-//     console.error('Error in discordMessageHandler:', error);
-//     res.status(500).json({ error: 'Sending failed' });
-//   }
-// };
+      try {
+        if (channel?.isTextBased())
+            await channel.send(`Name : ${args.slice(1).join(' ')}`);
+      } catch (error) {
+        console.error('Sending msg error:', error);
+      }
+      break;
+  }
+});
+
+client.login(process.env.DISCORD_BOT_TOKEN);
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const channelId = process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID ? process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID : '' ;
+  if (req.method === 'POST') {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: 'Nom requis' });
+    }
+    const channel = await client.channels.fetch(channelId);
+    if (channel?.isTextBased())
+        await (client.channels.cache.get(channelId) as TextChannel)?.send(`User : ${name}`);
+    res.status(200).json({ success: true });
+  } else {
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
