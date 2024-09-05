@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Dialog, DialogTrigger, DialogOverlay, DialogContent, DialogTitle, DialogDescription } from '@radix-ui/react-dialog';
-import { Form, FormField, FormLabel, FormMessage, FormSubmit } from '@radix-ui/react-form';
-import { Button } from '@radix-ui/themes';
+import { Button, TextField } from '@radix-ui/themes';
 
 export default function PasswordForgottenBtn() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleClick = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
@@ -39,29 +37,17 @@ export default function PasswordForgottenBtn() {
   } 
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button>Infos</Button>
-        </DialogTrigger>
-        <DialogOverlay />
-        <DialogContent>
-          <DialogTitle>Entrez votre nom</DialogTitle>
-          <DialogDescription>
-            Veuillez entrer votre nom :
-          </DialogDescription>
-          <Form onSubmit={handleSubmit}>
-            <FormField name="name">
-              <FormLabel htmlFor="name">Nom</FormLabel>
-              <input id="name" type="text" value={name} onChange={(e: any) => setName(e.target.value)} required />
-              <FormMessage>Entrer votre nom please.</FormMessage>
-            </FormField>
-            <FormSubmit asChild>
-              <Button type='submit'>Envoyer</Button>
-            </FormSubmit>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </>
+    <div>
+       { 
+       		(!open)
+			?
+				<Button onClick={() => setOpen(true)}>Mot de passe oublié</Button>
+			: 
+			<>
+				<TextField.Root placeholder='nom' value={name} onChange={(e) => setName(e.target.value)} required />
+				<Button onClick={handleClick}>Envoyer</Button>
+			</>
+		}
+    </div>
   );
 };
