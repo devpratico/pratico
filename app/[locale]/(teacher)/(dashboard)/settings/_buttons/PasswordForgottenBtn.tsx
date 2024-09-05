@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { Button, TextField } from '@radix-ui/themes';
 
@@ -9,13 +7,13 @@ export default function PasswordForgottenBtn() {
 
   const handleClick = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    
     try {
       await sendMessage(name);
       setOpen(false);
       setName('');
     } catch (error) {
-      console.error('Sending msg error:', error);
+      console.error('00 Error sending message:', error);
     }
   };
 
@@ -27,27 +25,25 @@ export default function PasswordForgottenBtn() {
       },
       body: JSON.stringify({ name }),
     });
-  
+
     if (!response.ok) {
-      throw new Error('Sending msg error');
+      throw new Error('01 Error sending message');
     }
-  
+
     const data = await response.json();
-    console.log(data.success ? 'Message sent successfully' : 'Error sending msg');
-  } 
+    console.log(data.success ? 'Message sent successfully' : 'Error while sending msg');
+  };
 
   return (
     <div>
-       { 
-       		(!open)
-			?
-				<Button onClick={() => setOpen(true)}>Mot de passe oublié</Button>
-			: 
-			<>
-				<TextField.Root placeholder='nom' value={name} onChange={(e) => setName(e.target.value)} required />
-				<Button onClick={handleClick}>Envoyer</Button>
-			</>
-		}
+      {!open ? (
+        <Button onClick={() => setOpen(true)}>Info</Button>
+      ) : (
+        <>
+          <TextField.Root placeholder="Entrez votre nom please" value={name} onChange={(e) => setName(e.target.value)} required />
+          <Button onClick={handleClick}>Envoyer</Button>
+        </>
+      )}
     </div>
   );
-};
+}

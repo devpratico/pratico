@@ -1,61 +1,36 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Client, Message, TextChannel } from 'discord.js';
+import { NextRequest, NextResponse } from "next/server";
 
-const client = new Client({
-  intents: [
-    'Guilds',
-    'GuildMessages'
-  ]
-});
+const webhookUrl = process.env.DISCORD_WEBHOOK_URL || '';
 
-client.once('ready', () => {
-  console.log('Bot ready!');
-});
-
-client.on('messageCreate', async (message: Message) => {
-  if (!message.content.startsWith('!')) return;
-
-  const [, , ...args] = message.content.split(' ');
-
-  switch(args[0]) {
-    case '!sendname':
-      const channelId = process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID;
-      if (!channelId) {
-        console.error('NEXT_PUBLIC_DISCORD_CHANNEL_ID environment variable is not set');
-        return;
-      }
-
-      const channel = await client.channels.fetch(channelId) as TextChannel;
-      if (!channel) {
-        console.error(`Channel with ID ${channelId} not found`);
-        return ;
-      }
-
-      try {
-        if (channel?.isTextBased())
-            await channel.send(`Name : ${args.slice(1).join(' ')}`);
-      } catch (error) {
-        console.error('Sending msg error:', error, channelId);
-      }
-      break;
-  }
-});
-
-client.login(process.env.DISCORD_BOT_TOKEN);
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const channelId = process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID ? process.env.NEXT_PUBLIC_DISCORD_CHANNEL_ID : '' ;
+export const POST = async (req: NextRequest) => {
   if (req.method === 'POST') {
-    const { name } = req.body;
+    const { name } = await req.json();
+
     if (!name) {
-      return res.status(400).json({ error: 'Nom requis' });
+      return NextResponse.json({ error: 'Name missing' }, { status: 400 });
     }
-    const channel = await client.channels.fetch(channelId);
-    if (channel?.isTextBased())
-        await (client.channels.cache.get(channelId) as TextChannel)?.send(`User : ${name}`);
-    res.status(200).json({ success: true });
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: `User info : ${name}`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error sending message');
+      }
+
+      return NextResponse.json({ success: true }, { status: 200 });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return NextResponse.json({ error: 'Error sending message' }, { status: 500 });
+    }
   } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return NextResponse.json({ error: `Method ${req.method} not allowed` }, { status: 405 });
   }
-}
+};

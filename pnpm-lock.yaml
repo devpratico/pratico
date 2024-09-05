@@ -11006,7 +11006,7 @@ snapshots:
       discord-api-types: 0.37.97
       fast-deep-equal: 3.1.3
       lodash.snakecase: 4.1.1
-      tslib: 2.6.3
+      tslib: 2.7.0
       undici: 6.19.8
     transitivePeerDependencies:
       - bufferutil
