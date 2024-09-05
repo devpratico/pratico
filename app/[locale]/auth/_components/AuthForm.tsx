@@ -68,7 +68,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
                     <Tabs.Trigger value='login'>{messages['sign in']}</Tabs.Trigger>
-                    <Tabs.Trigger value='forgot-password'>{messages['forgot password']}</Tabs.Trigger>
+                    {/* <Tabs.Trigger value='forgot-password'>{messages['forgot password']}</Tabs.Trigger> */}
                 </Tabs.List>
 
 

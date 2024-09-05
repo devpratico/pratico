@@ -62,34 +62,32 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                 {successToast.msg}
           </>
           : <>
-                  <Form.Root>
-                      <Flex direction='column' gap='5' pt='5'>
+              <Flex direction='column' gap='5' pt='5'>
 
-                          <Form.Field key='email' name='email'>
-                              <Form.Control asChild>
-                                  <TextField.Root placeholder={'email'} value={email} onChange={(e) => setEmail(e.target.value)}required>
-                                      <TextField.Slot><Mail /></TextField.Slot>
-                                  </TextField.Root>
-                              </Form.Control>
-                          </Form.Field>
+              <Form.Field key='email' name='email'>
+                  <Form.Control asChild>
+                      <TextField.Root placeholder={'email'} value={email} onChange={(e) => setEmail(e.target.value)}required>
+                          <TextField.Slot><Mail /></TextField.Slot>
+                      </TextField.Root>
+                  </Form.Control>
+              </Form.Field>
 
-                          {/* <Form.Field key='name' name='name'>
-                              <Form.Control asChild>
-                                  <TextField.Root placeholder={'prenom'}>
-                                      <TextField.Slot><RectangleEllipsis /></TextField.Slot>
-                                  </TextField.Root>
-                              </Form.Control>
-                          </Form.Field> */}
+              {/* <Form.Field key='name' name='name'>
+                  <Form.Control asChild>
+                      <TextField.Root placeholder={'prenom'}>
+                          <TextField.Slot><RectangleEllipsis /></TextField.Slot>
+                      </TextField.Root>
+                  </Form.Control>
+              </Form.Field> */}
 
-                          <Form.Submit asChild>
-                              <Button onClick={handleClick}>
-                                  Mot de passe oublié
-                              </Button>
-                          </Form.Submit>
+              <Form.Submit asChild>
+                  <Button onClick={handleClick}>
+                      Mot de passe oublié
+                  </Button>
+              </Form.Submit>
 
-                        </Flex>
+            </Flex>
 
-                  </Form.Root>
           </>
       )}
     </div>

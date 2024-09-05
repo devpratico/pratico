@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          content: `User info : ${name}`,
+          content: `This user forgot its password: ${name}`,
         }),
       });
 
