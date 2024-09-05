@@ -1,40 +1,67 @@
-// import React, { useState } from 'react';
-// import { Resend } from 'resend';
-// import { Button } from '@radix-ui/themes';
-// import { EmailTemplate } from '../notifications/EmailTemplate';
+'use client';
 
-// const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
+import React, { useState } from 'react';
+import { Dialog, DialogTrigger, DialogOverlay, DialogContent, DialogTitle, DialogDescription } from '@radix-ui/react-dialog';
+import { FormField, FormLabel, FormMessage, FormSubmit } from '@radix-ui/react-form';
+import { Button } from '@radix-ui/themes';
 
-// export default function PasswordForgottenBtn() {
-//   const [message, setMessage] = useState('');
+export default function PasswordForgottenBtb() {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
 
-//   const handleSendEmail = async (event: React.FormEvent) => {
-//     event.preventDefault();
-    
-//     try {
-//       const result = await fetch('/api/resend', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${process.env.NEXT_PUBLIC_RESEND_API_KEY}`
-//         },
-//         body: JSON.stringify({
-//           from: 'lemaildejo@gmail.com',
-//           to: ['jcourtoi@student.42.fr'],
-//           subject: 'Email test',
-//           react: EmailTemplate({ name: "Johanna" })
-//         }),
-//       });
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-//       const data = await result.json();
-//       setMessage(data.message);
-//     } catch (error) {
-//       console.error('Error while sending message', error);
-//       setMessage('Error while sending msg.');
-//     }
-//   };
+    try {
+      await sendMessage(name);
+      setOpen(false);
+      setName('');
+    } catch (error) {
+      console.error('Sending msg error:', error);
+    }
+  };
 
-//   return (
-//       <Button onClick={handleSendEmail}>Mot de passe oublié</Button>
-//   );
-// };
+  const sendMessage = async (name: string) => {
+    const response = await fetch('/api/bot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Sending msg error');
+    }
+  
+    const data = await response.json();
+    console.log(data.success ? 'Message sent successfully' : 'Error sending msg');
+  } 
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>Infos</Button>
+        </DialogTrigger>
+        <DialogOverlay />
+        <DialogContent>
+          <DialogTitle>Entrez votre nom</DialogTitle>
+          <DialogDescription>
+            Veuillez entrer votre nom :
+          </DialogDescription>
+          <form onSubmit={handleSubmit}>
+            <FormField name="name">
+              <FormLabel htmlFor="name">Nom</FormLabel>
+              <input id="name" type="text" value={name} onChange={(e: any) => setName(e.target.value)} required />
+              <FormMessage>Entrer votre nom please.</FormMessage>
+            </FormField>
+            <FormSubmit asChild>
+              <Button type='submit'>Envoyer</Button>
+            </FormSubmit>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
