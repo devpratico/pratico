@@ -21,6 +21,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
     const [isAnon, setIsAnon] = useState(false);
+    const [passwordForgotten, setPasswordForgotten] = useState(false);
 
     useEffect(() => {
         //isLoggedIn().then((user) => {setIsLogged(!!user)})
@@ -67,6 +68,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
                     <Tabs.Trigger value='login'>{messages['sign in']}</Tabs.Trigger>
+                    <Tabs.Trigger value='forgot-password'>{messages['forgot password']}</Tabs.Trigger>
                 </Tabs.List>
 
 
@@ -207,35 +209,89 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                         }}
                     >
+                {
+                    !passwordForgotten
+                    ? <>
+                    <Flex direction='column' gap='5' pt='5'>
 
-                        <Flex direction='column' gap='5' pt='5'>
+                        <Form.Field key='email' name='email'>
+                            <Form.Control asChild>
+                                <TextField.Root placeholder={messages['email']} required>
+                                    <TextField.Slot><Mail /></TextField.Slot>
+                                </TextField.Root>
+                            </Form.Control>
+                        </Form.Field>
 
-                            <Form.Field key='email' name='email'>
-                                <Form.Control asChild>
-                                    <TextField.Root placeholder={messages['email']} required>
-                                        <TextField.Slot><Mail /></TextField.Slot>
-                                    </TextField.Root>
-                                </Form.Control>
-                            </Form.Field>
+                        <Form.Field key='password' name='password'>
+                            <Form.Control asChild>
+                                <TextField.Root placeholder={messages['password']} type="password" required>
+                                    <TextField.Slot><RectangleEllipsis /></TextField.Slot>
+                                </TextField.Root>
+                            </Form.Control>
+                        </Form.Field>
 
-                            <Form.Field key='password' name='password'>
-                                <Form.Control asChild>
-                                    <TextField.Root placeholder={messages['password']} type="password" required>
-                                        <TextField.Slot><RectangleEllipsis /></TextField.Slot>
-                                    </TextField.Root>
-                                </Form.Control>
-                            </Form.Field>
-
-                            <Form.Submit asChild>
-                                <Button type="submit" loading={isLoading}>
-                                    {messages['sign in']}
-                                </Button>
-                            </Form.Submit>
+                        <Form.Submit asChild>
+                            <Button type="submit" loading={isLoading}>
+                                {messages['sign in']}
+                            </Button>
+                        </Form.Submit>
 
                         </Flex>
-                        <PasswordForgottenBtn />
-                    </Form.Root>
+                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+
+                      
+                    </>
+                    : <>
+                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+                    </>
+                }
+                </Form.Root>
+
                 </Tabs.Content>
+
+                {/************ PASSWORD FORGOTTEN ************/}
+                {/* <Tabs.Content value='forgot-password'>
+
+                    <Form.Root
+                        onSubmit={async (event) => {
+                            event.preventDefault();
+                            setIsLoading(true);
+                            const formData = Object.fromEntries(new FormData(event.currentTarget));
+                            const { email } = formData as { email: string };
+                            
+                        }}
+                    >
+                             <>
+                                <Flex direction='column' gap='5' pt='5'>
+
+                                    <Form.Field key='email' name='email'>
+                                        <Form.Control asChild>
+                                            <TextField.Root placeholder={messages['email']} required>
+                                                <TextField.Slot><Mail /></TextField.Slot>
+                                            </TextField.Root>
+                                        </Form.Control>
+                                    </Form.Field>
+
+                                    <Form.Field key='name' name='name'>
+                                        <Form.Control asChild>
+                                            <TextField.Root placeholder={'prenom'}>
+                                                <TextField.Slot><RectangleEllipsis /></TextField.Slot>
+                                            </TextField.Root>
+                                        </Form.Control>
+                                    </Form.Field>
+
+                                    <Form.Submit asChild>
+                                        <Button type="submit" loading={isLoading}>
+                                            {messages['forgot password']}
+                                        </Button>
+                                    </Form.Submit>
+
+                                </Flex>
+                                <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+                            </>
+                       
+                    </Form.Root>
+                </Tabs.Content> */}
 
             </Tabs.Root>
 
