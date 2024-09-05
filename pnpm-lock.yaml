@@ -68,6 +68,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.45.1
         version: 2.45.1
+      discord.js:
+        specifier: ^14.16.1
+        version: 14.16.1
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -101,6 +104,9 @@ importers:
       tldraw:
         specifier: ^2.4.4
         version: 2.4.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      zlib-sync:
+        specifier: ^0.1.9
+        version: 0.1.9
     devDependencies:
       '@storybook/addon-essentials':
         specifier: ^8.2.9
@@ -162,6 +168,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.4.1)
+      node-loader:
+        specifier: ^2.0.0
+        version: 2.0.0(webpack@5.93.0(esbuild@0.21.5))
       storybook:
         specifier: ^8.2.9
         version: 8.2.9(@babel/preset-env@7.25.3(@babel/core@7.25.2))
@@ -847,6 +856,34 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@discordjs/builders@1.9.0':
+    resolution: {integrity: sha512-0zx8DePNVvQibh5ly5kCEei5wtPBIUbSoE9n+91Rlladz4tgtFbJ36PZMxxZrTEOQ7AHMZ/b0crT/0fCy6FTKg==}
+    engines: {node: '>=18'}
+
+  '@discordjs/collection@1.5.3':
+    resolution: {integrity: sha512-SVb428OMd3WO1paV3rm6tSjM4wC+Kecaa1EUGX7vc6/fddvw/6lg90z4QtCqm21zvVe92vMMDt9+DkIvjXImQQ==}
+    engines: {node: '>=16.11.0'}
+
+  '@discordjs/collection@2.1.1':
+    resolution: {integrity: sha512-LiSusze9Tc7qF03sLCujF5iZp7K+vRNEDBZ86FT9aQAv3vxMLihUvKvpsCWiQ2DJq1tVckopKm1rxomgNUc9hg==}
+    engines: {node: '>=18'}
+
+  '@discordjs/formatters@0.5.0':
+    resolution: {integrity: sha512-98b3i+Y19RFq1Xke4NkVY46x8KjJQjldHUuEbCqMvp1F5Iq9HgnGpu91jOi/Ufazhty32eRsKnnzS8n4c+L93g==}
+    engines: {node: '>=18'}
+
+  '@discordjs/rest@2.4.0':
+    resolution: {integrity: sha512-Xb2irDqNcq+O8F0/k/NaDp7+t091p+acb51iA4bCKfIn+WFWd6HrNvcsSbMMxIR9NjcMZS6NReTKygqiQN+ntw==}
+    engines: {node: '>=18'}
+
+  '@discordjs/util@1.1.1':
+    resolution: {integrity: sha512-eddz6UnOBEB1oITPinyrB2Pttej49M9FZQY8NxgEvc3tq6ZICZ19m70RsmzRdDHk80O9NoYN/25AqJl8vPVf/g==}
+    engines: {node: '>=18'}
+
+  '@discordjs/ws@1.1.1':
+    resolution: {integrity: sha512-PZ+vLpxGCRtmr2RMkqh8Zp+BenUaJqlS6xhgWKEZcgC/vfHLEzpHtKkB0sl3nZWpwtcKk6YWy+pU3okL2I97FA==}
+    engines: {node: '>=16.11.0'}
 
   '@emnapi/runtime@1.2.0':
     resolution: {integrity: sha512-bV21/9LQmcQeCPEg3BDFtvwL6cwiTMksYNWQQ4KOxCZikEGalWtenoZ0wCiukJINlGCIi2KXx01g4FoH/LxpzQ==}
@@ -2257,6 +2294,18 @@ packages:
   '@rushstack/eslint-patch@1.10.4':
     resolution: {integrity: sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==}
 
+  '@sapphire/async-queue@1.5.3':
+    resolution: {integrity: sha512-x7zadcfJGxFka1Q3f8gCts1F0xMwCKbZweM85xECGI0hBTeIZJGGCrHgLggihBoprlQ/hBmDR5LKfIPqnmHM3w==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
+  '@sapphire/shapeshift@4.0.0':
+    resolution: {integrity: sha512-d9dUmWVA7MMiKobL3VpLF8P2aeanRTu6ypG2OIaEv/ZHH/SUQ2iHOVyi5wAPjQ+HmnMuL0whK9ez8I/raWbtIg==}
+    engines: {node: '>=v16'}
+
+  '@sapphire/snowflake@3.5.3':
+    resolution: {integrity: sha512-jjmJywLAFoWeBi1W7994zZyiNWPIiqRRNAmSERxyg93xRGzNYvGjlZ0gR6x0F4gPRi2+0O6S71kOZYyr3cxaIQ==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
@@ -2822,6 +2871,10 @@ packages:
 
   '@vitest/utils@1.6.0':
     resolution: {integrity: sha512-21cPiuGMoMZwiOHa2i4LXkMkMkCGzA+MVFV70jRwHo95dL4x/ts5GZhML1QWuy7yfp3WzK3lRvZi3JnXTYqrBw==}
+
+  '@vladfrangu/async_event_emitter@2.4.6':
+    resolution: {integrity: sha512-RaI5qZo6D2CVS6sTHFKg1v5Ohq/+Bo2LZ5gzUEwZ/WkHhwtGTCB/sVLw8ijOkAUxasZ+WshN/Rzj4ywsABJ5ZA==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
   '@webassemblyjs/ast@1.12.1':
     resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
@@ -3747,6 +3800,16 @@ packages:
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
+
+  discord-api-types@0.37.83:
+    resolution: {integrity: sha512-urGGYeWtWNYMKnYlZnOnDHm8fVRffQs3U0SpE8RHeiuLKb/u92APS8HoQnPTFbnXmY1vVnXjXO4dOxcAn3J+DA==}
+
+  discord-api-types@0.37.97:
+    resolution: {integrity: sha512-No1BXPcVkyVD4ZVmbNgDKaBoqgeQ+FJpzZ8wqHkfmBnTZig1FcH3iPPersiK1TUIAzgClh2IvOuVUYfcWLQAOA==}
+
+  discord.js@14.16.1:
+    resolution: {integrity: sha512-/diX4shp3q1F3EySGQbQl10el+KIpffLSOJdtM35gGV7zw2ED7rKbASKJT7UIR9L/lTd0KtNenZ/h739TN7diA==}
+    engines: {node: '>=18'}
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -5043,6 +5106,9 @@ packages:
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
+  lodash.snakecase@4.1.1:
+    resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
+
   lodash.throttle@4.1.1:
     resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
@@ -5080,6 +5146,9 @@ packages:
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
+
+  magic-bytes.js@1.10.0:
+    resolution: {integrity: sha512-/k20Lg2q8LE5xiaaSkMXk4sfvI+9EGEykFS4b0CHHGWqDYU0bGUFSwchNOMA56D7TCs9GwVTkqe9als1/ns8UQ==}
 
   magic-string@0.30.11:
     resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==}
@@ -5325,6 +5394,12 @@ packages:
 
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
+
+  node-loader@2.0.0:
+    resolution: {integrity: sha512-I5VN34NO4/5UYJaUBtkrODPWxbobrE4hgDqPrjB25yPkonFhCmZ146vTH+Zg417E9Iwoh1l/MbRs1apc5J295Q==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      webpack: ^5.0.0
 
   node-polyfill-webpack-plugin@2.0.1:
     resolution: {integrity: sha512-ZUMiCnZkP1LF0Th2caY6J/eKKoA0TefpoVa68m/LQU1I/mE8rGt4fNYGgNuCcK+aG8P8P43nbeJ2RqJMOL/Y1A==}
@@ -6484,6 +6559,9 @@ packages:
     resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
     engines: {node: '>=6.10'}
 
+  ts-mixer@6.0.4:
+    resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
+
   ts-pnp@1.2.0:
     resolution: {integrity: sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==}
     engines: {node: '>=6'}
@@ -6593,6 +6671,10 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  undici@6.19.8:
+    resolution: {integrity: sha512-U8uCCl2x9TK3WANvmBavymRzxbfFYG+tAu+fgx3zxQy3qdagQqBLwJVrdyO1TBfUXvfKveMKJZhpvUYoOjM+4g==}
+    engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
@@ -6883,6 +6965,9 @@ packages:
   yocto-queue@1.1.1:
     resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
+
+  zlib-sync@0.1.9:
+    resolution: {integrity: sha512-DinB43xCjVwIBDpaIvQqHbmDsnYnSt6HJ/yiB2MZQGTqgPcwBSZqLkimXwK8BvdjQ/MaZysb5uEenImncqvCqQ==}
 
 snapshots:
 
@@ -7774,6 +7859,53 @@ snapshots:
   '@base2/pretty-print-object@1.0.1': {}
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@discordjs/builders@1.9.0':
+    dependencies:
+      '@discordjs/formatters': 0.5.0
+      '@discordjs/util': 1.1.1
+      '@sapphire/shapeshift': 4.0.0
+      discord-api-types: 0.37.97
+      fast-deep-equal: 3.1.3
+      ts-mixer: 6.0.4
+      tslib: 2.6.3
+
+  '@discordjs/collection@1.5.3': {}
+
+  '@discordjs/collection@2.1.1': {}
+
+  '@discordjs/formatters@0.5.0':
+    dependencies:
+      discord-api-types: 0.37.97
+
+  '@discordjs/rest@2.4.0':
+    dependencies:
+      '@discordjs/collection': 2.1.1
+      '@discordjs/util': 1.1.1
+      '@sapphire/async-queue': 1.5.3
+      '@sapphire/snowflake': 3.5.3
+      '@vladfrangu/async_event_emitter': 2.4.6
+      discord-api-types: 0.37.97
+      magic-bytes.js: 1.10.0
+      tslib: 2.6.3
+      undici: 6.19.8
+
+  '@discordjs/util@1.1.1': {}
+
+  '@discordjs/ws@1.1.1':
+    dependencies:
+      '@discordjs/collection': 2.1.1
+      '@discordjs/rest': 2.4.0
+      '@discordjs/util': 1.1.1
+      '@sapphire/async-queue': 1.5.3
+      '@types/ws': 8.5.12
+      '@vladfrangu/async_event_emitter': 2.4.6
+      discord-api-types: 0.37.83
+      tslib: 2.6.3
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   '@emnapi/runtime@1.2.0':
     dependencies:
@@ -9243,6 +9375,15 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.4': {}
 
+  '@sapphire/async-queue@1.5.3': {}
+
+  '@sapphire/shapeshift@4.0.0':
+    dependencies:
+      fast-deep-equal: 3.1.3
+      lodash: 4.17.21
+
+  '@sapphire/snowflake@3.5.3': {}
+
   '@sinclair/typebox@0.27.8': {}
 
   '@sindresorhus/merge-streams@2.3.0': {}
@@ -9871,7 +10012,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.4.1
+      '@types/node': 22.5.1
 
   '@types/cookie@0.4.1': {}
 
@@ -9989,7 +10130,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.4.1
+      '@types/node': 22.5.1
 
   '@types/serve-static@1.15.7':
     dependencies:
@@ -10005,7 +10146,7 @@ snapshots:
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 22.4.1
+      '@types/node': 22.5.1
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -10119,6 +10260,8 @@ snapshots:
       estree-walker: 3.0.3
       loupe: 2.3.7
       pretty-format: 29.7.0
+
+  '@vladfrangu/async_event_emitter@2.4.6': {}
 
   '@webassemblyjs/ast@1.12.1':
     dependencies:
@@ -11243,6 +11386,28 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
+  discord-api-types@0.37.83: {}
+
+  discord-api-types@0.37.97: {}
+
+  discord.js@14.16.1:
+    dependencies:
+      '@discordjs/builders': 1.9.0
+      '@discordjs/collection': 1.5.3
+      '@discordjs/formatters': 0.5.0
+      '@discordjs/rest': 2.4.0
+      '@discordjs/util': 1.1.1
+      '@discordjs/ws': 1.1.1
+      '@sapphire/snowflake': 3.5.3
+      discord-api-types: 0.37.97
+      fast-deep-equal: 3.1.3
+      lodash.snakecase: 4.1.1
+      tslib: 2.6.3
+      undici: 6.19.8
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
@@ -11539,7 +11704,7 @@ snapshots:
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.56.0)
       eslint-plugin-react: 7.35.0(eslint@8.56.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.56.0)
@@ -11563,7 +11728,7 @@ snapshots:
       enhanced-resolve: 5.17.1
       eslint: 8.56.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.15.0
@@ -11585,7 +11750,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.56.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -13029,6 +13194,8 @@ snapshots:
 
   lodash.merge@4.6.2: {}
 
+  lodash.snakecase@4.1.1: {}
+
   lodash.throttle@4.1.1: {}
 
   lodash.uniq@4.5.0: {}
@@ -13063,6 +13230,8 @@ snapshots:
       react: 18.3.1
 
   lz-string@1.5.0: {}
+
+  magic-bytes.js@1.10.0: {}
 
   magic-string@0.30.11:
     dependencies:
@@ -13204,8 +13373,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  nan@2.20.0:
-    optional: true
+  nan@2.20.0: {}
 
   nanoid@3.3.7: {}
 
@@ -13277,6 +13445,11 @@ snapshots:
       formdata-polyfill: 4.0.10
 
   node-int64@0.4.0: {}
+
+  node-loader@2.0.0(webpack@5.93.0(esbuild@0.21.5)):
+    dependencies:
+      loader-utils: 2.0.4
+      webpack: 5.93.0(esbuild@0.21.5)
 
   node-polyfill-webpack-plugin@2.0.1(webpack@5.93.0(esbuild@0.21.5)):
     dependencies:
@@ -14653,6 +14826,8 @@ snapshots:
 
   ts-dedent@2.2.0: {}
 
+  ts-mixer@6.0.4: {}
+
   ts-pnp@1.2.0(typescript@5.5.4):
     optionalDependencies:
       typescript: 5.5.4
@@ -14761,6 +14936,8 @@ snapshots:
   undici-types@5.26.5: {}
 
   undici-types@6.19.8: {}
+
+  undici@6.19.8: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
@@ -15068,3 +15245,7 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.1.1: {}
+
+  zlib-sync@0.1.9:
+    dependencies:
+      nan: 2.20.0
