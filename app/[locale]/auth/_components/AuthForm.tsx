@@ -68,7 +68,6 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
                     <Tabs.Trigger value='login'>{messages['sign in']}</Tabs.Trigger>
-                    {/* <Tabs.Trigger value='forgot-password'>{messages['forgot password']}</Tabs.Trigger> */}
                 </Tabs.List>
 
 
@@ -238,8 +237,6 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                         </Flex>
                         <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
-
-                      
                     </>
                     : <>
                         <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
@@ -248,50 +245,6 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 </Form.Root>
 
                 </Tabs.Content>
-
-                {/************ PASSWORD FORGOTTEN ************/}
-                {/* <Tabs.Content value='forgot-password'>
-
-                    <Form.Root
-                        onSubmit={async (event) => {
-                            event.preventDefault();
-                            setIsLoading(true);
-                            const formData = Object.fromEntries(new FormData(event.currentTarget));
-                            const { email } = formData as { email: string };
-                            
-                        }}
-                    >
-                             <>
-                                <Flex direction='column' gap='5' pt='5'>
-
-                                    <Form.Field key='email' name='email'>
-                                        <Form.Control asChild>
-                                            <TextField.Root placeholder={messages['email']} required>
-                                                <TextField.Slot><Mail /></TextField.Slot>
-                                            </TextField.Root>
-                                        </Form.Control>
-                                    </Form.Field>
-
-                                    <Form.Field key='name' name='name'>
-                                        <Form.Control asChild>
-                                            <TextField.Root placeholder={'prenom'}>
-                                                <TextField.Slot><RectangleEllipsis /></TextField.Slot>
-                                            </TextField.Root>
-                                        </Form.Control>
-                                    </Form.Field>
-
-                                    <Form.Submit asChild>
-                                        <Button type="submit" loading={isLoading}>
-                                            {messages['forgot password']}
-                                        </Button>
-                                    </Form.Submit>
-
-                                </Flex>
-                                <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
-                            </>
-                       
-                    </Form.Root>
-                </Tabs.Content> */}
 
             </Tabs.Root>
 
