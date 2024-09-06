@@ -118,6 +118,8 @@ export function QuizAnswerRow({ index, text, correct, questionState }: QuizAnswe
     const isGray = questionState == 'results' && !correct
     const color = isGreen ? 'green' : isGray ? 'gray' : undefined
 
+ 
+
     function handleClick() {
         if (questionState == 'results') return
         setState((prev) => prev === 'selected' ? 'unselected' : 'selected')
@@ -130,16 +132,16 @@ export function QuizAnswerRow({ index, text, correct, questionState }: QuizAnswe
         }
         let result = '';
 
-        if (index > 25)
-        {
+        if (index < 26) {
+            result = String.fromCharCode(index + 65);
+        } else {
             while (index > 0) {
-                const tmp = index % 25;
-                result = String.fromCharCode(64 + tmp) + result;
-                index = Math.floor(index / 25);
+                const tmp = index % 26;
+                const charCode = tmp + 65;
+                result = String.fromCharCode(charCode) + result;
+                index = Math.floor((index - tmp) / 26);
             }
         }
-        else
-            result = String.fromCharCode(index + 65);
         
         return (result);
           
@@ -147,7 +149,7 @@ export function QuizAnswerRow({ index, text, correct, questionState }: QuizAnswe
 
     return (
         <Button variant={variant} color={color} onClick={handleClick} style={{justifyContent: 'start'}}>
-           {getIndexLetter()} - {text}
+           <span style={{fontWeight: 'bold'}}>{getIndexLetter()}</span> - {text}
         </Button> 
     )
 }
