@@ -131,20 +131,16 @@ export function QuizAnswerRow({ index, text, correct, questionState }: QuizAnswe
           throw new Error('Index must be between 0 and 999');
         }
         let result = '';
+        let tmpIndex = index + 1;
 
-        if (index < 26) {
-            result = String.fromCharCode(index + 65);
-        } else {
-            while (index > 0) {
-                const tmp = index % 26;
-                const charCode = tmp + 65;
-                result = String.fromCharCode(charCode) + result;
-                index = Math.floor((index - tmp) / 26);
-            }
+        while (tmpIndex > 0) {
+            let tmp = (tmpIndex - 1) % 26;
+            let charCode = tmp + 65;
+            result = String.fromCharCode(charCode) + result;
+            tmpIndex = Math.floor((tmpIndex - 1) / 26);
         }
         
         return (result);
-          
     }
 
     return (
