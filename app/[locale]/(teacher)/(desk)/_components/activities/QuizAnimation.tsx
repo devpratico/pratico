@@ -63,7 +63,7 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
                 <Section size='1'>
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
                         {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <QuizAnswerRow key={`${index}_${answer.text}`} text={answer.text} correct={answer.correct} questionState={questionState} />
+                            <QuizAnswerRow key={`${index}_${answer.text}`} index={index} text={answer.text} correct={answer.correct} questionState={questionState} />
                         ))}
                     </Flex>
                 </Section>
@@ -99,6 +99,7 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
 
 
 interface QuizAnswerRowProps {
+    index: number,
     text: string
     correct: boolean
     questionState: 'answering' | 'results'
@@ -107,7 +108,7 @@ interface QuizAnswerRowProps {
 
 
 
-export function QuizAnswerRow({ text, correct, questionState }: QuizAnswerRowProps) {
+export function QuizAnswerRow({ index, text, correct, questionState }: QuizAnswerRowProps) {
     const [state, setState] = useState<'selected' | 'unselected'>('unselected')
 
     const isSolid = ( questionState == 'answering' && state === 'selected' ) || ( questionState == 'results' && correct)
@@ -122,9 +123,31 @@ export function QuizAnswerRow({ text, correct, questionState }: QuizAnswerRowPro
         setState((prev) => prev === 'selected' ? 'unselected' : 'selected')
     }
 
+    function getIndexLetter() {
+        // I don't know how many answers can exist
+        if (index < 0 || index > 999) {
+          throw new Error('Index must be between 0 and 999');
+        }
+        let result = '';
+
+        if (index > 25)
+        {
+            while (index > 0) {
+                const tmp = index % 25;
+                result = String.fromCharCode(64 + tmp) + result;
+                index = Math.floor(index / 25);
+            }
+        }
+        else
+            result = String.fromCharCode(index + 65);
+        
+        return (result);
+          
+    }
+
     return (
         <Button variant={variant} color={color} onClick={handleClick} style={{justifyContent: 'start'}}>
-            {text}
+           {getIndexLetter()} - {text}
         </Button> 
     )
 }
