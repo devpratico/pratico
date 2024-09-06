@@ -30,7 +30,7 @@ export function SideBarBtn({ href, message, children }: SideBarBtnProps) {
             <Link href={href}>
                 <Flex align='center' gap='2'>
                     {children}
-                    <Text as='label' size='3' truncate>{message}</Text>
+                    <Text style={{cursor:'pointer'}}  as='label' size='3' truncate>{message}</Text>
                 </Flex>
             </Link>
         </Box>

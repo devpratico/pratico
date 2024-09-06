@@ -17,7 +17,7 @@ function TabElement({ href, children }: TabElementProps) {
     return (
         <TabNav.Link active={pathname == href} asChild>
             <Link href={href} shallow={false}>
-                <Flex direction='column' align='center' gap='1'>
+                <Flex   direction='column' align='center' gap='1'>
                     {children}
                 </Flex>
             </Link>
