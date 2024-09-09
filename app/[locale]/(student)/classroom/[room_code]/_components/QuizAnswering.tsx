@@ -5,7 +5,7 @@ import { Quiz } from "@/app/_hooks/usePollQuizCreation"
 import { QuizAnswerRow } from "@/app/[locale]/(teacher)/(desk)/_components/activities/QuizAnimation"
 import { useRoom } from "@/app/_hooks/useRoom"
 
-
+  
 export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
     const { room } = useRoom() // This will fail in the future when this component will update the room (activity_snapshot)
 
@@ -23,7 +23,7 @@ export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
             <Section size='2'>
                 <Flex direction='column' gap='3' mt='7' align='stretch'>
                     {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
-                        <QuizAnswerRow key={`${index}_${answer.text}`} questionState={questionState} text={answer.text} correct={answer.correct} />
+                        <QuizAnswerRow key={`${index}_${answer.text}`} index={index} questionState={questionState} text={answer.text} correct={answer.correct} />
                     ))}
                 </Flex>
             </Section>
