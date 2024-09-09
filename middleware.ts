@@ -28,6 +28,12 @@ export async function middleware(request: NextRequest) {
 
     const response = nextIntlMiddleware(request);
 
+    const publicURLs = [ '/auth/update-password' ];
+
+    if (publicURLs.includes(request.nextUrl.pathname)) {
+        return (response);
+    }
+
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
