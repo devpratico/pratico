@@ -9,6 +9,9 @@ import { revalidatePath } from "next/cache"
 import { generateRandomCode } from "@/app/_utils/codeGen"
 import { fetchCapsuleSnapshot } from "./capsule"
 import { ActivitySnapshot } from "@/app/_types/activity"
+import { fetchActivity } from "./activities"
+import { Poll } from "@/app/_types/poll"
+import { log } from "console"
 
 
 export type RoomInsert = TablesInsert<'rooms'>
@@ -40,6 +43,7 @@ export type Room = Omit<Tables<'rooms'>, 'params' | 'capsule_snapshot' | 'activi
 
 
 export const stopRoom = cache(async (roomId: number) => {
+    logger.log('supabase:database', 'stopRoom', 'roomId:', roomId)
     const supabase = createClient()
 
     const { error } = await supabase.from('rooms').update({ status: 'closed' }).eq('id', roomId)
@@ -53,8 +57,9 @@ export const stopRoom = cache(async (roomId: number) => {
 
 
 export const getRoomId = cache(async (roomCode: string) => {
+    logger.log('supabase:database', 'getRoomId', 'roomCode:', roomCode)
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('id').eq('code', roomCode).single()
+    const { data, error } = await supabase.from('rooms').select('id').eq('code', roomCode).eq('status', 'open').single()
     if (error) logger.error('supabase:database', 'Error getting room id', error)
     return { id: data?.id, error: error?.message }
 })
@@ -67,6 +72,7 @@ interface toggleCollaborationForArgs {
 
 
 export const toggleCollaborationFor = cache(async ({ userId, roomCode }: toggleCollaborationForArgs) => {
+    logger.log('supabase:database', 'toggleCollaborationFor', 'userId:', userId, 'roomCode:', roomCode)
     const { id: roomId } = await getRoomId(roomCode.toString())
     if (!roomId) {
         logger.error('supabase:database', `No roomId - can't toggle collaboration for user`)
@@ -113,6 +119,7 @@ interface toggleCollaborationForAllArgs {
 
 
 export const toggleCollaborationForAll = cache(async ({ roomCode, allUsersIds }: toggleCollaborationForAllArgs) => {
+    logger.log('supabase:database', 'toggleCollaborationForAll', 'roomCode:', roomCode)
     //const roomId = await getRoomId(roomCode.toString())
     const { id: roomId } = await getRoomId(roomCode.toString())
     if (!roomId) {
@@ -145,6 +152,7 @@ export const toggleCollaborationForAll = cache(async ({ roomCode, allUsersIds }:
 
 
 const saveRoom = cache(async (room: RoomInsert) => {
+    logger.log('supabase:database', 'saveRoom', 'room:', room)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select()
     if (error) logger.error('supabase:database', 'Error saving room', error.message)
@@ -153,6 +161,7 @@ const saveRoom = cache(async (room: RoomInsert) => {
 
 
 export const deleteRoom = cache(async (roomId: number) => {
+    logger.log('supabase:database', 'deleteRoom', 'roomId:', roomId)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error deleting room', error.message)
@@ -162,6 +171,7 @@ export const deleteRoom = cache(async (roomId: number) => {
 
 
 export const fetchOpenRoomsCodes = cache(async () => {
+    logger.log('supabase:database', 'fetchOpenRoomsCodes')
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('code').eq('status', 'open')
     if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
@@ -170,6 +180,7 @@ export const fetchOpenRoomsCodes = cache(async () => {
 
 
 export const createRoom = cache(async (capsuleId: string) => {
+    logger.log('supabase:database', 'createRoom', 'capsuleId:', capsuleId)
     const { user, error: userError } = await fetchUser()
     if (userError) return { room: null, error: userError }
     if (!user) return { room: null, error: 'No user' }
@@ -221,6 +232,7 @@ export const createRoom = cache(async (capsuleId: string) => {
 
 
 export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
+    logger.log('supabase:database', 'saveRoomSnapshot', 'roomId:', roomId, 'snapshot:', snapshot)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saving room snapshot', error.message)
@@ -229,6 +241,7 @@ export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
 
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
+    logger.log('supabase:database', 'fetchRoomsByCapsuleId', 'capsuleId:', capsuleId)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
@@ -237,6 +250,7 @@ export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
 
 
 export const fetchRoomParams = cache(async (roomId: number) => {
+    logger.log('supabase:database', 'fetchRoomParams', 'roomId:', roomId)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('params').eq('id', roomId).single()
     if (error) logger.error('supabase:database', 'Error fetchRoomParams', error.message)
@@ -245,6 +259,7 @@ export const fetchRoomParams = cache(async (roomId: number) => {
 
 
 export const saveRoomParams = cache(async (roomId: number, params: RoomParams) => {
+    logger.log('supabase:database', 'saveRoomParams', 'roomId:', roomId, 'params:', params)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').update({ params: params as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saveRoomParams', error.message)
@@ -253,16 +268,18 @@ export const saveRoomParams = cache(async (roomId: number, params: RoomParams) =
 
 
 export const fetchOpenRoomByCode = cache(async (code: string) => {
+    logger.log('supabase:database', 'fetchOpenRoomByCode', 'code:', code)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('code', code).eq('status', 'open').single()
 
     if (error) logger.error('supabase:database', `error getting room by code "${code}"`, error.message)
 
-    return { data, error: error?.message }
+    return { data, error: error?.message || null }
 })
 
 
 export const fetchRoomCreator = cache(async (code: string) => {
+    logger.log('supabase:database', 'fetchRoomCreator', 'code:', code)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('created_by').eq('code', code).single()
 
@@ -272,13 +289,76 @@ export const fetchRoomCreator = cache(async (code: string) => {
 })
 
 
-export const saveRoomActivitySnapshot = cache(async (roomId: number, snapshot: ActivitySnapshot | null) => {
+export const saveRoomActivitySnapshot = cache(async (roomCode: string, snapshot: ActivitySnapshot | null) => {
+    logger.log('supabase:database', 'saveRoomActivitySnapshot', 'roomCode:', roomCode, 'snapshot:', snapshot)
     const supabase = createClient()
 
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null
-    }).eq('id', roomId)
+    }).eq('code', roomCode).eq('status', 'open')
 
     if (error) logger.error('supabase:database', 'Error saving room activity snapshot', error.message)
-    return { data, error: error?.message }
+    return { error: error?.message }
+})
+
+/**
+ * Generates an initial 'snapshot' object for the activity.
+ * This object represents the state of the activity when it is started.
+ */
+export const generateInitialActivitySnapshot = cache(async (activityId: number): Promise<{snapshot: ActivitySnapshot | null, error: string | null}> => {
+    logger.log('supabase:database', 'generateInitialActivitySnapshot', 'activityId:', activityId)
+
+    const { user } = await fetchUser()
+    if (!user) {
+        return {snapshot: null, error: 'No user authenticated'}
+    }
+
+    const { data: activity, error: activityError } = await fetchActivity(activityId)
+    if (activityError || !activity) {
+        return {snapshot: null, error: activityError || 'No activity found'}
+    }
+
+    let activitySnapshot: ActivitySnapshot
+
+    // Generate the activity snapshot object
+    if (activity.type === 'quiz') {
+        activitySnapshot = {
+            type: 'quiz',
+            activityId: activityId,
+            currentQuestionIndex: 0,
+            currentQuestionState: 'answering'
+        }
+    } else if (activity.type === 'poll') {
+        activitySnapshot = {
+            type: 'poll',
+            activityId: activityId,
+            currentQuestionIndex: 0,
+            currentQuestionState: 'answering',
+            answers: []
+        }
+    } else {
+        logger.log('react:component', 'StartButton', 'Impossible to set activity snapshot, type not recognized:', activity.type)
+        return {snapshot: null, error: 'Activity type not recognized'}
+    }
+
+    return {snapshot: activitySnapshot, error: null}
+})
+
+
+/**
+ * Generates an initial 'snapshot' object for the activity, then saves it in the room row.
+ */
+export const startActivity = cache(async ({activityId, roomCode}: {activityId: number, roomCode: string}) => {
+    logger.log('supabase:database', 'startActivity', 'activityId:', activityId, 'roomCode:', roomCode)
+    const { snapshot, error } = await generateInitialActivitySnapshot(activityId)
+    if (error || !snapshot) {
+        return {error: error || 'No snapshot generated'}
+    }
+
+    const { error: saveError } = await saveRoomActivitySnapshot(roomCode, snapshot)
+    if (saveError) {
+        return {error: saveError}
+    }
+
+    return {error: null}
 })

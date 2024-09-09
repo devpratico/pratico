@@ -4,9 +4,12 @@ import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Ba
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { useParams } from "next/navigation"
 
 
-export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
+
+export default function PollAnimation() {
+    const { room_code } = useParams<{ room_code?: string }>()
     const [loading, setLoading] = useState(false)
     const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -16,6 +19,7 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
 
     // Consolidate the poll state in a single object
     const pollSnapshot: PollSnapshot = useMemo(() => ({
+        type: 'poll',
         activityId: pollId,
         currentQuestionIndex,
         currentQuestionState: questionState,
@@ -26,17 +30,19 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
     // Side effect: when the pollSnapshot changes, save it in Supabase
     useEffect(() => {
         async function _save() {
+            if (!room_code) return
             setLoading(true)
-            saveRoomActivitySnapshot(roomId, pollSnapshot)
+            saveRoomActivitySnapshot(room_code, pollSnapshot)
             setLoading(false)
         }
         _save()
-    }, [pollSnapshot, roomId])
+    }, [pollSnapshot, room_code])
 
 
     async function handleClose() {
+        if (!room_code) return
         setLoading(true)
-        await saveRoomActivitySnapshot(roomId, null)
+        await saveRoomActivitySnapshot(room_code, null)
         setLoading(false)
     }
 

@@ -27,6 +27,7 @@ export interface Quiz extends Activity {
 }
 
 export interface QuizSnapshot {
+    type:'quiz';
     activityId: number;
     currentQuestionIndex: number;
     currentQuestionState: 'answering' | 'results';

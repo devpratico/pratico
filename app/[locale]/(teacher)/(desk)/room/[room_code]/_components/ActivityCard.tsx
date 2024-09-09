@@ -1,44 +1,33 @@
 'use client'
 import CardDialog from '@/app/[locale]/(teacher)/(desk)/_components/CardDialog'
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, use } from "react"
 import { useRoom } from '@/app/_hooks/useRoom'
-import { Quiz } from '@/app/_types/quiz'
-import { Poll } from '@/app/_types/poll'
-import { fetchActivity } from '@/app/api/_actions/activities'
 import QuizAnimation from '../../../_components/activities/QuizAnimation'
 import PollAnimation from '../../../_components/activities/PollAnimation'
 
+/**
+ * Listens to the room, detects if there is an activity snapshot, and opens the card if there is.
+ * Puts the correct activity animation view in the card.
+ */
 export default function ActivityCard() {
     const [open, setOpen] = useState(false)
     const { room } = useRoom()
-    const [activity, setActivity] = useState<Quiz | Poll | undefined>(undefined)
 
+    // Every time room changes, check if there is an activity snapshot and open the card if there is
     useEffect(() => {
-        // Set the activity
-        async function _setActivity() {
-            if (!room?.activity_snapshot) return
-            const { data, error } = await fetchActivity(room.activity_snapshot.activityId)
-            if (error || !data) return
-            setActivity(data.object)
-        }
-        
-        _setActivity().then(() => {
-            // Open the card when an activity is present
-            setOpen(!!room?.activity_snapshot)
-        })
-
+        setOpen(!!room?.activity_snapshot)
     }, [room])
 
-    if (!room?.activity_snapshot) return null
 
     let activityAnswering: JSX.Element
 
-    switch (activity?.type) {
+    switch (room?.activity_snapshot?.type) {
         case 'quiz':
-            activityAnswering = <QuizAnimation quiz={activity} quizId={room.activity_snapshot.activityId} roomId={room.id} />
+            //activityAnswering = <QuizAnimation quiz={activity} quizId={room.activity_snapshot.activityId} roomId={room.id} />
+            activityAnswering = <p>Quiz</p>
             break
         case 'poll':
-            activityAnswering = <PollAnimation poll={activity} pollId={room.activity_snapshot.activityId} roomId={room.id} />
+            activityAnswering = <PollAnimation />
             break
         default:
             activityAnswering = <p>Pas de session en cours</p>

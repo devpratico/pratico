@@ -1,32 +1,58 @@
 import { Activity } from './activity'
 
 
-export interface PollAnswer {
+/**
+ * What you can answer to a poll question. Example: "Yes" or "No"
+ */
+export interface PollChoice {
     text: string
-    /**
-     * 'A' for 'Answer A', or an emoji, etc.
-     */
-    symbol: string
+    symbol?: string
     color?: string
 }
 
+
+/**
+ * A question in a poll. Example: "What is your favorite color?"
+ */
 export interface PollQuestion {
     text: string
     photoUrl?: string
-    answers: PollAnswer[]
+    choicesIds: string[]
 }
 
 
+/**
+ * A poll activity. It doesn't contain the user answers.
+ */
 export interface Poll extends Activity {
     type: 'poll'
-    schemaVersion: '1'
-    questions: PollQuestion[]
+    schemaVersion: '2'
+    questions: { [questionId: string]: PollQuestion }
+    choices: { [choiceId: string]: PollChoice }
 }
 
 
+/**
+ * A user answer to a poll question.
+ */
+export interface PollUserAnswer {
+    userId: string
+    timestamp: number
+    questionId: string
+    choiceId: string
+}
+
+
+/**
+ * The current state of a poll activity.
+ */
 export interface PollSnapshot {
+    type:'poll';
+    /**
+     * The id of the poll in the supabase database.
+     */
     activityId: number;
     currentQuestionIndex: number;
     currentQuestionState: 'answering' | 'results';
-    votes: number[]
+    answers: { [answerId: string]: PollUserAnswer }
 }

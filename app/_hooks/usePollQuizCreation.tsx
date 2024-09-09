@@ -1,7 +1,7 @@
 'use client'
 import { useState, useContext, createContext } from "react"
 import { produce } from 'immer'
-import { Poll, PollAnswer } from "@/app/_types/poll"
+import { Poll, PollChoice } from "@/app/_types/poll"
 import { Quiz, QuizAnswer } from "@/app/_types/quiz"
 
 
@@ -44,7 +44,7 @@ type QuizPollCommonContextType = {
 type PollExtraContextType = {
     poll: Poll
     setPoll: (poll: Poll) => void
-    addNewAnswer: ({ questionIndex, answer }: { questionIndex: number, answer: Partial<PollAnswer> }) => void
+    addNewAnswer: ({ questionIndex, answer }: { questionIndex: number, answer: Partial<PollChoice> }) => void
     setAnswerColor: ({ questionIndex, answerIndex, color }: { questionIndex: number, answerIndex: number, color: string }) => void
 }
 
@@ -80,28 +80,12 @@ function _setQuestionText<T extends Quiz | Poll>({ questionIndex, text, setQuizP
     setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].text = text }));
 }
 
-function _setAnswerText<T extends Quiz | Poll>({ questionIndex, answerIndex, text, setQuizPoll }: { questionIndex: number, answerIndex: number, text: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].answers[answerIndex].text = text }));
-}
-
-function _setAnswerSymbol<T extends Quiz | Poll>({ questionIndex, answerIndex, symbol, setQuizPoll }: { questionIndex: number, answerIndex: number, symbol: string, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].answers[answerIndex].symbol = symbol }));
-}
-
-function _deleteAnswer<T extends Quiz | Poll>({ questionIndex, answerIndex, setQuizPoll }: { questionIndex: number, answerIndex: number, setQuizPoll: React.Dispatch<React.SetStateAction<T>> }) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions[questionIndex].answers.splice(answerIndex, 1) }));
-}
-
 function _deleteQuestion<T extends Quiz | Poll>({ questionIndex, currentQuestionIndex, quizPoll, setQuizPoll, setCurrentQuestionIndex }: { questionIndex: number, currentQuestionIndex: number, quizPoll: T, setQuizPoll: React.Dispatch<React.SetStateAction<T>>, setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>> }) {
     // No need to change currentQuestionIndex, except if we're deleting the last question.
     if (currentQuestionIndex === quizPoll.questions.length - 1) {
         setCurrentQuestionIndex(questionIndex - 1); // Move to the previous question
     }
     setQuizPoll((prev) => produce(prev, draft => { draft.questions.splice(questionIndex, 1) }));
-}
-
-function _addEmptyQuestion<T extends Quiz | Poll>({ setQuizPoll }: { setQuizPoll: React.Dispatch<React.SetStateAction<T>>}) {
-    setQuizPoll((prev) => produce(prev, draft => { draft.questions.push({  text: '' , answers: [] }) }));
 }
 
 
@@ -120,12 +104,12 @@ export function PollCreationProvider({ initialPoll, idToSaveTo, children }: { in
         _setTitle({ title, setQuizPoll: setPoll });
     }
     
-    function setQuestionText({ questionIndex, text }: { questionIndex: number, text: string }) {
-        _setQuestionText({ questionIndex, text, setQuizPoll: setPoll });
+    function setQuestionText({ questionId, text }: { questionId: string, text: string }) {
+        setPoll((prev) => produce(prev, draft => { draft.questions[questionId].text = text }));
     }
 
     function setAnswerText({ questionIndex, answerIndex, text }: { questionIndex: number, answerIndex: number, text: string }) {
-        _setAnswerText({ questionIndex, answerIndex, text, setQuizPoll: setPoll });
+        setPoll((prev) => produce(prev, draft => { draft.questions[
     }
 
     function setAnswerSymbol({ questionIndex, answerIndex, symbol }: { questionIndex: number, answerIndex: number, symbol: string }) {
