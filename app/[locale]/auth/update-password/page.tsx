@@ -41,6 +41,7 @@ export default function UpdatePassword() {
 
           <Form.Field name='password'>
               <TextField.Root
+                  type='password' //showPassword ? password : text
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Nouveau mot de passe">
