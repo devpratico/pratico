@@ -1,37 +1,43 @@
 import { Button, Flex, TextField } from "@radix-ui/themes";
 import * as Form from "@radix-ui/react-form";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Mail } from "lucide-react";
-import createClient from "@/supabase/clients/server";
+import createClient from "@/supabase/clients/client";
+import { Link, useRouter } from "@/app/_intl/intlNavigation";
 
-export default function PasswordForgottenBtn() {
+export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boolean, onClick: React.Dispatch<SetStateAction<boolean>>}) {
     const [ email, setEmail ] = useState('');
+    const [ open, setOpen ] = useState(false);
     const supabase = createClient();
+    const router = useRouter();
 
     useEffect(() => {
         supabase.auth.onAuthStateChange(async (event, session) => {
                 if (event == "PASSWORD_RECOVERY") {
-                let newPassword: string | undefined | null = prompt("What would you like your new password to be?");
-                if (!newPassword) {
-                    console.error('Le nouveau mot de passe est invalide');
-                    newPassword = undefined;
-                }
-                const { data, error } = await supabase.auth
-                    .updateUser({ password: newPassword })
-
-                if (data) alert("Password updated successfully!")
-                if (error) alert("There was an error updating your password.")
+                    router.push('/changer-mot-de-passe');
             }
         })
     }, [])
 
     const handleClick = async () => {
-        const { data, error } = await supabase.auth
-            .resetPasswordForEmail(email)
+        onClick(true);
+        try {
+            const { data, error } = await supabase.auth
+                .resetPasswordForEmail(email);
+            if (data)
+                console.log('Reset password data:', data);
+            else if (error)
+                throw new Error('Error reset password:', error);
+        } catch (error) {
+            console.error('Error reset password:', error);
+        }
     };
 
     return (<>
-           <Flex direction='column' gap='5' pt='5'>
+    {
+        (!open && !clicked)
+        ?   <Link onClick={() => { onClick(true); setOpen(true)}} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
+        :  <Flex direction='column' gap='5' pt='5'>
  
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
@@ -51,6 +57,8 @@ export default function PasswordForgottenBtn() {
                     </Button>
                 </Form.Submit>
 
-                </Flex>
+            </Flex>
+    }
+            
     </>);
 };
