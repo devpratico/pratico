@@ -11,26 +11,20 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     const [ reset, setReset ] = useState(false);
     const supabase = createClient();
     const router = useRouter();
-
-    useEffect(() => {
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log('EVENT:', event);
-            if (event == "PASSWORD_RECOVERY") {
-                router.push('/auth');
-            }
-        })
-    }, [reset])
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const redirectTo = `${protocol}//${host}/auth/update-password`;
 
     const handleClick = async () => {
         onClick(true);
         try {
             const { data, error } = await supabase.auth
                 .resetPasswordForEmail(email, {
-                    redirectTo: 'http://localhost:3000/auth/update-password'
+                    redirectTo: redirectTo
                 });
             if (data)
             {    
-                console.log('Reset password data:', data);
+                console.log('Reset password data:', data, 'host:', redirectTo);
                 setReset(true);
             }
             else if (error)
