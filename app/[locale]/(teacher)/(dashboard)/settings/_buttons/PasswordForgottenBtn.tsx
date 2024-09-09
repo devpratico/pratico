@@ -3,18 +3,15 @@ import * as Form from "@radix-ui/react-form";
 import { SetStateAction, useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import createClient from "@/supabase/clients/client";
-import { Link, useRouter } from "@/app/_intl/intlNavigation";
+import { Link } from "@/app/_intl/intlNavigation";
 
 export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boolean, onClick: React.Dispatch<SetStateAction<boolean>>}) {
     const [ email, setEmail ] = useState('');
     const [ open, setOpen ] = useState(false);
-    const [ reset, setReset ] = useState(false);
     const supabase = createClient();
-    const router = useRouter();
     const protocol = window.location.protocol;
     const host = window.location.host;
     const redirectTo = `${protocol}//${host}/auth/update-password`;
-
     const handleClick = async () => {
         onClick(true);
         try {
@@ -25,7 +22,6 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
             if (data)
             {    
                 console.log('Reset password data:', data, 'host:', redirectTo);
-                setReset(true);
             }
             else if (error)
                 throw new Error('Error reset password:', error);

@@ -25,7 +25,7 @@ export default function UpdatePassword() {
         router.push('/auth?authTab=login');
       } else {
         if (!data.user)
-          alert('Vous ne pouvez pas reprendre un mot de passe deja utilise.')
+          alert('Vous ne pouvez pas reprendre un mot de passe déjà utilisé.')
         if (error)
           alert("Une erreur s'est produite lors de la mise à jour du mot de passe.");
       }
