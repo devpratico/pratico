@@ -187,7 +187,12 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                     <Separator size='4' />
                     */}
 
+                         
+                {
+                    !passwordForgotten
+                    ? <>
                     <Form.Root
+             
                         onSubmit={async (event) => {
                             event.preventDefault();
                             setIsLoading(true);
@@ -209,9 +214,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                         }}
                     >
-                {
-                    !passwordForgotten
-                    ? <>
+
                     <Flex direction='column' gap='5' pt='5'>
 
                         <Form.Field key='email' name='email'>
@@ -237,16 +240,23 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         </Form.Submit>
 
                         </Flex>
-                        <PasswordForgottenBtn />
+                      
+
+                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+
+                    </Form.Root>
                         {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
                     </>
                     : <>
-                        <PasswordForgottenBtn />
+                    <Form.Root>
+ <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten}  />
+
+                    </Form.Root>
+                       
                         {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
                     </>
                 }
-                </Form.Root>
-
+                
                 </Tabs.Content>
 
             </Tabs.Root>
