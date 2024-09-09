@@ -11,6 +11,7 @@ import { useRouter, usePathname } from '@/app/_intl/intlNavigation';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import PasswordForgottenBtn from '../../(teacher)/(dashboard)/settings/_buttons/PasswordForgottenBtn';
+import DiscordPasswordForgottenBtn from '../../(teacher)/(dashboard)/settings/_buttons/DiscordPasswordForgottenBtn';
 
 export default function AuthForm({ messages }: { messages: typeof en.AuthForm }) {
     const searchParams = useSearchParams();
@@ -236,10 +237,12 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         </Form.Submit>
 
                         </Flex>
-                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+                        <PasswordForgottenBtn />
+                        {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
                     </>
                     : <>
-                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+                        <PasswordForgottenBtn />
+                        {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
                     </>
                 }
                 </Form.Root>
