@@ -1,14 +1,15 @@
+"use client";
+
 import React, { useState } from 'react';
-// import { useRouter } from '@/app/_intl/intlNavigation';
 import * as Form from '@radix-ui/react-form';
 import { Button, TextField } from '@radix-ui/themes';
 import createClient from '@/supabase/clients/client';
+// import { useRouter } from '@/app/_intl/intlNavigation';
 
-function ChangerMotDePasse() {
+export default function UpdatePassword() {
   const [newPassword, setNewPassword] = useState('');
 //   const router = useRouter();
   const supabase = createClient();
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,5 +44,3 @@ function ChangerMotDePasse() {
   
   );
 }
-
-export default ChangerMotDePasse;

@@ -191,69 +191,66 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 {
                     !passwordForgotten
                     ? <>
-                    <Form.Root
-             
-                        onSubmit={async (event) => {
-                            event.preventDefault();
-                            setIsLoading(true);
-                            const formData = Object.fromEntries(new FormData(event.currentTarget));
-                            const { email, password } = formData as { email: string, password: string };
-                            
-                            logger.log('supabase:auth', 'Signing in with email', email);
-                            const { user, error} = await login({ email, password });
-                            
-                            if (error || !user) {
-                                logger.error('supabase:auth', 'Error signing in with email', error);
-                                setServerError(error || 'error signing in');
-                                setIsLoading(false);
+                        <Form.Root
+                
+                            onSubmit={async (event) => {
+                                event.preventDefault();
+                                setIsLoading(true);
+                                const formData = Object.fromEntries(new FormData(event.currentTarget));
+                                const { email, password } = formData as { email: string, password: string };
+                                
+                                logger.log('supabase:auth', 'Signing in with email', email);
+                                const { user, error} = await login({ email, password });
+                                
+                                if (error || !user) {
+                                    logger.error('supabase:auth', 'Error signing in with email', error);
+                                    setServerError(error || 'error signing in');
+                                    setIsLoading(false);
 
-                            } else {
-                                router.push('/capsules');
-                            }
+                                } else {
+                                    router.push('/capsules');
+                                }
 
 
-                        }}
-                    >
+                            }}
+                        >
 
-                    <Flex direction='column' gap='5' pt='5'>
+                        <Flex direction='column' gap='5' pt='5'>
 
-                        <Form.Field key='email' name='email'>
-                            <Form.Control asChild>
-                                <TextField.Root placeholder={messages['email']} required>
-                                    <TextField.Slot><Mail /></TextField.Slot>
-                                </TextField.Root>
-                            </Form.Control>
-                        </Form.Field>
+                            <Form.Field key='email' name='email'>
+                                <Form.Control asChild>
+                                    <TextField.Root placeholder={messages['email']} required>
+                                        <TextField.Slot><Mail /></TextField.Slot>
+                                    </TextField.Root>
+                                </Form.Control>
+                            </Form.Field>
 
-                        <Form.Field key='password' name='password'>
-                            <Form.Control asChild>
-                                <TextField.Root placeholder={messages['password']} type="password" required>
-                                    <TextField.Slot><RectangleEllipsis /></TextField.Slot>
-                                </TextField.Root>
-                            </Form.Control>
-                        </Form.Field>
+                            <Form.Field key='password' name='password'>
+                                <Form.Control asChild>
+                                    <TextField.Root placeholder={messages['password']} type="password" required>
+                                        <TextField.Slot><RectangleEllipsis /></TextField.Slot>
+                                    </TextField.Root>
+                                </Form.Control>
+                            </Form.Field>
 
-                        <Form.Submit asChild>
-                            <Button type="submit" loading={isLoading}>
-                                {messages['sign in']}
-                            </Button>
-                        </Form.Submit>
+                            <Form.Submit asChild>
+                                <Button type="submit" loading={isLoading}>
+                                    {messages['sign in']}
+                                </Button>
+                            </Form.Submit>
 
-                        </Flex>
-                      
-
-                        <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
-
-                    </Form.Root>
-                        {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
+                            </Flex>
+                        
+                            <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
+                            {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
+                        </Form.Root>
                     </>
                     : <>
-                    <Form.Root>
- <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten}  />
+                        <Form.Root>
+                            <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten}  />
+                            {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
 
-                    </Form.Root>
-                       
-                        {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
+                        </Form.Root>
                     </>
                 }
                 

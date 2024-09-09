@@ -8,24 +8,31 @@ import { Link, useRouter } from "@/app/_intl/intlNavigation";
 export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boolean, onClick: React.Dispatch<SetStateAction<boolean>>}) {
     const [ email, setEmail ] = useState('');
     const [ open, setOpen ] = useState(false);
+    const [ reset, setReset ] = useState(false);
     const supabase = createClient();
     const router = useRouter();
 
     useEffect(() => {
         supabase.auth.onAuthStateChange(async (event, session) => {
-                if (event == "PASSWORD_RECOVERY") {
-                    router.push('/changer-mot-de-passe');
+            console.log('EVENT:', event);
+            if (event == "PASSWORD_RECOVERY") {
+                router.push('/auth');
             }
         })
-    }, [])
+    }, [reset])
 
     const handleClick = async () => {
         onClick(true);
         try {
             const { data, error } = await supabase.auth
-                .resetPasswordForEmail(email);
+                .resetPasswordForEmail(email, {
+                    redirectTo: 'http://localhost:3000/auth/update-password'
+                });
             if (data)
+            {    
                 console.log('Reset password data:', data);
+                setReset(true);
+            }
             else if (error)
                 throw new Error('Error reset password:', error);
         } catch (error) {
