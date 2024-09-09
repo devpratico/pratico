@@ -2,8 +2,8 @@
 import { TabNav, Flex, Text } from "@radix-ui/themes"
 import { Link } from "@/app/_intl/intlNavigation"
 import { usePathname } from "@/app/_intl/intlNavigation"
-import { CustomTabStyle } from "./MenuTabs"
 import { Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
+import { CustomTabStyle } from "../../(desk)/_components/MenuTabs";
 
 
 interface TabElementProps {
@@ -32,7 +32,7 @@ export default function DashboardTabs() {
 
             <TabElement href='/capsules'>
                 <FlaskRound size='21' />
-                <Text as='label' size='1'>Capsules</Text>
+                <Text as='label' size='1'>Capsuules</Text>
             </TabElement>
 
             <TabElement href='/activities'>

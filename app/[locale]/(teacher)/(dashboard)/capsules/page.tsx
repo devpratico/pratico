@@ -65,7 +65,7 @@ export default async function Page() {
 
                             return (
                                 <Box position='relative' key={id}>
-                                    <Link href={url} style={{ all: 'unset'}}>
+                                    <Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
                                         <Miniature title={title} createdAt={created_at}>
                                             {snap && <Thumbnail snapshot={snap} scale={0.2} />}
                                         </Miniature>
