@@ -20,6 +20,13 @@ export default function UpdatePassword() {
   const router = useRouter();
   const supabase = createClient();
 
+
+//   useEffect(() => {
+// 	supabase.auth.onAuthStateChange( async (event, session) => {
+// 			console.log('event', event);
+// 	})
+
+//   }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -27,20 +34,21 @@ export default function UpdatePassword() {
 		alert('Les mots de passe ne sont pas indentiques');
 	} else {
 		try {
-			
-			const { data, error } = await supabase.auth.updateUser({
-				password: newPassword.password
-			});
-			
-			if (data.user) {
-				alert(`Mot de passe mis à jour avec succès!, ${data.user.email}`);
-				router.push('/auth?authTab=login');
-			} else {
-				if (!data.user)
-					alert('Vous ne pouvez pas reprendre un mot de passe déjà utilisé.')
-				if (error)
-					alert("Une erreur s'est produite lors de la mise à jour du mot de passe.");
-			}
+			supabase.auth.onAuthStateChange( async (event, session) => {
+				const { data, error } = await supabase.auth.updateUser({
+					password: newPassword.password
+				});
+				console.log('DATA', data);
+				if (data.user) {
+					alert(`Mot de passe mis à jour avec succès!, ${data.user.email}`);
+					router.push('/auth?authTab=login');
+				} else {
+					if (!data.user)
+						alert('Vous ne pouvez pas reprendre un mot de passe déjà utilisé.')
+					if (error)
+						alert("Une erreur s'est produite lors de la mise à jour du mot de passe.");
+				}
+			})
 		} catch (error) {
 			console.error('Error:', error);
 		}
