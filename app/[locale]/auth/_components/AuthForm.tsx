@@ -29,7 +29,6 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
         isUserAnonymous().then((anon) => {setIsAnon(!!anon)})
     }, []);
 
-	console.log("pappsss", passwordForgotten);
     const SocialProviders = () => {
         return (
             <Flex direction='column' gap='2' py='5'>

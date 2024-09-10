@@ -10,19 +10,18 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     const supabase = createClient();
     const protocol = window.location.protocol;
     const host = window.location.host;
-    const redirectTo = `${protocol}//${host}/auth/update-password`;
+
+	const getRedirectUrl = () => { return (`${protocol}//${host}/auth/update-password`);}
+    const redirectTo = getRedirectUrl();
 
     const handleClick = async () => {
         try {
             const { data, error } = await supabase.auth
-
                 .resetPasswordForEmail(email, {
                     redirectTo: redirectTo
                 });
             if (data)
-            {    
                 console.log('Reset password data:', data, 'host:', redirectTo);
-            }
             else if (error)
                 throw new Error('Error reset password:', error);
         } catch (error) {
