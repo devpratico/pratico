@@ -39,11 +39,11 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
                         <TextField.Root placeholder={'email'}
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                        }}
-                        required>
+							value={email}
+							onChange={(e) => {
+								setEmail(e.target.value);
+							}}
+							required>
                             <TextField.Slot><Mail /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
