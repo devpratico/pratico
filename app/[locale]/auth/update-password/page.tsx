@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import { Button, Flex, TextField } from '@radix-ui/themes';
 import createClient from '@/supabase/clients/client';
@@ -17,6 +17,7 @@ export default function UpdatePassword() {
   const [newPassword, setNewPassword] = useState<newPasswordType>({password: '', confirmedPassword: '', show: false});
   const router = useRouter();
   const supabase = createClient();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
