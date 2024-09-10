@@ -11,17 +11,15 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     const protocol = window.location.protocol;
     const host = window.location.host;
 
-	const getRedirectUrl = () => { return (`${protocol}//${host}/auth/update-password`);}
-    const redirectTo = getRedirectUrl();
-
     const handleClick = async () => {
+		console.log(`${window.location.protocol}//${window.location.host}/auth/update-password`);
         try {
             const { data, error } = await supabase.auth
                 .resetPasswordForEmail(email, {
-                    redirectTo: redirectTo
+                    redirectTo: `${window.location.protocol}//${window.location.host}/auth/update-password`
                 });
             if (data)
-                console.log('Reset password data:', data, 'host:', redirectTo);
+                console.log('Reset password data:', data, 'host:', `${window.location.protocol}//${window.location.host}/auth/update-password`);
             else if (error)
                 throw new Error('Error reset password:', error);
         } catch (error) {
@@ -29,19 +27,15 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
         }
     };
 
-	const handleOpen = () => {
-		onClick(!clicked)
-	}
-
     return (<>
     {
         (!clicked)
-        ?   <Link onClick={handleOpen} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
+        ?   <Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
         :  	<Flex direction='column' gap='5' pt='5'>
  
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder={'email'}
+                        <TextField.Root placeholder={'Email'}
 							value={email}
 							onChange={(e) => {
 								setEmail(e.target.value);
@@ -51,7 +45,7 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                         </TextField.Root>
                     </Form.Control>
 					
-					<Link onClick={handleOpen} style={{ cursor: 'pointer' }} href='#'>Se connecter ?</Link>
+					<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>Se connecter ?</Link>
 
                 </Form.Field>
 
