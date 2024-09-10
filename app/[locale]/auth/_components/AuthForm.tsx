@@ -29,7 +29,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
         isUserAnonymous().then((anon) => {setIsAnon(!!anon)})
     }, []);
 
-
+	console.log("pappsss", passwordForgotten);
     const SocialProviders = () => {
         return (
             <Flex direction='column' gap='2' py='5'>
@@ -68,7 +68,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
-                    <Tabs.Trigger value='login'>{messages['sign in']}</Tabs.Trigger>
+                    <Tabs.Trigger value={'login'}>{passwordForgotten ? messages['forgot password'] : messages['sign in']}</Tabs.Trigger>
                 </Tabs.List>
 
 
@@ -240,7 +240,6 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                             </Form.Submit>
 
                             </Flex>
-                        
                             <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
                             {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
                         </Form.Root>
@@ -255,7 +254,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                 }
                 
                 </Tabs.Content>
-
+			
             </Tabs.Root>
 
             {serverError &&

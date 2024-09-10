@@ -7,15 +7,15 @@ import { Link } from "@/app/_intl/intlNavigation";
 
 export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boolean, onClick: React.Dispatch<SetStateAction<boolean>>}) {
     const [ email, setEmail ] = useState('');
-    const [ open, setOpen ] = useState(false);
     const supabase = createClient();
     const protocol = window.location.protocol;
     const host = window.location.host;
     const redirectTo = `${protocol}//${host}/auth/update-password`;
+
     const handleClick = async () => {
-        onClick(true);
         try {
             const { data, error } = await supabase.auth
+
                 .resetPasswordForEmail(email, {
                     redirectTo: redirectTo
                 });
@@ -30,11 +30,15 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
         }
     };
 
+	const handleOpen = () => {
+		onClick(!clicked)
+	}
+
     return (<>
     {
-        (!open && !clicked)
-        ?   <Link onClick={() => { onClick(true); setOpen(true)}} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
-        :  <Flex direction='column' gap='5' pt='5'>
+        (!clicked)
+        ?   <Link onClick={handleOpen} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
+        :  	<Flex direction='column' gap='5' pt='5'>
  
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
@@ -47,7 +51,12 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                             <TextField.Slot><Mail /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+					
+					<Link onClick={handleOpen} style={{ cursor: 'pointer' }} href='#'>Se connecter ?</Link>
+
                 </Form.Field>
+
+
                 <Form.Submit asChild >
                     <Button onClick={handleClick}>
                         Envoyer
