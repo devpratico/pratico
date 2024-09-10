@@ -5,13 +5,13 @@ import { saveRoomActivitySnapshot } from "../api/_actions/room"
 import { fetchUser } from "../api/_actions/user"
 import { randomUUID } from "crypto"
 import { produce } from "immer"
-import { useState, useEffect, useCallback, useOptimistic } from "react"
-//import { isEqual } from "lodash"
+import { useState, useEffect, useCallback, useOptimistic, useTransition } from "react"
+import { isEqual } from "lodash"
 
 
 interface PollSnapshotHook {
     snapshot: PollSnapshot | undefined
-    isLoading: boolean
+    isPending: boolean
     setCurrentQuestionIndex: (index: number) => Promise<{ error: string | null }>
     setQuestionState: (state: 'answering' | 'results') => Promise<{ error: string | null }>
     addAnswer: (questionId: string, choiceId: string) => Promise<{data: PollUserAnswer | null, error: string | null}>
@@ -20,31 +20,48 @@ interface PollSnapshotHook {
 
 export function usePollSnapshot(): PollSnapshotHook {
     const { room } = useRoom()
-    const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(undefined) // Local state to have more control over the snapshot updates
-    const [isLoading, setIsLoading] = useState<boolean>(false) // Use this to show a isLoading spinner while the snapshot is being saved
+    const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(undefined)
     const [optimisticSnapshot, setOptimisticSnapshot] = useOptimistic(snapshot);
+    const [isPending, startTransition] = useTransition()
+
 
     useEffect(() => {
-        if (room?.activity_snapshot && isPollSnapshot(room.activity_snapshot)){ //} && !isEqual(room.activity_snapshot, snapshot))) {
+        if (room?.activity_snapshot && isPollSnapshot(room.activity_snapshot) && !isEqual(room.activity_snapshot, snapshot)) {
             setSnapshot(room.activity_snapshot as PollSnapshot)
-            setIsLoading(false)
+
+        } else if (!room?.activity_snapshot && snapshot) {
+            setSnapshot(undefined)
         }
     }, [room, snapshot])
 
-    const setCurrentQuestionIndex = useCallback(async (index: number) => {
-        if (!snapshot ) return { error: 'Snapshot not found' }
+
+    const optimisticallyUpdateSnapshot = useCallback(async (newSnapshot: PollSnapshot) => {
         if (!room?.code) return { error: 'Room not found' }
 
-        const newSnapshot = {...snapshot, currentQuestionIndex: index}
-        setOptimisticSnapshot(newSnapshot)
-        const { error } = await saveRoomActivitySnapshot(room.code, newSnapshot)
+        let error: string | null = null
 
-        // If error, we rollback to the original snapshot, by forcing an update
-        if (error) setSnapshot((prev) => produce(prev, draft => draft))
+        await new Promise<void>(async (resolve) => {
+            startTransition(async () => {
+                setOptimisticSnapshot(newSnapshot);
+                ({ error } = await saveRoomActivitySnapshot(room.code!, newSnapshot))
+                if (!error) setSnapshot(newSnapshot)
+
+                resolve()
+            })
+        })
 
         return { error }
+    }, [room, setOptimisticSnapshot])
 
-    }, [snapshot, room, setOptimisticSnapshot])
+
+    const setCurrentQuestionIndex = useCallback(async (index: number) => {
+        if (!snapshot) return { error: 'Snapshot not found' }
+
+        const newSnapshot = { ...snapshot, currentQuestionIndex: index }
+        return await optimisticallyUpdateSnapshot(newSnapshot)
+    }, [snapshot, optimisticallyUpdateSnapshot])
+
+    // TODO: Do the same below.
 
 
     const setQuestionState = useCallback(async (state: 'answering' | 'results') => {
@@ -90,5 +107,5 @@ export function usePollSnapshot(): PollSnapshotHook {
         return await saveRoomActivitySnapshot(room.code, newSnapshot)
     }, [snapshot, room])
 
-    return { snapshot: optimisticSnapshot, isLoading, setCurrentQuestionIndex, setQuestionState, addAnswer, removeAnswer }
+    return { snapshot: optimisticSnapshot, isPending, setCurrentQuestionIndex, setQuestionState, addAnswer, removeAnswer }
 }
