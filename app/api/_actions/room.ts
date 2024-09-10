@@ -298,7 +298,7 @@ export const saveRoomActivitySnapshot = cache(async (roomCode: string, snapshot:
     }).eq('code', roomCode).eq('status', 'open')
 
     if (error) logger.error('supabase:database', 'Error saving room activity snapshot', error.message)
-    return { error: error?.message }
+    return { error: error?.message || null }
 })
 
 /**
@@ -326,7 +326,8 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
             type: 'quiz',
             activityId: activityId,
             currentQuestionIndex: 0,
-            currentQuestionState: 'answering'
+            currentQuestionState: 'answering',
+            answers: {}
         }
     } else if (activity.type === 'poll') {
         activitySnapshot = {
@@ -334,7 +335,7 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
             activityId: activityId,
             currentQuestionIndex: 0,
             currentQuestionState: 'answering',
-            answers: []
+            answers: {}
         }
     } else {
         logger.log('react:component', 'StartButton', 'Impossible to set activity snapshot, type not recognized:', activity.type)

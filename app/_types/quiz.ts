@@ -1,29 +1,41 @@
 import { Activity } from './activity'
 
 
-export interface QuizAnswer {
+export interface QuizChoice {
     text: string
     /**
      * 'A' for 'Answer A', or an emoji, etc.
      */
-    symbol: string
+    symbol?: string
     color?: string
-    correct: boolean
+    isCorrect: boolean
     explanation?: string
 }
 
 export interface QuizQuestion {
     text: string
     photoUrl?: string
-    answers: QuizAnswer[]
+    choicesIds: string[]
     hint?: string
+    canChooseMultiple?: boolean
 }
 
 
 export interface Quiz extends Activity {
     type: 'quiz'
-    schemaVersion: '1'
-    questions: QuizQuestion[]
+    schemaVersion: '2'
+    questions: { [questionId: string]: QuizQuestion }
+    choices: { [choiceId: string]: QuizChoice }
+}
+
+/**
+ * A user answer to a quiz question.
+ */
+export interface QuizUserAnswer {
+    userId: string
+    timestamp: number
+    questionId: string
+    choiceId: string
 }
 
 export interface QuizSnapshot {
@@ -31,5 +43,12 @@ export interface QuizSnapshot {
     activityId: number;
     currentQuestionIndex: number;
     currentQuestionState: 'answering' | 'results';
-    // TODO: Add the users answers
+    answers: { [answerId: string]: QuizUserAnswer }
+}
+
+/**
+ * Custom type guard to check if a snapshot is a poll.
+ */
+export function isQuizSnapshot(snapshot: any): snapshot is QuizSnapshot {
+    return snapshot?.type === 'quiz'
 }

@@ -1,6 +1,6 @@
- 'use client'
+'use client'
 import { useRoom } from "./useRoom"
-import { Poll, PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
+import { Quiz, QuizSnapshot, QuizUserAnswer, isQuizSnapshot } from "../_types/quiz"
 import { saveRoomActivitySnapshot } from "../api/_actions/room"
 import { fetchUser } from "../api/_actions/user"
 import { randomUUID } from "crypto"
@@ -9,24 +9,27 @@ import { useState, useEffect, useCallback, useOptimistic } from "react"
 //import { isEqual } from "lodash"
 
 
-interface PollSnapshotHook {
-    snapshot: PollSnapshot | undefined
+interface QuizSnapshotHook {
+    snapshot: QuizSnapshot | undefined
     isLoading: boolean
     setCurrentQuestionIndex: (index: number) => Promise<{ error: string | null }>
     setQuestionState: (state: 'answering' | 'results') => Promise<{ error: string | null }>
-    addAnswer: (questionId: string, choiceId: string) => Promise<{data: PollUserAnswer | null, error: string | null}>
+    addAnswer: (questionId: string, choiceId: string) => Promise<{data: QuizUserAnswer | null, error: string | null}>
     removeAnswer: (answerId: string) => Promise<{ error: string | null }>
 }
 
-export function usePollSnapshot(): PollSnapshotHook {
+export function useQuizSnapshot(): QuizSnapshotHook {
     const { room } = useRoom()
-    const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(undefined) // Local state to have more control over the snapshot updates
+    const [snapshot, setSnapshot] = useState<QuizSnapshot | undefined>(undefined) // Local state to have more control over the snapshot updates
     const [isLoading, setIsLoading] = useState<boolean>(false) // Use this to show a isLoading spinner while the snapshot is being saved
-    const [optimisticSnapshot, setOptimisticSnapshot] = useOptimistic(snapshot);
+    const [optimisticSnapshot, setOptimisticSnapshot] = useOptimistic<QuizSnapshot | undefined, QuizSnapshot | undefined>(snapshot, (realSnapshot, optimisticSnapshot) => {
+        setIsLoading(true)
+        return optimisticSnapshot
+    })
 
     useEffect(() => {
-        if (room?.activity_snapshot && isPollSnapshot(room.activity_snapshot)){ //} && !isEqual(room.activity_snapshot, snapshot))) {
-            setSnapshot(room.activity_snapshot as PollSnapshot)
+        if (room?.activity_snapshot && isQuizSnapshot(room.activity_snapshot)){ //} && !isEqual(room.activity_snapshot, snapshot))) {
+            setSnapshot(room.activity_snapshot as QuizSnapshot)
             setIsLoading(false)
         }
     }, [room, snapshot])
@@ -37,13 +40,7 @@ export function usePollSnapshot(): PollSnapshotHook {
 
         const newSnapshot = {...snapshot, currentQuestionIndex: index}
         setOptimisticSnapshot(newSnapshot)
-        const { error } = await saveRoomActivitySnapshot(room.code, newSnapshot)
-
-        // If error, we rollback to the original snapshot, by forcing an update
-        if (error) setSnapshot((prev) => produce(prev, draft => draft))
-
-        return { error }
-
+        return await saveRoomActivitySnapshot(room.code, newSnapshot)
     }, [snapshot, room, setOptimisticSnapshot])
 
 
@@ -63,20 +60,20 @@ export function usePollSnapshot(): PollSnapshotHook {
         const { user, error: userError  } = await fetchUser()
         if (!user || userError) return { data: null, error: userError || 'User not found' }
 
-        const newAnswer = {userId: user.id, timestamp: Date.now(), questionId, choiceId} as PollUserAnswer
-        const newAnswerId = randomUUID()
+        const newAnswer: QuizUserAnswer = {
+            userId: user.id,
+            timestamp: Date.now(),
+            questionId,
+            choiceId
+        }
 
         const newSnapshot = produce(snapshot, draft => {
-            draft.answers[newAnswerId] = newAnswer
+            draft.answers[randomUUID()] = newAnswer
         })
 
-        const { error } = await saveRoomActivitySnapshot(room.code, newSnapshot)
-
-        if (error) return { data: null, error }
-
+        setOptimisticSnapshot(newSnapshot)
         return { data: newAnswer, error: null }
-    }, [snapshot, room])
-
+    }, [snapshot, room, setOptimisticSnapshot])
 
 
     const removeAnswer = useCallback(async (answerId: string) => {
@@ -87,8 +84,9 @@ export function usePollSnapshot(): PollSnapshotHook {
             delete draft.answers[answerId]
         })
 
-        return await saveRoomActivitySnapshot(room.code, newSnapshot)
-    }, [snapshot, room])
+        setOptimisticSnapshot(newSnapshot)
+        return { error: null }
+    }, [snapshot, room, setOptimisticSnapshot])
 
     return { snapshot: optimisticSnapshot, isLoading, setCurrentQuestionIndex, setQuestionState, addAnswer, removeAnswer }
 }

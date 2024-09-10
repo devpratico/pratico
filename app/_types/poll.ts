@@ -56,3 +56,11 @@ export interface PollSnapshot {
     currentQuestionState: 'answering' | 'results';
     answers: { [answerId: string]: PollUserAnswer }
 }
+
+
+/**
+ * Custom type guard to check if a snapshot is a poll.
+ */
+export function isPollSnapshot(snapshot: any): snapshot is PollSnapshot {
+    return snapshot?.type === 'poll'
+}

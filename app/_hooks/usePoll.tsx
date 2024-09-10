@@ -1,7 +1,7 @@
 'use client'
 import { useState, useContext, createContext } from "react"
 import { produce } from 'immer'
-import { Poll, PollChoice, PollQuestion } from "@/app/_types/poll"
+import { Poll } from "@/app/_types/poll"
 import { randomUUID } from "crypto"
 
 
