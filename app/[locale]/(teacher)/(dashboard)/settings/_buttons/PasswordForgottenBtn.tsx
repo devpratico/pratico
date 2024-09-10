@@ -19,8 +19,8 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
 				});
 			if (data)
 				console.log('Reset password data:', data, 'host:', redirectTo);
-			// else if (error)
-				//
+			else
+				console.log("No data to reset");
 		} catch (error) {
 			console.error('Error reset password:', error);
 		}
