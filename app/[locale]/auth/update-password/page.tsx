@@ -6,6 +6,8 @@ import { Button, Flex, TextField } from '@radix-ui/themes';
 import createClient from '@/supabase/clients/client';
 import { useRouter } from '@/app/_intl/intlNavigation';
 import { Eye, EyeOff } from 'lucide-react';
+import { getUserByEmail } from '@/app/api/_actions/user';
+import { User } from '@supabase/supabase-js';
 
 type newPasswordType = {
 	password: string,
@@ -18,7 +20,6 @@ export default function UpdatePassword() {
   const router = useRouter();
   const supabase = createClient();
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -26,12 +27,13 @@ export default function UpdatePassword() {
 		alert('Les mots de passe ne sont pas indentiques');
 	} else {
 		try {
+			
 			const { data, error } = await supabase.auth.updateUser({
 				password: newPassword.password
 			});
 			
 			if (data.user) {
-				alert('Mot de passe mis à jour avec succès!');
+				alert(`Mot de passe mis à jour avec succès!, ${data.user.email}`);
 				router.push('/auth?authTab=login');
 			} else {
 				if (!data.user)
