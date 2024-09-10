@@ -10,16 +10,16 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     const supabase = createClient();
     const protocol = window.location.protocol;
     const host = window.location.host;
+	const redirectTo = `${window.location.protocol}//${window.location.host}/auth/update-password`;
 
     const handleClick = async () => {
-		console.log(`${window.location.protocol}//${window.location.host}/auth/update-password`);
         try {
             const { data, error } = await supabase.auth
                 .resetPasswordForEmail(email, {
-                    redirectTo: `${window.location.protocol}//${window.location.host}/auth/update-password`
+                    redirectTo: redirectTo
                 });
             if (data)
-                console.log('Reset password data:', data, 'host:', `${window.location.protocol}//${window.location.host}/auth/update-password`);
+                console.log('Reset password data:', data, 'host:', redirectTo);
             else if (error)
                 throw new Error('Error reset password:', error);
         } catch (error) {
@@ -32,7 +32,7 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
         (!clicked)
         ?   <Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
         :  	<Flex direction='column' gap='5' pt='5'>
- 
+				{(redirectTo)}
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
                         <TextField.Root placeholder={'Email'}
