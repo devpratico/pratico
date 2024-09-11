@@ -19,16 +19,16 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
 
                         <Flex direction='column' align='center' gap='7'>
 
-                        <Heading as='h1' align='center'>Oups ! Une erreur est survenue...</Heading>
+							<Heading as='h1' align='center'>Oups ! Une erreur est survenue...</Heading>
 
-                        <Callout.Root color='red'>
-                            <Callout.Icon>
-                                <TriangleAlert />
-                            </Callout.Icon>
-                            <Callout.Text>
-                                {error.message}
-                            </Callout.Text>
-                        </Callout.Root>
+							<Callout.Root color='red'>
+								<Callout.Icon>
+									<TriangleAlert />
+								</Callout.Icon>
+								<Callout.Text>
+									{error.message}
+								</Callout.Text>
+							</Callout.Root>
 
                         <Flex gap='2'>
 							<Button variant='soft' onClick={() => reset()}>
@@ -42,7 +42,7 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
                                 </Link>
                             </Button>
 
-                        </Flex>
+							</Flex>
 
                         </Flex>
 

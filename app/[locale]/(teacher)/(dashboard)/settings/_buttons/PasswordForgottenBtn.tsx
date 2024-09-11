@@ -3,6 +3,7 @@ import * as Form from "@radix-ui/react-form";
 import { SetStateAction, useState } from "react";
 import { Mail } from "lucide-react";
 import { Link } from "@/app/_intl/intlNavigation";
+import { Link as RadixLink } from "@radix-ui/themes";
 import createClient from "@/supabase/clients/client";
 
 export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boolean, onClick: React.Dispatch<SetStateAction<boolean>>}) {
@@ -41,7 +42,11 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     return (<>
     {
         (!clicked)
-        ?   <Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>Mot de passe oublié ?</Link>
+        ?   <Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
+				{/* <RadixLink> */}
+					Mot de passe oublié ?
+				{/* </RadixLink> */}
+			</Link>
         :  	<Flex direction='column' gap='5' pt='5'>
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
@@ -55,7 +60,11 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                         </TextField.Root>
                     </Form.Control>
 					
-					<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>Se connecter ?</Link>
+					<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
+						{/* <RadixLink> */}
+							Se connecter ?							
+						{/* </RadixLink> */}
+					</Link>
 
                 </Form.Field>
 

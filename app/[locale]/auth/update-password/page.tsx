@@ -20,13 +20,6 @@ export default function UpdatePassword() {
   const router = useRouter();
   const supabase = createClient();
 
-
-//   useEffect(() => {
-// 	supabase.auth.onAuthStateChange( async (event, session) => {
-// 			console.log('event', event);
-// 	})
-
-//   }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -34,19 +27,25 @@ export default function UpdatePassword() {
 		alert('Les mots de passe ne sont pas indentiques');
 	} else {
 		try {
-			// supabase.auth.onAuthStateChange( async (event, session) => {
-			// 	console.log(event, session, "<-- event");
-				const { data, error } = await supabase.auth.updateUser({
-					password: newPassword.password
-				});
-				if (!error)
-				{
-					alert(`Mot de passe mis à jour avec succès!`);
-					router.push('/auth?authTab=login');
-				}
-	
-			// });
+			const { data, error } = await supabase.auth.updateUser({
+				password: newPassword.password
+			});
+			if (!error)
+			{
+				alert(`Mot de passe mis à jour avec succès!`);
+				router.push('/auth?authTab=login');
+			}
+			else {
+				if (error.code === 'weak_password')
+					alert("Votre mot de passe est trop faible, veuillez réessayer");
+				else if (error.code === 'same_password')
+					alert("Vous ne pouvez pas réutiliser un ancien mot de passe, veuillez réessayer");
+				else
+					alert("Quelque chose s'est mal passé, veuillez réessayer");
+				console.error("error:", error.status, error.message, error.cause);
+			}
 		} catch (error) {
+			alert("Quelque chose s'est mal passé, veuillez réessayer ultérieurement");
 			console.error('Error:', error);
 		}
 	}
