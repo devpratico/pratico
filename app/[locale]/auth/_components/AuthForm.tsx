@@ -1,28 +1,29 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Flex } from '@radix-ui/themes';
+import { TextField, Flex, Link } from '@radix-ui/themes';
 import { Button, Tabs, Separator, Callout } from '@radix-ui/themes';
-import { Mail, RectangleEllipsis, TriangleAlert, ArrowRight } from 'lucide-react';
+import { Mail, RectangleEllipsis, TriangleAlert, ArrowRight, PartyPopper } from 'lucide-react';
 import en from '@/app/_intl/messages/en.json';
-import { login, signup, signInAnonymously, isUserAnonymous, setNames } from '@/app/api/_actions/auth';
+import { login, signup, signInAnonymously, isUserAnonymous, setNames, resetPasswordForEmail } from '@/app/api/_actions/auth';
 import signInWithGoogle from '../../../api/_actions/signInWithGoogle';
 import logger from '@/app/_utils/logger';
 import { useRouter, usePathname } from '@/app/_intl/intlNavigation';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import PasswordForgottenBtn from '../../(teacher)/(dashboard)/settings/_buttons/PasswordForgottenBtn';
-import DiscordPasswordForgottenBtn from '../../(teacher)/(dashboard)/settings/_buttons/DiscordPasswordForgottenBtn';
+import useSearchParams from '@/app/_hooks/useSearchParams';
+
+
 
 export default function AuthForm({ messages }: { messages: typeof en.AuthForm }) {
-    const searchParams = useSearchParams();
-    const authTab = searchParams.get('authTab');
+    const { searchParams, setSearchParam, getPathnameWithSearchParam } = useSearchParams();
     const nextUrl = searchParams.get('nextUrl');
+    const authTab = searchParams.get('authTab');
     const router = useRouter();
-    const pathname = usePathname();
     const [isLoading, setIsLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isAnon, setIsAnon] = useState(false);
-    const [passwordForgotten, setPasswordForgotten] = useState(false);
+    const [email, setEmail] = useState('');
+
 
     useEffect(() => {
         //isLoggedIn().then((user) => {setIsLogged(!!user)})
@@ -51,23 +52,24 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
     }
 
 
+
+
     return (
         <Flex direction='column' gap='2'>
             <Tabs.Root
                 value={authTab || 'signup'}
                 onValueChange={(value) => {
-
-                    const params = new URLSearchParams(searchParams.toString())
-                    params.set('authTab', value)
-                    router.push(pathname + '?' + params.toString())
+                    setSearchParam('authTab', value)
                     setServerError(null)
+                    setSuccessMessage(null)
                     setIsLoading(false)
                 }}
             >
 
                 <Tabs.List justify='center'>
                     <Tabs.Trigger value='signup'>{messages['sign up']}</Tabs.Trigger>
-                    <Tabs.Trigger value={'login'}>{passwordForgotten ? messages['forgot password'] : messages['sign in']}</Tabs.Trigger>
+                    <Tabs.Trigger value={'login'}>{messages['sign in']}</Tabs.Trigger>
+                    <Tabs.Trigger value='forgot-password' style={{display: authTab == 'forgot-password' ? 'flex' : 'none'}}>{'Réinitialiser'}</Tabs.Trigger>
                 </Tabs.List>
 
 
@@ -84,6 +86,8 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                     <Form.Root
                         onSubmit={async (event) => {
                             event.preventDefault();
+                            setServerError(null);
+                            setSuccessMessage(null);
                             setIsLoading(true);
 
                             /*
@@ -178,7 +182,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
 
 
-                {/************ SIGN IN ************/}
+                {/************ LOG IN ************/}
                 <Tabs.Content value='login'>
 
                     {/*
@@ -188,87 +192,150 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
 
                          
                 {
-                    !passwordForgotten
-                    ? <>
-                        <Form.Root
+                    <Form.Root
+            
+                        onSubmit={async (event) => {
+                            event.preventDefault();
+                            setIsLoading(true);
+                            const formData = Object.fromEntries(new FormData(event.currentTarget));
+                            const { email, password } = formData as { email: string, password: string };
+                            
+                            logger.log('supabase:auth', 'Signing in with email', email);
+                            const { user, error} = await login({ email, password });
+                            
+                            if (error || !user) {
+                                logger.error('supabase:auth', 'Error signing in with email', error);
+                                setServerError(error || 'error signing in');
+                                setIsLoading(false);
+
+                            } else {
+                                router.push('/capsules');
+                            }
+
+
+                        }}
+                    >
+
+                    <Flex direction='column' gap='2' mt='5'>
+
+                        <Form.Field key='email' name='email'>
+                            <Form.Control asChild>
+                                <TextField.Root placeholder={messages['email']} required>
+                                    <TextField.Slot><Mail /></TextField.Slot>
+                                </TextField.Root>
+                            </Form.Control>
+                        </Form.Field>
+
+                        <Form.Field key='password' name='password'>
+                            <Form.Control asChild>
+                                <TextField.Root placeholder={messages['password']} type="password" required>
+                                    <TextField.Slot><RectangleEllipsis /></TextField.Slot>
+                                </TextField.Root>
+                            </Form.Control>
+                        </Form.Field>
+
+                        <Form.Submit asChild>
+                            <Button type="submit" loading={isLoading} mt='4'>
+                                {messages['sign in']}
+                            </Button>
+                        </Form.Submit>
+
+                        <Link size='2' href={getPathnameWithSearchParam('authTab', 'forgot-password')}>
+                            {messages['forgot password']}
+                        </Link>
+
+                    </Flex>
+                        
+                    </Form.Root>
+                }
                 
-                            onSubmit={async (event) => {
-                                event.preventDefault();
-                                setIsLoading(true);
-                                const formData = Object.fromEntries(new FormData(event.currentTarget));
-                                const { email, password } = formData as { email: string, password: string };
-                                
-                                logger.log('supabase:auth', 'Signing in with email', email);
-                                const { user, error} = await login({ email, password });
-                                
-                                if (error || !user) {
-                                    logger.error('supabase:auth', 'Error signing in with email', error);
-                                    setServerError(error || 'error signing in');
-                                    setIsLoading(false);
-
-                                } else {
-                                    router.push('/capsules');
-                                }
+                </Tabs.Content>
 
 
-                            }}
-                        >
+                {/************* FORGOT PASSWORD */}
+                <Tabs.Content value='forgot-password'>
+
+                    <Form.Root
+                        onSubmit={async (event) => {
+                            event.preventDefault();
+                            setServerError(null);
+                            setSuccessMessage(null);
+                            const { error } = await resetPasswordForEmail(email);
+                            if (!error) {
+                                setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
+                            } else {
+                                setServerError(error);
+                            }
+                        }}
+                    >
 
                         <Flex direction='column' gap='5' pt='5'>
 
                             <Form.Field key='email' name='email'>
+
                                 <Form.Control asChild>
-                                    <TextField.Root placeholder={messages['email']} required>
+                                    <TextField.Root placeholder={'Email'}
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                        }}
+                                        required>
                                         <TextField.Slot><Mail /></TextField.Slot>
                                     </TextField.Root>
                                 </Form.Control>
+
+
+
                             </Form.Field>
 
-                            <Form.Field key='password' name='password'>
-                                <Form.Control asChild>
-                                    <TextField.Root placeholder={messages['password']} type="password" required>
-                                        <TextField.Slot><RectangleEllipsis /></TextField.Slot>
-                                    </TextField.Root>
-                                </Form.Control>
-                            </Form.Field>
 
-                            <Form.Submit asChild>
-                                <Button type="submit" loading={isLoading}>
-                                    {messages['sign in']}
+                            <Form.Submit asChild >
+                                <Button type='submit'>
+                                    Envoyer
                                 </Button>
                             </Form.Submit>
 
-                            </Flex>
-                            <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} />
-                            {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
-                        </Form.Root>
-                    </>
-                    : <>
-                        <Form.Root>
-                            <PasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten}  />
-                            {/* <DiscordPasswordForgottenBtn clicked={passwordForgotten} onClick={setPasswordForgotten} /> */}
-
-                        </Form.Root>
-                    </>
-                }
-                
+                        </Flex>
+                    </Form.Root>
                 </Tabs.Content>
 			
             </Tabs.Root>
 
-            {serverError &&
+
+
+
+
+
+
+
+
+
+
+            {serverError ?
                 <Callout.Root color='red'>
                     <Callout.Icon><TriangleAlert /></Callout.Icon>
                     <Callout.Text>{serverError}</Callout.Text>
                 </Callout.Root>
+                : null
+            }
+
+            {successMessage ?
+                <Callout.Root color='green'>
+                    <Callout.Icon><PartyPopper /></Callout.Icon>
+                    <Callout.Text>{successMessage}</Callout.Text>
+                </Callout.Root>
+                : null
             }
 
 
             <Button
-                variant='ghost'
+                variant='soft'
+                mt='5'
                 disabled={false}
                 loading={isLoading}
                 onClick={() => {
+                    setServerError(null);
+                    setSuccessMessage(null);
                     setIsLoading(true);
                     // If already logged in a anonymously, don't sign in again (otherwise it creates a new anon account)
                     if (isAnon) {
@@ -285,7 +352,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                         })
                 }}
             >
-                {messages['ignore']}
+                Essayer sans compte
                 <ArrowRight />
             </Button>
 
