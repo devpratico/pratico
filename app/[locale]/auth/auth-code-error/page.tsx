@@ -8,7 +8,7 @@ interface AuthErrorProps {
   errorDetails?: string;
 }
 
-export default function AuthCodeError({ errorDetails }: AuthErrorProps) {
+export default function AuthCodeError() {
   const router = useRouter();
 
   const handleRetry = () => {
@@ -17,13 +17,8 @@ export default function AuthCodeError({ errorDetails }: AuthErrorProps) {
 
   return (
     <>
-      Erreur d'authentification
-	  {
-	  	errorDetails
-		? {errorDetails}
-		: null
-      }
-      Une erreur s'est produite lors de la vérification du code.
+      <h1>Erreur d'authentification</h1>
+      <p>Une erreur s'est produite lors de la vérification du code.</p>
       <Button onClick={handleRetry}>
         Réessayer
       </Button>
