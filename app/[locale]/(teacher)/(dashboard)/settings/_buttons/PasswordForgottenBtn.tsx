@@ -24,22 +24,12 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
 
     const handleClick = async () => {
 		
-		try {
-			const { data, error } = await supabase.auth
-				.resetPasswordForEmail(email, {
-					redirectTo: redirectTo
-				});
-			if (data)
-			{
-				console.log('Reset password data:', data, 'host:', redirectTo);
-				alert('Un mail de réinitialisation de mot de passe vous a été envoyé');
-			}
-			else
-				console.log("No data to reset");
-		} catch (error) {
-			console.error('Error reset password:', error);
-		}
-		
+	const { error } = await supabase.auth
+		.resetPasswordForEmail(email, {
+			redirectTo: redirectTo
+		});
+		if (!error)
+			alert('Un mail de réinitialisationde mot de passe vous a été envoyé. Vérifiez vos spams');
     };
 
     return (<>
