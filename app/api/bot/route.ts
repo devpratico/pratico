@@ -34,3 +34,29 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ error: `Method ${req.method} not allowed` }, { status: 405 });
   }
 };
+
+
+
+/*
+
+Usage:
+
+
+const sendMessage = async (name: string) => {
+    const response = await fetch('/api/bot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error sending message');
+    }
+
+    const data = await response.json();
+    console.log(data.success ? 'Message sent successfully' : 'Error while sending msg');
+  };
+
+*/
