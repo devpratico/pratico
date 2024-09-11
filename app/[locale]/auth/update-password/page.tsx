@@ -33,7 +33,7 @@ export default function UpdatePassword() {
 			if (!error)
 			{
 				alert(`Mot de passe mis à jour avec succès!`);
-				router.push('/auth?authTab=login');
+				router.push('/');
 			}
 			else {
 				if (error.code === 'weak_password')
