@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/'
   const redirectTo = request.nextUrl.clone()
   redirectTo.pathname = next
+  console.log("REDIRECT TO", redirectTo);
 
   if (token_hash && type) {
     const supabase = createClient()
@@ -21,8 +22,11 @@ export async function GET(request: NextRequest) {
       token_hash,
     })
     if (!error) {
+		NextResponse.json({msg: redirectTo})
       return NextResponse.redirect(redirectTo)
     }
+	else
+		NextResponse.json({msg: error, redirectTo})
   }
 
   // return the user to an error page with some instructions
