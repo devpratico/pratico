@@ -34,22 +34,18 @@ export default function UpdatePassword() {
 		alert('Les mots de passe ne sont pas indentiques');
 	} else {
 		try {
-			supabase.auth.onAuthStateChange( async (event, session) => {
-				console.log(event, session, "<-- event");
+			// supabase.auth.onAuthStateChange( async (event, session) => {
+			// 	console.log(event, session, "<-- event");
 				const { data, error } = await supabase.auth.updateUser({
 					password: newPassword.password
 				});
-				console.log('DATA', data);
-				if (session?.user) {
+				if (!error)
+				{
 					alert(`Mot de passe mis à jour avec succès!`);
 					router.push('/auth?authTab=login');
-				} else {
-					// if (!data.user)
-					// 	alert('Vous ne pouvez pas reprendre un mot de passe déjà utilisé.')
-					if (error)
-						alert("Une erreur s'est produite lors de la mise à jour du mot de passe.");
 				}
-			})
+	
+			// });
 		} catch (error) {
 			console.error('Error:', error);
 		}

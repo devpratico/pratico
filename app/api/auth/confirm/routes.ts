@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
     }
 	else
 		NextResponse.json({msg: error, redirectTo})
-  }
-
+  } else
+  		NextResponse.json({msg: 'No token_hash or type'})
   // return the user to an error page with some instructions
 //   redirectTo.pathname = '/auth/auth-code-error'
 //   return NextResponse.redirect(redirectTo)
