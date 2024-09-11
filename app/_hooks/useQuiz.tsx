@@ -73,3 +73,54 @@ export function useQuiz() {
     }
     return context
 }
+
+
+export const testQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '2',
+    title: 'Mon super quiz',
+    questions: {
+        '1': {
+            text: 'Quelle est la capitale de la France ?',
+            choicesIds: ['1', '2', '3']
+        },
+        '2': {
+            text: 'Quelle est la capitale de l\'Espagne ?',
+            choicesIds: ['4', '5', '6']
+        }
+    },
+    choices: {
+        '1': {
+            text: 'Paris',
+            isCorrect: true
+        },
+        '2': {
+            text: 'Londres',
+            isCorrect: false
+        },
+        '3': {
+            text: 'Berlin',
+            isCorrect: false
+        },
+        '4': {
+            text: 'Madrid',
+            isCorrect: true
+        },
+        '5': {
+            text: 'Londres',
+            isCorrect: false
+        },
+        '6': {
+            text: 'Berlin',
+            isCorrect: false
+        }
+    }
+}
+
+export const emptyQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '2',
+    title: '',
+    questions: {},
+    choices: {}
+}

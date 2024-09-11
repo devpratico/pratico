@@ -1,12 +1,13 @@
  'use client'
 import { useRoom } from "./useRoom"
-import { Poll, PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
+import { PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
 import { saveRoomActivitySnapshot } from "../api/_actions/room"
 import { fetchUser } from "../api/_actions/user"
 import { randomUUID } from "crypto"
 import { produce } from "immer"
-import { useState, useEffect, useCallback, useOptimistic, useTransition } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
+import useOptimisticSave from "./useOptimisticSave"
 
 
 interface PollSnapshotHook {
@@ -21,60 +22,47 @@ interface PollSnapshotHook {
 export function usePollSnapshot(): PollSnapshotHook {
     const { room } = useRoom()
     const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(undefined)
-    const [optimisticSnapshot, setOptimisticSnapshot] = useOptimistic(snapshot);
-    const [isPending, startTransition] = useTransition()
 
+    const saveSnapshot = useCallback(async (newSnapshot: PollSnapshot) => {
+        if (!room?.code) return { error: 'Room not found' }
+        return await saveRoomActivitySnapshot(room.code, newSnapshot)
+    }, [room])
 
+    const { optimisticState: optimisticSnapshot, isPending, saveOptimistically } = useOptimisticSave({
+        state: snapshot,
+        setState: setSnapshot,
+        saveFunction: saveSnapshot
+    })
+
+    // Sync the snapshot with the database object in real-time thanks to useRoom
     useEffect(() => {
-        if (room?.activity_snapshot && isPollSnapshot(room.activity_snapshot) && !isEqual(room.activity_snapshot, snapshot)) {
-            setSnapshot(room.activity_snapshot as PollSnapshot)
-
-        } else if (!room?.activity_snapshot && snapshot) {
+        if (isPollSnapshot(room?.activity_snapshot)) {
+            if (!isEqual(room.activity_snapshot, snapshot)) {
+                setSnapshot(room.activity_snapshot)
+            }
+        } else {
             setSnapshot(undefined)
         }
     }, [room, snapshot])
-
-
-    const optimisticallyUpdateSnapshot = useCallback(async (newSnapshot: PollSnapshot) => {
-        if (!room?.code) return { error: 'Room not found' }
-
-        let error: string | null = null
-
-        await new Promise<void>(async (resolve) => {
-            startTransition(async () => {
-                setOptimisticSnapshot(newSnapshot);
-                ({ error } = await saveRoomActivitySnapshot(room.code!, newSnapshot))
-                if (!error) setSnapshot(newSnapshot)
-
-                resolve()
-            })
-        })
-
-        return { error }
-    }, [room, setOptimisticSnapshot])
 
 
     const setCurrentQuestionIndex = useCallback(async (index: number) => {
         if (!snapshot) return { error: 'Snapshot not found' }
 
         const newSnapshot = { ...snapshot, currentQuestionIndex: index }
-        return await optimisticallyUpdateSnapshot(newSnapshot)
-    }, [snapshot, optimisticallyUpdateSnapshot])
-
-    // TODO: Do the same below.
+        return await saveOptimistically(newSnapshot)
+    }, [snapshot, saveOptimistically])
 
 
     const setQuestionState = useCallback(async (state: 'answering' | 'results') => {
-        if (!room?.code) return { error: 'Room not found' }
         if (!snapshot) return { error: 'Snapshot not found' }
 
         const newSnapshot = {...snapshot, currentQuestionState: state}
-        return await saveRoomActivitySnapshot(room.code, newSnapshot)
-    }, [snapshot, room])
+        return await saveOptimistically(newSnapshot)
+    }, [snapshot, saveOptimistically])
 
 
     const addAnswer = useCallback(async (questionId: string, choiceId: string) => {
-        if (!room?.code) return { data: null, error: 'Room not found' }
         if (!snapshot) return { data: null, error: 'Snapshot not found' }
 
         const { user, error: userError  } = await fetchUser()
@@ -83,29 +71,25 @@ export function usePollSnapshot(): PollSnapshotHook {
         const newAnswer = {userId: user.id, timestamp: Date.now(), questionId, choiceId} as PollUserAnswer
         const newAnswerId = randomUUID()
 
-        const newSnapshot = produce(snapshot, draft => {
-            draft.answers[newAnswerId] = newAnswer
-        })
+        const newSnapshot = produce(snapshot, draft => { draft.answers[newAnswerId] = newAnswer })
 
-        const { error } = await saveRoomActivitySnapshot(room.code, newSnapshot)
+        const { error } = await saveOptimistically(newSnapshot)
 
-        if (error) return { data: null, error }
-
-        return { data: newAnswer, error: null }
-    }, [snapshot, room])
+        if (error) {
+            return { data: null, error }
+        } else {
+            return { data: newAnswer, error: null }
+        }
+    }, [snapshot, saveOptimistically])
 
 
 
     const removeAnswer = useCallback(async (answerId: string) => {
-        if (!room?.code) return { error: 'Room not found' }
         if (!snapshot) return { error: 'Snapshot not found' }
 
-        const newSnapshot = produce(snapshot, draft => {
-            delete draft.answers[answerId]
-        })
-
-        return await saveRoomActivitySnapshot(room.code, newSnapshot)
-    }, [snapshot, room])
+        const newSnapshot = produce(snapshot, draft => { delete draft.answers[answerId]})
+        return await saveOptimistically(newSnapshot)
+    }, [snapshot, saveOptimistically])
 
     return { snapshot: optimisticSnapshot, isPending, setCurrentQuestionIndex, setQuestionState, addAnswer, removeAnswer }
 }
