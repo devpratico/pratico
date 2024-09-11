@@ -30,7 +30,10 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
 					redirectTo: redirectTo // Utile en local uniquement
 				});
 			if (data)
+			{
 				console.log('Reset password data:', data, 'host:', redirectTo);
+				alert('Un mail de réinitialisation de mot de passe vous a été envoyé');
+			}
 			else
 				console.log("No data to reset");
 		} catch (error) {
