@@ -20,14 +20,14 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
 		url = url.endsWith('/') ? url : `${url}/`;
 		return (url);
 	  }
-	const redirectTo = `${getURL()}auth/update-password`;
+	const redirectTo = `${getURL()}`;
 
     const handleClick = async () => {
 		
 		try {
 			const { data, error } = await supabase.auth
 				.resetPasswordForEmail(email, {
-					redirectTo: redirectTo // Utile en local uniquement
+					redirectTo: redirectTo
 				});
 			if (data)
 			{
