@@ -42,11 +42,11 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
     return (<>
     {
         (!clicked)
-        ?   <Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
-				{/* <RadixLink> */}
-					Mot de passe oublié ?
-				{/* </RadixLink> */}
-			</Link>
+        ?   <RadixLink asChild>
+				<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
+						Mot de passe oublié ?
+				</Link>
+			</RadixLink>
         :  	<Flex direction='column' gap='5' pt='5'>
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
@@ -60,11 +60,11 @@ export default function PasswordForgottenBtn({ clicked, onClick }:{ clicked: boo
                         </TextField.Root>
                     </Form.Control>
 					
-					<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
-						{/* <RadixLink> */}
-							Se connecter ?							
-						{/* </RadixLink> */}
-					</Link>
+					<RadixLink asChild>
+						<Link onClick={() => onClick(!clicked)} style={{ cursor: 'pointer' }} href='#'>
+								Se connecter ?							
+						</Link>
+					</RadixLink>
 
                 </Form.Field>
 
