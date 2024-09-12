@@ -1,5 +1,5 @@
 'use client'
-import { Button, Flex, TextField, Link } from '@radix-ui/themes';
+import { Button, Flex, TextField, Link, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
 import { login } from '@/app/api/_actions/auth';
@@ -10,6 +10,7 @@ import { useDisable } from '@/app/_hooks/useDisable';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
+import ClientMismatchMessage from './ClientMismatchMessage';
 
 
 export default function LogInForm() {
@@ -51,10 +52,13 @@ export default function LogInForm() {
 
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder={"Email"} required disabled={disabled}>
+                        <TextField.Root placeholder={"Email"} required disabled={disabled} type='email'>
                             <TextField.Slot><Mail /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez renseigner un email' />
+                    <ClientMismatchMessage match='typeMismatch' message='Email non valide' />
                 </Form.Field>
 
                 <Form.Field key='password' name='password'>
@@ -63,6 +67,7 @@ export default function LogInForm() {
                             <TextField.Slot><RectangleEllipsis /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez entrer un mot de passe' />
                 </Form.Field>
 
                 <Form.Submit asChild>
@@ -75,7 +80,7 @@ export default function LogInForm() {
                     {"Mot de passe oublié ?"}
                 </Link>
 
-                {errorMessage && <Feedback color='red' icon={<TriangleAlert />} message={errorMessage} />}
+                {errorMessage && <Feedback color='orange' icon={<TriangleAlert />} message={errorMessage} />}
 
                 <TryAnonymousBtn mt='5'/>
 
