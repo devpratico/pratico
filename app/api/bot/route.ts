@@ -4,10 +4,10 @@ const webhookUrl = process.env.DISCORD_WEBHOOK_URL || '';
 
 export const POST = async (req: NextRequest) => {
   if (req.method === 'POST') {
-    const { name } = await req.json();
+    const { message } = await req.json();
 
-    if (!name) {
-      return NextResponse.json({ error: 'Name missing' }, { status: 400 });
+    if (!message) {
+      return NextResponse.json({ error: 'Info message missing' }, { status: 400 });
     }
 
     try {
@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          content: `This user forgot its password: ${name}`,
+          content: message,
         }),
       });
 

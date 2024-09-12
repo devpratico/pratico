@@ -10,6 +10,7 @@ import logger from '@/app/_utils/logger';
 import { useRouter, usePathname } from '@/app/_intl/intlNavigation';
 import { useState, useEffect } from 'react';
 import useSearchParams from '@/app/_hooks/useSearchParams';
+import { sendMessage } from '@/app/api/_actions/discord';
 
 
 
@@ -265,6 +266,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                                 setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
                             } else {
                                 setServerError(error);
+								sendMessage(`Forgot password error: ${error}`);
                             }
                         }}
                     >
