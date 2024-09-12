@@ -32,7 +32,7 @@ export default function RecoveryForm() {
             setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
         } else {
             setErrorMessage(error);
-            sendDiscordMessage(`⚠️ ${email} a voulu réinitialiser son mot de passe mais une erreur est survenue: "${error}"`);
+            await sendDiscordMessage(`⚠️ ${email} a voulu réinitialiser son mot de passe mais une erreur est survenue: "${error}"`);
         }
     }
 
