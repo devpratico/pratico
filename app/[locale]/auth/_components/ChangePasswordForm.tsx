@@ -7,10 +7,12 @@ import Feedback from "./Feedback"
 import { updateUserPassword } from "@/app/api/_actions/auth"
 import { useDisable } from "@/app/_hooks/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
+import { useRouter } from "@/app/_intl/intlNavigation"
 
 
 
 export default function ChangePasswordForm() {
+    const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [successMessage, setSuccessMessage ] = useState<string | null>(null);
     const [showPasswords, setShowPasswords] = useState<boolean>(false);
@@ -41,7 +43,11 @@ export default function ChangePasswordForm() {
             setErrorMessage(error);
 
         } else {
-            setSuccessMessage('Mot de passe mis à jour avec succès. Vous pouvez maintenant vous connecter.');
+            setSuccessMessage('Mot de passe mis à jour avec succès. Vous allez être redirigé vers votre dashboard.');
+            setTimeout(() => {
+                setDisabled(false);
+                router.push('/capsules');
+            }, 3000);
             
         }
         setDisabled(false);
