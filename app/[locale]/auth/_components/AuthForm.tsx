@@ -266,7 +266,7 @@ export default function AuthForm({ messages }: { messages: typeof en.AuthForm })
                                 setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
                             } else {
                                 setServerError(error);
-								sendMessage(`resetPasswordForEmail: ${error}. Email: ${email}`);
+								sendMessage(`⚠️ ${email} a voulu réinitialiser son mdp mais une erreur est survenue [${error}]`);
                             }
                         }}
                     >
