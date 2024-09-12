@@ -10,6 +10,7 @@ import useSearchParams from '@/app/_hooks/useSearchParams';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
+import ClientMismatchMessage from './ClientMismatchMessage';
 
 
 
@@ -65,6 +66,7 @@ export default function SignUpForm() {
                         <TextField.Root placeholder='Prénom' required disabled={disabled}>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez renseigner un prénom' />
                 </Form.Field>
 
                 <Form.Field key='lastname' name='lastname'>
@@ -72,14 +74,17 @@ export default function SignUpForm() {
                         <TextField.Root placeholder='Nom' required>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez renseigner un nom' />
                 </Form.Field>
 
                 <Form.Field key='email' name='email'>
                     <Form.Control asChild>
-                        <TextField.Root mt='4' placeholder='Email' required disabled={disabled}>
+                        <TextField.Root mt='4' placeholder='Email' required disabled={disabled} type='email'>
                             <TextField.Slot><Mail /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez renseigner un email' />
+                    <ClientMismatchMessage match='typeMismatch' message='Email non valide' />
                 </Form.Field>
 
                 <Form.Field key='password' name='password'>
@@ -88,6 +93,7 @@ export default function SignUpForm() {
                             <TextField.Slot><RectangleEllipsis /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez entrer un mot de passe' />
                 </Form.Field>
 
                 <Form.Field key='confirm-password' name='confirm-password'>
@@ -96,11 +102,12 @@ export default function SignUpForm() {
                             <TextField.Slot><RectangleEllipsis /></TextField.Slot>
                         </TextField.Root>
                     </Form.Control>
+                    <ClientMismatchMessage match='valueMissing' message='Veuillez confirmer le mot de passe' />
                 </Form.Field>
 
                 <Button type="submit" loading={isLoading} disabled={disabled} mt='4'>{"S'inscrire"}</Button>
 
-                { errorMessage && <Feedback color='red' message={errorMessage} icon={<TriangleAlert />} /> }
+                { errorMessage && <Feedback color='orange' message={errorMessage} icon={<TriangleAlert />} /> }
 
                 <TryAnonymousBtn />
 
