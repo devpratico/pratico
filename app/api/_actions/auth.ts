@@ -80,3 +80,21 @@ export const isUserAnonymous = cache(async () => {
     const { user, error } = await fetchUser()
     return !!(user?.is_anonymous)
 })
+
+
+
+export const resetPasswordForEmail = cache(async (email: string) => {
+    logger.log('supabase:auth', 'Resetting password for email', email)
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    if (error) logger.log('supabase:auth', 'Error resetting password', error?.message)
+    return { error: error?.message }
+})
+
+
+export const updateUserPassword = cache(async (password: string) => {
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) logger.error('supabase:auth', 'Error updating user password', error.message)
+    return { error: error?.message }
+})
