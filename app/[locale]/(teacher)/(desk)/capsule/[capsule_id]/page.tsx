@@ -14,6 +14,8 @@ import StartBtn from './_components/StartBtn';
 export default function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
     const logoScale = 0.25
 
+    console.log('capsule_id found in searchParams:', capsule_id, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/page.tsx)')
+
     return (
         <>
             <TopBarPortal>

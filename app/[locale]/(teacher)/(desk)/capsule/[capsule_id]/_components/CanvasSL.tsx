@@ -20,6 +20,7 @@ import logger from "@/app/_utils/logger";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
+    console.log('capsule_id found in searchParams:', capsuleId, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
 
     // Get the user
     /*
@@ -46,7 +47,9 @@ export default function CanvasSL() {
         async function _setInitialSnapshot() {
             logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...')
             const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+            console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
             const snapshot = data?.tld_snapshot?.[0]
+            console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
             if (snapshot) {
                 logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
                 setInitialSnapshot(snapshot as any)
