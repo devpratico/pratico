@@ -16,6 +16,7 @@ export default function Page() {
     }
 
     return (
+		
         <Container size='1' height={'100vh'} style={{backgroundColor: 'var(--accent-2'}}>
             <Section>
                 <Card>
