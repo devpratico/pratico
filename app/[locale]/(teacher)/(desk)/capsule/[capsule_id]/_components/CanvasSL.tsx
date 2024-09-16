@@ -39,7 +39,13 @@ export default function CanvasSL() {
         }
         _setUser()
     }, [])*/
-
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+		  setInitialSnapshot(undefined);
+		}, 5000);
+	  
+		return () => clearTimeout(timeout);
+	  }, []);
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)

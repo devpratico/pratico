@@ -79,31 +79,18 @@ export const saveCapsuleSnapshot = cache(async (capsuleId: string, snapshot: any
 export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
 	logger.log("supabase:database", "fetchCapsuleSnpshot");
     const supabase = createClient()
-<<<<<<< HEAD
     logger.log('supabase:database', 'fetchCapsuleSnapshot', 'for capsuleId', capsuleId)
     try {
         const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
-        if (error) logger.error('supabase:database', 'fetchCapsuleSnapshot', 'Error fetching capsule snapshot', error.message)
-        return { data, error: error?.message }
+        if (error) {
+			logger.error('supabase:database', 'fetchCapsuleSnapshot', 'Error fetching capsule snapshot', error.message)
+			return ({ data: null, error: error.message})
+		}
+        return { data, error: null }
     } catch (err) {
         logger.error("supabase:database", 'fetchCapsuleSnapshot', "Error", err);
         return { data: null, error: err }
     }
-=======
-	logger.log("supabase:database", "getchCapsuleSnpshot after createClient");
-
-	try {
-		const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
-		logger.log("supabase:database", "getchCapsuleSnpshot");
-		    if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
-    	return { data, error: error?.message }
-	}
-	catch (error)
-	{
-		logger.error("supabase:database", "fetchCapsuleSnapshot error caught", error);
-		return ({data: null, error: error})
-	}
->>>>>>> ec10d79 (TEST Logger in fetchCapsuleSnapshot)
 })
 
 
