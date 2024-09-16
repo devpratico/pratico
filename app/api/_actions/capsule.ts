@@ -76,7 +76,7 @@ export const saveCapsuleSnapshot = cache(async (capsuleId: string, snapshot: any
     return { data, error }
 })
 
-export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
+export const fetchCapsuleSnapshot = async (capsuleId: string) => {
 	logger.log("supabase:database", "fetchCapsuleSnpshot");
     const supabase = createClient()
     logger.log('supabase:database', 'fetchCapsuleSnapshot', 'for capsuleId', capsuleId)
@@ -91,7 +91,7 @@ export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
         logger.error("supabase:database", 'fetchCapsuleSnapshot', "Error", err);
         return { data: null, error: err }
     }
-})
+}
 
 
 export const fetchCapsuleTitle = cache(async (capsuleId: string) => {

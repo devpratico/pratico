@@ -8,6 +8,8 @@ import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
 import DoneBtn from './_components/DoneBtn';
 import StartBtn from './_components/StartBtn';
+import { fetchCapsuleSnapshot } from '@/app/api/_actions/capsule';
+import logger from '@/app/_utils/logger';
 
 
 
@@ -15,7 +17,12 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
     const logoScale = 0.25
 
     console.log('capsule_id found in searchParams:', capsule_id, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/page.tsx)')
-
+	console.log("TEST fetchCapsuleSnapshot", capsule_id)
+	logger.debug("supabase:database", "fetchCapsuleSnapshot test ", capsule_id, "[capsule_id]/page.tsx")
+	fetchCapsuleSnapshot(capsule_id)
+		.then(({ data, error }) => console.log("DATA FETCHCAPSULESNAPSHOT:", data, " ou error: ", error))
+		.catch(error => console.error("Error fetcCapsuleSnapshot exception test", error))
+	console.log("FIN TEST fetchCpsuleSnapshot")
     return (
         <>
             <TopBarPortal>
