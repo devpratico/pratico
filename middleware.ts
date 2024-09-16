@@ -1,9 +1,9 @@
-import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import createMiddleware from 'next-intl/middleware'
 import intlConfig from './app/_intl/intl.config'
 import logger from './app/_utils/logger'
 import { NextPageContext } from 'next'
+import { NextRequest } from 'next/server'
  
 
 export const config = {
