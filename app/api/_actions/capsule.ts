@@ -77,12 +77,16 @@ export const saveCapsuleSnapshot = cache(async (capsuleId: string, snapshot: any
 })
 
 export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
+	logger.log("supabase:database", "fetchCapsuleSnpshot");
     const supabase = createClient()
     logger.log('supabase:database', 'fetchCapsuleSnapshot', 'for capsuleId', capsuleId)
     try {
         const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
-        if (error) logger.error('supabase:database', 'fetchCapsuleSnapshot', 'Error fetching capsule snapshot', error.message)
-        return { data, error: error?.message }
+        if (error) {
+			logger.error('supabase:database', 'fetchCapsuleSnapshot', 'Error fetching capsule snapshot', error.message)
+			return ({ data: null, error: error.message})
+		}
+        return { data, error: null }
     } catch (err) {
         logger.error("supabase:database", 'fetchCapsuleSnapshot', "Error", err);
         return { data: null, error: err }

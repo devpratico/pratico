@@ -39,7 +39,13 @@ export default function CanvasSL() {
         }
         _setUser()
     }, [])*/
-
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+		  setInitialSnapshot(undefined);
+		}, 5000);
+	  
+		return () => clearTimeout(timeout);
+	  }, []);
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
@@ -48,6 +54,7 @@ export default function CanvasSL() {
             logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...');
 			console.log("ID ", capsuleId);
 			try {
+				logger.log("react:hook", "Test try _setInitialSnapshot")
 				const { data, error } = await fetchCapsuleSnapshot(capsuleId)
 				console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
 				const snapshot = data?.tld_snapshot?.[0]
