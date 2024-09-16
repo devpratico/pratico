@@ -23,15 +23,20 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
             setLoading(false)
             return
         }
+		try {
+			const { data, error: saveError } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
+			if (saveError || !data) {
+					setLoading(false)
+					return
+				}
+			router.push('/capsule/' + data.id)
+		}
+		catch (error) {
+			console.error("Error saving capsule", error);
+		}
+   
 
-        const { data, error: saveError } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
-
-        if (saveError || !data) {
-            setLoading(false)
-            return
-        }
-
-        router.push('/capsule/' + data.id)
+       
     }
 
     return (
