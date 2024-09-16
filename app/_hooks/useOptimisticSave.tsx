@@ -37,7 +37,7 @@ interface OptimisticSaveOptions<T> {
     setState: (newState: T) => void
 
     /**
-     * The function that saves the data to the database. Typically a server action from `api/_actions` involving supabase.
+     * The async function that saves the data to the database. Typically a server action from `api/_actions` involving supabase.
      */
     saveFunction: (newData: T) => Promise<{ error: string | null }>
 }

@@ -1,20 +1,24 @@
 'use client'
 import { Trash2 } from 'lucide-react'
 import { Flex, IconButton, Checkbox, TextField, Text } from '@radix-ui/themes'
-import { useMemo } from 'react'
-import { usePollCreation, useQuizCreation } from '@/app/_hooks/usePollQuizCreation'
+import { useMemo, useState } from 'react'
+//import { usePollCreation, useQuizCreation } from '@/app/_hooks/usePollQuizCreation'
+import { usePoll } from '@/app/_hooks/usePoll'
+import { useQuiz } from '@/app/_hooks/useQuiz'
+import { Quiz } from '@/app/_types/quiz'
 
 
 
-export function QuizCreationAnswerRow({ answerIndex }: { answerIndex: number }) {
-    const { quiz, currentQuestionIndex, setAnswerText, setAnswerCorrect, deleteAnswer } = useQuizCreation()
-    const answer = useMemo(() => quiz.questions[currentQuestionIndex].answers[answerIndex], [quiz, currentQuestionIndex, answerIndex])
+export function QuizCreationChoiceRow({ choiceId }: { choiceId: keyof Quiz['choices'] }) {
+    const { quiz, setChoiceText, setChoiceIsCorrect, deleteChoice } = useQuiz()
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+    const choice = useMemo(() =>  quiz.choices[choiceId], [quiz, choiceId]);
 
     return (
         <Flex align='center' gap='2' width='100%'>
             <TextField.Root
-                value={answer.text}
-                placeholder={'Réponse ' + (answerIndex + 1) + '...'}
+                value={choice.text}
+                placeholder={'Réponse ' + (choiceIndex + 1) + '...'}
                 style={{ width: '100%' }}
                 color={answer.correct ? 'green' : 'red'}
                 onChange={(event) => { setAnswerText({ questionIndex: currentQuestionIndex, answerIndex, text: event.target.value }) }}
@@ -56,7 +60,7 @@ export function QuizCreationAnswerRow({ answerIndex }: { answerIndex: number }) 
 }
 
 
-export function PollCreationAnswerRow({ answerIndex }: { answerIndex: number }) {
+export function PollCreationChoiceRow({ answerIndex }: { answerIndex: number }) {
     const { poll, currentQuestionIndex, setAnswerText, deleteAnswer } = usePollCreation()
     const answer = useMemo(() => poll.questions[currentQuestionIndex].answers[answerIndex], [poll, currentQuestionIndex, answerIndex])
 

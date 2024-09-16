@@ -10,9 +10,11 @@ type QuizContextType = {
     setTitle: (title: string) => void
     addEmptyQuestion: () => { questionId: string }
     setQuestionText: (questionId: string, text: string) => void
+    deleteQuestion: (questionId: string) => void
     addEmptyChoice: (questionId: string) => { choiceId: string }
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
+    deleteChoice: (choiceId: string) => void
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
@@ -21,26 +23,26 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     const [quizState, setQuizState] = useState<Quiz>(quiz)
 
     const setTitle = (title: string) => {
-        setQuizState(produce(quizState, draft => {draft.title = title}))
+        setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
     }
 
     const addEmptyQuestion = () => {
         const questionId = randomUUID()
-        setQuizState(produce(quizState, draft => {
+        setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
         return { questionId }
     }
 
     const setQuestionText = (questionId: string, text: string) => {
-        setQuizState(produce(quizState, draft => {
+        setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId].text = text
         }))
     }
 
     const addEmptyChoice = (questionId: string) => {
         const choiceId = randomUUID()
-        setQuizState(produce(quizState, draft => {
+        setQuizState(prevState => produce(prevState, draft => {
             draft.choices[choiceId] = { text: '', isCorrect: false }
             draft.questions[questionId].choicesIds.push(choiceId)
         }))
@@ -48,19 +50,43 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const setChoiceText = (choiceId: string, text: string) => {
-        setQuizState(produce(quizState, draft => {
+        setQuizState(prevState => produce(prevState, draft => {
             draft.choices[choiceId].text = text
         }))
     }
 
     const setChoiceIsCorrect = (choiceId: string, isCorrect: boolean) => {
-        setQuizState(produce(quizState, draft => {
+        setQuizState(prevState => produce(prevState, draft => {
             draft.choices[choiceId].isCorrect = isCorrect
         }))
     }
 
+    const deleteQuestion = (questionId: string) => {
+        setQuizState(prevState => produce(prevState, draft => {
+            delete draft.questions[questionId]
+        }))
+    }
+
+    const deleteChoice = (choiceId: string) => {
+        setQuizState(prevState => produce(prevState, draft => {
+            delete draft.choices[choiceId]
+        }))
+    }
+
+
+
     return (
-        <QuizContext.Provider value={{ quiz: quizState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, setChoiceText, setChoiceIsCorrect }}>
+        <QuizContext.Provider value={{
+            quiz: quizState,
+            setTitle,
+            addEmptyQuestion,
+            setQuestionText,
+            addEmptyChoice,
+            setChoiceText,
+            setChoiceIsCorrect,
+            deleteQuestion,
+            deleteChoice
+        }}>
             {children}
         </QuizContext.Provider>
     )
