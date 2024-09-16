@@ -45,17 +45,23 @@ export default function CanvasSL() {
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function _setInitialSnapshot() {
-            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...')
-            const { data, error } = await fetchCapsuleSnapshot(capsuleId)
-            console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-            const snapshot = data?.tld_snapshot?.[0]
-            console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-            if (snapshot) {
-                logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
-                setInitialSnapshot(snapshot as any)
-            } else {
-                logger.log('react:component', 'CanvasSL', 'No initial snapshot')
-            }
+            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...');
+			try {
+				const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+				console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+				const snapshot = data?.tld_snapshot?.[0]
+				console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+				if (snapshot) {
+					logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
+					setInitialSnapshot(snapshot as any)
+				} else {
+					logger.log('react:component', 'CanvasSL', 'No initial snapshot')
+				}
+			}
+			catch (error) {
+				console.error("Error _setInitialSnapchot");
+			}
+            
         }
         _setInitialSnapshot()
     }, [capsuleId])
