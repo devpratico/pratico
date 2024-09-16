@@ -3,7 +3,7 @@ import createMiddleware from 'next-intl/middleware'
 import intlConfig from './app/_intl/intl.config'
 import logger from './app/_utils/logger'
 import { NextPageContext } from 'next'
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
  
 
 export const config = {
@@ -20,17 +20,6 @@ const nextIntlMiddleware = createMiddleware({
     defaultLocale: intlConfig.defaultLocale,
 })
 
-// export default function corsMiddleware(req, res, next) {
-// 	res.setHeader('Access-Control-Allow-Origin', '*');
-// 	res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,DELETE,OPTIONS');
-// 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  
-// 	if (req.method === 'OPTIONS') {
-// 	  return res.status(204).end();
-// 	}
-  
-// 	next();
-//   }
 /**
 * This middleware revalidates the user's session
 * @see https://supabase.com/docs/guides/auth/server-side/nextjs
