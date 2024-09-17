@@ -6,7 +6,6 @@ import MenuTabs from '../_components/MenuTabs';
 import { Puzzle, Ellipsis, FlaskRound } from 'lucide-react';
 import DoneBtn from './[capsule_id]/_components/DoneBtn';
 import StartBtn from './[capsule_id]/_components/StartBtn';
-import CapsuleTitle from '../_components/CapsuleTitle';
 
 
 
@@ -25,8 +24,6 @@ export default async function Page() {
                                 <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
                             </Tooltip>
                         </Link>
-
-                        <CapsuleTitle capsuleId={'noid'} />
 
                         <StartBtn message='lancer la session' />
 
@@ -61,12 +58,6 @@ export default async function Page() {
 
                 </Flex>
             </TopBarPortal>
-
-            {/*
-            <Box position='absolute' right='240px' bottom='100px' height='100px' width='100px'>
-                <Image src='/images/arrow-8.svg' alt="flèche" layout='fill' objectFit='contain' style={{transform: 'rotate(-90deg) scaleX(-1) scaleY(-1)'}}/>
-            </Box>
-            */}
 
         </>
     )
