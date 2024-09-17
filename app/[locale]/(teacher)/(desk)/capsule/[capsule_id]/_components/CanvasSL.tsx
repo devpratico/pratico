@@ -21,7 +21,7 @@ import { Json } from "@/supabase/types/database.types";
  */
 // export type CapsuleSnapshotType = string | number | true | {[key: string]: Json | undefined;} | Json[] | null;
 
-export default function CanvasSL({snapshot}: {snapshot?: any}) {
+export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     console.log('capsule_id found in searchParams:', capsuleId, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
 
@@ -47,36 +47,34 @@ export default function CanvasSL({snapshot}: {snapshot?: any}) {
 	
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined);
     useEffect(() => {
-		// if (!capsuleId)
-		// {
-		// 	return (console.error("CapusleId missing", capsuleId));
-		// }
-        // async function _setInitialSnapshot() {
-        //     logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...', capsuleId);
-		// 	console.log("ID ", capsuleId);
-		// 	// try {
-		// 		logger.log("react:hook", "Test try _setInitialSnapshot")
-		// 		const { data, error } = await fetchCapsuleSnapshot(capsuleId)
-		// 		console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-		// 		const snapshot = data?.tld_snapshot?.[0]
-		// 		console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-		// 		if (snapshot) {
-		// 			logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
-		// 			setInitialSnapshot(snapshot as any)
-		// 		} else {
-		// 			logger.log('react:component', 'CanvasSL', 'No initial snapshot')
-		// 		}
-		// 	}
-			// catch (error) {
-			// 	console.error("Error _setInitialSnapchot", error);
-			// 	logger.error("supabase:database", "Error", error);
-			// }
+        async function _setInitialSnapshot() {
+            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...', capsuleId);
+			console.log("ID ", capsuleId);
+			try {
+				logger.log("react:hook", "Test try _setInitialSnapshot")
+				const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+				console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+				const snapshot = data?.tld_snapshot?.[0]
+				console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+				if (snapshot) {
+					logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
+					setInitialSnapshot(snapshot as any)
+				} else {
+					logger.log('react:component', 'CanvasSL', 'No initial snapshot')
+				}
+			}
+			catch (error) {
+				console.error("Error _setInitialSnapchot", error);
+				logger.error("supabase:database", "Error", error);
+			}
             
-        // }
-        // _setInitialSnapshot()
-		if (snapshot)
-			setInitialSnapshot(snapshot);
-    }, [capsuleId, snapshot])
+        }
+		// if (snapshot)
+		// 	setInitialSnapshot(snapshot);
+		// else if (capsuleId)
+		_setInitialSnapshot()
+
+    }, [capsuleId])
 
 
     // Create the store
