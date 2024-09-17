@@ -7,7 +7,7 @@ import { Quiz, Poll } from '@/app/_hooks/usePollQuizCreation'
 import { QuizCreationProvider, PollCreationProvider } from '@/app/_hooks/usePollQuizCreation'
 import QuizCreation from './QuizCreation'
 import PollCreation from './PollCreation'
-import { deleteActivity, duplicateActivity } from '@/app/api/_actions/activities'
+import { deleteActivity, duplicateActivity } from '@/app/api/actions/activities'
 
 
 interface EditButtonProps {

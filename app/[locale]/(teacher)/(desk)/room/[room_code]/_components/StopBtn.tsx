@@ -3,7 +3,7 @@ import logger from "@/app/_utils/logger";
 import { useRoom } from "@/app/_hooks/useRoom";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
-import { stopRoom } from '@/app/api/_actions/room';
+import { stopRoom } from '@/app/api/actions/room';
 import { useState } from "react";
 import { useDisable } from "@/app/_hooks/useDisable";
 

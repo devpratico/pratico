@@ -2,7 +2,7 @@
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
 import { useCallback, useState } from 'react'
 import { usePollCreation } from '@/app/_hooks/usePollQuizCreation'
-import { saveActivity } from '@/app/api/_actions/activities'
+import { saveActivity } from '@/app/api/actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
 import { PollCreationAnswerRow } from './CreationAnswerRow'

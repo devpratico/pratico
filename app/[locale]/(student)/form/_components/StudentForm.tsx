@@ -1,8 +1,8 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
-import { signInAnonymously } from '@/app/api/_actions/auth';
-import { fetchUser } from '@/app/api/_actions/user';
+import { TextField, Button, Flex, Box } from '@radix-ui/themes';
+import { signInAnonymously, setNames } from '@/app/api/actions/auth';
+import { fetchUser } from '@/app/api/actions/user';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';

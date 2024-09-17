@@ -2,10 +2,10 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { fetchNames } from "@/app/api/_actions/user";
+import { fetchNames } from "@/app/api/actions/user";
 import { getRandomColor } from "@/app/_utils/codeGen";
 import { getUserPreferences } from "tldraw";
-import { fetchUser } from "@/app/api/_actions/user";
+import { fetchUser } from "@/app/api/actions/user";
 import { useParams } from "next/navigation";
 
 

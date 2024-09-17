@@ -3,7 +3,7 @@ import * as Toast from '@radix-ui/react-toast';
 import { Card, Button, Flex, Text } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import { Link, usePathname } from '@/app/_intl/intlNavigation';
-import { fetchUser } from "@/app/api/_actions/user"
+import { fetchUser } from "@/app/api/actions/user"
 
 
 export default function AnonWarningToast() {
