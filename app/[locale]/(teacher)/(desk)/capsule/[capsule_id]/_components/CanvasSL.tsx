@@ -51,7 +51,7 @@ export default function CanvasSL() {
         async function _setInitialSnapshot() {
             logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...', capsuleId);
 			console.log("ID ", capsuleId);
-			try {
+			// try {
 				logger.log("react:hook", "Test try _setInitialSnapshot")
 				const { data, error } = await fetchCapsuleSnapshot(capsuleId)
 				console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
@@ -63,11 +63,11 @@ export default function CanvasSL() {
 				} else {
 					logger.log('react:component', 'CanvasSL', 'No initial snapshot')
 				}
-			}
-			catch (error) {
-				console.error("Error _setInitialSnapchot", error);
-				logger.error("supabase:database", "Error", error);
-			}
+			// }
+			// catch (error) {
+			// 	console.error("Error _setInitialSnapchot", error);
+			// 	logger.error("supabase:database", "Error", error);
+			// }
             
         }
         _setInitialSnapshot()
