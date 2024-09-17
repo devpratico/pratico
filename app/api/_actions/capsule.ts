@@ -10,7 +10,7 @@ export type Capsule = Tables<'capsules'>
 export type Snapshot = TLStoreSnapshot
 
 
-export const saveCapsule = cache(async (capsule: TablesInsert<'capsules'>) => {
+export const saveCapsule = async (capsule: TablesInsert<'capsules'>) => {
     const supabase = createClient()
     logger.log('supabase:database', 'Saving capsule...')
     const { data, error } = await supabase.from('capsules').upsert(capsule).select().single()
@@ -20,7 +20,7 @@ export const saveCapsule = cache(async (capsule: TablesInsert<'capsules'>) => {
         data: data as Capsule,
         error: error?.message
     })
-})
+}
 
 export const fetchCapsule = cache(async (capsuleId: string) => {
     const supabase = createClient()
@@ -39,12 +39,12 @@ export const fetchCapsulesData = cache(async (userId: string) => {
 })
 
 
-export const deleteCapsule = cache(async (capsuleId: string) => {
+export const deleteCapsule = async (capsuleId: string) => {
     const supabase = createClient()
     const { error } = await supabase.from('capsules').delete().eq('id', capsuleId)
     if (error) logger.error('supabase:database', 'Error deleting capsule', capsuleId, error.message)
     return { error: error?.message }
-})
+}
 
 export async function downloadCapsuleFile(fileUrl: string) {
     const supabase = createClient()
@@ -70,11 +70,10 @@ export async function getPublicUrl(path: string) {
 }
 
 
-//export async function saveCapsuleSnapshot(capsuleId: string, snapshot: any) {
-export const saveCapsuleSnapshot = cache(async (capsuleId: string, snapshot: any) => {
+export const saveCapsuleSnapshot = async (capsuleId: string, snapshot: any) => {
     const { data, error } = await saveSnapshotToCapsules(capsuleId, snapshot)
     return { data, error }
-})
+}
 
 export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
     const supabase = createClient()
@@ -92,7 +91,7 @@ export const fetchCapsuleTitle = cache(async (capsuleId: string) => {
 })
 
 
-export const saveCapsuleTitle = cache(async (capsuleId: string, title: string) => {
+export const saveCapsuleTitle = async (capsuleId: string, title: string) => {
     let result: { error: string | null } = { error: null }
 
     if (title.length === 0) result = { error: 'Title cannot be empty' }
@@ -113,13 +112,13 @@ export const saveCapsuleTitle = cache(async (capsuleId: string, title: string) =
     } else {
         return { error: null }
     }
-})
+}
 
 
-const saveSnapshotToCapsules = cache(async (capsuleId: string, snapshot: TLStoreSnapshot) => {
+const saveSnapshotToCapsules = async (capsuleId: string, snapshot: TLStoreSnapshot) => {
     const supabase = createClient()
     const jsonSnapshot = snapshot as unknown as Json
     const { data, error } = await supabase.from('capsules').update({ tld_snapshot: [jsonSnapshot] }).eq('id', capsuleId)
     if (error) logger.error('supabase:database', 'Error saving snapshot to capsule', error.message)
     return { data, error: error?.message }
-})
+}
