@@ -1,16 +1,15 @@
 'use client'
 import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
-import AutoSaver from "@/app/[locale]//_components/canvases/custom-ui/AutoSaver";
+import AutoSaver from "@/app/[locale]/_components/canvases/custom-ui/AutoSaver";
 import { useParams } from "next/navigation";
-import { fetchCapsuleSnapshot } from "@/app/api/actions/capsule";
+import { fetchCapsuleSnapshot } from "@/app/api/actions/capsule2";
 import { useEffect, useState } from "react";
-import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
+import Resizer from "@/app/[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
 //import { CanvasUser } from "../../../_components/canvases/Canvas";
 //import { fetchUser, fetchNames } from "@/app/api/_actions/user";
 //import { getRandomColor } from "@/app/_utils/codeGen";
-import { testFetch } from "@/app/api/actions/testApi";
 
 
 /**
@@ -46,15 +45,8 @@ export default function CanvasSL() {
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
     useEffect(() => {
         async function _setInitialSnapshot() {
-            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot for capsule', capsuleId)
-            //const { data, error } = await fetchCapsuleSnapshot(capsuleId)
-            //const result = await fetchCapsuleSnapshot(capsuleId)
-            const {data, error}= await testFetch(capsuleId)
-
-            logger.log('react:component', 'CanvasSL', 'testFetch result', data, error)
+            const { data, error } = await fetchCapsuleSnapshot(capsuleId)
             const snapshot = data?.tld_snapshot?.[0]
-            //const snapshot = undefined
-            logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched', snapshot)
 
             if (snapshot) {
                 logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')

@@ -75,17 +75,13 @@ export const saveCapsuleSnapshot = async (capsuleId: string, snapshot: any) => {
     return { data, error }
 }
 
+// Doesn't work - don't know why. Has been duplicated in capsule2.ts file - works here.
 export const fetchCapsuleSnapshot = async (capsuleId: string) => {
     const supabase = createClient()
     logger.log('supabase:database', 'Fetching capsule snapshot for capsuleId', capsuleId)
-    try { 
-        const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
-        if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
-        return { data, error: error?.message }
-    } catch (err) {
-        logger.error('supabase:database', 'Error fetching capsule snapshot', err)
-        return { data: null, error: 'Supabase threw an error' }
-    }
+    const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
+    if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
+    return { data, error: error?.message }
 }
 
 
