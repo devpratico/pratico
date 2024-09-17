@@ -1,6 +1,7 @@
 import { redirect } from "../_intl/intlNavigation"
 import { fetchUser } from "@/app/api/_actions/user"
 import { saveCapsule } from "@/app/api/_actions/capsule"
+import logger from "../_utils/logger"
 
 /**
  * The home page is the entry point for the app. There's no page actually,
@@ -13,18 +14,24 @@ export async function GET() {
 
     // If the user is registered, redirect to the dashboard (capsules) page
     if (user && !user.is_anonymous) {
-        redirect('/capsules')
+        return redirect('/capsules')
     }
 
     // If the user is anonymous, open an empty capsule
     if (user && user.is_anonymous) {
         const { data, error } = await saveCapsule({ created_by: user.id, title: 'Sans titre' })
-        if (error || !data) throw error
-        redirect(`/capsule/${data.id}`)
+        if (error || !data) {
+            logger.error('next:page', 'Home route error:', error)
+            throw error
+        } else {
+            return redirect(`/capsule/${data.id}`)
+        }
     }
 
     // If there's no user (or an error), redirect to empty capsule page
     if (!user || error) {
-        redirect('/capsule')
+        return redirect('/capsule')
     }
+
+    throw new Error('Unexpected error - user not found')
 }
