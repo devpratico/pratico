@@ -3,7 +3,7 @@ import { Poll } from "@/app/_hooks/usePollQuizCreation"
 import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
 import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/actions/room"
 import { set } from "lodash"
 
 

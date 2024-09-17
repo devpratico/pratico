@@ -1,6 +1,6 @@
 import { redirect } from "../_intl/intlNavigation"
-import { fetchUser } from "@/app/api/_actions/user"
-import { saveCapsule } from "@/app/api/_actions/capsule"
+import { fetchUser } from "@/app/api/actions/user"
+import { saveCapsule } from "@/app/api/actions/capsule"
 import logger from "../_utils/logger"
 
 /**

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import Navigator from "./Navigator"
 import { Dispatch, SetStateAction } from "react"
 import { Quiz } from "@/app/_hooks/usePollQuizCreation"
-import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { saveRoomActivitySnapshot } from "@/app/api/actions/room"
 
 
 export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizId: number, roomId: number}) {

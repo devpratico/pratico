@@ -2,7 +2,7 @@
 import { Button, Flex, TextField, Link, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
-import { login } from '@/app/api/_actions/auth';
+import { login } from '@/app/api/actions/auth';
 import logger from '@/app/_utils/logger';
 import { useRouter } from '@/app/_intl/intlNavigation';
 import useSearchParams from '@/app/_hooks/useSearchParams';

@@ -3,13 +3,14 @@ import Canvas from "@/app/[locale]/_components/canvases/Canvas";
 import { TLStoreSnapshot,  createTLStore, defaultShapeUtils } from "tldraw";
 import AutoSaver from "@/app/[locale]//_components/canvases/custom-ui/AutoSaver";
 import { useParams } from "next/navigation";
-import { fetchCapsuleSnapshot } from "@/app/api/_actions/capsule";
+import { fetchCapsuleSnapshot } from "@/app/api/actions/capsule";
 import { useEffect, useState } from "react";
 import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
 //import { CanvasUser } from "../../../_components/canvases/Canvas";
 //import { fetchUser, fetchNames } from "@/app/api/_actions/user";
 //import { getRandomColor } from "@/app/_utils/codeGen";
+import { testFetch } from "@/app/api/actions/testApi";
 
 
 /**
@@ -20,6 +21,7 @@ import logger from "@/app/_utils/logger";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
+    console.log('capsuleId', capsuleId)
 
     // Get the user
     /*
@@ -45,16 +47,15 @@ export default function CanvasSL() {
     useEffect(() => {
         async function _setInitialSnapshot() {
             logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot for capsule', capsuleId)
+            //const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+            //const result = await fetchCapsuleSnapshot(capsuleId)
+            const {data, error}= await testFetch(capsuleId)
 
-            try {
-                //const { data, error } = await fetchCapsuleSnapshot(capsuleId)
-                const result = await fetchCapsuleSnapshot(capsuleId)
-                logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched', result)
-            } catch (err) {
-                logger.error('react:component', 'CanvasSL', 'Error fetching initial snapshot', err)
-            }
-            const snapshot = undefined
-            //const snapshot = data?.tld_snapshot?.[0]
+            logger.log('react:component', 'CanvasSL', 'testFetch result', data, error)
+            const snapshot = data?.tld_snapshot?.[0]
+            //const snapshot = undefined
+            logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched', snapshot)
+
             if (snapshot) {
                 logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
                 setInitialSnapshot(snapshot as any)
