@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
     )
 
     const { data: { user }, error} = await supabase.auth.getUser()
-    if (!user || error) logger.log('next:middleware', 'getUser returned null', error?.message)
+    if (!user || error) logger.log('next:middleware', 'no user', `(${error?.message})`)
 
     return response;
 }
