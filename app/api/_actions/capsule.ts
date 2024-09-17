@@ -79,12 +79,12 @@ export const saveCapsuleSnapshot = async (capsuleId: string, snapshot: any) => {
     return { data, error }
 }
 
-export const fetchCapsuleSnapshot = cache(async (capsuleId: string) => {
+export const fetchCapsuleSnapshot = async (capsuleId: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
     return { data, error: error?.message }
-})
+}
 
 
 export const fetchCapsuleTitle = cache(async (capsuleId: string) => {
