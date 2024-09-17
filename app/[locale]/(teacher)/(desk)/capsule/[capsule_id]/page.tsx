@@ -10,24 +10,34 @@ import DoneBtn from './_components/DoneBtn';
 import StartBtn from './_components/StartBtn';
 import { fetchCapsuleSnapshot } from '@/app/api/_actions/capsule';
 import logger from '@/app/_utils/logger';
+import { Json } from '@/supabase/types/database.types';
 
 
 
 export default function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
     const logoScale = 0.25
-
+	let snapshot: any = null;
     console.log('capsule_id found in searchParams:', capsule_id, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/page.tsx)')
 	console.log("TEST fetchCapsuleSnapshot", capsule_id)
 	logger.debug("supabase:database", "fetchCapsuleSnapshot test ", capsule_id, "[capsule_id]/page.tsx")
 	fetchCapsuleSnapshot(capsule_id)
-		.then(({ data, error }) => console.log("DATA FETCHCAPSULESNAPSHOT:", data, " ou error: ", error))
+		.then(({ data, error }) => {
+			console.log("DATA FETCHCAPSULESNAPSHOT:", data, " ou error: ", error);
+			const snapshotData = data?.tld_snapshot?.[0]
+			console.log('snapshot:', snapshotData, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+			if (snapshotData) {
+				logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
+				snapshot = snapshotData;
+			} else {
+				logger.log('react:component', 'CanvasSL', 'No initial snapshot')
+			}
+		})
 		.catch(error => console.error("Error fetcCapsuleSnapshot exception test", error))
 	console.log("FIN TEST fetchCpsuleSnapshot")
     return (
         <>
             <TopBarPortal>
                 <Flex justify={{ initial: 'center', xs: 'between' }} align='center'>
-
 
                     <Flex gap='5' display={{ initial: 'none', xs: 'flex' }}>
                         <Link href='/capsules' style={{ display: 'flex', alignItems: 'center' }}>
@@ -72,7 +82,7 @@ export default function Page({ params: { capsule_id } }: { params: { capsule_id:
                 </Flex>
             </TopBarPortal>
 
-            <CanvasSL />
+            <CanvasSL snapshot={snapshot ? snapshot : undefined}/>
         </>
     )
 }

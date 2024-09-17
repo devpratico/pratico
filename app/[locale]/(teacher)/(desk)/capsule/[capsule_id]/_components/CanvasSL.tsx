@@ -7,6 +7,7 @@ import { fetchCapsuleSnapshot } from "@/app/api/_actions/capsule";
 import { useEffect, useState } from "react";
 import Resizer from "@/app/[locale]//_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
+import { Json } from "@/supabase/types/database.types";
 //import { CanvasUser } from "../../../_components/canvases/Canvas";
 //import { fetchUser, fetchNames } from "@/app/api/_actions/user";
 //import { getRandomColor } from "@/app/_utils/codeGen";
@@ -18,7 +19,9 @@ import logger from "@/app/_utils/logger";
  * or use the local storage (if `local=true`) for loginless users.
  * It also has the ability to load a default snapshot (if `loadDefault` search param is set in URL).
  */
-export default function CanvasSL() {
+// export type CapsuleSnapshotType = string | number | true | {[key: string]: Json | undefined;} | Json[] | null;
+
+export default function CanvasSL({snapshot}: {snapshot?: any}) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     console.log('capsule_id found in searchParams:', capsuleId, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
 
@@ -44,34 +47,36 @@ export default function CanvasSL() {
 	
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined);
     useEffect(() => {
-		if (!capsuleId)
-		{
-			return (console.error("CapusleId missing", capsuleId));
-		}
-        async function _setInitialSnapshot() {
-            logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...', capsuleId);
-			console.log("ID ", capsuleId);
-			// try {
-				logger.log("react:hook", "Test try _setInitialSnapshot")
-				const { data, error } = await fetchCapsuleSnapshot(capsuleId)
-				console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-				const snapshot = data?.tld_snapshot?.[0]
-				console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
-				if (snapshot) {
-					logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
-					setInitialSnapshot(snapshot as any)
-				} else {
-					logger.log('react:component', 'CanvasSL', 'No initial snapshot')
-				}
-			}
+		// if (!capsuleId)
+		// {
+		// 	return (console.error("CapusleId missing", capsuleId));
+		// }
+        // async function _setInitialSnapshot() {
+        //     logger.log('react:component', 'CanvasSL', 'Fetching initial snapshot...', capsuleId);
+		// 	console.log("ID ", capsuleId);
+		// 	// try {
+		// 		logger.log("react:hook", "Test try _setInitialSnapshot")
+		// 		const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+		// 		console.log('data, error:', data, error, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+		// 		const snapshot = data?.tld_snapshot?.[0]
+		// 		console.log('snapshot:', snapshot, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
+		// 		if (snapshot) {
+		// 			logger.log('react:component', 'CanvasSL', 'Initial snapshot fetched')
+		// 			setInitialSnapshot(snapshot as any)
+		// 		} else {
+		// 			logger.log('react:component', 'CanvasSL', 'No initial snapshot')
+		// 		}
+		// 	}
 			// catch (error) {
 			// 	console.error("Error _setInitialSnapchot", error);
 			// 	logger.error("supabase:database", "Error", error);
 			// }
             
         // }
-        _setInitialSnapshot()
-    }, [capsuleId])
+        // _setInitialSnapshot()
+		if (snapshot)
+			setInitialSnapshot(snapshot);
+    }, [capsuleId, snapshot])
 
 
     // Create the store
