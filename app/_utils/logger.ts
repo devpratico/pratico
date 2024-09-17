@@ -106,10 +106,9 @@ class Logger {
             consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
         }
 
-        // In Vercel previews (or dev) server-side, we'll use colors in the terminal
+        // In Vercel previews (or dev) server-side, we'll print without colors
         if ((process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && !this.isBrowser()) {
-            const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
-            consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
+            consoleFunctions[type](category, message, ...optionalParams);
         }
 
         // If not in the previous cases, don't print.
