@@ -72,32 +72,47 @@ class Logger {
     private isBrowser(): boolean {
         return typeof window !== 'undefined' && typeof window.document !== 'undefined';
     }
+
+
     
     private print(category: ChildCategory, type: ConsoleType, message: string, ...optionalParams: any[]): void {
         
         const isCategoryDirectlyEnabled = this.options.categories.includes(category)
         const isParentCategoryEnabled   = this.options.categories.includes(category.split(':')[0] as LogCategory)
         const isCategoryEnabled = isCategoryDirectlyEnabled || isParentCategoryEnabled
-        
-        if (
-            ( 
-                process.env.NODE_ENV   === 'development' ||
-                process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
-                process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ||
-                type === 'error'
-            ) &&
-            this.options.enable &&
-            isCategoryEnabled
-        ) {
-            if (this.isBrowser()) {
-                const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
-                consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
-            } else {
-                const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
-                consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
 
-            }
+        // First, check if the logger is enabled and the category is enabled. Otherwise, do nothing
+        if (!this.options.enable || !isCategoryEnabled) {
+            return;
         }
+
+        // Now, depending on the environment, we'll style the output differently
+
+        // In local dev, we'll use colors in the browser console
+        if (process.env.NODE_ENV === 'development' && this.isBrowser()) {
+            const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
+            consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
+        }
+
+        // In local dev but server-side, we'll use colors in the terminal
+        if (process.env.NODE_ENV === 'development' && !this.isBrowser()) {
+            const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
+            consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
+        }
+
+        // In Vercel previews (or dev), we'll use colors in the browser console
+        if ((process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && this.isBrowser()) {
+            const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
+            consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
+        }
+
+        // In Vercel previews (or dev) server-side, we'll use colors in the terminal
+        if ((process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && !this.isBrowser()) {
+            const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
+            consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
+        }
+
+        // If not in the previous cases, don't print.
     }
 
     public log(category: ChildCategory, message: string, ...optionalParams: any[]): void {
