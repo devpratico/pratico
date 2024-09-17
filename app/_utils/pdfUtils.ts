@@ -1,8 +1,7 @@
-'use client'
-import * as pdfjs from 'pdfjs-dist';
+import { PDFPageProxy } from 'pdfjs-dist';
 import logger from './logger';
 
-
+/*
 if (typeof Promise.withResolvers === "undefined") {
     if (typeof window !== 'undefined') {
         // @ts-expect-error This does not exist outside of polyfill which this is doing
@@ -25,7 +24,7 @@ if (typeof Promise.withResolvers === "undefined") {
             return { promise, resolve, reject }
         }
     }
-}
+}*/
 
 //pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/legacy/build/pdf.worker.min.mjs', import.meta.url).toString();
 //pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -58,10 +57,15 @@ async function setupWorker() {
 
 setupWorker()*/
 
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 
-async function convertPDFPageToBitmap(page: pdfjs.PDFPageProxy) {
+
+async function convertPDFPageToBitmap(page: any) {
+    if (typeof window === 'undefined') return; // Prevent this from running on the server
+
+    const pdfjs = await import('pdfjs-dist');
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
     const viewport = page.getViewport({ scale: 2 })
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
@@ -84,9 +88,13 @@ async function convertPDFPageToBitmap(page: pdfjs.PDFPageProxy) {
 
 
 async function getPdfPages(file: File) {
+    if (typeof window === 'undefined') return; // Prevent this from running on the server
+
+    const pdfjs = await import('pdfjs-dist');
+
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise
 
-    let pagesPromises: Promise<pdfjs.PDFPageProxy>[] = []
+    let pagesPromises: Promise<PDFPageProxy>[] = []
     
     for (let i = 1; i <= pdf.numPages; i++) {
         pagesPromises.push(pdf.getPage(i))
@@ -97,7 +105,11 @@ async function getPdfPages(file: File) {
 
 
 export async function convertPdfToImages({ file }: { file: File }) {
+    if (typeof window === 'undefined') return; // Prevent this from running on the server
+
     const pagesPromises = await getPdfPages(file)
+
+    if (!pagesPromises) return
 
     const imagesPromises = pagesPromises.map(async (pagePromise, i) => {
         const page = await pagePromise
@@ -109,6 +121,11 @@ export async function convertPdfToImages({ file }: { file: File }) {
 }
 
 export async function getPdfNumPages(file: File) {
+    if (typeof window === 'undefined') return; // Prevent this from running on the server
+
+    const pdfjs = await import('pdfjs-dist');
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise
     return pdf.numPages
 }

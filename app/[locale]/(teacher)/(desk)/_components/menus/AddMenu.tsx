@@ -87,18 +87,23 @@ function ImportDocumentBtn() {
 
         const numPages = await getPdfNumPages(file)
         setImages(new Array(numPages))
-        setPagesProgress({ loading: 0, total: numPages })
+        setPagesProgress({ loading: 0, total: numPages || 0 })
 
         const imagesPromises = await convertPdfToImages({ file })
+
+        if (!imagesPromises) {
+            logger.error('system:file', 'Error converting PDF to images')
+            return
+        }
 
         Promise.all(imagesPromises.map(async (promise, index) => {
             return promise.then((image) => {
                 setImages((prev) => {
-                    prev[index] = image
+                    prev[index] = image || { bitmap: '', width: 0, height: 0 }
                     return prev
                 })
                 logger.log('system:file', `Loaded page ${index}`)
-                setProgress((prev) => (prev || 0) + 100 / numPages)
+                setProgress((prev) => (prev || 0) + 100 / (numPages || 1))
                 setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
             })
         }).map(async (promise) => {
