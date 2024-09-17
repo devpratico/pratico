@@ -21,7 +21,7 @@ import { Json } from "@/supabase/types/database.types";
  */
 // export type CapsuleSnapshotType = string | number | true | {[key: string]: Json | undefined;} | Json[] | null;
 
-export default function CanvasSL() {
+export default function CanvasSL({snapshot}: {snapshot?: any}) {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     console.log('capsule_id found in searchParams:', capsuleId, '(app/[locale]/(teacher)/(desk)/capsule/[capsule_id]/_components/CanvasSL.tsx)')
 
@@ -69,10 +69,10 @@ export default function CanvasSL() {
 			}
             
         }
-		// if (snapshot)
-		// 	setInitialSnapshot(snapshot);
-		// else if (capsuleId)
-		_setInitialSnapshot()
+		if (snapshot)
+			setInitialSnapshot(snapshot);
+		else if (capsuleId)
+			_setInitialSnapshot()
 
     }, [capsuleId])
 
