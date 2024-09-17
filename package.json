@@ -68,8 +68,5 @@
     "storybook": "^8.2.9",
     "supabase": "^1.192.5",
     "typescript": "^5.5.4"
-  },
-  "engine": {
-    "node": "20.x"
   }
 }
