@@ -6,12 +6,18 @@ import { fetchUser } from '@/app/api/_actions/user';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { createAttendance } from '@/app/api/_actions/attendance';
 
 
 export default function StudentForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const nextUrl = searchParams.get('nextUrl');
+	let roomCode: string | undefined; 
+	Array.from(searchParams.entries()).find((elem) => {
+		if (elem[1].includes('classroom'))
+			roomCode = elem[1].split('/').pop();
+	});
     const [isLoading, setIsLoading] = useState(false);
 
     return (
@@ -30,7 +36,7 @@ export default function StudentForm() {
 
             const firstName = formData.get('first-name') as string;
             const lastName  = formData.get('last-name')  as string;
-            await setNames({ id: user.id, first_name: firstName, last_name: lastName });
+            await createAttendance(firstName, lastName, roomCode);
 
             if (nextUrl) {
                 router.push(nextUrl);
