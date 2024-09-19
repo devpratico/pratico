@@ -73,7 +73,7 @@ export type Database = {
           id: number
           last_name: string | null
           room_id: number | null
-          signature: boolean | null
+          signature: boolean
           user_id: string | null
         }
         Insert: {
@@ -82,7 +82,7 @@ export type Database = {
           id?: number
           last_name?: string | null
           room_id?: number | null
-          signature?: boolean | null
+          signature?: boolean
           user_id?: string | null
         }
         Update: {
@@ -91,7 +91,7 @@ export type Database = {
           id?: number
           last_name?: string | null
           room_id?: number | null
-          signature?: boolean | null
+          signature?: boolean
           user_id?: string | null
         }
         Relationships: []

@@ -36,8 +36,7 @@ export default function StudentForm() {
 
             const firstName = formData.get('first-name') as string;
             const lastName  = formData.get('last-name')  as string;
-            await createAttendance(firstName, lastName, roomCode);
-
+			await createAttendance(firstName, lastName, roomCode);
             if (nextUrl) {
                 router.push(nextUrl);
             } else {

@@ -5,7 +5,7 @@ create table "public"."attendance" (
     "user_id" uuid default gen_random_uuid(),
     "first_name" text,
     "last_name" text,
-    "signature" boolean
+    "signature" boolean not null default false
 );
 
 
@@ -56,5 +56,13 @@ grant trigger on table "public"."attendance" to "service_role";
 grant truncate on table "public"."attendance" to "service_role";
 
 grant update on table "public"."attendance" to "service_role";
+
+create policy "Enable insert for users based on user_id"
+on "public"."attendance"
+as permissive
+for insert
+to public
+with check ((( SELECT auth.uid() AS uid) = user_id));
+
 
 
