@@ -1,21 +1,77 @@
 'use client'
-import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden } from "@radix-ui/themes"
-import { useState, useEffect, useMemo } from "react"
+import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden, Badge } from "@radix-ui/themes"
+import {  useMemo,useCallback, use, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { Dispatch, SetStateAction } from "react"
-import { Quiz } from "@/app/_types/quiz"
-import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { fetchUser } from "@/app/api/_actions/user"
+import { useQuiz } from "@/app/_hooks/useQuiz"
+import { useQuizSnapshot } from "@/app/_hooks/useQuizSnapshot"
+import logger from "@/app/_utils/logger"
 
 
-export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizId: number, roomId: number}) {
-    const [loading, setLoading] = useState(false)
-    const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const activitySnapshot = useMemo(() => ({
-        activityId: quizId,
-        currentQuestionIndex: currentQuestionIndex,
-        currentQuestionState: questionState
-    }), [quizId, currentQuestionIndex, questionState])
+export default function QuizAnimation() {
+    const { user } = use(fetchUser())
+    const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = useQuizSnapshot()
+    const { quiz } = useQuiz()
+    const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
+
+    const currentQuestionIndex = useMemo(() => {
+        return currentQuestionId ?
+            Object.keys(quiz.questions).indexOf(currentQuestionId) : undefined
+    }, [quiz, currentQuestionId])
+
+    const currentQuestionTitle = useMemo(() => {
+        return currentQuestionId ? quiz.questions[currentQuestionId].text : ''
+    }, [quiz, currentQuestionId])
+
+    const currentQuestionState = useMemo(() => {
+        return snapshot?.currentQuestionState || 'answering'
+    }, [snapshot])
+
+    const currentQuestionChoicesIds = useMemo(() => {
+        return currentQuestionId ? quiz.questions[currentQuestionId].choicesIds : []
+    }, [quiz, currentQuestionId])
+
+    const currentQuestionChoices = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => quiz.choices[choiceId])
+    }, [quiz, currentQuestionChoicesIds])
+
+    const usersAnswers = useMemo(() => {
+        const allAnswersAsArray = Object.values(snapshot?.answers || {})
+        const currentQuestionAnswers = allAnswersAsArray.filter(answer => answer.questionId === currentQuestionId)
+        return currentQuestionAnswers
+    }, [snapshot, currentQuestionId])
+
+    const votesArray = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => {
+            return usersAnswers.filter(answer => answer.choiceId === choiceId).length
+        })
+    }, [usersAnswers, currentQuestionChoicesIds])
+
+    const myAnswers = useMemo(() => {
+        if (!user) return []
+        return usersAnswers.filter(answer => answer.userId === user.id)
+    }, [usersAnswers, user])
+
+    const choicesStates = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => {
+            return myAnswers.some(answer => answer.choiceId === choiceId) ? 'selected' : 'unselected'
+        })
+    }, [myAnswers, currentQuestionChoicesIds])
+
+    const setAnswerState = useCallback((index: number, value: 'selected' | 'unselected') => {
+        if (!currentQuestionId) return
+        const choiceId = currentQuestionChoicesIds[index]
+        if (value === 'selected') {
+            addAnswer(currentQuestionId, choiceId)
+        } else {
+            const answer = myAnswers.find(answer => answer.choiceId === choiceId)
+            const answerId = snapshot?.answers ? Object.keys(snapshot.answers).find(key => snapshot.answers[key] === answer) : undefined
+            if (answerId) {
+                removeAnswer(answerId)
+            }
+        }
+    }, [currentQuestionId, currentQuestionChoicesIds, addAnswer, removeAnswer, myAnswers, snapshot])
+
 
     function handleShowAnswer() {
         setQuestionState('results')
@@ -25,25 +81,19 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
         setQuestionState('answering')
     }
 
-    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = (index) => {
+    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         setQuestionState('answering')
-        setCurrentQuestionIndex(index)
-    }
 
-    async function handleClose() {
-        setLoading(true)
-        await saveRoomActivitySnapshot(roomId, null)
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        async function _saveRoom() {
-            setLoading(true)
-            await saveRoomActivitySnapshot(roomId, activitySnapshot)
-            setLoading(false)
+        if (typeof index === 'number') {
+            setCurrentQuestionId(Object.keys(quiz.questions)[index])
+        } else { // Index is a function that needs the prev (current) value to give us the new value.
+            if (currentQuestionIndex) {
+                setCurrentQuestionId(Object.keys(quiz.questions)[index(currentQuestionIndex)])
+            } else {
+                logger.log('react:component', 'QuizAnimation', 'handleSetCurrentQuestionIndex', 'currentQuestionIndex is undefined')
+            }
         }
-        _saveRoom()
-    }, [roomId, activitySnapshot])
+    }, [quiz, currentQuestionIndex, setCurrentQuestionId, setQuestionState])
     
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -51,19 +101,27 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{quiz.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Acticité Quiz</Dialog.Description></VisuallyHidden>
-                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
+                <Dialog.Close><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
-                    <Heading as='h2' size='5' align='center'>{quiz.questions[currentQuestionIndex].text}</Heading>
+                    <Heading as='h2' size='5' align='center'>{currentQuestionTitle}</Heading>
                 </Section>
 
                 <Section size='1'>
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
-                        {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <QuizAnswerRow key={`${index}_${answer.text}`} text={answer.text} correct={answer.correct} questionState={questionState} />
+                        {currentQuestionChoices.map((choice, index) => (
+                            <QuizAnswerRow
+                                key={`${index}-${choice.text}`}
+                                text={choice.text}
+                                votes={votesArray[index]}
+                                correct={choice.isCorrect}
+                                questionState={currentQuestionState}
+                                answerState={choicesStates[index]}
+                                setAnswerState={(value) => setAnswerState(index, value)}
+                            />
                         ))}
                     </Flex>
                 </Section>
@@ -75,16 +133,16 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
                     <Flex justify='center' gap='3'>
 
                         <Navigator
-                            total={quiz.questions.length}
-                            currentQuestionIndex={currentQuestionIndex}
+                            total={Object.keys(quiz.questions).length}
+                            currentQuestionIndex={currentQuestionIndex || 0}
                             setCurrentQuestionIndex={handleSetCurrentQuestionIndex}
                         />
                     
-                        <Button size='3' onClick={handleShowAnswer} style={{ display: questionState == 'results' ? 'none' : 'flex' }}>
+                        <Button size='3' onClick={handleShowAnswer} style={{ display: currentQuestionState == 'results' ? 'none' : 'flex' }}>
                             Montrer la réponse
                         </Button>
 
-                        <Button size='3' onClick={handleHideAnswer} style={{ display: questionState == 'results' ? 'flex' : 'none' }} variant='soft'>
+                        <Button size='3' onClick={handleHideAnswer} style={{ display: currentQuestionState == 'results' ? 'flex' : 'none' }} variant='soft'>
                             Masquer la réponse
                         </Button>
                         
@@ -101,16 +159,17 @@ export default function QuizAnimation({quiz, quizId, roomId}: {quiz: Quiz, quizI
 interface QuizAnswerRowProps {
     text: string
     correct: boolean
+    votes: number,
     questionState: 'answering' | 'results'
+    answerState?: 'selected' | 'unselected'
+    setAnswerState: (value: 'selected' | 'unselected') => void
 }
 
 
 
 
-export function QuizAnswerRow({ text, correct, questionState }: QuizAnswerRowProps) {
-    const [state, setState] = useState<'selected' | 'unselected'>('unselected')
-
-    const isSolid = ( questionState == 'answering' && state === 'selected' ) || ( questionState == 'results' && correct)
+export function QuizAnswerRow({ text, correct, votes, questionState, answerState, setAnswerState }: QuizAnswerRowProps) {
+    const isSolid = ( questionState == 'answering' && answerState === 'selected' ) || ( questionState == 'results' && correct)
     const isSoft = ( questionState == 'results' && !correct)
     const variant = isSolid ? 'solid' : isSoft ? 'soft' : 'outline'
     const isGreen = questionState == 'results' && correct
@@ -119,12 +178,15 @@ export function QuizAnswerRow({ text, correct, questionState }: QuizAnswerRowPro
 
     function handleClick() {
         if (questionState == 'results') return
-        setState((prev) => prev === 'selected' ? 'unselected' : 'selected')
+        setAnswerState(answerState === 'selected' ? 'unselected' : 'selected')
     }
 
     return (
         <Button variant={variant} color={color} onClick={handleClick} style={{justifyContent: 'start'}}>
             {text}
+            <Box ml='auto'>
+                {questionState == 'results' && <Badge variant='solid' radius='full'>{votes}</Badge>}
+            </Box>
         </Button> 
     )
 }

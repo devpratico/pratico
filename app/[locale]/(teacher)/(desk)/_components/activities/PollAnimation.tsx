@@ -1,10 +1,7 @@
 'use client'
-import { Poll, PollSnapshot } from "@/app/_types/poll"
-import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
-import React, { use, useState, useEffect, useMemo, useCallback, Dispatch, SetStateAction } from "react"
+import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Badge, Box, VisuallyHidden } from "@radix-ui/themes"
+import React, { use, useMemo, useCallback, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
-import { useParams } from "next/navigation"
 import { usePollSnapshot } from "@/app/_hooks/usePollSnapshot"
 import { usePoll } from "@/app/_hooks/usePoll"
 import { fetchUser } from "@/app/api/_actions/user"
@@ -27,21 +24,54 @@ export default function PollAnimation() {
         return currentQuestionId ? poll.questions[currentQuestionId].text : ''
     }, [poll, currentQuestionId])
 
-    const currentQuestionChoices = useMemo(() => {
-        const choicesIds = currentQuestionId ? poll.questions[currentQuestionId].choicesIds : []
-        return choicesIds.map(choiceId => poll.choices[choiceId])
-    }
+    const currentQuestionState = useMemo(() => {
+        return snapshot?.currentQuestionState || 'answering'
+    }, [snapshot])
 
+    const currentQuestionChoicesIds = useMemo(() => {
+        return currentQuestionId ? poll.questions[currentQuestionId].choicesIds : []
+    }, [poll, currentQuestionId])
+
+    const currentQuestionChoices = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => poll.choices[choiceId])
+    }, [poll, currentQuestionChoicesIds])
+        
     const usersAnswers = useMemo(() => {
         const allAnswersAsArray = Object.values(snapshot?.answers || {})
         const currentQuestionAnswers = allAnswersAsArray.filter(answer => answer.questionId === currentQuestionId)
         return currentQuestionAnswers
     }, [snapshot, currentQuestionId])
 
+    const votesArray = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => {
+            return usersAnswers.filter(answer => answer.choiceId === choiceId).length
+        })
+    }, [usersAnswers, currentQuestionChoicesIds])
+
     const myAnswers = useMemo(() => {
         if (!user) return []
         return usersAnswers.filter(answer => answer.userId === user.id)
     }, [usersAnswers, user])
+
+    const choicesStates = useMemo(() => {
+        return currentQuestionChoicesIds.map(choiceId => {
+            return myAnswers.some(answer => answer.choiceId === choiceId) ? 'selected' : 'unselected'
+        })
+    }, [myAnswers, currentQuestionChoicesIds])
+
+    const setAnswerState = useCallback((index: number, value: 'selected' | 'unselected') => {
+        if (!currentQuestionId) return
+        const choiceId = currentQuestionChoicesIds[index]
+        if (value === 'selected') {
+            addAnswer(currentQuestionId, choiceId)
+        } else {
+            const answer = myAnswers.find(answer => answer.choiceId === choiceId)
+            const answerId = snapshot?.answers ? Object.keys(snapshot.answers).find(key => snapshot.answers[key] === answer) : undefined
+            if (answerId) {
+                removeAnswer(answerId)
+            }
+        }
+    }, [currentQuestionId, currentQuestionChoicesIds, addAnswer, removeAnswer, myAnswers, snapshot])
 
 
     function handleShowAnswer() {
@@ -85,19 +115,16 @@ export default function PollAnimation() {
 
                 <Section size='1'>
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
-                        {
-                            currentQuestionId &&
-                            poll.questions[currentQuestionId].choices.map((answer, index) => (
-                                <PollAnswerRow 
-                                    key={`${index}-${answer.text}`}
-                                    text={answer.text}
-                                    votes={votesArray[index]}
-                                    questionState={questionState}
-                                    answerState={answersState[index]}
-                                    setAnswerState={(value) => setAnswerState(index, value)}
-                                />
-                            ))
-                        }
+                        {currentQuestionChoices.map((choice, index) => (
+                            <PollAnswerRow 
+                                key={`${index}-${choice.text}`}
+                                text={choice.text}
+                                votes={votesArray[index]}
+                                questionState={currentQuestionState}
+                                answerState={choicesStates[index]}
+                                setAnswerState={(value) => setAnswerState(index, value)}
+                            />
+                        ))}
                     </Flex>
 
                     <Flex mt='3' justify='end'>
@@ -113,16 +140,16 @@ export default function PollAnimation() {
                     <Flex justify='center' gap='3'>
 
                         <Navigator
-                            total={poll.questions.length}
-                            currentQuestionIndex={currentQuestionIndex}
+                            total={Object.keys(poll.questions).length}
+                            currentQuestionIndex={currentQuestionIndex || 0}
                             setCurrentQuestionIndex={handleSetCurrentQuestionIndex}
                         />
 
-                        <Button size='3' onClick={handleShowAnswer} style={{ display: questionState == 'results' ? 'none' : 'flex' }}>
+                        <Button size='3' onClick={handleShowAnswer} style={{ display: currentQuestionState == 'results' ? 'none' : 'flex' }}>
                             Voir les résultats
                         </Button>
 
-                        <Button size='3' onClick={handleHideAnswer} style={{ display: questionState == 'results' ? 'flex' : 'none' }} variant='soft'>
+                        <Button size='3' onClick={handleHideAnswer} style={{ display: currentQuestionState == 'results' ? 'flex' : 'none' }} variant='soft'>
                             Masquer les résultats
                         </Button>
 
