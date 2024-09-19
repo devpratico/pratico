@@ -1,6 +1,6 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Blockquote, Text, Checkbox } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Text, Checkbox } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/api/_actions/auth';
 import { fetchUser } from '@/app/api/_actions/user';
 import { useState } from 'react';
@@ -60,12 +60,10 @@ export default function StudentForm() {
                 </Form.Field>
 
 				<Box maxWidth="250px">
-					<Text as="label" size="1">
-						<Flex gap="2">
-							<Checkbox defaultChecked onCheckedChange={() => setChecked(!checked)} required/>
-							*J'accepte de partager ces informations avec le formateur.
-						</Flex>
-					</Text>
+					<Flex gap="2">
+						<Checkbox defaultChecked onCheckedChange={() => setChecked(!checked)} required/>
+						<Text size='1'>{"*J'accepte de partager ces informations avec le formateur."}</Text>
+					</Flex>
 				</Box>
 
                 <Box style={{alignSelf: 'flex-end'}}>
