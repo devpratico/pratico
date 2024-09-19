@@ -13,7 +13,7 @@ import useOptimisticSave from "./useOptimisticSave"
 interface PollSnapshotHook {
     snapshot: PollSnapshot | undefined
     isPending: boolean
-    setCurrentQuestionIndex: (index: number) => Promise<{ error: string | null }>
+    setCurrentQuestionId: (id: string) => Promise<{ error: string | null }>
     setQuestionState: (state: 'answering' | 'results') => Promise<{ error: string | null }>
     addAnswer: (questionId: string, choiceId: string) => Promise<{data: PollUserAnswer | null, error: string | null}>
     removeAnswer: (answerId: string) => Promise<{ error: string | null }>
@@ -46,10 +46,10 @@ export function usePollSnapshot(): PollSnapshotHook {
     }, [room, snapshot])
 
 
-    const setCurrentQuestionIndex = useCallback(async (index: number) => {
+    const setCurrentQuestionId = useCallback(async (id: string) => {
         if (!snapshot) return { error: 'Snapshot not found' }
 
-        const newSnapshot = { ...snapshot, currentQuestionIndex: index }
+        const newSnapshot = { ...snapshot, currentQuestionId: id }
         return await saveOptimistically(newSnapshot)
     }, [snapshot, saveOptimistically])
 
@@ -91,5 +91,5 @@ export function usePollSnapshot(): PollSnapshotHook {
         return await saveOptimistically(newSnapshot)
     }, [snapshot, saveOptimistically])
 
-    return { snapshot: optimisticSnapshot, isPending, setCurrentQuestionIndex, setQuestionState, addAnswer, removeAnswer }
+    return { snapshot: optimisticSnapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer }
 }

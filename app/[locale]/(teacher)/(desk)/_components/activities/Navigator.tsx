@@ -1,5 +1,6 @@
 import { Box, Flex, IconButton } from '@radix-ui/themes';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback } from 'react';
 
 
 
@@ -7,14 +8,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface NavigatorProps {
     total: number
     currentQuestionIndex: number
-    setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>
+    setCurrentQuestionIndex: (index: number) => void
 }
 
 export default function Navigator({ total, currentQuestionIndex, setCurrentQuestionIndex }: NavigatorProps) {
     const canGoNext = currentQuestionIndex < total - 1
     const canGoPrevious = currentQuestionIndex > 0
-    function handleNext() { if (canGoNext) setCurrentQuestionIndex((prev) => prev + 1) }
-    function handlePrevious() { if (canGoPrevious) setCurrentQuestionIndex((prev) => prev - 1) }
+    const handleNext = useCallback(() => { if (canGoNext) setCurrentQuestionIndex(currentQuestionIndex + 1) }, [canGoNext, currentQuestionIndex, setCurrentQuestionIndex])
+    const handlePrevious = useCallback(() => { if (canGoPrevious) setCurrentQuestionIndex(currentQuestionIndex - 1) }, [canGoPrevious, currentQuestionIndex, setCurrentQuestionIndex])
 
     if (total <= 1) return null
 

@@ -52,7 +52,7 @@ export interface PollSnapshot {
      * The id of the poll in the supabase database.
      */
     activityId: number;
-    currentQuestionIndex: number;
+    currentQuestionId: string;
     currentQuestionState: 'answering' | 'results';
     answers: { [answerId: string]: PollUserAnswer }
 }

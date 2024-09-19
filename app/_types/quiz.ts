@@ -41,7 +41,7 @@ export interface QuizUserAnswer {
 export interface QuizSnapshot {
     type:'quiz';
     activityId: number;
-    currentQuestionIndex: number;
+    currentQuestionId: string;
     currentQuestionState: 'answering' | 'results';
     answers: { [answerId: string]: QuizUserAnswer }
 }

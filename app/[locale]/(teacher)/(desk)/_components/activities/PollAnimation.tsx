@@ -1,50 +1,48 @@
 'use client'
 import { Poll, PollSnapshot } from "@/app/_types/poll"
 import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
-import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
+import React, { use, useState, useEffect, useMemo, useCallback, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 import { useParams } from "next/navigation"
+import { usePollSnapshot } from "@/app/_hooks/usePollSnapshot"
+import { usePoll } from "@/app/_hooks/usePoll"
+import { fetchUser } from "@/app/api/_actions/user"
+import logger from "@/app/_utils/logger"
 
 
 
 export default function PollAnimation() {
-    const { room_code } = useParams<{ room_code?: string }>()
-    const [loading, setLoading] = useState(false)
-    const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const [votesArray, setVotesArray] = useState<number[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 0)) // The number of votes for each answer
-    const [answersState, setAnswersState] = useState<('selected' | 'unselected')[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 'unselected')) // The state of each answer (selected or unselected)
+    const {user} = use(fetchUser())
+    const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
+    const { poll } = usePoll()
+    const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
 
+    const currentQuestionIndex = useMemo(() => {
+        return currentQuestionId ?
+        Object.keys(poll.questions).indexOf(currentQuestionId) : undefined
+    }, [poll, currentQuestionId])
 
-    // Consolidate the poll state in a single object
-    const pollSnapshot: PollSnapshot = useMemo(() => ({
-        type: 'poll',
-        activityId: pollId,
-        currentQuestionIndex,
-        currentQuestionState: questionState,
-        votes: votesArray
-    }), [pollId, currentQuestionIndex, questionState, votesArray])
+    const currentQuestionTitle = useMemo(() => {
+        return currentQuestionId ? poll.questions[currentQuestionId].text : ''
+    }, [poll, currentQuestionId])
 
-
-    // Side effect: when the pollSnapshot changes, save it in Supabase
-    useEffect(() => {
-        async function _save() {
-            if (!room_code) return
-            setLoading(true)
-            saveRoomActivitySnapshot(room_code, pollSnapshot)
-            setLoading(false)
-        }
-        _save()
-    }, [pollSnapshot, room_code])
-
-
-    async function handleClose() {
-        if (!room_code) return
-        setLoading(true)
-        await saveRoomActivitySnapshot(room_code, null)
-        setLoading(false)
+    const currentQuestionChoices = useMemo(() => {
+        const choicesIds = currentQuestionId ? poll.questions[currentQuestionId].choicesIds : []
+        return choicesIds.map(choiceId => poll.choices[choiceId])
     }
+
+    const usersAnswers = useMemo(() => {
+        const allAnswersAsArray = Object.values(snapshot?.answers || {})
+        const currentQuestionAnswers = allAnswersAsArray.filter(answer => answer.questionId === currentQuestionId)
+        return currentQuestionAnswers
+    }, [snapshot, currentQuestionId])
+
+    const myAnswers = useMemo(() => {
+        if (!user) return []
+        return usersAnswers.filter(answer => answer.userId === user.id)
+    }, [usersAnswers, user])
+
 
     function handleShowAnswer() {
         setQuestionState('results')
@@ -54,37 +52,20 @@ export default function PollAnimation() {
         setQuestionState('answering')
     }
 
-    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = (index) => {
+    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         setQuestionState('answering')
-        setCurrentQuestionIndex((prev) => {
-            const nextIndex = typeof index === 'number' ? index : index(prev)
-            setVotesArray(poll.questions[nextIndex].answers.map(() => 0))
-            return nextIndex
-        })
-        setAnswersState(poll.questions[currentQuestionIndex].answers.map(() => 'unselected'))
-    }
 
-    // When selecting an answer, deselect all other answers, and update the votesArray
-    function setAnswerState(index: number, value: 'selected' | 'unselected') {
-        if (questionState === 'results') return
-
-        setAnswersState((prevAnswers) => {
-            let newAnswersState: ('selected' | 'unselected')[] = []
-
-            if (value === 'selected') {
-                newAnswersState = prevAnswers.map((_, i) => i === index ? 'selected' : 'unselected')
+        if (typeof index === 'number') {
+            setCurrentQuestionId(Object.keys(poll.questions)[index])
+        } else { // Index is a function that needs the prev (current) value to give us the new value.
+            if (currentQuestionIndex) {
+                setCurrentQuestionId(Object.keys(poll.questions)[index(currentQuestionIndex)])
             } else {
-                newAnswersState = prevAnswers.map(() => 'unselected')
+                logger.log('react:component', 'PollAnimation', 'handleSetCurrentQuestionIndex', 'currentQuestionIndex is undefined')
             }
+        }
+    }, [poll, currentQuestionIndex, setCurrentQuestionId, setQuestionState])
 
-            const prevAnswersMatrix = prevAnswers.map((state, i) => state === 'selected' ? 1 : 0)
-            const newAnswersMatrix = newAnswersState.map((state, i) => state === 'selected' ? 1 : 0)
-            const diffMatrix = newAnswersMatrix.map((state, i) => state - prevAnswersMatrix[i])
-            setVotesArray(votesArray.map((votes, i) => votes + diffMatrix[i]))
-
-            return newAnswersState
-        })
-    }
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -92,28 +73,31 @@ export default function PollAnimation() {
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
-                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
+                <Dialog.Close><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
-                    <Heading as='h2' size='5' align='center'>{poll.questions[currentQuestionIndex].text}</Heading>
+                    <Heading as='h2' size='5' align='center'>{currentQuestionTitle}</Heading>
                 </Section>
 
                 <Section size='1'>
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
-                        {poll.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <PollAnswerRow 
-                                key={`${index}-${answer.text}`}
-                                text={answer.text}
-                                votes={votesArray[index]}
-                                questionState={questionState}
-                                answerState={answersState[index]}
-                                setAnswerState={(value) => setAnswerState(index, value)}
-                            />
-                        ))}
+                        {
+                            currentQuestionId &&
+                            poll.questions[currentQuestionId].choices.map((answer, index) => (
+                                <PollAnswerRow 
+                                    key={`${index}-${answer.text}`}
+                                    text={answer.text}
+                                    votes={votesArray[index]}
+                                    questionState={questionState}
+                                    answerState={answersState[index]}
+                                    setAnswerState={(value) => setAnswerState(index, value)}
+                                />
+                            ))
+                        }
                     </Flex>
 
                     <Flex mt='3' justify='end'>
