@@ -1,6 +1,6 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Blockquote, Text, Checkbox } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/api/_actions/auth';
 import { fetchUser } from '@/app/api/_actions/user';
 import { useState } from 'react';
@@ -19,30 +19,31 @@ export default function StudentForm() {
 			roomCode = elem[1].split('/').pop();
 	});
     const [isLoading, setIsLoading] = useState(false);
+	const [checked, setChecked] = useState(false); // accept to share your infos
 
     return (
         <Form.Root onSubmit={async (event) => {
             event.preventDefault();
-            setIsLoading(true);
 
-            const formData = new FormData(event.currentTarget);
+			setIsLoading(true);
+			const formData = new FormData(event.currentTarget);
 
-            // Fetch user or sign in anonymously
-            const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
-            if (!user) {
-                logger.error('next:page', 'Impossible to fetch user or sign in anonymously');
-                return;
-            }
+			// Fetch user or sign in anonymously
+			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
+			if (!user) {
+				logger.error('next:page', 'Impossible to fetch user or sign in anonymously');
+				return;
+			}
 
-            const firstName = formData.get('first-name') as string;
-            const lastName  = formData.get('last-name')  as string;
+			const firstName = formData.get('first-name') as string;
+			const lastName  = formData.get('last-name')  as string;
 			await createAttendance(firstName, lastName, roomCode);
-            if (nextUrl) {
-                router.push(nextUrl);
-            } else {
-                logger.error('next:page', 'No nextUrl found in query params');
-                router.push('/classroom');
-            }
+			if (nextUrl) {
+				router.push(nextUrl);
+			} else {
+				logger.error('next:page', 'No nextUrl found in query params');
+				router.push('/classroom');
+			}
 
         }}>
             <Flex direction='column' gap='3'>
@@ -57,6 +58,15 @@ export default function StudentForm() {
                         <TextField.Root placeholder='Nom' required/>
                     </Form.Control>
                 </Form.Field>
+
+				<Box maxWidth="250px">
+					<Text as="label" size="1">
+						<Flex gap="2">
+							<Checkbox defaultChecked onCheckedChange={() => setChecked(!checked)} required/>
+							*J'accepte de partager ces informations avec le formateur.
+						</Flex>
+					</Text>
+				</Box>
 
                 <Box style={{alignSelf: 'flex-end'}}>
                     <Button type="submit" loading={isLoading}>OK</Button>
