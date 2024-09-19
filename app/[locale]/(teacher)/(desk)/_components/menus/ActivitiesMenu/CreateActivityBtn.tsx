@@ -1,11 +1,13 @@
 'use client'
 import { DropdownMenu, Button } from "@radix-ui/themes"
 import { useState } from "react"
-import { emptyQuiz, emptyPoll } from "@/app/_hooks/usePollQuizCreation"
 import CardDialog from "../../CardDialog"
 import QuizCreation from "../../activities/QuizCreation"
 import PollCreation from "../../activities/PollCreation"
-import { QuizCreationProvider, PollCreationProvider } from "@/app/_hooks/usePollQuizCreation"
+import { QuizProvider } from "@/app/_hooks/useQuiz"
+import { PollProvider } from "@/app/_hooks/usePoll"
+import { emptyQuiz } from "@/app/_hooks/useQuiz"
+import { emptyPoll } from "@/app/_hooks/usePoll"
 
 
 export default function CreateActivityBtn() {
@@ -27,15 +29,15 @@ export default function CreateActivityBtn() {
 
 
             <CardDialog preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
-                <QuizCreationProvider initialQuiz={emptyQuiz}>
+                <QuizProvider quiz={emptyQuiz}>
                     <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
-                </QuizCreationProvider>
+                </QuizProvider>
             </CardDialog>
 
             <CardDialog preventClose open={openPollCreation} setOpen={setOpenPollCreation}>
-                <PollCreationProvider initialPoll={emptyPoll}>
+                <PollProvider poll={emptyPoll}>
                     <PollCreation closeDialog={() => setOpenPollCreation(false)} />
-                </PollCreationProvider>
+                </PollProvider>
             </CardDialog>
         </>
     )

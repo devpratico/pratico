@@ -23,8 +23,7 @@ export default function ActivityCard() {
 
     switch (room?.activity_snapshot?.type) {
         case 'quiz':
-            //activityAnswering = <QuizAnimation quiz={activity} quizId={room.activity_snapshot.activityId} roomId={room.id} />
-            activityAnswering = <p>Quiz</p>
+            activityAnswering = <QuizAnimation />
             break
         case 'poll':
             activityAnswering = <PollAnimation />

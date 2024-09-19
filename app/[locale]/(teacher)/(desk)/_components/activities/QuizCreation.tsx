@@ -12,7 +12,7 @@ import { Plus } from 'lucide-react'
 
 
 
-export default function QuizCreation({ idToSaveTo, closeDialog }: { idToSaveTo: number, closeDialog: () => void }) {
+export default function QuizCreation({ closeDialog }: {  closeDialog: () => void }) {
     const {
         quiz,
         setTitle,
@@ -36,9 +36,9 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: { idToSaveTo: 
     }, [addEmptyQuestion, setCurrentQuestionId, quiz.questions])
 
     const handleSave = useCallback(async () => {
-        await saveActivity({ id: idToSaveTo, activity: quiz })
+        await saveActivity({activity: quiz })
         closeDialog()
-    }, [quiz, closeDialog, idToSaveTo])
+    }, [quiz, closeDialog])
 
 
     return (

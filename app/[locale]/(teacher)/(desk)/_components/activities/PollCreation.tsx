@@ -12,7 +12,7 @@ import { Plus } from 'lucide-react'
 
 
 
-export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo: number, closeDialog: () => void }) {
+export default function PollCreation({ closeDialog }: { closeDialog: () => void }) {
     const {
         poll,
         setTitle,
@@ -35,9 +35,9 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo: 
     }, [addEmptyQuestion, setCurrentQuestionId, poll.questions])
 
     const handleSave = useCallback(async () => {
-        await saveActivity({ id: idToSaveTo, activity: poll })
+        await saveActivity({ activity: poll })
         closeDialog()
-    }, [poll, closeDialog, idToSaveTo])
+    }, [poll, closeDialog])
 
 
     return (
