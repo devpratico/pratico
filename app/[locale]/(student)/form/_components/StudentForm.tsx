@@ -63,7 +63,7 @@ export default function StudentForm() {
 				<Box maxWidth="250px">
 					<Flex gap="2">
 						<Checkbox defaultChecked onCheckedChange={() => setChecked(!checked)} required/>
-						<Text size='1'>{"*J'accepte de partager ces informations avec le formateur."}</Text>
+						<Text size='1'>{"*J'accepte de partager ces informations avec l'animateur."}</Text>
 					</Flex>
 				</Box>
 

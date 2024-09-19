@@ -14,7 +14,10 @@ export default function formPage() {
             <Flex align='center' justify='center' style={{ height: '100%' }}>
                 <Card size='5'>
 					<Flex align='center' justify='center' style={{ height: '100%' }}>
-						<Heading size='5'>Fiche de présence</Heading>
+						<Heading size='5'>Bienvenue !</Heading>
+					</Flex>
+					<Flex align='center' justify='center' style={{ height: '100%' }}>
+						<Heading size='4'> Qui êtes vous ?</Heading>
 					</Flex>
 					<Flex align='center' justify='center' style={{ height: '100%' }}>
 						<Separator size='3' my='4' />
