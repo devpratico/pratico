@@ -14,10 +14,10 @@ export default function StudentForm() {
     const searchParams = useSearchParams();
     const nextUrl = searchParams.get('nextUrl');
 	let roomCode: string | undefined; 
-	Array.from(searchParams.entries()).find((elem) => {
-		if (elem[1].includes('classroom'))
-			roomCode = elem[1].split('/').pop();
-	});
+	// Array.from(searchParams.entries()).find((elem) => {
+	// 	if (elem[1].includes('classroom'))
+	// 		roomCode = elem[1].split('/').pop();
+	// });
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState(false); // accept to share your infos
 
