@@ -9,8 +9,6 @@ import StartDialog from "./_components/StartDialog";
 import ActivityCard from "./_components/ActivityCard";
 
 
-
-
 export default function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25
 
