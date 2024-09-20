@@ -91,6 +91,7 @@ export const fetchNamesFromAttendance = async (userId: string) => {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name);
         return ({data, error: null});
     }
+<<<<<<< HEAD:app/api/actions/attendance.ts
 };
 
 export const fetchUserHasSignedAttendance = async (roomId: number | undefined, userId: string) => {
@@ -111,4 +112,7 @@ export const fetchUserHasSignedAttendance = async (roomId: number | undefined, u
 			return ({first_name: elem.first_name, last_name: elem.last_name});
 	});
 	return ({data: participant ? {first_name: participant?.first_name, last_name: participant?.last_name} : null, error: error ? error : null});
+=======
+	return ;
+>>>>>>> ba7af0e (UPDATE Reports page with capsule image and few info):app/api/_actions/attendance.ts
 };
