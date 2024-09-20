@@ -1,5 +1,5 @@
-import { Container, Section, Heading, Callout } from '@radix-ui/themes';
-import CapsuleReports from './CapsuleReports';
+import { Container, Section, Heading, Callout, Grid, Box, Link, ScrollArea } from '@radix-ui/themes';
+import CapsuleReports from './_components/CapsuleReports';
 import { fetchUser } from '@/app/api/_actions/user';
 import { fetchCapsulesData } from '@/app/api/_actions/capsule';
 import { Json } from '@/supabase/types/database.types';
@@ -29,20 +29,30 @@ export default async function ReportsPage() {
 		}
     }
     return (
-        <Section px={{ initial: '3', xs: '0' }}>
-            <Container>
-                <Heading as='h1'>Rapports</Heading>
-                <Callout.Root mt='4'>
-                    {/* <p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p> */}
-					{
-						capsules.map((cap, index) => {
-							return (
-								<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
-							)
-						})
-					}
-				</Callout.Root>
-            </Container>
-        </Section>
+		<ScrollArea>
+			<Section px={{ initial: '3', xs: '0' }}>
+				<Container>
+					<Heading as='h1'>Rapports</Heading>
+					<Callout.Root mt='4'>
+						<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
+							{
+								(capsules.length)
+								? capsules.map((cap, index) => {
+									let url = `/reports/${cap.id}`
+									return (
+										<Box position='relative' key={index}>
+											{/* <Link href={url} style={{ all: 'unset', cursor: 'pointer'}}> */}
+												<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
+											{/* </Link> */}
+										</Box>
+									)
+								})
+								: <p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
+							}
+							</Grid>
+					</Callout.Root>
+				</Container>
+			</Section>
+		</ScrollArea>
     )
 }

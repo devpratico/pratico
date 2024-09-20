@@ -79,4 +79,5 @@ export const fetchNamesFromAttendance = async (userId: string) => {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name);
         return ({data, error: null});
     }
+	return ;
 };
