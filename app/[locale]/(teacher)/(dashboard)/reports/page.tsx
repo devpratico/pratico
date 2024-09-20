@@ -1,9 +1,14 @@
-import { Container, Section, Heading, Callout, Grid, Box, Link, ScrollArea } from '@radix-ui/themes';
+import { Container, Section, Heading, Callout, Grid, Box, Link as RadixLink, ScrollArea } from '@radix-ui/themes';
 import CapsuleReports from './_components/CapsuleReports';
 import { fetchUser } from '@/app/api/_actions/user';
 import { fetchCapsulesData } from '@/app/api/_actions/capsule';
 import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
+import Link from 'next/link';
+import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
+import { useRouter } from 'next/navigation';
+import { fetchAttendancesByRoomId } from '@/app/api/_actions/attendance';
+import { SessionInfoType } from './[capsule_id]/page';
 
 // TYPE
 export type CapsuleType = {
@@ -13,6 +18,32 @@ export type CapsuleType = {
 	title: string | null;
 	tld_snapshot: Json[] | null;
 };
+
+// export const getReportData = async (capsuleId: string) => {
+// 	const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
+// 	let sessions: SessionInfoType[] | null = null;
+// 	logger.debug("supabase:database", "ReportsOfCapsulePage", "fetchRoomsByCapsuleId datas", roomData, roomError);
+// 	if (!roomData || roomError)
+// 	{
+// 		logger.error("supabase:database", "ReportsOfCapsulePage", roomError ? roomError : "No rooms data for this capsule");
+// 		return (null);
+// 	}
+// 	roomData.map(async (room) => {
+// 		const{ data, error } =  await fetchAttendancesByRoomId(room.id);
+// 		if (!data || error)
+// 			logger.error("supabase:database", "ReportsOfCapsulePage", error ? error : "No attendance data for this room");
+// 		const infos: SessionInfoType = {
+// 			created_at: room.created_at,
+// 			numberOfParticipant: data ? data.length : 0,
+// 			status: room.status
+// 		}
+// 		if (sessions)
+// 			sessions.push(infos);
+// 		else
+// 			sessions = [infos];
+// 	});
+// 	return (sessions);
+// };
 
 export default async function ReportsPage() {
 	const { user, error } = await fetchUser();
@@ -28,6 +59,8 @@ export default async function ReportsPage() {
 			capsules = data;
 		}
     }
+
+
     return (
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
@@ -41,9 +74,9 @@ export default async function ReportsPage() {
 									let url = `/reports/${cap.id}`
 									return (
 										<Box position='relative' key={index}>
-											{/* <Link href={url} style={{ all: 'unset', cursor: 'pointer'}}> */}
-												<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
-											{/* </Link> */}
+											<RadixLink href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+													<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
+											</RadixLink>
 										</Box>
 									)
 								})

@@ -56,6 +56,14 @@ export const fetchAttendance = async (id: number | undefined) => {
     return ({ data, error: error?.message });
 };
 
+export const fetchAttendancesByRoomId = async (roomId: number) => {
+	const supabase = createClient();
+    const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+    if (error) logger.error('supabase:database', `error fetching attendance for room ${roomId}...`, error.message)
+    return ({ data, error: error?.message });
+};
+
+
 export const fetchAttendanceByUser = async (userId: string) => {
 	if (!userId)
 	{
