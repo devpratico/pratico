@@ -9,7 +9,6 @@ import { revalidatePath } from "next/cache"
 import { generateRandomCode } from "@/app/_utils/codeGen"
 import { fetchCapsuleSnapshot } from "./capsule"
 
-
 export type RoomInsert = TablesInsert<'rooms'>
 export type Capsule = Tables<'capsules'>
 // TODO: use the same Omit technique for the capsule object, and remove thge unneccessary Json[] array type in supabase
@@ -261,8 +260,10 @@ export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
 
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
+	const sanitizedCapsuleId = capsuleId.replace(/[^a-fA-F0-9-]/g, '')
+	logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", sanitizedCapsuleId);
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
+    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId)
     if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
     return { data, error: error?.message }
 })

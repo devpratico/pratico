@@ -56,7 +56,7 @@ export const fetchAttendance = async (id: number | undefined) => {
     return ({ data, error: error?.message });
 };
 
-export const fetchAttendanceByRoomId = async (roomId: string) => {
+export const fetchAttendanceByRoomId = async (roomId: number | undefined) => {
 	if (!roomId)
 	{
 		logger.error('next:api', 'fetchAttendanceByRoomId id missing');
@@ -64,7 +64,7 @@ export const fetchAttendanceByRoomId = async (roomId: string) => {
 	}
 	const supabase = createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
-    if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId.slice(0, 5)}...`, error.message);
+    if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId}...`, error.message);
     return ({ data, error: error?.message });
 };
 

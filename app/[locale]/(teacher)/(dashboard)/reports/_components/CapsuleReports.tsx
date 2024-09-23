@@ -1,9 +1,9 @@
+// "use client";
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
 import logger from "@/app/_utils/logger";
-import { Box, Callout, Card, Heading, Inset, Separator, Text } from "@radix-ui/themes";
+import { Callout, Card, Heading, Inset, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
-import { fetchAttendance } from "@/app/api/_actions/attendance";
 import { fetchRoomsByCapsuleId, fetchRoomsbyUser } from "@/app/api/_actions/room";
 import { Database, Json } from "@/supabase/types/database.types";
 
