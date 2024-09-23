@@ -5,7 +5,7 @@ import logger from '@/app/_utils/logger';
 import { useEffect, useState } from 'react';
 import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
 import { fetchAttendanceByRoomId } from '@/app/api/_actions/attendance';
-import { Button, Callout, Container, Grid, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
+import { Button, Callout, Container, Flex, Grid, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
 import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/_actions/capsule';
 
@@ -18,7 +18,6 @@ export type SessionInfoType = {
 };
 
 const DISPAY_SESSIONS = "TABLE";
-// const DISPAY_SESSIONS = "BUTTON";
 
 export default function CapsuleSessionReportPage() {
 	const searchParams = useSearchParams().getPathnameWithoutSearchParam('capsuleId');
@@ -39,14 +38,13 @@ export default function CapsuleSessionReportPage() {
 			const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
 			logger.debug('supabase:database', 'CapsuleSessionsReportServer', 'fetchRoomsByCapsuleId datas', roomData, roomError);
 			if (!roomData || roomError) {
-			logger.error('supabase:database', 'CapsuleSessionsReportServer', roomError ? roomError : 'No rooms data for this capsule');
-			setError(roomError ? 'Une erreur est survenue lors de la récupération des sessions.' : 'Aucune sessions');
-			return;
+				logger.error('supabase:database', 'CapsuleSessionsReportServer', roomError ? roomError : 'No rooms data for this capsule');
+				setError(roomError ? 'Une erreur est survenue lors de la récupération des sessions.' : 'Aucune sessions');
+				return;
 			}
 			const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
 			if (capsuleData)
 				setCapsuleTitle(capsuleData?.title ? capsuleData.title : "");
-			console.log("JIJDIJI", capsuleTitle);
 			await Promise.all(
 				roomData.map(async (room) => {
 					const { data, error } = await fetchAttendanceByRoomId(room.id);
@@ -73,7 +71,7 @@ export default function CapsuleSessionReportPage() {
     };
 
     getSessions();
-  }, [capsuleId]);
+  }, [capsuleId, capsuleTitle]);
 
   if (!capsuleId) {
     logger.error('next:page', 'ReportsOfCapsulePage', 'capsuleId missing');
@@ -121,12 +119,7 @@ export default function CapsuleSessionReportPage() {
 								}
 							</Table.Body>
 						</Table.Root>
-						: <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
-							{
-								error
-								? error
-								: null
-							}
+						: <>
 							{
 								loading ? (
 									'Chargement des sessions...'
@@ -134,16 +127,19 @@ export default function CapsuleSessionReportPage() {
 									sessionInfo.map((session, index) => {
 									
 									return (
-										<Button key={index} onClick={() => handleClick(session.id, session.status === "open")}>
-											{formatDate(session.created_at)} - Nombre de participants: {session.numberOfParticipant}{' '}
-											{session.status === 'open' ? '(En cours)' : null}
-										</Button>
+										<Flex key={index} direction='row' mb='2'>
+											<Button onClick={() => handleClick(session.id, session.status === "open")}>
+												{formatDate(session.created_at)} - Nombre de participants: {session.numberOfParticipant}{' '}
+												{session.status === 'open' ? '(En cours)' : null}
+											</Button>
+										</Flex>
+									
 									);
 									})
 								) : (
 									'Aucune session pour cette capsule.'
 							)}
-						</Grid>
+						</>
 
 					}
 					</Section>

@@ -61,24 +61,26 @@ export default async function ReportsPage() {
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 					<Heading as='h1'>Rapports</Heading>
-					<Callout.Root mt='4'>
-						<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
-							{
-								(capsules.length)
-								? capsules.map((cap, index) => {
-									let url = `/reports/${cap.id}`
-									return (
-										<Box position='relative' key={index}>
-											<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-												<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
-											</Link>
-										</Box>
-									)
-								})
-								: <p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
-							}
-							</Grid>
-					</Callout.Root>
+						{
+							(capsules.length)
+							? 	<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
+								{
+									capsules.map((cap, index) => {
+										let url = `/reports/${cap.id}`
+										return (
+											<Box position='relative' key={index}>
+												<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+													<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
+												</Link>
+											</Box>
+										)
+									})
+								}
+								</Grid>	
+							:	<Callout.Root mt='4'>
+								<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
+							</Callout.Root>
+						}
 				</Container>
 			</Section>
 		</ScrollArea>
