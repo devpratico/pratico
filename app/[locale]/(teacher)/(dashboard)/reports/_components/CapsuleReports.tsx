@@ -6,6 +6,7 @@ import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { fetchRoomsByCapsuleId, fetchRoomsbyUser } from "@/app/api/_actions/room";
 import { Database, Json } from "@/supabase/types/database.types";
+import { formatDate } from "@/app/_utils/utils_functions";
 
 // TYPE
 export type RoomType = {
@@ -19,11 +20,12 @@ export type RoomType = {
     params: Json | null;
     status: Database["public"]["Enums"]["RoomStatus"];
 }
+
 export default async function CapsuleReports ({ capsule, userId }:{ capsule: CapsuleType, userId: string }) {
 
 	const capsuleId = capsule.id;
 	const title = capsule.title;
-	const created_at = new Date(capsule.created_at); //---> if we want to use it someday
+	// const created_at = new Date(capsule.created_at); //---> if we want to use it someday
 	const snap = capsule.tld_snapshot?.[0] as TLEditorSnapshot | undefined;
 	let lastSession: RoomType | null = null;
 	// logger.debug("react:component", "CapsuleReports capsule:", capsule);
@@ -37,11 +39,6 @@ export default async function CapsuleReports ({ capsule, userId }:{ capsule: Cap
 		});
 	}
 
-	const formatDate = (date: string | undefined) => {
-		if (!date)
-			return ;
-		return (new Date(date).toLocaleString('fr-FR'));
-	  }
 	return (
 		<>
 			<Card size="2">

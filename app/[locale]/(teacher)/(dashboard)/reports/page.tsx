@@ -70,7 +70,7 @@ export default async function ReportsPage() {
 									return (
 										<Box position='relative' key={index}>
 											<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-													<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
+												<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
 											</Link>
 										</Box>
 									)

@@ -1,4 +1,5 @@
 'use server'
+import { sanitizeUuid } from './../../_utils/utils_functions';
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { cache } from "react"
@@ -260,7 +261,9 @@ export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
 
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
-	const sanitizedCapsuleId = capsuleId.replace(/[^a-fA-F0-9-]/g, '')
+	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
+	if (!sanitizedCapsuleId)
+		return ({data: null, error: 'fetchRoomsByCapsuleId: capsuleId missing'})
 	logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", sanitizedCapsuleId);
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId)
