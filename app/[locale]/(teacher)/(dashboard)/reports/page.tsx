@@ -1,4 +1,3 @@
-
 import { Container, Section, Heading, Callout, Grid, Box, Link, ScrollArea } from '@radix-ui/themes';
 import CapsuleReports from './_components/CapsuleReports';
 import { fetchUser } from '@/app/api/_actions/user';
@@ -70,9 +69,9 @@ export default async function ReportsPage() {
 									let url = `/reports/${cap.id}`
 									return (
 										<Box position='relative' key={index}>
-											{/* <Link href={url} style={{ all: 'unset', cursor: 'pointer'}}> */}
-												<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
-											{/* </Link> */}
+											<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+													<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
+											</Link>
 										</Box>
 									)
 								})
