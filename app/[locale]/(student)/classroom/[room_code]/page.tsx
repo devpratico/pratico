@@ -1,11 +1,11 @@
 import StudentCanvas from './_components/StudentCanvas'
-import { fetchUser, fetchNames } from '@/app/api/_actions/user'
+import { fetchUser } from '@/app/api/_actions/user'
 import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/api/_actions/room'
 import logger from '@/app/_utils/logger'
-import { fetchNamesFromAttendance } from '@/app/api/_actions/attendance'
+import { fetchUserHasSignedAttendance } from '@/app/api/_actions/attendance'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
@@ -19,9 +19,10 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
     if (roomError) throw roomError;
 	logger.log('supabase:database', 'page classroom fetchOpenRoom id:', roomData?.id);
-	const { data , error  } = await fetchNamesFromAttendance(user.id);
+	const { data , error  } = await fetchUserHasSignedAttendance(roomData?.id, user.id);
+	logger.log('supabase:database', 'fetUserHasSignedAttendance', data);
 
-	if (!data?.first_name || !data?.last_name || error) {
+	if (!data || !data?.first_name || !data?.last_name || error) {
         logger.log('next:page', 'Attendance one of the names or both not found, redirecting to form', error ? error : null);
         const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
