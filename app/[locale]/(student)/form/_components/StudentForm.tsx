@@ -1,6 +1,6 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/api/_actions/auth';
 import { fetchUser } from '@/app/api/_actions/user';
 import { useState } from 'react';
@@ -20,13 +20,20 @@ export default function StudentForm() {
 			roomCode = elem[1].split('/').pop();
 	});
     const [isLoading, setIsLoading] = useState(false);
-	const [checked, setChecked] = useState(false); // accept to share your infos
+	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
+
+	const acceptCGU = () => {
+		if (checked.submit)
+			return (checked.accept);
+		return (true);
+	};
 
     return (
         <Form.Root onSubmit={async (event) => {
             event.preventDefault();
 
 			setIsLoading(true);
+			// setChecked({...checked, submit: true});
 			const formData = new FormData(event.currentTarget);
 
 			// Fetch user or sign in anonymously
@@ -62,13 +69,15 @@ export default function StudentForm() {
 
 				<Box maxWidth="250px">
 					<Flex gap="2">
-						<Checkbox defaultChecked onCheckedChange={() => setChecked(!checked)} required/>
-						<Text size='1'>{"*J'accepte de partager ces informations avec l'animateur."}</Text>
+						<Checkbox onCheckedChange={() => setChecked({submit: false, accept: !checked.accept})} required />
+							<Link style={{color: acceptCGU() ? 'none' : '#E53939'}} size='1' href='https://www.pratico.live/conditions-generales-dutilisation-et-de-vente'>
+								{"*J'accepte les conditions générales d'utilisation (CGU)."}
+							</Link>
 					</Flex>
 				</Box>
 
                 <Box style={{alignSelf: 'flex-end'}}>
-                    <Button type="submit" loading={isLoading}>OK</Button>
+                    <Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
                 </Box>
             </Flex>
         </Form.Root>
