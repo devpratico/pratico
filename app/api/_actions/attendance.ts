@@ -56,10 +56,15 @@ export const fetchAttendance = async (id: number | undefined) => {
     return ({ data, error: error?.message });
 };
 
-export const fetchAttendancesByRoomId = async (roomId: number) => {
+export const fetchAttendanceByRoomId = async (roomId: string) => {
+	if (!roomId)
+	{
+		logger.error('next:api', 'fetchAttendanceByRoomId id missing');
+		return ({data: null, error: 'fetchAttendanceByrRoomId id missing'});
+	}
 	const supabase = createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
-    if (error) logger.error('supabase:database', `error fetching attendance for room ${roomId}...`, error.message)
+    if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId.slice(0, 5)}...`, error.message);
     return ({ data, error: error?.message });
 };
 
@@ -67,7 +72,7 @@ export const fetchAttendancesByRoomId = async (roomId: number) => {
 export const fetchAttendanceByUser = async (userId: string) => {
 	if (!userId)
 	{
-		logger.error('next:api', 'fetchAttendanceByYser id missing');
+		logger.error('next:api', 'fetchAttendanceByUser id missing');
 		return ({data: null, error: 'fetchAttendanceByUser id missing'});
 	}
 	const supabase = createClient();
@@ -75,7 +80,6 @@ export const fetchAttendanceByUser = async (userId: string) => {
     if (error) logger.error('supabase:database', `error fetching attendance with user ${userId.slice(0, 5)}...`, error.message)
     return ({ data, error: error?.message });
 };
-
 
 export const fetchNamesFromAttendance = async (userId: string) => {
 	const supabase = createClient();
@@ -87,4 +91,24 @@ export const fetchNamesFromAttendance = async (userId: string) => {
         logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name);
         return ({data, error: null});
     }
+};
+
+export const fetchUserHasSignedAttendance = async (roomId: number | undefined, userId: string) => {
+	logger.log('next:api', 'fetUserHasSignedAttendance', `roomId: ${roomId}, userId: ${userId}`);
+	if (!roomId || !userId)
+	{
+		logger.error('next:api', 'fetchUserHasSignedAttendance roomnId or userId missing');
+		return ({data: null, error: 'fetchUserHasSignedAttendance roomId or userId missing'});
+	}
+	const supabase = createClient();
+    const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+    if (error) logger.error('supabase:database', `error fetching attendance with room id ${roomId}...`, error.message);
+	if (!data)
+		return ({data: null, error: error ? error?.message : 'No attendance found with this id'});
+	logger.log('next:api', 'fetUserHasSignedAttendance room datas', data);
+	const participant = data.find((elem) => {
+		if (elem.user_id === userId)
+			return ({first_name: elem.first_name, last_name: elem.last_name});
+	});
+	return ({data: participant ? {first_name: participant?.first_name, last_name: participant?.last_name} : null, error: error ? error : null});
 };
