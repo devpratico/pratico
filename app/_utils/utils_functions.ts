@@ -1,6 +1,8 @@
-export const formatDate = (date: string | undefined, language?: string) => {
+export const formatDate = (date: string | undefined, language?: string, specify?: string) => {
 	if (!date)
 		return ;
+	if (specify === "hour")
+		return (new Date(date).toLocaleString(language ? language : 'fr-FR', { hour: '2-digit', minute: '2-digit', hour12: true }));
 	return (new Date(date).toLocaleString(language ? language : 'fr-FR'));
   }
 

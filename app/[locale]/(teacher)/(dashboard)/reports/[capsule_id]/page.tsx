@@ -5,7 +5,7 @@ import logger from '@/app/_utils/logger';
 import { useEffect, useState } from 'react';
 import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
 import { fetchAttendanceByRoomId } from '@/app/api/_actions/attendance';
-import { Callout, Container, Grid, Heading, Link, ScrollArea, Section, Table, Text } from '@radix-ui/themes';
+import { Button, Callout, Container, Grid, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
 import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/_actions/capsule';
 
@@ -16,6 +16,9 @@ export type SessionInfoType = {
   numberOfParticipant: number;
   status?: 'open' | 'closed';
 };
+
+const DISPAY_SESSIONS = "TABLE";
+// const DISPAY_SESSIONS = "BUTTON";
 
 export default function CapsuleSessionReportPage() {
 	const searchParams = useSearchParams().getPathnameWithoutSearchParam('capsuleId');
@@ -87,74 +90,67 @@ export default function CapsuleSessionReportPage() {
 
   return (
 	<>
-		<Container >
-			<Heading as="h1">{capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : "Capsule sans titre"}</Heading>
-
-			<Table.Root variant="surface">
-				
-				<Table.Header>
-					<Table.Row>
-					<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-					</Table.Row>
-				</Table.Header>
-
-				<Table.Body>
+		<ScrollArea>
+	      	<Section px={{ initial: '3', xs: '0' }}>
+				<Container >
+					<Heading as="h1">{capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : "Capsule sans titre"}</Heading>
+					<Section px={{ initial: '3', xs: '0' }}>
 					{
-						sessionInfo?.map((elem, index) => {
-							return (
-								<Table.Row key={index} style={{cursor: elem.status === "open" ? 'default': 'pointer', backgroundColor: elem.status === "open" ? '#E0E0E0': 'none'}} onClick={() => handleClick(elem.id, elem.status === "open")}>
-									<Table.RowHeaderCell>{formatDate(elem.created_at)}</Table.RowHeaderCell>
-									<Table.Cell>{elem.numberOfParticipant ? elem.numberOfParticipant : "Aucun"}</Table.Cell>
-									<Table.Cell>{elem.status === "open" ? "En cours" : "Terminé" }</Table.Cell>
+						DISPAY_SESSIONS === "TABLE"
+						? <Table.Root variant="surface">
+						
+							<Table.Header>
+								<Table.Row>
+								<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
 								</Table.Row>
-							);
-						})
-					}
-				</Table.Body>
-			</Table.Root>
+							</Table.Header>
 
-		</Container>
-		
+							<Table.Body>
+								{
+									sessionInfo?.map((session, index) => {
+										return (
+											<Table.Row key={index} style={{cursor: session.status === "open" ? 'default': 'pointer', backgroundColor: session.status === "open" ? '#E0E0E0': 'none'}} onClick={() => handleClick(session.id, session.status === "open")}>
+												<Table.RowHeaderCell>{formatDate(session.created_at)}</Table.RowHeaderCell>
+												<Table.Cell>{session.numberOfParticipant ? session.numberOfParticipant : "Aucun"}</Table.Cell>
+												<Table.Cell>{session.status === "open" ? "En cours" : "Terminé" }</Table.Cell>
+											</Table.Row>
+										);
+									})
+								}
+							</Table.Body>
+						</Table.Root>
+						: <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
+							{
+								error
+								? error
+								: null
+							}
+							{
+								loading ? (
+									'Chargement des sessions...'
+								) : sessionInfo && sessionInfo.length > 0 ? (
+									sessionInfo.map((session, index) => {
+									
+									return (
+										<Button key={index} onClick={() => handleClick(session.id, session.status === "open")}>
+											{formatDate(session.created_at)} - Nombre de participants: {session.numberOfParticipant}{' '}
+											{session.status === 'open' ? '(En cours)' : null}
+										</Button>
+									);
+									})
+								) : (
+									'Aucune session pour cette capsule.'
+							)}
+						</Grid>
+
+					}
+					</Section>
+				</Container>
+			</Section>
+		</ScrollArea>
 	</>
 		
   );
-
-
-//   return (
-//     <ScrollArea>
-//       <Section px={{ initial: '3', xs: '0' }}>
-//         <Container>
-// 			<Heading as="h1">{capsuleTitle.length ? capsuleTitle : "Capsule sans titre"}</Heading>
-//           <Callout.Root mt='4'>
-//             <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
-// 				{
-// 					error
-// 					? error
-// 					: null
-// 				}
-//               {
-// 				loading ? (
-// 					'Chargement des sessions...'
-// 				) : sessionInfo && sessionInfo.length > 0 ? (
-// 					sessionInfo.map((session, index) => {
-// 					const url = `/reports/${sanitizeUuid(capsuleId)}/${session.id}`;
-					
-// 					return (
-// 						<Link key={index} href={url}>
-// 							{formatDate(session.created_at)} - Nombre de participants: {session.numberOfParticipant}{' '}
-// 							{session.status === 'open' ? '(En cours)' : null}
-// 						</Link>
-// 					);
-// 					})
-// 				) : (
-// 					'Aucune session pour cette capsule.'
-//               )}
-//             </Grid>
-//           </Callout.Root>
-//         </Container>
-//       </Section>
-//     </ScrollArea>
-//   );
 }
