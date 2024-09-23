@@ -17,9 +17,6 @@ export default function formPage() {
 						<Heading size='5'>Bienvenue !</Heading>
 					</Flex>
 					<Flex align='center' justify='center' style={{ height: '100%' }}>
-						<Heading size='4'> Qui êtes vous ?</Heading>
-					</Flex>
-					<Flex align='center' justify='center' style={{ height: '100%' }}>
 						<Separator size='3' my='4' />
 					</Flex>
                     <StudentForm />
