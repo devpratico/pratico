@@ -1,5 +1,4 @@
 'use client';
-
 import { Container, Section, Callout, Button, Card, Heading, Flex } from '@radix-ui/themes'
 import { TriangleAlert, House } from 'lucide-react'
 import { Link } from '@/app/_intl/intlNavigation'
