@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect } from 'react'
 import { Container, Section, Callout, Button, Card, Heading, Flex } from '@radix-ui/themes'
 import { TriangleAlert, House } from 'lucide-react'
