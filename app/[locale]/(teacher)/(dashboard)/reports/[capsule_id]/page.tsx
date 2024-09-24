@@ -8,6 +8,7 @@ import { fetchAttendanceByRoomId } from '@/app/api/_actions/attendance';
 import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
 import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/_actions/capsule';
+import { ArrowLeft } from 'lucide-react';
 
 // TYPE
 export type SessionInfoType = {
@@ -81,8 +82,12 @@ export default function CapsuleSessionReportPage() {
 
   return (
 	<>
+
 		<ScrollArea>
+
 	      	<Section px={{ initial: '3', xs: '0' }}>
+				<Button mb='5' onClick={() => router.push('/reports')}><ArrowLeft />Retour</Button>
+
 				<Container >
 					<Heading as="h1">{capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : "Capsule sans titre"}</Heading>
 					<Section px={{ initial: '3', xs: '0' }}>
