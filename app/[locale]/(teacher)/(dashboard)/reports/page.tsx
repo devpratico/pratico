@@ -67,13 +67,7 @@ export default async function ReportsPage() {
 								{
 									capsules.map((cap, index) => {
 										let url = `/reports/${cap.id}`
-										return (
-											<Box position='relative' key={index}>
-												<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-													<CapsuleReports key={index} capsule={cap} userId={user?.id}/>
-												</Link>
-											</Box>
-										)
+										return (<CapsuleReports key={index} capsule={cap} />);
 									})
 								}
 								</Grid>	

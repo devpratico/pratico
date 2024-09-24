@@ -259,6 +259,15 @@ export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
     return { data, error: error?.message }
 })
 
+export const fetchRoomDate = cache(async (roomId: number) => {
+	if (!roomId)
+		return ({data: null, error: 'fetchRoom: roomId missing'})
+	logger.debug("next:api", "fetchRoomsByroomId", roomId, "sanitized: ", roomId);
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('created_at').eq('id', roomId).single();
+    if (error) logger.error('supabase:database', 'Error fetching rooms by room id', error.message)
+    return { data, error: error?.message }
+})
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
 	const sanitizedCapsuleId = sanitizeUuid(capsuleId);

@@ -5,7 +5,7 @@ import logger from '@/app/_utils/logger';
 import { useEffect, useState } from 'react';
 import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
 import { fetchAttendanceByRoomId } from '@/app/api/_actions/attendance';
-import { Button, Callout, Container, Flex, Grid, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
+import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
 import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/_actions/capsule';
 
@@ -25,29 +25,30 @@ export default function CapsuleSessionReportPage() {
 	const capsuleId = searchParams.split('/').pop();
 	const [sessionInfo, setSessionInfo] = useState<SessionInfoType[] | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 	const [ capsuleTitle, setCapsuleTitle ] = useState("");
 
   useEffect(() => {
+	if (!capsuleId)
+		return ;
     const getSessions = async () => {
 		setLoading(true);
 		try {
-			if (!capsuleId)
-				return ;
-			let sessions: SessionInfoType[] = [];		
+			let sessions: SessionInfoType[] = [];
 			const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
 			logger.debug('supabase:database', 'CapsuleSessionsReportServer', 'fetchRoomsByCapsuleId datas', roomData, roomError);
 			if (!roomData || roomError) {
 				logger.error('supabase:database', 'CapsuleSessionsReportServer', roomError ? roomError : 'No rooms data for this capsule');
-				setError(roomError ? 'Une erreur est survenue lors de la récupération des sessions.' : 'Aucune sessions');
 				return ;
 			}
 			const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
+
 			if (capsuleData)
 				setCapsuleTitle(capsuleData?.title ? capsuleData.title : "");
 			await Promise.all(
 				roomData.map(async (room) => {
+
 					const { data, error } = await fetchAttendanceByRoomId(room.id);
+
 					if (!data || error) {
 					logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this room');
 					}
@@ -60,31 +61,23 @@ export default function CapsuleSessionReportPage() {
 					sessions.push(infos);
 				})
 			);
-
 			setSessionInfo(sessions);
 		} catch (err) {
 			console.error('Error getting sessions', err);
-			setError('Erreur lors de la récupération des sessions.');
 		} finally {
 			setLoading(false);
 		}
     };
 
     getSessions();
-  }, [capsuleId, capsuleTitle]);
-
-  if (!capsuleId) {
-    logger.error('next:page', 'ReportsOfCapsulePage', 'capsuleId missing');
-    router.push('/reports');
-	return ;
-  }
+  }, [capsuleId]);
 
   const handleClick = (roomId: string, open: boolean) => {
-	if (!open)
+	if (!open && capsuleId)
 		router.push(`/reports/${sanitizeUuid(capsuleId)}/${sanitizeUuid(roomId)}`);
-  };
+	logger.log('next:page', 'Reports of capule #', capsuleId);
+   };
 
-  logger.log('next:page', 'Reports of capule #', capsuleId);
 
   return (
 	<>
