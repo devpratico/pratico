@@ -1,49 +1,57 @@
-import AuthForm from "./_components/AuthForm";
-//import StudentForm from "../form/_components/StudentForm";
-import { getTranslations } from 'next-intl/server';
-import en from '@/app/_intl/messages/en.json';
-import { Card, Box, Flex } from "@radix-ui/themes";
-//import Image from "next/image";
-//import loginImage from '@/public/illustrations/login.svg';
-import { Container, Section } from "@radix-ui/themes";
-import { Viewport } from "next";
+'use client'
+import { Flex, Tabs, Container, Section, Card } from '@radix-ui/themes';
+import useSearchParams from '@/app/_hooks/useSearchParams';
+import SignUpForm from './_components/SignUpForm';
+import LogInForm from './_components/LogInForm';
+import RecoveryForm from './_components/RecoveryForm';
+import ChangePasswordForm from './_components/ChangePasswordForm';
 
 
-export const viewport: Viewport = {
-    maximumScale: 1,
-    userScalable: false,
-}
+export default function Page() {
+    const { searchParams, setSearchParam } = useSearchParams();
+    const authTab = searchParams.get('authTab');
 
-
-export default async function Login({searchParams}: {searchParams: { [key: string]: string | string[] | undefined}}) {
-
-    //const nextUrl = searchParams.nextUrl as string;
-    const t = await getTranslations("AuthForm");
-
-    const messages: typeof en.AuthForm = {
-        "sign in": t('sign in'),
-        "log out": t('log out'),
-        "sign up": t('sign up'),
-        "email": t('email'),
-        "password": t('password'),
-        "confirm password": t('confirm password'),
-        "forgot password": t('forgot password'),
-        "sign in with Google": t('sign in with Google'),
-        "sign in with Apple": t('sign in with Apple'),
-        "passwords do not match": t('passwords do not match'),
-        "ignore": t('ignore'),
+    const onChangeTab = (value: string) => {
+        setSearchParam('authTab', value) // Dummy commit
     }
 
-
     return (
-        <main style={{backgroundColor:'var(--accent-2)', height:'100dvh', overflow:'scroll'}}>
-            <Container size='1' p='2'>
-                <Section>
-                    <Card size='5'>
-                        <AuthForm messages={messages} />
-                    </Card>
-                </Section>
-            </Container>
-        </main>
-    );
+        <Container size='1' height={'100vh'} style={{backgroundColor: 'var(--accent-2'}}>
+            <Section>
+                <Card>
+                    <Flex direction='column' gap='2' p='5'>
+                        <Tabs.Root value={authTab || 'signup'} onValueChange={onChangeTab}>
+
+                            <Tabs.List justify='center'>
+                                <Tabs.Trigger value='signup'>{"S'inscrire"}</Tabs.Trigger>
+                                <Tabs.Trigger value={'login'}>{"Se connecter"}</Tabs.Trigger>
+                                <Tabs.Trigger value='forgot-password' style={{ display: authTab == 'forgot-password' ? 'flex' : 'none' }}>{'Réinitialiser'}</Tabs.Trigger>
+                                <Tabs.Trigger value='change-password' style={{ display: authTab == 'change-password' ? 'flex' : 'none' }}>{'Réinitialiser'}</Tabs.Trigger>
+                            </Tabs.List>
+
+
+                            <Tabs.Content value='signup'>
+                                <SignUpForm />
+                            </Tabs.Content>
+
+                            <Tabs.Content value='login'>
+                                <LogInForm />
+                            </Tabs.Content>
+
+
+                            <Tabs.Content value='forgot-password'>
+                                <RecoveryForm />
+                            </Tabs.Content>
+
+
+                            <Tabs.Content value='change-password'>
+                                <ChangePasswordForm />
+                            </Tabs.Content>
+
+                        </Tabs.Root>
+                    </Flex>
+                </Card>
+            </Section>
+        </Container>
+    )
 }

@@ -56,7 +56,7 @@ export type Room = Omit<Tables<'rooms'>, 'params' | 'capsule_snapshot' | 'activi
 }
 
 
-export const stopRoom = cache(async (roomId: number) => {
+export const stopRoom = async (roomId: number) => {
     const supabase = createClient()
 
     const { error } = await supabase.from('rooms').update({ status: 'closed' }).eq('id', roomId)
@@ -66,7 +66,7 @@ export const stopRoom = cache(async (roomId: number) => {
     }
 
     return { error: null }
-})
+}
 
 
 export const getRoomId = cache(async (roomCode: string) => {
@@ -83,7 +83,7 @@ interface toggleCollaborationForArgs {
 }
 
 
-export const toggleCollaborationFor = cache(async ({ userId, roomCode }: toggleCollaborationForArgs) => {
+export const toggleCollaborationFor = async ({ userId, roomCode }: toggleCollaborationForArgs) => {
     const { id: roomId } = await getRoomId(roomCode.toString())
     if (!roomId) {
         logger.error('supabase:database', `No roomId - can't toggle collaboration for user`)
@@ -116,7 +116,7 @@ export const toggleCollaborationFor = cache(async ({ userId, roomCode }: toggleC
     const { data: saveData, error: saveError } = await saveRoomParams(roomId, params)
 
     
-})
+}
 
 
 interface toggleCollaborationForAllArgs {
@@ -129,7 +129,7 @@ interface toggleCollaborationForAllArgs {
 }
 
 
-export const toggleCollaborationForAll = cache(async ({ roomCode, allUsersIds }: toggleCollaborationForAllArgs) => {
+export const toggleCollaborationForAll = async ({ roomCode, allUsersIds }: toggleCollaborationForAllArgs) => {
     //const roomId = await getRoomId(roomCode.toString())
     const { id: roomId } = await getRoomId(roomCode.toString())
     if (!roomId) {
@@ -158,24 +158,24 @@ export const toggleCollaborationForAll = cache(async ({ roomCode, allUsersIds }:
 
 
     return await saveRoomParams(roomId, params)
-})
+}
 
 
-const saveRoom = cache(async (room: RoomInsert) => {
+const saveRoom = async (room: RoomInsert) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select()
     if (error) logger.error('supabase:database', 'Error saving room', error.message)
     return { data, error: error?.message }
-})
+}
 
 
-export const deleteRoom = cache(async (roomId: number) => {
+export const deleteRoom = async (roomId: number) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error deleting room', error.message)
     if (!error) revalidatePath('/')
     return { data, error: error?.message }
-})
+}
 
 
 export const fetchOpenRoomsCodes = cache(async () => {
@@ -186,7 +186,7 @@ export const fetchOpenRoomsCodes = cache(async () => {
 })
 
 
-export const createRoom = cache(async (capsuleId: string) => {
+export const createRoom = async (capsuleId: string) => {
     const { user, error: userError } = await fetchUser()
     if (userError) return { room: null, error: userError }
     if (!user) return { room: null, error: 'No user' }
@@ -234,15 +234,15 @@ export const createRoom = cache(async (capsuleId: string) => {
     //revalidatePath(`/room/${createdRoom.code}`)
 
     return { room: createdRoom, error: null }
-})
+}
 
 
-export const saveRoomSnapshot = cache(async (roomId: number, snapshot: any) => {
+export const saveRoomSnapshot = async (roomId: number, snapshot: any) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saving room snapshot', error.message)
     return { data, error: error?.message }
-})
+}
 
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
@@ -261,35 +261,35 @@ export const fetchRoomParams = cache(async (roomId: number) => {
 })
 
 
-export const saveRoomParams = cache(async (roomId: number, params: RoomParams) => {
+export const saveRoomParams = async (roomId: number, params: RoomParams) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').update({ params: params as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saveRoomParams', error.message)
     return { data, error: error?.message }
-})
+}
 
 
-export const fetchOpenRoomByCode = cache(async (code: string) => {
+export const fetchOpenRoomByCode = async (code: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('code', code).eq('status', 'open').single()
 
     if (error) logger.error('supabase:database', `error getting room by code "${code}"`, error.message)
 
     return { data, error: error?.message }
-})
+}
 
 
-export const fetchRoomCreator = cache(async (code: string) => {
+export const fetchRoomCreator = async (code: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('created_by').eq('code', code).single()
 
     if (error) logger.error('supabase:database', 'fetchRoomCreator', `error getting room creator by code "${code}"`, error.message)
 
     return { data, error: error?.message }
-})
+}
 
 
-export const saveRoomActivitySnapshot = cache(async (roomId: number, snapshot: ActivitySnapshot | null) => {
+export const saveRoomActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
     const supabase = createClient()
 
     const { data, error } = await supabase.from('rooms').update({
@@ -298,4 +298,4 @@ export const saveRoomActivitySnapshot = cache(async (roomId: number, snapshot: A
 
     if (error) logger.error('supabase:database', 'Error saving room activity snapshot', error.message)
     return { data, error: error?.message }
-})
+}

@@ -8,7 +8,7 @@ const withNextIntl = createNextIntlPlugin('./app/_intl/i18n.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    
+
     webpack: (config, {dev, isServer}) => {
         config.resolve.alias.canvas = false;
 
@@ -44,7 +44,6 @@ const nextConfig = {
             allowedOrigins: ['http://localhost:4000'],
         }
     },
-   
 }
 
 module.exports = withNextIntl(nextConfig)

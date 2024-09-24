@@ -5,8 +5,8 @@ import { Poll } from "@/app/_hooks/usePollQuizCreation"
 import { PollAnswerRow } from "@/app/[locale]/(teacher)/(desk)/_components/activities/PollAnimation"
 import { useRoom } from "@/app/_hooks/useRoom"
 import { useState, useEffect } from 'react'
-import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
-import { PollSnapshot } from "@/app/api/_actions/room"
+import { saveRoomActivitySnapshot } from "@/app/api/actions/room"
+import { PollSnapshot } from "@/app/api/actions/room"
 
 
 export default function PollAnswering({ poll }: { poll: Poll }) {
