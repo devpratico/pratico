@@ -8,7 +8,6 @@ import logger from '@/app/_utils/logger'
 import { fetchUserHasSignedAttendance } from '@/app/api/_actions/attendance'
 import ErrorMessage from '@/app/[locale]/ErrorMessage'
 
-
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const { user, error: userError } = await fetchUser();
     if (!user || userError) {

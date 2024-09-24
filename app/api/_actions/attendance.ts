@@ -5,6 +5,7 @@ import logger from "@/app/_utils/logger";
 import { TablesInsert } from "@/supabase/types/database.types";
 import { fetchUser } from "./user";
 import { fetchOpenRoomByCode } from "./room";
+import { User } from "@supabase/supabase-js";
 
 export type AttendanceInsert = TablesInsert<'attendance'>
 
