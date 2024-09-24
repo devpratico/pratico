@@ -51,7 +51,8 @@ export default function SignUpForm() {
             await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
             setIsLoading(false);
             setDisabled(false);
-            router.push(nextUrl || '/capsules');
+			logger.log('react:component', 'SignUpForm', nextUrl);
+            router.push('/capsules');
         }
     }
 

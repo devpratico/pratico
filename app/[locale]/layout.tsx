@@ -27,6 +27,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     
     return (
         <html lang={locale} data-theme="pratico">
+			<head><link rel='icon' type="image/x-icon" href='/favicon.ico'/></head>
             <body className={luciole.className}>
                 <Theme accentColor="violet" appearance='light' panelBackground='solid'>
                     <DisableProvider>
