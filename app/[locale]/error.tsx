@@ -31,12 +31,10 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
                         </Callout.Root>
 
                         <Flex gap='2'>
-
-                            <Button variant='soft' onClick={() => reset()}>
-                                <RefreshCcw />
-                                Réessayer
-                            </Button>
-
+							<Button variant='soft' onClick={() => reset()}>
+										<RefreshCcw />
+										Réessayer
+									</Button>
                             <Button asChild>
                                 <Link href='/capsules'>
                                     <House />

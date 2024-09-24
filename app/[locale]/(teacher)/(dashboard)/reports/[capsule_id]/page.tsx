@@ -40,7 +40,7 @@ export default function CapsuleSessionReportPage() {
 			if (!roomData || roomError) {
 				logger.error('supabase:database', 'CapsuleSessionsReportServer', roomError ? roomError : 'No rooms data for this capsule');
 				setError(roomError ? 'Une erreur est survenue lors de la récupération des sessions.' : 'Aucune sessions');
-				return;
+				return ;
 			}
 			const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
 			if (capsuleData)

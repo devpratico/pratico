@@ -1,7 +1,6 @@
-// "use client";
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
 import logger from "@/app/_utils/logger";
-import { Callout, Card, Heading, Inset, Separator } from "@radix-ui/themes";
+import { Card, Heading, Inset, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { fetchRoomsByCapsuleId, fetchRoomsbyUser } from "@/app/api/_actions/room";
@@ -47,13 +46,10 @@ export default async function CapsuleReports ({ capsule, userId }:{ capsule: Cap
 				</Inset>
 				<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
 				<Separator size='4' my='4' />
-				<Callout.Text size="3">
 					Nombre de sessions: {roomData?.length ? roomData.length : 'Aucune'}
 					<Separator />
 					{ roomData?.length ? `Derniere session: ${formatDate(lastSession?.created_at)}` : null }
-					
-				</Callout.Text>
-			</Card>
+				</Card>
 		</>
 	);
 
