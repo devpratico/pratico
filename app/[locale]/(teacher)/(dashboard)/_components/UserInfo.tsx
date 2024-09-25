@@ -1,5 +1,5 @@
 import { Avatar } from '@radix-ui/themes';
-import { fetchUser, fetchNames } from '@/app/api/_actions/user';
+import { fetchUser, fetchNames } from '@/app/api/actions/user';
 import { Link } from "@/app/_intl/intlNavigation";
 import { LoginBtn, SignUpBtn } from "../../../_components/AuthBtns";
 import { getTranslations } from 'next-intl/server';

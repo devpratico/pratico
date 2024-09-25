@@ -4,7 +4,7 @@ import QuizAnswering from './QuizAnswering'
 import { useState, useEffect } from "react"
 import { useRoom } from '@/app/_hooks/useRoom'
 import { Quiz, Poll } from '@/app/_hooks/usePollQuizCreation'
-import { fetchActivity } from '@/app/api/_actions/activities'
+import { fetchActivity } from '@/app/api/actions/activities'
 import PollAnswering from './PollAnswering'
 
 export default function ActivityCard() {

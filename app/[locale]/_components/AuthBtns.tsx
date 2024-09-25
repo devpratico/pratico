@@ -1,7 +1,6 @@
 import { Button } from "@radix-ui/themes"
 import { Link } from "@/app/_intl/intlNavigation"
 
-
 type LoginBtnProps = {
     nextUrl?: string;
 }
@@ -15,7 +14,7 @@ export function LoginBtn({ nextUrl }: LoginBtnProps) {
     return (
         <Button color='orange' asChild>
             <Link href={'/auth?authTab=login' + (nextUrl ? '?nextUrl=' + nextUrl : '')}>
-                se connecter
+             	   se connecter					
             </Link>
         </Button>
     )
@@ -26,7 +25,7 @@ export function SignUpBtn({ nextUrl }: LoginBtnProps) {
     return (
         <Button color='yellow' asChild>
             <Link href={'/auth?authTab=signup' + (nextUrl ? '?nextUrl=' + nextUrl : '')}>
-                Créer un compte
+	                Créer un compte				
             </Link>
         </Button>
     )

@@ -8,7 +8,7 @@ import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/_hooks/useNav"
 import { useDisable } from "@/app/_hooks/useDisable"
 import { convertPdfToImages, getPdfNumPages } from "@/app/_utils/pdfUtils"
-import { getPublicUrl } from "@/app/api/_actions/capsule"
+import { getPublicUrl } from "@/app/api/actions/capsule"
 import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
@@ -87,18 +87,23 @@ function ImportDocumentBtn() {
 
         const numPages = await getPdfNumPages(file)
         setImages(new Array(numPages))
-        setPagesProgress({ loading: 0, total: numPages })
+        setPagesProgress({ loading: 0, total: numPages || 0 })
 
         const imagesPromises = await convertPdfToImages({ file })
+
+        if (!imagesPromises) {
+            logger.error('system:file', 'Error converting PDF to images')
+            return
+        }
 
         Promise.all(imagesPromises.map(async (promise, index) => {
             return promise.then((image) => {
                 setImages((prev) => {
-                    prev[index] = image
+                    prev[index] = image || { bitmap: '', width: 0, height: 0 }
                     return prev
                 })
                 logger.log('system:file', `Loaded page ${index}`)
-                setProgress((prev) => (prev || 0) + 100 / numPages)
+                setProgress((prev) => (prev || 0) + 100 / (numPages || 1))
                 setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
             })
         }).map(async (promise) => {

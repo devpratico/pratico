@@ -40,7 +40,6 @@ export const fetchUser =  cache(async () => {
     return ({ user, error: error?.message || null })
 })
 
-
 export const fetchNames = cache(async (userId: string): Promise<Names> => {
     const supabase = createClient()
     const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', userId).single()
@@ -79,9 +78,17 @@ export const fetchStripeId = cache(async (userId: string) => {
 /**
  * Completes the `stripe_id` column in the `user_profiles` table
  */
-export const saveStripeId = cache(async (userId: string, stripeId: string) => {
+export const saveStripeId = async (userId: string, stripeId: string) => {
     const supabase = createClient()
     const { error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })
     if (error) logger.error('supabase:database', `error saving stripe id for user ${userId.slice(0, 5)}...`, error.message)
     return { error: error?.message }
+}
+
+export const getUserByEmail = cache( async (email: string) => {
+	const supabase = createClient();
+	const { data } = await supabase.auth.getUser();
+	if (data?.user && data.user.email?.toString() === email)
+		return (data.user);
+	return (undefined)
 })

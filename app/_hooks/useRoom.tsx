@@ -1,6 +1,6 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import { Room, fetchOpenRoomByCode } from '@/app/api/_actions/room';
+import { Room, fetchOpenRoomByCode } from '@/app/api/actions/room';
 import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
