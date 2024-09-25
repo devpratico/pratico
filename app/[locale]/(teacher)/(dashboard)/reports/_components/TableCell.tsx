@@ -14,8 +14,8 @@ export type ReportsNavigationIDs = {
 export type TableCellProps = {
 	roomClosed?: boolean,
 	rowHeaderCell: string | null | undefined
-	cellOne: string | null,
-	cellTwo: string | null
+	cellOne: string | null | undefined,
+	cellTwo: string | null | undefined
 }
 
 export function TableCell ({index, navigationsIds, infos}: {index: number, navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
@@ -38,15 +38,17 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 			<Table.Cell>{infos.cellOne}</Table.Cell>
 			<Table.Cell>
 				{
-					infos.cellTwo === "En cours"
-					? <Badge color="violet" variant="soft" radius="full">
-						{infos.cellTwo}
-					</Badge>
-					: infos.cellTwo === "Terminé"
-						? <Badge color="jade" variant="soft" radius="full">
+					infos.cellTwo 
+					? infos.cellTwo === "En cours"
+						? <Badge color="violet" variant="soft" radius="full">
 							{infos.cellTwo}
 						</Badge>
-						: infos.cellTwo
+						: infos.cellTwo === "Terminé"
+							? <Badge color="jade" variant="soft" radius="full">
+								{infos.cellTwo}
+							</Badge>
+							: infos.cellTwo
+					: ""
 				}
 			</Table.Cell> 
 		</Table.Row>

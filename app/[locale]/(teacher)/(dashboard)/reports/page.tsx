@@ -60,23 +60,23 @@ export default async function ReportsPage() {
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 					<Heading mb='4' as='h1'>Rapports</Heading>
-						{
-							(capsules.length)
-							? 	<Grid 
-									columns='repeat(auto-fit, minmax(0, 1fr))'
-									gap="3"
-									rows='repeat(auto-fit, minmax(0, 1fr))'
-									width="100%">
-								{
-									capsules.map((cap, index) => {
-										return (<CapsuleReports key={index} capsule={cap} />);
-									})
-								}
-								</Grid>	
-							:	<Callout.Root mt='4'>
-								<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
-							</Callout.Root>
-						}
+					{
+						(capsules.length)
+						? 	<Grid 
+								columns='repeat(auto-fit, minmax(0, 1fr))'
+								gap="3"
+								rows='repeat(auto-fit, minmax(0, 1fr))'
+								width="100%">
+							{
+								capsules.map((cap, index) => {
+									return (<CapsuleReports key={index} capsule={cap} />);
+								})
+							}
+							</Grid>	
+						:	<Callout.Root mt='4'>
+							<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
+						</Callout.Root>
+					}					
 				</Container>
 			</Section>
 		</ScrollArea>

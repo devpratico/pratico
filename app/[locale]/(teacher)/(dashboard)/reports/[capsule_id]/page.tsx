@@ -2,11 +2,12 @@ import logger from '@/app/_utils/logger';
 import { fetchRoomsByCapsuleId } from '@/app/api/actions/room';
 import { fetchAttendanceByRoomId } from '@/app/api/actions/attendance';
 import { Button, Container, Flex, Heading, Link, ScrollArea, Section, Table } from '@radix-ui/themes';
-import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
+import { formatDate } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/actions/capsule';
 import { ArrowLeft } from 'lucide-react';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 import { TableCell } from '../_components/TableCell';
+import { Loading } from '../_components/LoadingPage';
 
 // TYPE
 export type SessionInfoType = {
@@ -18,6 +19,7 @@ export type SessionInfoType = {
 
 export default async function CapsuleSessionReportPage({ params }: {params: Params}) {
 	const capsuleId = params?.capsule_id;
+	let loading =  true;
 	let capsuleTitle = "";
 	if (!capsuleId)
 	{
@@ -28,6 +30,7 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 	logger.log("next:page", "CapsuleSessionReportPage", capsuleId);
 	let sessions: SessionInfoType[] = [];
 	try {
+		loading = true;
 		const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
 		logger.debug('supabase:database', 'CapsuleSessionsReportServer', 'fetchRoomsByCapsuleId datas', roomData, roomError);
 		if (!roomData || roomError) {
@@ -56,6 +59,8 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 		);
 	} catch (err) {
 		console.error('Error getting sessions', err);
+	} finally {
+		loading = false;
 	}
 
   return (
@@ -65,43 +70,47 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 
 	      	<Section px={{ initial: '3', xs: '0' }}>
 
-				<Container >
-					<Flex >
-						<Button asChild variant='soft'>
-							<Link href={`/reports`}><ArrowLeft />Retour
-							</Link>	
-						</Button>
-						<Heading ml="3" mb="4" as="h1">{capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : "Capsule sans titre"}</Heading>
-					</Flex>
-					<Table.Root variant="surface">
-					
-						<Table.Header>
-							<Table.Row>
-							<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
-							<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
-							</Table.Row>
-						</Table.Header>
+					<Container >
+						<Flex >
+							<Button asChild variant='soft'>
+								<Link href={`/reports`}><ArrowLeft />Retour
+								</Link>	
+							</Button>
+							<Heading ml="3" mb="4" as="h1">{capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : "Capsule sans titre"}</Heading>
+						</Flex>
+						{
+							loading
+							? <Loading />
+							: <Table.Root variant="surface">
+								<Table.Header>
+									<Table.Row>
+									<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+									</Table.Row>
+								</Table.Header>
 
-						<Table.Body>
-							{
-								sessions?.map((session, index) => {
-									return (
-										<TableCell
-											index={index}
-											navigationsIds={{capsuleId, roomId: session.id}}
-											infos={{
-												roomClosed: session.status === "closed",
-												rowHeaderCell: formatDate(session.created_at),
-												cellOne: session.numberOfParticipant > 0 ? session.numberOfParticipant.toString() : "Aucun",
-												cellTwo: session.status === "open" ? "En cours" : "Terminé"
-											}} />
-									);
-								})
-							}
-						</Table.Body>
-					</Table.Root>
-				</Container>
+								<Table.Body>
+									{
+										sessions?.map((session, index) => {
+											return (
+												<TableCell
+													index={index}
+													navigationsIds={{capsuleId, roomId: session.id}}
+													infos={{
+														roomClosed: session.status === "closed",
+														rowHeaderCell: formatDate(session.created_at),
+														cellOne: session.numberOfParticipant > 0 ? session.numberOfParticipant.toString() : "Aucun",
+														cellTwo: session.status === "open" ? "En cours" : "Terminé"
+													}} />
+											);
+										})
+									}
+								</Table.Body>
+							</Table.Root>
+						}
+						
+					</Container>
 			</Section>
 		</ScrollArea>
 	</>

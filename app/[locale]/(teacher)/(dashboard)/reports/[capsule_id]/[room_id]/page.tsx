@@ -8,6 +8,7 @@ import { Button, Container, Flex, Heading, ScrollArea, Section, Separator, Table
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { TableCell } from "../../_components/TableCell";
+import { Loading } from "../../_components/LoadingPage";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -22,6 +23,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	let attendances: AttendanceInfoType[] = [];		
 	let capsuleTitle = "";
 	let sessionDate: string | undefined = "";
+	let loading = true;
 
 	logger.debug("next:page", "SessionDetailsPage", roomId, capsuleId);
 	if (!(roomId && capsuleId))
@@ -64,41 +66,48 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		
 	} catch (err) {
 		console.error('Error getting attendances', err);
+	} finally {
+		loading = false;
 	}
 	return (<>
 		<ScrollArea>
 			<Section>
-				
 				<Container >
-					<Flex>
-						<Button asChild variant="soft">
-							<Link href={`/reports/${sanitizeUuid(capsuleId)}`}>
-								<ArrowLeft />Retour
-							</Link>
-						</Button>
-						<Heading ml="3" mb="4" as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
-					</Flex>
-					<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
+				{
+					loading
+					? <Loading />
+					: <>
+						<Flex>
+							<Button asChild variant="soft">
+								<Link href={`/reports/${sanitizeUuid(capsuleId)}`}>
+									<ArrowLeft />Retour
+								</Link>
+							</Button>
+							<Heading ml="3" mb="4" as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
+						</Flex>
+						<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
 
-					<Table.Root variant="surface">
-						
-						<Table.Header>
-							<Table.Row>
-								<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-						{
-							attendances?.map((attendance, index) => {
-								return (
-									<TableCell index={index} navigationsIds={{capsuleId, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.connexion, cellOne: attendance.first_name, cellTwo: attendance.last_name}} />
-								);
-							})
-						}
+						<Table.Root variant="surface">
+							
+							<Table.Header>
+								<Table.Row>
+									<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+								</Table.Row>
+							</Table.Header>
+							<Table.Body>
+							{
+								attendances?.map((attendance, index) => {
+									return (
+										<TableCell index={index} navigationsIds={{capsuleId, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+									);
+								})
+							}
 							</Table.Body>
-					</Table.Root>
+						</Table.Root>
+					</>
+				}
 				</Container>
 			</Section>
 		</ScrollArea>
