@@ -1,7 +1,7 @@
 "use client";
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
 import logger from "@/app/_utils/logger";
-import { Card, Heading, Inset, Link, Separator } from "@radix-ui/themes";
+import { Badge, Card, DataList, Flex, Heading, Inset, Link, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { fetchRoomsByCapsuleId } from "@/app/api/actions/room";
@@ -29,7 +29,6 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	const url = `/reports/${capsuleId}`;
 	// const created_at = new Date(capsule.created_at); //---> if we want to use it someday
 	const snap = capsule.tld_snapshot?.[0] as TLEditorSnapshot | undefined;
-	let lastSession: RoomType | null = null;
 	// logger.debug("react:component", "CapsuleReports capsule:", capsule);
 	useEffect(() => {
 		const fetchDatas = async () => {
@@ -53,18 +52,42 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 
 	return (
 		<>
-			<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-				<Card size="2">
+			<Card>
+				<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 					<Inset clip="padding-box" side="top" pb="current">
-						<Thumbnail snapshot={snap} scale={0.07}/>
+						{
+							snap 
+							? <Thumbnail snapshot={snap} scale={0.07}/>
+							:   <div
+									style={{
+										position: 'relative',
+										width: '100%',
+										height: '100%',
+										minHeight: '107px',
+										backgroundColor: 'white',
+										borderRadius: 'var(--radix-border-radius-md)',
+										overflow: 'hidden'
+									}}
+								/>
+						}
 					</Inset>
 					<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
 					<Separator size='4' my='4' />
-					Nombre de sessions: {roomData?.session.length ? roomData.session.length : 'Aucune'}
-					<Separator />
-					{ roomData?.session.length && roomData.lastSession ? `Dernière session: ${roomData.lastSession}` : null }
-				</Card>
-			</Link>
+					<DataList.Root orientation={"vertical"}>
+						<DataList.Item>
+							<DataList.Label minWidth="88px">Nombre de sessions</DataList.Label>
+							<DataList.Value>
+								{roomData.session.length ? roomData.session.length : "Aucune"}
+							</DataList.Value>
+						</DataList.Item>
+						<DataList.Item>
+							<DataList.Label minWidth="88px">Dernière session</DataList.Label>
+							<DataList.Value>{roomData.lastSession ? roomData.lastSession : "Jamais"}</DataList.Value>
+						</DataList.Item>
+					</DataList.Root>
+				</Link>
+			</Card>
+		
 		</>
 	);
 

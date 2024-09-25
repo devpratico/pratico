@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "@radix-ui/themes";
+import { Badge, Table } from "@radix-ui/themes";
 import { sanitizeUuid } from "@/app/_utils/utils_functions";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
@@ -36,7 +36,19 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': '#E0E0E0'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
-			<Table.Cell>{infos.cellTwo}</Table.Cell> 
+			<Table.Cell>
+				{
+					infos.cellTwo === "En cours"
+					? <Badge color="violet" variant="soft" radius="full">
+						{infos.cellTwo}
+					</Badge>
+					: infos.cellTwo === "Terminé"
+						? <Badge color="jade" variant="soft" radius="full">
+							{infos.cellTwo}
+						</Badge>
+						: infos.cellTwo
+				}
+			</Table.Cell> 
 		</Table.Row>
 	);
 };
