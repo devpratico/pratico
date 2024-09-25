@@ -5,7 +5,7 @@ import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/api/actions/room'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance } from '@/app/api/_actions/attendance'
+import { fetchUserHasSignedAttendance } from '@/app/api/actions/attendance'
 import ErrorMessage from '@/app/[locale]/ErrorMessage'
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {

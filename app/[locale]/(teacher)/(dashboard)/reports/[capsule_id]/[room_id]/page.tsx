@@ -2,9 +2,9 @@
 import useSearchParams from "@/app/_hooks/useSearchParams";
 import logger from "@/app/_utils/logger";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { fetchAttendance, fetchAttendanceByRoomId } from "@/app/api/_actions/attendance";
-import { fetchCapsule } from "@/app/api/_actions/capsule";
-import { fetchRoomDate } from "@/app/api/_actions/room";
+import { fetchAttendance, fetchAttendanceByRoomId } from "@/app/api/actions/attendance";
+import { fetchCapsule } from "@/app/api/actions/capsule";
+import { fetchRoomDate } from "@/app/api/actions/room";
 import { Button, Container, Heading, ScrollArea, Section, Separator, Table } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";

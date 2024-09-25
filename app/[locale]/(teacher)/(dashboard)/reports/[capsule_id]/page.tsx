@@ -3,11 +3,11 @@ import { useRouter } from 'next/navigation';
 import useSearchParams from '@/app/_hooks/useSearchParams';
 import logger from '@/app/_utils/logger';
 import { useEffect, useState } from 'react';
-import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
-import { fetchAttendanceByRoomId } from '@/app/api/_actions/attendance';
+import { fetchRoomsByCapsuleId } from '@/app/api/actions/room';
+import { fetchAttendanceByRoomId } from '@/app/api/actions/attendance';
 import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from '@radix-ui/themes';
 import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
-import { fetchCapsule } from '@/app/api/_actions/capsule';
+import { fetchCapsule } from '@/app/api/actions/capsule';
 import { ArrowLeft } from 'lucide-react';
 
 // TYPE

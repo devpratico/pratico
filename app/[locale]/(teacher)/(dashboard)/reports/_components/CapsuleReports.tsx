@@ -4,11 +4,10 @@ import logger from "@/app/_utils/logger";
 import { Card, Heading, Inset, Link, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
-import { fetchRoomsByCapsuleId } from "@/app/api/_actions/room";
+import { fetchRoomsByCapsuleId } from "@/app/api/actions/room";
 import { Database, Json } from "@/supabase/types/database.types";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useState } from "react";
-import { log } from "console";
 
 // TYPE
 export type RoomType = {
