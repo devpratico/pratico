@@ -185,7 +185,6 @@ export const fetchRoomsbyUser = cache(async (userId: string) => {
     return { data, error: error?.message }
 })
 
-
 export const fetchClosedRoomsCodes = cache(async () => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('code').eq('status', 'closed')

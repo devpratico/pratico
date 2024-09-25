@@ -1,5 +1,5 @@
 import StudentCanvas from './_components/StudentCanvas'
-import { fetchUser, fetchNames } from '@/app/api/actions/user'
+import { fetchUser } from '@/app/api/actions/user'
 import { redirect } from '@/app/_intl/intlNavigation'
 import { CanvasUser } from '@/app/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'

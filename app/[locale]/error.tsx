@@ -30,17 +30,19 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
 								</Callout.Text>
 							</Callout.Root>
 
-                        <Flex gap='2'>
-							<Button variant='soft' onClick={() => reset()}>
-										<RefreshCcw />
-										Réessayer
-									</Button>
-                            <Button asChild>
-                                <Link href='/capsules'>
-                                    <House />
-                                    {`Retour à l'accueil`}
-                                </Link>
-                            </Button>
+							<Flex gap='2'>
+
+								<Button variant='soft' onClick={() => reset()}>
+									<RefreshCcw />
+									Réessayer
+								</Button>
+
+								<Button asChild>
+									<Link href='/capsules'>
+										<House />
+										{`Retour à l'accueil`}
+									</Link>
+								</Button>
 
 							</Flex>
 
