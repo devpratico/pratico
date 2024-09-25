@@ -6,7 +6,6 @@ import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { fetchCapsule } from '@/app/api/actions/capsule';
 import { ArrowLeft } from 'lucide-react';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
-import { redirect } from '@/app/_intl/intlNavigation';
 import { TableCell } from '../_components/TableCell';
 
 // TYPE
@@ -92,7 +91,7 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 											index={index}
 											navigationsIds={{capsuleId, roomId: session.id}}
 											infos={{
-												roomOpen: session.status === "open",
+												roomClosed: session.status === "closed",
 												rowHeaderCell: formatDate(session.created_at),
 												cellOne: session.numberOfParticipant > 0 ? session.numberOfParticipant.toString() : "Aucun",
 												cellTwo: session.status === "open" ? "En cours" : "Terminé"

@@ -1,5 +1,4 @@
-"use client";
-import useSearchParams from "@/app/_hooks/useSearchParams";
+import { Link } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
 import { fetchAttendance, fetchAttendanceByRoomId } from "@/app/api/actions/attendance";
@@ -7,8 +6,8 @@ import { fetchCapsule } from "@/app/api/actions/capsule";
 import { fetchRoomDate } from "@/app/api/actions/room";
 import { Button, Container, Heading, ScrollArea, Section, Separator, Table } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { TableCell } from "../../_components/TableCell";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -17,110 +16,86 @@ export type AttendanceInfoType = {
 	connexion: string | undefined,
 }
 
-export default function SessionDetailsPage () {
-	const searchParams = useSearchParams().getPathnameWithoutSearchParam('roomId');
-	const router = useRouter();
-	const roomIdTmp: string | number | undefined = searchParams.split('/').pop();
-	const capsuleId = searchParams.split('/')[2];
-	const [ attendanceInfo, setAttendanceInfo ] = useState<AttendanceInfoType[] | null>(null);
-	const [ loading, setLoading ] = useState(true);
-	const [ title, setTitle ] = useState<{capsuleTitle: string, sessionDate: string | undefined}>({capsuleTitle: '', sessionDate: ''});
+export default async function SessionDetailsPage ({ params }: { params: Params }) {
+	const roomId = params.room_id;
+	const capsuleId = params.capsule_id;
+	let attendances: AttendanceInfoType[] = [];		
+	let capsuleTitle = "";
+	let sessionDate: string | undefined = "";
 
-  	useEffect(() => {
-		logger.debug("next:page", "SessionDetailsPage", searchParams, roomIdTmp, capsuleId);
-    	const getAttendances = async () => {
-			if (!roomIdTmp)
-			{
-				router.push(`/reports/${capsuleId}`);
-				return ;				
-			}
-			setLoading(true);
-			try {
-				const roomId = parseInt(roomIdTmp);
-				if (!title.sessionDate?.length)
-				{
-					const {data: roomData, error: roomError} = await fetchRoomDate(roomId);
-					logger.debug("supabase:database", "SessionDetailsPage", "fetchRoom", roomData, roomError);
-					if (roomData)
-						setTitle((prevTitle) => ({ ...prevTitle, sessionDate: roomData.created_at }));				}
-				let attendances: AttendanceInfoType[] = [];		
-				const { data: attendanceData, error: attendanceError } = await fetchAttendanceByRoomId(Number(roomId));
-				logger.debug("supabase:database", "SessionDetailsPage", "fetchAttendanceByRoomID", attendanceData, attendanceError);
-				if (!attendanceData?.length)
-				{
-					logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
-					return ;
-				}
-				else if (!attendanceData || attendanceError) {
-					logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
-					return ;
-				}
-				if (capsuleId && !title.capsuleTitle.length)
-				{
-					const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
-					if (capsuleData)
-						setTitle((prevTitle) => ({ ...prevTitle, capsuleTitle: capsuleData.title || '' }));
-				}
-				await Promise.all(
-					attendanceData.map(async (attendance) => {
-						const { data, error } = await fetchAttendance(attendance.id);
-						if (!data || error) {
+	logger.debug("next:page", "SessionDetailsPage", roomId, capsuleId);
+	if (!(roomId && capsuleId))
+	{
+		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
+		return ;				
+	}
+	try {
+		const {data: roomData, error: roomError} = await fetchRoomDate(roomId);
+		logger.debug("supabase:database", "SessionDetailsPage", "fetchRoom", roomData, roomError);
+		if (roomData)
+			sessionDate = formatDate(roomData.created_at);	
+		const { data: attendanceData, error: attendanceError } = await fetchAttendanceByRoomId(roomId);
+		logger.debug("supabase:database", "SessionDetailsPage", "fetchAttendanceByRoomID", attendanceData, attendanceError);
+		if (!attendanceData?.length)
+			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
+		else if (!attendanceData || attendanceError) {
+			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
+		}
+		const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
+		if (capsuleData)
+			capsuleTitle = capsuleData.title;
+		if (attendanceData?.length)
+		{
+			await Promise.all(
+				attendanceData.map(async (attendance) => {
+					const { data, error } = await fetchAttendance(attendance.id);
+					if (!data || error) {
 						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
-						}
-						const infos: AttendanceInfoType = {
-							first_name: attendance.first_name,
-							last_name: attendance.last_name,
-							connexion: formatDate(attendance.created_at, undefined, "hour")
-						};
-						attendances.push(infos);
-					})
-				);
-				setAttendanceInfo(attendances);
-			} catch (err) {
-				console.error('Error getting attendances', err);
-			} finally {
-				setLoading(false);
-			}
-		};
-		getAttendances();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-  	}, [roomIdTmp, capsuleId, router]);
-
+					}
+					const infos: AttendanceInfoType = {
+						first_name: attendance.first_name,
+						last_name: attendance.last_name,
+						connexion: formatDate(attendance.created_at, undefined, "hour")
+					};
+					attendances.push(infos);
+				})
+			);
+		}
+		
+	} catch (err) {
+		console.error('Error getting attendances', err);
+	}
 	return (<>
 		<ScrollArea>
 			<Section>
-				<Button onClick={() => router.push(`/reports/${sanitizeUuid(capsuleId)}`)} variant="soft"><ArrowLeft />Retour</Button>
+				<Button asChild variant="soft">
+					<Link href={`/reports/${sanitizeUuid(capsuleId)}`}>
+						<ArrowLeft />Retour
+					</Link>
+				</Button>
 				<Container >
-					<Heading as="h1">{`Emargements${title.sessionDate ? ` du ${formatDate(title.sessionDate)}` : ""}`}</Heading>
-					<Heading mb="4" as="h3">{`${title.capsuleTitle !== "Sans titre" ? title.capsuleTitle : ""}`}</Heading>
+					<Heading as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
+					<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
 					<Separator my='3'/>
-					{
-						loading
-						? <>Chargement...</>
-						: <Table.Root variant="surface">
+						<Table.Root variant="surface">
 							
 							<Table.Header>
 								<Table.Row>
-									<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-									<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
 									<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
+									<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
 							{
-								attendanceInfo?.map((attendance, index) => {
+								attendances?.map((attendance, index) => {
 									return (
-										<Table.Row key={index}>
-											<Table.RowHeaderCell>{attendance.last_name}</Table.RowHeaderCell>
-											<Table.Cell>{attendance.first_name}</Table.Cell>
-											<Table.Cell>{attendance.connexion}</Table.Cell>
-										</Table.Row>
+										<TableCell index={index} navigationsIds={{capsuleId, roomId}} infos={{rowHeaderCell: attendance.connexion, cellOne: attendance.first_name, cellTwo: attendance.last_name}} />
 									);
 								})
 							}
 								</Table.Body>
 						</Table.Root>
-					}
 				</Container>
 			</Section>
 		</ScrollArea>

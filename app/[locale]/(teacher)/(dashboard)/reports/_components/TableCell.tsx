@@ -12,30 +12,28 @@ export type ReportsNavigationIDs = {
 }
 
 export type TableCellProps = {
-	roomOpen?: boolean,
-	rowHeaderCell: string | undefined
-	cellOne: string | number,
-	cellTwo: string
+	roomClosed?: boolean,
+	rowHeaderCell: string | null | undefined
+	cellOne: string | null,
+	cellTwo: string | null
 }
 
 export function TableCell ({index, navigationsIds, infos}: {index: number, navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
 	const router = useRouter();
 
 	const handleClick = () => {
-		if (navigationsIds.capsuleId && navigationsIds.roomId && !open)
+		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
 			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}/${sanitizeUuid(navigationsIds.roomId)}`);
-		else if (navigationsIds.capsuleId && !navigationsIds.roomId)
-			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}`);
 		else
 		{
-			if (!navigationsIds.capsuleId)
-				logger.error("next:page", "CapsuleSessionReportPage", "handle click error: capsuleId");
-			if (infos.roomOpen)
+			if (!(navigationsIds.capsuleId && navigationsIds.roomId))
+				logger.error("next:page", "CapsuleSessionReportPage", "handle click error: capsuleId or roomId missing");
+			if (!infos.roomClosed)
 				logger.log("next:page", "CapsuleSessionReportPage", "handle click: The session is already opened");
 		}
 	};
 	return (
-		<Table.Row key={index} style={{cursor: infos.roomOpen ? 'default': 'pointer', backgroundColor: infos.roomOpen ? '#E0E0E0': 'none'}} onClick={handleClick}>
+		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': '#E0E0E0'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
 			<Table.Cell>{infos.cellTwo}</Table.Cell> 
