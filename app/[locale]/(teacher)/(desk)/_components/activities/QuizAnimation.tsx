@@ -1,18 +1,40 @@
 'use client'
 import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden, Badge } from "@radix-ui/themes"
-import {  useMemo,useCallback, use, Dispatch, SetStateAction } from "react"
+import {  useMemo,useCallback, useState, useEffect, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { fetchUser } from "@/app/api/_actions/user"
-import { useQuiz } from "@/app/_hooks/useQuiz"
 import { useQuizSnapshot } from "@/app/_hooks/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
+import { fetchActivity } from "@/app/api/_actions/activities"
+import { Quiz } from "@/app/_types/quiz"
+import { emptyQuiz } from "@/app/_hooks/useQuiz"
 
 
 export default function QuizAnimation() {
-    const { user } = use(fetchUser())
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = useQuizSnapshot()
-    const { quiz } = useQuiz()
     const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
+    const [quiz, setQuiz] = useState<Quiz>(emptyQuiz)
+    const [userId, setUserId] = useState<string | undefined>(undefined)
+
+    // Fetch the quiz object from the database
+    useEffect(() => {
+        if (snapshot) {
+            fetchActivity(snapshot.activityId).then(({data, error}) => {
+                if (data?.type === 'quiz') {
+                    setQuiz(data.object as Quiz)
+                }
+            })
+        }
+    }, [snapshot])
+
+    // Fetch userId
+    useEffect(() => {
+        fetchUser().then(({user, error}) => {
+            if (user) {
+                setUserId(user.id)
+            }
+        })
+    }, [])
 
     const currentQuestionIndex = useMemo(() => {
         return currentQuestionId ?
@@ -48,9 +70,9 @@ export default function QuizAnimation() {
     }, [usersAnswers, currentQuestionChoicesIds])
 
     const myAnswers = useMemo(() => {
-        if (!user) return []
-        return usersAnswers.filter(answer => answer.userId === user.id)
-    }, [usersAnswers, user])
+        if (!userId) return []
+        return usersAnswers.filter(answer => answer.userId === userId)
+    }, [usersAnswers, userId])
 
     const choicesStates = useMemo(() => {
         return currentQuestionChoicesIds.map(choiceId => {

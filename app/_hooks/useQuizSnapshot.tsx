@@ -3,7 +3,6 @@ import { useRoom } from "./useRoom"
 import { QuizSnapshot, QuizUserAnswer, isQuizSnapshot } from "../_types/quiz"
 import { saveRoomActivitySnapshot } from "../api/_actions/room"
 import { fetchUser } from "../api/_actions/user"
-import { randomUUID } from "crypto"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
@@ -21,7 +20,13 @@ interface QuizSnapshotHook {
 
 export function useQuizSnapshot(): QuizSnapshotHook {
     const { room } = useRoom()
-    const [snapshot, setSnapshot] = useState<QuizSnapshot | undefined>(undefined) // Local state to have more control over the snapshot updates
+    const [snapshot, setSnapshot] = useState<QuizSnapshot | undefined>(() => {
+        if (room && isQuizSnapshot(room.activity_snapshot)) {
+            return room.activity_snapshot
+        } else {
+            return undefined
+        }
+    })
 
     const saveSnapshot = useCallback(async (newSnapshot: QuizSnapshot) => {
         if (!room?.code) return { error: 'Room not found' }
@@ -76,7 +81,8 @@ export function useQuizSnapshot(): QuizSnapshotHook {
         }
 
         const newSnapshot = produce(snapshot, draft => {
-            draft.answers[randomUUID()] = newAnswer
+            const id = `${newAnswer.userId}-${newAnswer.timestamp}`
+            draft.answers[id] = newAnswer
         })
 
         const { error } = await saveOptimistically(newSnapshot)

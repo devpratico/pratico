@@ -1,23 +1,46 @@
 'use client'
 import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Badge, Box, VisuallyHidden } from "@radix-ui/themes"
-import React, { use, useMemo, useCallback, Dispatch, SetStateAction } from "react"
+import React, { useMemo, useCallback, Dispatch, SetStateAction, useState, useEffect } from "react"
 import Navigator from "./Navigator"
 import { usePollSnapshot } from "@/app/_hooks/usePollSnapshot"
-import { usePoll } from "@/app/_hooks/usePoll"
+import { emptyPoll } from "@/app/_hooks/usePoll"
 import { fetchUser } from "@/app/api/_actions/user"
 import logger from "@/app/_utils/logger"
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 import { useRoom } from "@/app/_hooks/useRoom"
+import { Poll } from "@/app/_types/poll"
+import { fetchActivity } from "@/app/api/_actions/activities"
 
 
 
 export default function PollAnimation() {
-    //const {user} = use(fetchUser())
-    const user = useMemo(() => { return { id: '5654cf4a-9ba1-4da4-b63a-f8b0bebb8d6d' }}, [])
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
-    const { poll } = usePoll()
     const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
     const { room } = useRoom()
+    const [poll, setPoll] = useState<Poll>(emptyPoll)
+    const [ userId, setUserId ] = useState<string | undefined>(undefined)
+
+    // Fetch the poll object from the database
+    useEffect(() => {
+        if (snapshot) {
+            fetchActivity(snapshot.activityId).then(({data, error}) => {
+                if (data?.type === 'poll') {
+                    setPoll(data.object as Poll)
+                }
+            })
+        }
+    }, [snapshot])
+
+    // Fetch userId
+    useEffect(() => {
+        fetchUser().then(({user, error}) => {
+            if (user) {
+                setUserId(user.id)
+            }
+        })
+    }, [])
+
+    
 
     const currentQuestionIndex = useMemo(() => {
         return currentQuestionId ?
@@ -55,9 +78,9 @@ export default function PollAnimation() {
     }, [usersAnswers, currentQuestionChoicesIds])
 
     const myAnswers = useMemo(() => {
-        if (!user) return []
-        return usersAnswers.filter(answer => answer.userId === user.id)
-    }, [usersAnswers, user])
+        if (!userId) return []
+        return usersAnswers.filter(answer => answer.userId === userId)
+    }, [usersAnswers, userId])
 
     const choicesStates = useMemo(() => {
         if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length === 0) return []

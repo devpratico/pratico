@@ -3,7 +3,6 @@ import { useRoom } from "./useRoom"
 import { PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
 import { saveRoomActivitySnapshot } from "../api/_actions/room"
 import { fetchUser } from "../api/_actions/user"
-import { randomUUID } from "crypto"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
@@ -75,7 +74,7 @@ export function usePollSnapshot(): PollSnapshotHook {
         if (!user || userError) return { data: null, error: userError || 'User not found' }
 
         const newAnswer = {userId: user.id, timestamp: Date.now(), questionId, choiceId} as PollUserAnswer
-        const newAnswerId = randomUUID()
+        const newAnswerId = `${newAnswer.userId}-${newAnswer.timestamp}`
 
         const newSnapshot = produce(snapshot, draft => { draft.answers[newAnswerId] = newAnswer })
 
