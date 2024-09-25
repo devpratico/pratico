@@ -51,6 +51,7 @@ const Content = forwardRef<HTMLDivElement, { className?: string; children: React
     function ContentF({ className, children, showCloseBtn }, ref) {
         return (
             <DialogPrimitive.Content ref={ref} className={`${styles.DialogContent} ${className}`}>
+				<DialogPrimitive.Description />
                 {showCloseBtn && <CloseBtn />}
                 {children}
             </DialogPrimitive.Content>
