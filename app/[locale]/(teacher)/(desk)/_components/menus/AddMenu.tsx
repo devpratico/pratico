@@ -220,7 +220,8 @@ function ImportDocumentBtn() {
 
                     {/* SUCCESS */}
                     <Flex align='center' style={{justifyContent:'space-around'}} gap='3' display={state == 'success' ? 'flex' : 'none'}>
-						<Image alt="" src={images[0]?.bitmap} style={{ width: '100px', height:'auto', boxShadow:('var(--shadow-2)'), borderRadius:'var(--radius-3)' }} />
+                        <img alt="" src={images[0]?.bitmap} style={{ width: '100px', height:'auto', boxShadow:('var(--shadow-2)'), borderRadius:'var(--radius-3)' }} />
+
                         <Flex align='center' gap='1' style={{ color: 'var(--green)' }}>
                             <CircleCheck size='15' style={{ color: 'var(--green)' }} />
                             <Text trim='both'>{fileName}</Text>

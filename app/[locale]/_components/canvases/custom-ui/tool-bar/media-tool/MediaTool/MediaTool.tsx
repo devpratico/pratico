@@ -8,6 +8,7 @@ import {Dialog, DialogContent, DialogOverlay } from '@/app/[locale]/_components/
 import PlainBtn from '@/app/[locale]/_components/primitives/buttons/PlainBtn/PlainBtn';
 import TextField from '@/app/[locale]/_components/primitives/TextField/TextField';
 import YoutubeIcon from '@/app/[locale]/_components/icons/YoutubeIcon';
+import { Description } from '@radix-ui/react-dialog';
 
 
 interface MediaToolProps {
@@ -50,7 +51,6 @@ export default function MediaTool({active, dispatch}: MediaToolProps) {
             <Dialog open={openVideoModal} onOpenChange={setOpenVideoModal}>
                 <DialogOverlay/>
                 <DialogContent showCloseBtn className={styles.dialogContent}>
-
                     <form onSubmit={handleVideoSubmit} className={styles.videoForm}>
                         <YoutubeIcon className={styles.ytIcon}/>
                         <h2 className={styles.title}>Embed a YouTube video</h2>
