@@ -95,6 +95,7 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 										sessions?.map((session, index) => {
 											return (
 												<TableCell
+													key={index}
 													index={index}
 													navigationsIds={{capsuleId, roomId: session.id}}
 													infos={{

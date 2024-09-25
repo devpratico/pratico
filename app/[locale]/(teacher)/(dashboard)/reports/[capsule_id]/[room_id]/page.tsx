@@ -100,7 +100,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 							{
 								attendances?.map((attendance, index) => {
 									return (
-										<TableCell index={index} navigationsIds={{capsuleId, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+										<TableCell key={index} index={index} navigationsIds={{capsuleId, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
 									);
 								})
 							}
