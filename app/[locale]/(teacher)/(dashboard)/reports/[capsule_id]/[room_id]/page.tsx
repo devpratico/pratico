@@ -46,7 +46,12 @@ export default function SessionDetailsPage () {
 				let attendances: AttendanceInfoType[] = [];		
 				const { data: attendanceData, error: attendanceError } = await fetchAttendanceByRoomId(Number(roomId));
 				logger.debug("supabase:database", "SessionDetailsPage", "fetchAttendanceByRoomID", attendanceData, attendanceError);
-				if (!attendanceData || attendanceError) {
+				if (!attendanceData?.length)
+				{
+					logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
+					return ;
+				}
+				else if (!attendanceData || attendanceError) {
 					logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
 					return ;
 				}
@@ -54,7 +59,8 @@ export default function SessionDetailsPage () {
 				{
 					const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
 					if (capsuleData)
-						setTitle((prevTitle) => ({ ...prevTitle, capsuleTitle: capsuleData.title || '' }));				}
+						setTitle((prevTitle) => ({ ...prevTitle, capsuleTitle: capsuleData.title || '' }));
+				}
 				await Promise.all(
 					attendanceData.map(async (attendance) => {
 						const { data, error } = await fetchAttendance(attendance.id);
