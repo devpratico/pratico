@@ -1,5 +1,7 @@
 "use client";
-import { emptyPoll, emptyQuiz, PollCreationProvider, QuizCreationProvider } from "@/app/_hooks/usePollQuizCreation";
+import { PollProvider, emptyPoll } from "@/app/_hooks/usePoll";
+import { QuizProvider, emptyQuiz } from "@/app/_hooks/useQuiz";
+
 import { Button } from "@radix-ui/themes";
 import CardDialog from "../../CardDialog";
 import QuizCreation from "../../activities/QuizCreation";
@@ -24,9 +26,9 @@ export default function CreateSpecificActivityBtn({type} : {type: ActivityType |
             frActivity = "quizz";
             whichActivity = <>
                 <CardDialog preventClose open={openActivityCreation} setOpen={setOpenActivityCreation}>
-                    <QuizCreationProvider initialQuiz={emptyQuiz}>
+                    <QuizProvider quiz={emptyQuiz}>
                         <QuizCreation closeDialog={() => setOpenActivityCreation(false)} />
-                    </QuizCreationProvider>
+                    </QuizProvider>
                 </CardDialog>
             </>
             break ;
@@ -34,9 +36,9 @@ export default function CreateSpecificActivityBtn({type} : {type: ActivityType |
             frActivity = "sondage"
             whichActivity = <>
                 <CardDialog preventClose open={openActivityCreation} setOpen={setOpenActivityCreation}>
-                    <PollCreationProvider initialPoll={emptyPoll}>
+                    <PollProvider poll={emptyPoll}>
                         <PollCreation closeDialog={() => setOpenActivityCreation(false)} />
-                    </PollCreationProvider>
+                    </PollProvider>
                 </CardDialog>
             </>
     }

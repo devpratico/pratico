@@ -1,8 +1,7 @@
 'use client'
 import { useState, useContext, createContext } from "react"
 import { produce } from 'immer'
-import { Poll } from "@/app/_types/poll"
-import { randomUUID } from "crypto"
+import { Poll, PollChoice } from "@/app/_types/poll"
 
 
 type PollContextType = {
@@ -11,6 +10,7 @@ type PollContextType = {
     addEmptyQuestion: () => { questionId: string }
     setQuestionText: (questionId: string, text: string) => void
     addEmptyChoice: (questionId: string) => { choiceId: string }
+    addChoice: (questionId: string, choice: PollChoice) => void
     setChoiceText: (choiceId: string, text: string) => void
     deleteChoice: (choiceId: string) => void
     deleteQuestion: (questionId: string) => void
@@ -26,7 +26,7 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
     const addEmptyQuestion = () => {
-        const questionId = randomUUID()
+        const questionId = `${Object.keys(pollState.questions).length + 1}`
         setPollState(produce(pollState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -40,12 +40,20 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
     const addEmptyChoice = (questionId: string) => {
-        const choiceId = randomUUID()
+        const choiceId = `${Object.keys(pollState.choices).length + 1}`
         setPollState(produce(pollState, draft => {
             draft.choices[choiceId] = { text: ''}
             draft.questions[questionId].choicesIds.push(choiceId)
         }))
         return { choiceId }
+    }
+
+    const addChoice = (questionId: string, choice: PollChoice) => {
+        const choiceId = `${Object.keys(pollState.choices).length + 1}`
+        setPollState(produce(pollState, draft => {
+            draft.choices[choiceId] = choice
+            draft.questions[questionId].choicesIds.push(choiceId)
+        }))
     }
 
     const setChoiceText = (choiceId: string, text: string) => {
@@ -83,7 +91,7 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
     return (
-        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, setChoiceText, deleteChoice, deleteQuestion }}>
+        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, addChoice, setChoiceText, deleteChoice, deleteQuestion }}>
             {children}
         </PollContext.Provider>
     )
@@ -101,9 +109,15 @@ export function usePoll() {
 export const emptyPoll: Poll = {
     type: 'poll',
     schemaVersion: '2',
-    title: '',
-    questions: {},
-    choices: {}
+    title: 'Sans titre',
+    questions: {
+        '1': {
+            text: '',
+            choicesIds: []
+        }
+    },
+    choices: {
+    }
 }
 
 export const testPoll: Poll = {

@@ -305,7 +305,7 @@ export const saveRoomActivitySnapshot = cache(async (roomCode: string, snapshot:
  * Generates an initial 'snapshot' object for the activity.
  * This object represents the state of the activity when it is started.
  */
-export const generateInitialActivitySnapshot = cache(async (activityId: number): Promise<{snapshot: ActivitySnapshot | null, error: string | null}> => {
+export const generateInitialActivitySnapshot = async (activityId: number): Promise<{snapshot: ActivitySnapshot | null, error: string | null}> => {
     logger.log('supabase:database', 'generateInitialActivitySnapshot', 'activityId:', activityId)
 
     const { user } = await fetchUser()
@@ -318,6 +318,8 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
         return {snapshot: null, error: activityError || 'No activity found'}
     }
 
+    const firstQuestionId = Object.keys(activity.object.questions)[0]
+
     let activitySnapshot: ActivitySnapshot
 
     // Generate the activity snapshot object
@@ -325,7 +327,7 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
         activitySnapshot = {
             type: 'quiz',
             activityId: activityId,
-            currentQuestionIndex: 0,
+            currentQuestionId: firstQuestionId,
             currentQuestionState: 'answering',
             answers: {}
         }
@@ -333,7 +335,7 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
         activitySnapshot = {
             type: 'poll',
             activityId: activityId,
-            currentQuestionIndex: 0,
+            currentQuestionId: firstQuestionId,
             currentQuestionState: 'answering',
             answers: {}
         }
@@ -343,7 +345,7 @@ export const generateInitialActivitySnapshot = cache(async (activityId: number):
     }
 
     return {snapshot: activitySnapshot, error: null}
-})
+}
 
 
 /**

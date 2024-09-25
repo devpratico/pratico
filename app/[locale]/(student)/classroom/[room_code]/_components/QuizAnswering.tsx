@@ -4,7 +4,7 @@ import { Quiz } from "@/app/_types/quiz"
 import { QuizAnswerRow } from "@/app/[locale]/(teacher)/(desk)/_components/activities/QuizAnimation"
 import { useRoom } from "@/app/_hooks/useRoom"
 
-
+/*
 export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
     const { room } = useRoom() // This will fail in the future when this component will update the room (activity_snapshot)
 
@@ -28,4 +28,8 @@ export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
             </Section>
         </Container>
     )
+}*/
+
+export default function QuizAnswering({ quiz }: { quiz: Quiz }) {
+    return <p>Not implemented</p>
 }

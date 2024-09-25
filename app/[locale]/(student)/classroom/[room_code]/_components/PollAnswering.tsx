@@ -6,7 +6,7 @@ import { useRoom } from "@/app/_hooks/useRoom"
 import { useState, useEffect } from 'react'
 import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
-
+/*
 export default function PollAnswering({ poll }: { poll: Poll }) {
     const { room } = useRoom()
     const currentQuestionIndex = room?.activity_snapshot?.currentQuestionIndex || 0
@@ -80,4 +80,9 @@ export default function PollAnswering({ poll }: { poll: Poll }) {
             </Section>
         </Container>
     )
+}
+    */
+
+export default function PollAnswering({ poll }: { poll: Poll }) {
+    return <p>Not implemented yet</p>
 }

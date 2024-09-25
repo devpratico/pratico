@@ -1,6 +1,6 @@
 'use client'
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card } from '@radix-ui/themes'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import { useQuiz } from '@/app/_hooks/useQuiz'
 import { saveActivity } from '@/app/api/_actions/activities'
 import Title from './Title'
@@ -8,23 +8,23 @@ import CancelButton from './CancelButton'
 import { QuizCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
+import { QuizChoice } from '@/app/_types/quiz'
 
 
 
 
-export default function QuizCreation({ closeDialog }: {  closeDialog: () => void }) {
+export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?: number, closeDialog: () => void }) {
     const {
         quiz,
         setTitle,
         addEmptyQuestion,
-        addEmptyChoice,
+        addChoice,
         setQuestionText,
         deleteQuestion,
-        setChoiceText,
     } = useQuiz()
 
-    const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(quiz.questions)[0])
-    const currentQuestionIndex = Object.keys(quiz.questions).indexOf(currentQuestionId)
+    const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
+    const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
 
     const [newAnswerText, setNewAnswerText] = useState('')
@@ -36,9 +36,9 @@ export default function QuizCreation({ closeDialog }: {  closeDialog: () => void
     }, [addEmptyQuestion, setCurrentQuestionId, quiz.questions])
 
     const handleSave = useCallback(async () => {
-        await saveActivity({activity: quiz })
+        await saveActivity({id: idToSaveTo, activity: quiz })
         closeDialog()
-    }, [quiz, closeDialog])
+    }, [quiz, closeDialog, idToSaveTo])
 
 
     return (
@@ -65,7 +65,7 @@ export default function QuizCreation({ closeDialog }: {  closeDialog: () => void
                         {/* QUESTION TEXT AREA */}
                         <TextArea
                             placeholder="Question"
-                            value={quiz.questions[currentQuestionIndex].text}
+                            value={quiz.questions[currentQuestionId].text}
                             onChange={(event) => { setQuestionText(currentQuestionId, event.target.value) }}
                         />
 
@@ -80,7 +80,7 @@ export default function QuizCreation({ closeDialog }: {  closeDialog: () => void
                         >Supprimer la question</Button>
 
                         {/* ANSWERS */}
-                        {quiz.questions[currentQuestionIndex].choicesIds.map((choiceId, index) => (
+                        {quiz.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
                             <QuizCreationChoiceRow key={index} questionId={currentQuestionId} choiceId={choiceId} />
                         ))}
 
@@ -96,9 +96,8 @@ export default function QuizCreation({ closeDialog }: {  closeDialog: () => void
                             <IconButton
                                 size='3'
                                 onClick={() => {
-                                    //addNewAnswer({ questionIndex: currentQuestionIndex, answer: { text: newAnswerText, correct: false } });
-                                    const { choiceId: newChoiceId } = addEmptyChoice(currentQuestionId)
-                                    setChoiceText(newChoiceId, newAnswerText)
+                                    const newChoice: QuizChoice = { text: newAnswerText, isCorrect: false }
+                                    addChoice(currentQuestionId, newChoice)
                                     setNewAnswerText('');
                                 }}
                             ><Plus /></IconButton>

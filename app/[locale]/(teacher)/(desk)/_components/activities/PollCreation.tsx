@@ -2,6 +2,7 @@
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
 import { useCallback, useMemo, useState } from 'react'
 import { usePoll } from '@/app/_hooks/usePoll'
+import { PollChoice } from '@/app/_types/poll'
 import { saveActivity } from '@/app/api/_actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
@@ -12,13 +13,13 @@ import { Plus } from 'lucide-react'
 
 
 
-export default function PollCreation({ closeDialog }: { closeDialog: () => void }) {
+export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?: number, closeDialog: () => void }) {
     const {
         poll,
         setTitle,
         addEmptyQuestion,
         setQuestionText,
-        addEmptyChoice,
+        addChoice,
         setChoiceText,
         deleteQuestion,
     } = usePoll()
@@ -35,9 +36,9 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
     }, [addEmptyQuestion, setCurrentQuestionId, poll.questions])
 
     const handleSave = useCallback(async () => {
-        await saveActivity({ activity: poll })
+        await saveActivity({ id: idToSaveTo, activity: poll })
         closeDialog()
-    }, [poll, closeDialog])
+    }, [poll, closeDialog, idToSaveTo])
 
 
     return (
@@ -93,8 +94,8 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                             <IconButton
                                 size='3'
                                 onClick={() => {
-                                    const { choiceId: newChoiceId } = addEmptyChoice(currentQuestionId)
-                                    setChoiceText(newChoiceId, newAnswerText)
+                                    const newChoice: PollChoice = { text: newAnswerText }
+                                    addChoice(currentQuestionId, newChoice)
                                     setNewAnswerText('');
                                 }}
                             ><Plus /></IconButton>

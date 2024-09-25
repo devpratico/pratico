@@ -6,14 +6,18 @@ import { usePollSnapshot } from "@/app/_hooks/usePollSnapshot"
 import { usePoll } from "@/app/_hooks/usePoll"
 import { fetchUser } from "@/app/api/_actions/user"
 import logger from "@/app/_utils/logger"
+import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { useRoom } from "@/app/_hooks/useRoom"
 
 
 
 export default function PollAnimation() {
-    const {user} = use(fetchUser())
+    //const {user} = use(fetchUser())
+    const user = useMemo(() => { return { id: '5654cf4a-9ba1-4da4-b63a-f8b0bebb8d6d' }}, [])
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
     const { poll } = usePoll()
     const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
+    const { room } = useRoom()
 
     const currentQuestionIndex = useMemo(() => {
         return currentQuestionId ?
@@ -21,18 +25,19 @@ export default function PollAnimation() {
     }, [poll, currentQuestionId])
 
     const currentQuestionTitle = useMemo(() => {
-        return currentQuestionId ? poll.questions[currentQuestionId].text : ''
+        return currentQuestionId ? poll.questions[currentQuestionId]?.text : ''
     }, [poll, currentQuestionId])
 
     const currentQuestionState = useMemo(() => {
         return snapshot?.currentQuestionState || 'answering'
     }, [snapshot])
 
-    const currentQuestionChoicesIds = useMemo(() => {
-        return currentQuestionId ? poll.questions[currentQuestionId].choicesIds : []
+    const currentQuestionChoicesIds: string[] = useMemo(() => {
+        return currentQuestionId ? poll.questions[currentQuestionId]?.choicesIds : []
     }, [poll, currentQuestionId])
 
     const currentQuestionChoices = useMemo(() => {
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length === 0) return []
         return currentQuestionChoicesIds.map(choiceId => poll.choices[choiceId])
     }, [poll, currentQuestionChoicesIds])
         
@@ -43,8 +48,9 @@ export default function PollAnimation() {
     }, [snapshot, currentQuestionId])
 
     const votesArray = useMemo(() => {
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length === 0) return []
         return currentQuestionChoicesIds.map(choiceId => {
-            return usersAnswers.filter(answer => answer.choiceId === choiceId).length
+            return usersAnswers.filter(answer => answer.choiceId === choiceId)?.length || 0
         })
     }, [usersAnswers, currentQuestionChoicesIds])
 
@@ -54,8 +60,10 @@ export default function PollAnimation() {
     }, [usersAnswers, user])
 
     const choicesStates = useMemo(() => {
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length === 0) return []
         return currentQuestionChoicesIds.map(choiceId => {
             return myAnswers.some(answer => answer.choiceId === choiceId) ? 'selected' : 'unselected'
+            //return 'unselected'
         })
     }, [myAnswers, currentQuestionChoicesIds])
 
@@ -82,6 +90,12 @@ export default function PollAnimation() {
         setQuestionState('answering')
     }
 
+    const handleClose = useCallback(() => {
+        const roomCode = room?.code
+        if (!roomCode) return
+        saveRoomActivitySnapshot(roomCode, null) // Remove the activity snapshot from the room
+    }, [room])
+
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         setQuestionState('answering')
 
@@ -103,7 +117,7 @@ export default function PollAnimation() {
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
-                <Dialog.Close><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
+                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
 
@@ -140,7 +154,7 @@ export default function PollAnimation() {
                     <Flex justify='center' gap='3'>
 
                         <Navigator
-                            total={Object.keys(poll.questions).length}
+                            total={Object.keys(poll.questions)?.length || 0}
                             currentQuestionIndex={currentQuestionIndex || 0}
                             setCurrentQuestionIndex={handleSetCurrentQuestionIndex}
                         />

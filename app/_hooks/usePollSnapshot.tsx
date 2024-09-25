@@ -21,7 +21,13 @@ interface PollSnapshotHook {
 
 export function usePollSnapshot(): PollSnapshotHook {
     const { room } = useRoom()
-    const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(undefined)
+    const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(() => {
+        if (room && isPollSnapshot(room.activity_snapshot)) {
+            return room.activity_snapshot
+        } else {
+            return undefined
+        }
+    })
 
     const saveSnapshot = useCallback(async (newSnapshot: PollSnapshot) => {
         if (!room?.code) return { error: 'Room not found' }

@@ -1,8 +1,7 @@
 'use client'
 import { useState, useContext, createContext } from "react"
 import { produce } from 'immer'
-import { Quiz } from "@/app/_types/quiz"
-import { randomUUID } from "crypto"
+import { Quiz, QuizChoice } from "@/app/_types/quiz"
 
 
 type QuizContextType = {
@@ -12,6 +11,7 @@ type QuizContextType = {
     setQuestionText: (questionId: string, text: string) => void
     deleteQuestion: (questionId: string) => void
     addEmptyChoice: (questionId: string) => { choiceId: string }
+    addChoice: (questionId: string, choice: QuizChoice) => void
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
     deleteChoice: (choiceId: string) => void
@@ -27,7 +27,7 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const addEmptyQuestion = () => {
-        const questionId = randomUUID()
+        const questionId = `${Object.keys(quizState.questions).length + 1}`
         setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -41,12 +41,20 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const addEmptyChoice = (questionId: string) => {
-        const choiceId = randomUUID()
+        const choiceId = `${Object.keys(quizState.choices).length + 1}`
         setQuizState(prevState => produce(prevState, draft => {
             draft.choices[choiceId] = { text: '', isCorrect: false }
             draft.questions[questionId].choicesIds.push(choiceId)
         }))
         return { choiceId }
+    }
+
+    const addChoice = (questionId: string, choice: QuizChoice) => {
+        const choiceId = `${Object.keys(quizState.choices).length + 1}`
+        setQuizState(produce(quizState, draft => {
+            draft.choices[choiceId] = choice
+            draft.questions[questionId].choicesIds.push(choiceId)
+        }))
     }
 
     const setChoiceText = (choiceId: string, text: string) => {
@@ -96,6 +104,7 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
             addEmptyQuestion,
             setQuestionText,
             addEmptyChoice,
+            addChoice,
             setChoiceText,
             setChoiceIsCorrect,
             deleteQuestion,
@@ -161,6 +170,16 @@ export const emptyQuiz: Quiz = {
     type: 'quiz',
     schemaVersion: '2',
     title: '',
-    questions: {},
-    choices: {}
+    questions: {
+        '1': {
+            text: '',
+            choicesIds: ['1']
+        }
+    },
+    choices: {
+        '1': {
+            text: '',
+            isCorrect: false
+        }
+    }
 }

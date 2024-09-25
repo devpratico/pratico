@@ -25,7 +25,7 @@ const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '1':
+            case '2':
                 return rawObject as Quiz
             default:
                 logger.error('supabase:database', 'Error parsing quiz', 'Unknown schema version')
@@ -43,7 +43,7 @@ const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '1':
+            case '2':
                 return rawObject as Poll
             default:
                 logger.error('supabase:database', 'Error parsing poll', 'Unknown schema version')
@@ -61,10 +61,12 @@ interface saveActivityArgs {
 export async function saveActivity({ id, activity }: saveActivityArgs) {
     const supabase = createClient()
 
+    const activityJson = adapter.toJson(activity)
+
     const upsert: TablesInsert<'activities'> = {
         id: id,
         type: activity.type,
-        object: adapter.toJson(activity)
+        object: activityJson,
     }
 
     logger.log('supabase:database', `Saving ${activity.type}${id ? ''+id : ''}...`)
