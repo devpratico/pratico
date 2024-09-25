@@ -62,7 +62,7 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 					<Separator size='4' my='4' />
 					Nombre de sessions: {roomData?.session.length ? roomData.session.length : 'Aucune'}
 					<Separator />
-					{ roomData?.session.length && roomData.lastSession ? `Derniere session: ${roomData.lastSession}` : null }
+					{ roomData?.session.length && roomData.lastSession ? `Dernière session: ${roomData.lastSession}` : null }
 				</Card>
 			</Link>
 		</>

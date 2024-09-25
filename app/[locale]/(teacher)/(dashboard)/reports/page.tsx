@@ -60,10 +60,10 @@ export default async function ReportsPage() {
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<Heading as='h1'>Rapports</Heading>
+					<Heading mb='4' as='h1'>Rapports</Heading>
 						{
 							(capsules.length)
-							? 	<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
+							? 	<Grid columns='repeat(auto-fill, minmax(200px, 1fr))'  gap='3'>
 								{
 									capsules.map((cap, index) => {
 										let url = `/reports/${cap.id}`

@@ -89,10 +89,10 @@ export default function SessionDetailsPage () {
 	return (<>
 		<ScrollArea>
 			<Section>
-				<Button mb='5' onClick={() => router.push(`/reports/${sanitizeUuid(capsuleId)}`)}><ArrowLeft />Retour</Button>
+				<Button onClick={() => router.push(`/reports/${sanitizeUuid(capsuleId)}`)} variant="soft"><ArrowLeft />Retour</Button>
 				<Container >
 					<Heading as="h1">{`Emargements${title.sessionDate ? ` du ${formatDate(title.sessionDate)}` : ""}`}</Heading>
-					<Heading as="h3">{`${title.capsuleTitle !== "Sans titre" ? title.capsuleTitle : ""}`}</Heading>
+					<Heading mb="4" as="h3">{`${title.capsuleTitle !== "Sans titre" ? title.capsuleTitle : ""}`}</Heading>
 					<Separator my='3'/>
 					{
 						loading
