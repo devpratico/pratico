@@ -1,9 +1,14 @@
-import { Container, Section, Heading, Callout, Grid, Box, Link, ScrollArea } from '@radix-ui/themes';
+import { Container, Section, Heading, Callout, Grid, Box, Link as RadixLink, ScrollArea } from '@radix-ui/themes';
 import CapsuleReports from './_components/CapsuleReports';
 import { fetchUser } from '@/app/api/_actions/user';
 import { fetchCapsulesData } from '@/app/api/_actions/capsule';
 import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
+import Link from 'next/link';
+import { fetchRoomsByCapsuleId } from '@/app/api/_actions/room';
+import { useRouter } from 'next/navigation';
+import { fetchAttendancesByRoomId } from '@/app/api/_actions/attendance';
+import { SessionInfoType } from './[capsule_id]/page';
 
 // TYPE
 export type CapsuleType = {
