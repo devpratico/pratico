@@ -66,6 +66,36 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          id: number
+          last_name: string | null
+          room_id: number | null
+          signature: boolean
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          id?: number
+          last_name?: string | null
+          room_id?: number | null
+          signature?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          id?: number
+          last_name?: string | null
+          room_id?: number | null
+          signature?: boolean
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       capsules: {
         Row: {
           created_at: string

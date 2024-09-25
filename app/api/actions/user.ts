@@ -53,7 +53,6 @@ export const fetchNames = cache(async (userId: string): Promise<Names> => {
     }
 })
 
-
 /**
  * @returns Data from the `user_profiles` table
  */
