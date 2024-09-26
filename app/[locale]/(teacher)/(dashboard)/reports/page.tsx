@@ -1,14 +1,10 @@
 import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
-import { fetchUser } from '@/app/api/actions/user';
-import { fetchCapsulesData } from '@/app/api/actions/capsule';
 import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import { Loading } from './_components/LoadingPage';
-import { fetchSessionInfoByUser } from '@/app/api/actions/room';
 import { SessionInfoType } from './[capsule_id]/page';
-import { fetchAttendanceByRoomId } from '@/app/api/actions/attendance';
-import createClient from '@/supabase/clients/client';
+import createClient from '@/supabase/clients/server';
 
 // TYPE
 export type CapsuleType = {
@@ -52,19 +48,19 @@ export default async function ReportsPage() {
 	const supabase = createClient();
 
 	try {
-		const { user, error } = await fetchUser();
+		const { data: {user}, error } = await supabase.auth.getUser();
 		if (!user || error)
 		{
 			logger.error("next:page", "ReportsPage", !user ? "User not found" : `error: ${error}`);
 			return (<></>);
 		}
 		if (user) {
-			const { data, error } = await fetchCapsulesData(user.id);
+			const { data } = await supabase.from('capsules').select('*').eq('created_by', user.id)
 			if (data) {
 				capsules = data;
 			}
 		}
-		const { data: roomData, error: roomError } = await fetchSessionInfoByUser(user.id);
+		const { data: roomData, error: roomError } = await supabase.from('rooms').select('id, created_at, status, capsule_id').eq('created_by', user.id)
 		logger.debug('supabase:database', 'ReportsPage', 'fetchRoomsByUser datas', roomData, roomError);
 		if (!roomData || roomError) {
 			logger.error('supabase:database', 'ReportsPage', roomError ? roomError : 'No rooms data for this user');
@@ -72,7 +68,7 @@ export default async function ReportsPage() {
 		}
 		await Promise.all(
 			roomData.map(async (elem) => {
-				const { data, error } = await fetchAttendanceByRoomId(elem.id);
+				const { data, error } = await supabase.from('attendance').select('*').eq('room_id', elem.id);
 				if (!data || error) {
 					logger.error('supabase:database', 'ReportsPage', error ? error : 'No attendance data for this room');
 				}

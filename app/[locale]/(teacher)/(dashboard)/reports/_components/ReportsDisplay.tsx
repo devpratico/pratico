@@ -29,7 +29,8 @@ export function ReportsDisplay ({capsules, sessions}: {capsules: CapsuleType[], 
 					>
 					{
 						capsules.map((cap, index) => {
-							return (<CapsuleReports key={index} capsule={cap} />);
+							if (cap.tld_snapshot)
+								return (<CapsuleReports key={index} capsule={cap} />);
 						})
 					}
 					</Grid>

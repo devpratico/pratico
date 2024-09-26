@@ -1,4 +1,3 @@
-"use client";
 import { Spinner } from "@radix-ui/themes";
 
 export function Loading () {

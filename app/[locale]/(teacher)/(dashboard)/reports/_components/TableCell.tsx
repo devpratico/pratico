@@ -23,8 +23,9 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 	const router = useRouter();
 
 	const handleClick = () => {
+		logger.debug("react:component", "TableCell", navigationsIds, infos);
 		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
-			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}/${sanitizeUuid(navigationsIds.roomId)}`);
+			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}/${navigationsIds.roomId}`);
 		else
 		{
 			if (!(navigationsIds.capsuleId && navigationsIds.roomId))

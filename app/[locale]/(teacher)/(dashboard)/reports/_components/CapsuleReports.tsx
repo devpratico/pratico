@@ -59,6 +59,9 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 				<Suspense fallback={<Loading />}>
 					<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 						<Inset clip="padding-box" side="top" pb="current">
+							<Thumbnail snapshot={snap} scale={0.07}/>
+							{/*
+							Si on affiche les capsules vides
 							{
 								snap 
 								? <Thumbnail snapshot={snap} scale={0.07}/>
@@ -71,7 +74,7 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 											overflow: 'hidden'
 										}}
 									/>
-							}
+							} */}
 						</Inset>
 						<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
 						<Separator size='4' my='4' />
