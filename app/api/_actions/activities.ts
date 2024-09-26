@@ -88,7 +88,7 @@ interface ReturnedData extends Omit<Tables<'activities'>, 'object'> {
 
 
 //export const fetchActivity = cache(async <T extends Quiz | Poll>(id: number): Promise<{ data: ReturnedData<T> | null, error: string | null }> => {
-export const fetchActivity = cache(async (id: number) => {
+export const fetchActivity = async (id: number) => {
     const supabase = createClient()
     logger.log('supabase:database', `Fetching activity ${id}...`)
     const { data, error } = await supabase.from('activities').select().eq('id', id).single()
@@ -114,7 +114,7 @@ export const fetchActivity = cache(async (id: number) => {
         default:
             return { data: null, error: 'Unknown activity type' }
     }
-})
+}
 
 
 

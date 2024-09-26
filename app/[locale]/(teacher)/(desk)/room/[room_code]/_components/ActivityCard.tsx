@@ -22,7 +22,13 @@ export default function ActivityCard() {
 
     return (
         <CardDialog open={open} setOpen={setOpen} preventClose>
-            {activityType == 'quiz' ? <QuizAnimation /> : <PollAnimation />}
+            {
+                activityType == 'quiz' ? <QuizAnimation />
+                :
+                activityType == 'poll' ? <PollAnimation />
+                :
+                <p>{'Unknown activity type: ' + activityType}</p>
+            }
         </CardDialog>
     )
 

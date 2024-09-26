@@ -7,6 +7,7 @@ import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
 import useOptimisticSave from "./useOptimisticSave"
+import logger from "../_utils/logger"
 
 
 interface PollSnapshotHook {
@@ -49,6 +50,11 @@ export function usePollSnapshot(): PollSnapshotHook {
             setSnapshot(undefined)
         }
     }, [room, snapshot])
+
+    // Debug: show the snapshot changes
+    useEffect(() => {
+        logger.log('react:hook', 'usePollSnapshot', 'Snapshot updated', snapshot)
+    }, [snapshot])
 
 
     const setCurrentQuestionId = useCallback(async (id: string) => {

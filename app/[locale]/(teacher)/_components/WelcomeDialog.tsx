@@ -1,26 +1,21 @@
 'use client'
 import { AlertDialog, Button, Flex } from "@radix-ui/themes"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Link } from "@/app/_intl/intlNavigation"
-import { fetchUser } from "@/app/api/_actions/user"
 import { usePathname } from "@/app/_intl/intlNavigation"
 import { signInAnonymously } from "@/app/api/_actions/auth"
 import { saveCapsule } from "@/app/api/_actions/capsule"
 import { useRouter } from "@/app/_intl/intlNavigation"
+import { useAuth } from "@/app/_hooks/useAuth"
 
 
 export default function WelcomeDialog() {
-    const [show, setShow] = useState(false)
+    const { user } = useAuth()
+    const [show, setShow] = useState(!user)
     const pathname = usePathname()
     const router = useRouter()
 
-    // Show the dialog if the user is not authenticated
-    useEffect(() => {
-        fetchUser().then(({user, error}) => { if (!user) setShow(true) })
-    }, [])
-
     async function handleLater() {
-        setShow(false)
 
         const { data: userData, error: userError } = await signInAnonymously()
         if (userError || !userData.user) throw userError || new Error('No user data')
