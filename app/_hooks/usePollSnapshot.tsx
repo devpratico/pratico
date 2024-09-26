@@ -1,13 +1,13 @@
- 'use client'
+'use client'
 import { useRoom } from "./useRoom"
 import { PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
 import { saveRoomActivitySnapshot } from "../api/_actions/room"
-import { fetchUser } from "../api/_actions/user"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
 import useOptimisticSave from "./useOptimisticSave"
 import logger from "../_utils/logger"
+import { useAuth } from "./useAuth"
 
 
 interface PollSnapshotHook {
@@ -20,6 +20,7 @@ interface PollSnapshotHook {
 }
 
 export function usePollSnapshot(): PollSnapshotHook {
+    const { userId } = useAuth()
     const { room } = useRoom()
     const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(() => {
         if (room && isPollSnapshot(room.activity_snapshot)) {
@@ -75,11 +76,9 @@ export function usePollSnapshot(): PollSnapshotHook {
 
     const addAnswer = useCallback(async (questionId: string, choiceId: string) => {
         if (!snapshot) return { data: null, error: 'Snapshot not found' }
+        if (!userId) return { data: null, error: 'User not found' }
 
-        const { user, error: userError  } = await fetchUser()
-        if (!user || userError) return { data: null, error: userError || 'User not found' }
-
-        const newAnswer = {userId: user.id, timestamp: Date.now(), questionId, choiceId} as PollUserAnswer
+        const newAnswer = {userId: userId, timestamp: Date.now(), questionId, choiceId} as PollUserAnswer
         const newAnswerId = `${newAnswer.userId}-${newAnswer.timestamp}`
 
         const newSnapshot = produce(snapshot, draft => { draft.answers[newAnswerId] = newAnswer })
@@ -91,7 +90,7 @@ export function usePollSnapshot(): PollSnapshotHook {
         } else {
             return { data: newAnswer, error: null }
         }
-    }, [snapshot, saveOptimistically])
+    }, [snapshot, saveOptimistically, userId])
 
 
 

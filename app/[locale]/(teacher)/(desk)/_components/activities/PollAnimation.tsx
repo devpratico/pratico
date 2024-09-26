@@ -15,8 +15,7 @@ export default function PollAnimation() {
     const { userId } = useAuth()
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
     const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
-
-    //console.log('⚠️ userId', userId)
+    const [poll, setPoll] = useState<Poll | undefined>(undefined)
 
     // Change the activityId when the snapshot changes, if needed
     useEffect(() => {
@@ -24,8 +23,6 @@ export default function PollAnimation() {
             setActivityId(snapshot?.activityId)
         }
     }, [snapshot, activityId])
-
-    const [poll, setPoll] = useState<Poll | undefined>(undefined)
 
     // Fetch the poll if the activityId changes
     useEffect(() => {
@@ -35,7 +32,9 @@ export default function PollAnimation() {
                 if (error || !data) {
                     logger.error('supabase:database', 'Error fetching activity', error?.message)
                 } else {
-                    setPoll(data.object as any as Poll)
+                    if (data.type === 'poll') {
+                        setPoll(data.object as any as Poll)
+                    }
                 }
             })
         }
@@ -156,7 +155,7 @@ export default function PollAnimation() {
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{poll?.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
-                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
+                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
 

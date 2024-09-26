@@ -2,46 +2,54 @@
 import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden, Badge } from "@radix-ui/themes"
 import {  useMemo,useCallback, useState, useEffect, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { fetchUser } from "@/app/api/_actions/user"
 import { useQuizSnapshot } from "@/app/_hooks/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
-import { fetchActivity } from "@/app/api/_actions/activities"
 import { Quiz } from "@/app/_types/quiz"
-import { emptyQuiz } from "@/app/_hooks/useQuiz"
+import { useAuth } from "@/app/_hooks/useAuth"
+import createClient from "@/supabase/clients/client"
+
 
 
 export default function QuizAnimation() {
+    const { userId } = useAuth()
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = useQuizSnapshot()
-    const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
-    const [quiz, setQuiz] = useState<Quiz>(emptyQuiz)
-    const [userId, setUserId] = useState<string | undefined>(undefined)
+    const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
+    const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
 
-    // Fetch the quiz object from the database
+    // Change the activityId when the snapshot changes, if needed
     useEffect(() => {
-        if (snapshot) {
-            fetchActivity(snapshot.activityId).then(({data, error}) => {
-                if (data?.type === 'quiz') {
-                    setQuiz(data.object as Quiz)
+        if (snapshot?.activityId !== activityId) {
+            setActivityId(snapshot?.activityId)
+        }
+    }, [snapshot, activityId])
+
+    // Fetch the quiz if the activityId changes
+    useEffect(() => {
+        if (activityId) {
+            const supabase = createClient()
+            supabase.from('activities').select('*').eq('id', activityId).single().then(({ data, error }) => {
+                if (error || !data) {
+                    logger.error('supabase:database', 'Error fetching activity', error?.message)
+                } else {
+                    if (data.type === 'quiz') {
+                        setQuiz(data.object as any as Quiz)
+                    }
                 }
             })
         }
-    }, [snapshot])
+    }, [activityId])
 
-    // Fetch userId
-    useEffect(() => {
-        fetchUser().then(({user, error}) => {
-            if (user) {
-                setUserId(user.id)
-            }
-        })
-    }, [])
+    const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
+
 
     const currentQuestionIndex = useMemo(() => {
+        if (!quiz) return undefined
         return currentQuestionId ?
             Object.keys(quiz.questions).indexOf(currentQuestionId) : undefined
     }, [quiz, currentQuestionId])
 
     const currentQuestionTitle = useMemo(() => {
+        if (!quiz) return ''
         return currentQuestionId ? quiz.questions[currentQuestionId].text : ''
     }, [quiz, currentQuestionId])
 
@@ -50,10 +58,12 @@ export default function QuizAnimation() {
     }, [snapshot])
 
     const currentQuestionChoicesIds = useMemo(() => {
+        if (!quiz) return []
         return currentQuestionId ? quiz.questions[currentQuestionId].choicesIds : []
     }, [quiz, currentQuestionId])
 
     const currentQuestionChoices = useMemo(() => {
+        if (!quiz) return []
         return currentQuestionChoicesIds.map(choiceId => quiz.choices[choiceId])
     }, [quiz, currentQuestionChoicesIds])
 
@@ -104,6 +114,7 @@ export default function QuizAnimation() {
     }
 
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
+        if (!quiz) return
         setQuestionState('answering')
 
         if (typeof index === 'number') {
@@ -121,9 +132,9 @@ export default function QuizAnimation() {
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title size='4' color='gray'>{quiz.title}</Dialog.Title>
+                <Dialog.Title size='4' color='gray'>{quiz?.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Acticité Quiz</Dialog.Description></VisuallyHidden>
-                <Dialog.Close><Button variant='soft' color='gray' loading={isPending}>Terminer</Button></Dialog.Close>
+                <Dialog.Close><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
@@ -155,7 +166,7 @@ export default function QuizAnimation() {
                     <Flex justify='center' gap='3'>
 
                         <Navigator
-                            total={Object.keys(quiz.questions).length}
+                            total={quiz?.questions ? Object.keys(quiz.questions).length : 0}
                             currentQuestionIndex={currentQuestionIndex || 0}
                             setCurrentQuestionIndex={handleSetCurrentQuestionIndex}
                         />
