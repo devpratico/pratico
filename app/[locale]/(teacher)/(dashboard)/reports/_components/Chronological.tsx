@@ -28,16 +28,15 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 				<Table.Body>
 				{
 					sortedSessions?.map((session, index) => {
-		
-							return (
-								<TableCell
-									key={index}
-									index={index}
-									navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
-									infos={{roomClosed: true, rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé", title: session.capsule_title}}
-								/>
-							);
-						})
+						return (
+							<TableCell
+								key={index}
+								index={index}
+								navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
+								infos={{roomClosed: session.status === "closed", rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé", title: session.capsule_title}}
+							/>
+						);
+					})
 				}
 				</Table.Body>
 			</Table.Root>

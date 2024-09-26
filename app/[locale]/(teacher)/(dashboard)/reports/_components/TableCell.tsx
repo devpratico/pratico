@@ -5,7 +5,6 @@ import { sanitizeUuid } from "@/app/_utils/utils_functions";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 
-
 export type ReportsNavigationIDs = {
 	capsuleId?: string,
 	roomId?: string,
@@ -35,7 +34,7 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 		}
 	};
 	return (
-		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': '#E0E0E0'}} onClick={handleClick}>
+		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
 			{

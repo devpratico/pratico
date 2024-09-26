@@ -61,7 +61,6 @@ export default async function ReportsPage() {
 			}
 		}
 		const { data: roomData, error: roomError } = await supabase.from('rooms').select('id, created_at, status, capsule_id').eq('created_by', user.id)
-		logger.debug('supabase:database', 'ReportsPage', 'fetchRoomsByUser datas', roomData, roomError);
 		if (!roomData || roomError) {
 			logger.error('supabase:database', 'ReportsPage', roomError ? roomError : 'No rooms data for this user');
 			return ;
@@ -85,7 +84,6 @@ export default async function ReportsPage() {
 					capsule_id: elem.capsule_id,
 					capsule_title: capsuleData?.title
 				}
-				logger.debug("next:page", "ReportsPage tmp", tmp);
 				sessions.push(tmp);
 			})
 		);
@@ -94,8 +92,6 @@ export default async function ReportsPage() {
 		logger.error("next:page", "ReportsPage", "Error caught", error);
 	} finally {
 		loading = false;
-		logger.debug("next:page", "ReportsPage sessions", sessions);
-
 	}
 
 

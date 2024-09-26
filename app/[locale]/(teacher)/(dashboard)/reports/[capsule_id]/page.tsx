@@ -1,13 +1,11 @@
 import logger from '@/app/_utils/logger';
-import { fetchRoomsByCapsuleId } from '@/app/api/actions/room';
-import { fetchAttendanceByRoomId } from '@/app/api/actions/attendance';
 import { Button, Container, Flex, Heading, Link, ScrollArea, Section, Table } from '@radix-ui/themes';
-import { formatDate } from '@/app/_utils/utils_functions';
-import { fetchCapsule } from '@/app/api/actions/capsule';
+import { formatDate, sanitizeUuid } from '@/app/_utils/utils_functions';
 import { ArrowLeft } from 'lucide-react';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 import { TableCell } from '../_components/TableCell';
 import { Loading } from '../_components/LoadingPage';
+import createClient from '@/supabase/clients/server';
 
 // TYPE
 export type SessionInfoType = {
@@ -20,35 +18,34 @@ export type SessionInfoType = {
 };
 
 export default async function CapsuleSessionReportPage({ params }: {params: Params}) {
+	const supabase = createClient();
 	const capsuleId = params?.capsule_id;
+	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
 	let loading =  true;
 	let capsuleTitle = "";
-	if (!capsuleId)
+	if (!capsuleId || !sanitizedCapsuleId)
 	{
 		logger.error("next:page", "CapsuleSessionReportPage", "CapsuleId missing in params");
 		return ;
 	}
-
-	logger.log("next:page", "CapsuleSessionReportPage", capsuleId);
 	let sessions: SessionInfoType[] = [];
 	try {
 		loading = true;
-		const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
-		logger.debug('supabase:database', 'CapsuleSessionsReportPage', 'fetchRoomsByCapsuleId datas', roomData, roomError);
+		const { data: roomData, error: roomError } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId);
 		if (!roomData || roomError) {
 			logger.error('supabase:database', 'CapsuleSessionsReportPage', roomError ? roomError : 'No rooms data for this capsule');
 			return ;
 		}
-		const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
+		const { data: capsuleData, error: capsuleError } =  await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single();
 		if (capsuleData)
 			capsuleTitle = capsuleData.title;
 		await Promise.all(
 			roomData.map(async (room) => {
 
-				const { data, error } = await fetchAttendanceByRoomId(room.id);
+				const { data, error } = await supabase.from('attendance').select('*').eq('room_id', room.id);
 
 				if (!data || error) {
-				logger.error('supabase:database', 'CapsuleSessionsReportPage', error ? error : 'No attendance data for this room');
+					logger.error('supabase:database', 'CapsuleSessionsReportPage', error ? error : 'No attendance data for this room');
 				}
 				const infos: SessionInfoType = {
 					id: room.id.toString(),

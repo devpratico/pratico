@@ -1,14 +1,12 @@
 import { Link } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { fetchAttendance, fetchAttendanceByRoomId } from "@/app/api/actions/attendance";
-import { fetchCapsule } from "@/app/api/actions/capsule";
-import { fetchRoomDate } from "@/app/api/actions/room";
 import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { TableCell } from "../../_components/TableCell";
 import { Loading } from "../../_components/LoadingPage";
+import createClient from "@/supabase/clients/server";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -18,39 +16,38 @@ export type AttendanceInfoType = {
 }
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
+	const supabase = createClient();
 	const roomId = params.room_id;
 	const capsuleId = params.capsule_id;
+	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
 	let attendances: AttendanceInfoType[] = [];		
 	let capsuleTitle = "";
 	let sessionDate: string | undefined = "";
 	let loading = true;
 
-	logger.debug("next:page", "SessionDetailsPage", roomId, capsuleId);
-	if (!(roomId && capsuleId))
+	if (!(roomId && capsuleId && sanitizedCapsuleId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
 		return ;				
 	}
 	try {
-		const {data: roomData, error: roomError} = await fetchRoomDate(roomId);
-		logger.debug("supabase:database", "SessionDetailsPage", "fetchRoom", roomData, roomError);
+		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at').eq('id', roomId).single();
 		if (roomData)
 			sessionDate = formatDate(roomData.created_at);	
-		const { data: attendanceData, error: attendanceError } = await fetchAttendanceByRoomId(roomId);
-		logger.debug("supabase:database", "SessionDetailsPage", "fetchAttendanceByRoomID", attendanceData, attendanceError);
+		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
 		if (!attendanceData?.length)
 			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
 		else if (!attendanceData || attendanceError) {
 			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
 		}
-		const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
+		const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single();
 		if (capsuleData)
 			capsuleTitle = capsuleData.title;
 		if (attendanceData?.length)
 		{
 			await Promise.all(
 				attendanceData.map(async (attendance) => {
-					const { data, error } = await fetchAttendance(attendance.id);
+					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
 					if (!data || error) {
 						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 					}
@@ -63,7 +60,6 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 				})
 			);
 		}
-		
 	} catch (err) {
 		console.error('Error getting attendances', err);
 	} finally {
