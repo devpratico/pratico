@@ -7,11 +7,14 @@ import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
 import { useAuth } from "@/app/_hooks/useAuth"
 import createClient from "@/supabase/clients/client"
+import { useRoom } from "@/app/_hooks/useRoom"
+import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
 
 
 
 export default function QuizAnimation() {
     const { userId } = useAuth()
+    const { room } = useRoom()
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = useQuizSnapshot()
     const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
     const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
@@ -113,6 +116,12 @@ export default function QuizAnimation() {
         setQuestionState('answering')
     }
 
+    const handleClose = useCallback(async () => {
+        const roomCode = room?.code
+        if (!roomCode) return
+        await saveRoomActivitySnapshot(roomCode, null) // Remove the activity snapshot from the room
+    }, [room])
+
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         if (!quiz) return
         setQuestionState('answering')
@@ -133,8 +142,8 @@ export default function QuizAnimation() {
             
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Dialog.Title size='4' color='gray'>{quiz?.title}</Dialog.Title>
-                <VisuallyHidden><Dialog.Description>Acticité Quiz</Dialog.Description></VisuallyHidden>
-                <Dialog.Close><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
+                <VisuallyHidden><Dialog.Description>Activité Quiz</Dialog.Description></VisuallyHidden>
+                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
@@ -157,6 +166,11 @@ export default function QuizAnimation() {
                             />
                         ))}
                     </Flex>
+
+                    <Flex mt='3' justify='end'>
+                        <Badge>{'Nombre de votants : ' + votesArray.reduce((acc, curr) => acc + curr, 0)}</Badge>
+                    </Flex>
+
                 </Section>
 
             </Container>
