@@ -63,10 +63,9 @@ export default async function ReportsPage() {
 					{
 						(capsules.length)
 						? 	<Grid 
-								columns='repeat(auto-fit, minmax(0, 1fr))'
+								columns='5'
 								gap="3"
-								rows='repeat(auto-fit, minmax(0, 1fr))'
-								width="100%">
+							>
 							{
 								capsules.map((cap, index) => {
 									return (<CapsuleReports key={index} capsule={cap} />);

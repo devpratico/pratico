@@ -1,6 +1,6 @@
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
 import logger from "@/app/_utils/logger";
-import { Card, DataList, Heading, Inset, Link, Separator } from "@radix-ui/themes";
+import { Button, Card, DataList, Heading, Inset, Link, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { fetchRoomsByCapsuleId } from "@/app/api/actions/room";
@@ -63,10 +63,8 @@ export default async function CapsuleReports ({ capsule }:{ capsule: CapsuleType
 									:   <div
 											style={{
 												position: 'relative',
-												width: '100%',
-												height: '100%',
-												minHeight: '107px',
-												backgroundColor: 'white',
+												minHeight: '100px',
+												backgroundColor: 'var(--white)',
 												borderRadius: 'var(--radix-border-radius-md)',
 												overflow: 'hidden'
 											}}
@@ -91,7 +89,6 @@ export default async function CapsuleReports ({ capsule }:{ capsule: CapsuleType
 				}
 					
 			</Card>
-		
 		</>
 	);
 
