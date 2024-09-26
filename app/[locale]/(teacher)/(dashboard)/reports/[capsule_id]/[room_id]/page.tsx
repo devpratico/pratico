@@ -4,7 +4,7 @@ import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
 import { fetchAttendance, fetchAttendanceByRoomId } from "@/app/api/actions/attendance";
 import { fetchCapsule } from "@/app/api/actions/capsule";
 import { fetchRoomDate } from "@/app/api/actions/room";
-import { Button, Container, Flex, Heading, ScrollArea, Section, Separator, Table } from "@radix-ui/themes";
+import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { TableCell } from "../../_components/TableCell";

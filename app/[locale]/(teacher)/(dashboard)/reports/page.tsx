@@ -4,6 +4,9 @@ import { fetchUser } from '@/app/api/actions/user';
 import { fetchCapsulesData } from '@/app/api/actions/capsule';
 import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
+import { ReportsDisplay } from './_components/ReportsDisplay';
+import { OptionsMenu } from './_components/OptionsMenu';
+import { Loading } from './_components/LoadingPage';
 
 // TYPE
 export type CapsuleType = {
@@ -41,41 +44,42 @@ export type CapsuleType = {
 // };
 
 export default async function ReportsPage() {
-	const { user, error } = await fetchUser();
-	if (!user || error)
-	{
-		logger.error("next:page", "ReportsPage", !user ? "User not found" : `error: ${error}`);
-		return (<></>);
-	}
-    let capsules: CapsuleType[] = [];
-    if (user) {
-        const { data, error } = await fetchCapsulesData(user.id);
-        if (data) {
-			capsules = data;
+	let loading = true;
+	let capsules: CapsuleType[] = [];
+
+	try {
+		const { user, error } = await fetchUser();
+		if (!user || error)
+		{
+			logger.error("next:page", "ReportsPage", !user ? "User not found" : `error: ${error}`);
+			return (<></>);
 		}
-    }
+		if (user) {
+			const { data, error } = await fetchCapsulesData(user.id);
+			if (data) {
+				capsules = data;
+			}
+		}
+	} catch (error){
+		logger.error("next:page", "ReportsPage", "Error caught", error);
+	} finally {
+		loading = false;
+	}
+
 
     return (
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<Heading mb='4' as='h1'>Rapports</Heading>
-					{
-						(capsules.length)
-						? 	<Grid 
-								columns='5'
-								gap="3"
-							>
-							{
-								capsules.map((cap, index) => {
-									return (<CapsuleReports key={index} capsule={cap} />);
-								})
-							}
-							</Grid>	
+				{
+					loading
+					? <Loading />
+					: (capsules.length)
+						? 	<ReportsDisplay capsules={capsules} />
 						:	<Callout.Root mt='4'>
 							<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
 						</Callout.Root>
-					}					
+				}					
 				</Container>
 			</Section>
 		</ScrollArea>
