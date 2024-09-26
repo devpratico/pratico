@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Heading, Text } from "@radix-ui/themes";
+import { Grid, Text } from "@radix-ui/themes";
 import { CapsuleType } from "../page";
 import CapsuleReports from "./CapsuleReports";
 import { OptionsMenu } from "./OptionsMenu";
@@ -15,15 +15,14 @@ export function ReportsDisplay ({capsules, sessions}: {capsules: CapsuleType[], 
 	useEffect(() => {
 		logger.log("react:component", "ReportsDisplay", "options", option);
 		switch (option) {
-			case "Ordre chronologique":
+			case "- récent":
 				setDisplay(<Chronological sessions={sessions} order={true} />);
 				break ;
-			case "Ordre antéchronologique":
+			case "+ récent":
 				setDisplay(<Chronological sessions={sessions} order={false} />);
 				break ;
 			default:
 				setDisplay(<>
-					<Heading mb='4' as='h1'>Rapports par capsules</Heading>
 					<Grid 
 						columns='5'
 						gap="3"
@@ -39,7 +38,7 @@ export function ReportsDisplay ({capsules, sessions}: {capsules: CapsuleType[], 
 	}, [option]);
 	return (
 		<>
-			<OptionsMenu setOption={setOption} label="Trier par" options={["Capsules", "Ordre chronologique", "Ordre antéchronologique"]} />
+			<OptionsMenu setOption={setOption} label="Trier par" options={["Capsules", "- récent", "+ récent"]} />
 			<Text as="div" mb='4'></Text>
 			{display}					
 		</>

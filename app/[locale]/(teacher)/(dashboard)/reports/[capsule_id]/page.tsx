@@ -16,6 +16,7 @@ export type SessionInfoType = {
   numberOfParticipant: number;
   status?: 'open' | 'closed';
   capsule_id?: string;
+  capsule_title?: string | null
 };
 
 export default async function CapsuleSessionReportPage({ params }: {params: Params}) {

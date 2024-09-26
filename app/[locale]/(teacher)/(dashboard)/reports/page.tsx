@@ -5,9 +5,10 @@ import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import { Loading } from './_components/LoadingPage';
-import { fetchRoomsbyUser, fetchSessionInfoByUser } from '@/app/api/actions/room';
+import { fetchSessionInfoByUser } from '@/app/api/actions/room';
 import { SessionInfoType } from './[capsule_id]/page';
 import { fetchAttendanceByRoomId } from '@/app/api/actions/attendance';
+import createClient from '@/supabase/clients/client';
 
 // TYPE
 export type CapsuleType = {
@@ -48,6 +49,7 @@ export default async function ReportsPage() {
 	let loading = true;
 	let capsules: CapsuleType[] = [];
 	let sessions: SessionInfoType[] = [];
+	const supabase = createClient();
 
 	try {
 		const { user, error } = await fetchUser();
@@ -71,16 +73,21 @@ export default async function ReportsPage() {
 		await Promise.all(
 			roomData.map(async (elem) => {
 				const { data, error } = await fetchAttendanceByRoomId(elem.id);
-
 				if (!data || error) {
 					logger.error('supabase:database', 'ReportsPage', error ? error : 'No attendance data for this room');
+				}
+
+				const { data: capsuleData, error: capsuleError } = await supabase.from("capsules").select("title").eq("id", elem.capsule_id).single();
+				if (!capsuleData || capsuleError) {
+					logger.error('supabase:database', 'ReportsPage', error ? error : 'No capsule data');
 				}
 				const tmp: SessionInfoType = {
 					id: elem.id,
 					numberOfParticipant: data?.length || 0,
 					created_at: elem.created_at, 
 					status: elem.status,
-					capsule_id: elem.capsule_id
+					capsule_id: elem.capsule_id,
+					capsule_title: capsuleData?.title
 				}
 				logger.debug("next:page", "ReportsPage tmp", tmp);
 				sessions.push(tmp);
@@ -100,6 +107,7 @@ export default async function ReportsPage() {
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
+				<Heading mb='4' as='h1'>Rapports</Heading>
 				{
 					loading
 					? <Loading />

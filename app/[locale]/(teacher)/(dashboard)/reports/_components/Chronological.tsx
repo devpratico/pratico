@@ -1,4 +1,4 @@
-import { Heading, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
 import { SessionInfoType } from "../[capsule_id]/page";
 import { TableCell } from "./TableCell";
 import logger from "@/app/_utils/logger";
@@ -11,13 +11,13 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 	});
 	return (
 		<>
-			<Heading mb='4' as='h1'>Rapports par {order ? "ordre chronologique" : "ordre antéchronologique"}</Heading>
 			<Table.Root variant="surface">
 				<Table.Header>
 					<Table.Row>
-					<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
 					</Table.Row>
 				</Table.Header>
 
@@ -25,12 +25,13 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 				{
 					order
 					?	sessions?.map((session, index) => {
+		
 							return (
 								<TableCell
 									key={index}
 									index={index}
 									navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
-									infos={{roomClosed: true, rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
+									infos={{roomClosed: true, rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé", title: session.capsule_title}}
 								/>
 							);
 						})
@@ -40,7 +41,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 									key={index}
 									index={index}
 									navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
-									infos={{roomClosed: true, rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
+									infos={{roomClosed: true, rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé", title: session.capsule_title}}
 								/>
 							);
 						})

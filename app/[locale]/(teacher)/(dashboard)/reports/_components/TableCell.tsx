@@ -15,7 +15,8 @@ export type TableCellProps = {
 	roomClosed?: boolean,
 	rowHeaderCell: string | null | undefined
 	cellOne: string | null | undefined,
-	cellTwo: string | null | undefined
+	cellTwo: string | null | undefined,
+	title?: string | null | undefined;
 }
 
 export function TableCell ({index, navigationsIds, infos}: {index: number, navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
@@ -36,6 +37,13 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': '#E0E0E0'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
+			{
+				infos.title
+				?  infos.title === "Sans titre"
+					? <Table.Cell>{"Capsule sans titre"}</Table.Cell>
+					: <Table.Cell>{infos.title}</Table.Cell>
+				: null
+			}
 			<Table.Cell>
 				{
 					infos.cellTwo 
