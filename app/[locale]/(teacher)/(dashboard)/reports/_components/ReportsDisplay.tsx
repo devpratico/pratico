@@ -36,6 +36,7 @@ export function ReportsDisplay ({capsules, sessions}: {capsules: CapsuleType[], 
 					</Grid>
 				</>)
 		};
+		 // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [option]);
 	return (
 		<>
