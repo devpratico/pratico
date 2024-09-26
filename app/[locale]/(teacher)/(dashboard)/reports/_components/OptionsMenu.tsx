@@ -6,7 +6,7 @@ export function OptionsMenu ({setOption, label, options}: {setOption: React.Disp
 		<>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
-					<Button variant="soft">
+					<Button>
 						{label}
 					<DropdownMenu.TriggerIcon />
 					</Button>

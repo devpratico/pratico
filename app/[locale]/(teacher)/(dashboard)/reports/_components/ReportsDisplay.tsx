@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Text } from "@radix-ui/themes";
+import { Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { CapsuleType } from "../page";
 import CapsuleReports from "./CapsuleReports";
 import { OptionsMenu } from "./OptionsMenu";
@@ -38,8 +38,12 @@ export function ReportsDisplay ({capsules, sessions}: {capsules: CapsuleType[], 
 	}, [option]);
 	return (
 		<>
-			<OptionsMenu setOption={setOption} label="Trier par" options={["Capsules", "- récent", "+ récent"]} />
-			<Text as="div" mb='4'></Text>
+			<Flex justify={"between"}>
+				<Heading mb='4' as='h1'>Rapports</Heading>
+				<Text as="div" mb='4' ml="auto">
+					<OptionsMenu setOption={setOption} label="Trier par" options={["Capsules", "- récent", "+ récent"]} />
+				</Text>
+			</Flex>
 			{display}					
 		</>
 	);

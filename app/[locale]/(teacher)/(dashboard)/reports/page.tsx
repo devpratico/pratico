@@ -1,4 +1,4 @@
-import { Container, Section, Heading, Callout, Grid, Box, Link as RadixLink, ScrollArea } from '@radix-ui/themes';
+import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
 import { fetchUser } from '@/app/api/actions/user';
 import { fetchCapsulesData } from '@/app/api/actions/capsule';
 import { Json } from '@/supabase/types/database.types';
@@ -107,7 +107,6 @@ export default async function ReportsPage() {
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-				<Heading mb='4' as='h1'>Rapports</Heading>
 				{
 					loading
 					? <Loading />
