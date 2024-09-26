@@ -15,6 +15,7 @@ export type SessionInfoType = {
   created_at: string;
   numberOfParticipant: number;
   status?: 'open' | 'closed';
+  capsule_id?: string;
 };
 
 export default async function CapsuleSessionReportPage({ params }: {params: Params}) {
@@ -32,9 +33,9 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 	try {
 		loading = true;
 		const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
-		logger.debug('supabase:database', 'CapsuleSessionsReportServer', 'fetchRoomsByCapsuleId datas', roomData, roomError);
+		logger.debug('supabase:database', 'CapsuleSessionsReportPage', 'fetchRoomsByCapsuleId datas', roomData, roomError);
 		if (!roomData || roomError) {
-			logger.error('supabase:database', 'CapsuleSessionsReportServer', roomError ? roomError : 'No rooms data for this capsule');
+			logger.error('supabase:database', 'CapsuleSessionsReportPage', roomError ? roomError : 'No rooms data for this capsule');
 			return ;
 		}
 		const { data: capsuleData, error: capsuleError } = await fetchCapsule(capsuleId);
@@ -46,7 +47,7 @@ export default async function CapsuleSessionReportPage({ params }: {params: Para
 				const { data, error } = await fetchAttendanceByRoomId(room.id);
 
 				if (!data || error) {
-				logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this room');
+				logger.error('supabase:database', 'CapsuleSessionsReportPage', error ? error : 'No attendance data for this room');
 				}
 				const infos: SessionInfoType = {
 					id: room.id.toString(),

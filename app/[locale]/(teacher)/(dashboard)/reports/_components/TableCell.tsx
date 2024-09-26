@@ -7,7 +7,7 @@ import logger from "@/app/_utils/logger";
 
 
 export type ReportsNavigationIDs = {
-	capsuleId: string,
+	capsuleId?: string,
 	roomId?: string,
 }
 

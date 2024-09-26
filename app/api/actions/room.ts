@@ -177,6 +177,12 @@ export const deleteRoom = async (roomId: number) => {
     return { data, error: error?.message }
 }
 
+export const fetchSessionInfoByUser = cache(async (userId: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('id, created_at, status, capsule_id').eq('created_by', userId)
+    if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
+    return { data, error: error?.message }
+})
 
 export const fetchRoomsbyUser = cache(async (userId: string) => {
     const supabase = createClient()
