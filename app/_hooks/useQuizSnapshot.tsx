@@ -7,6 +7,7 @@ import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
 import useOptimisticSave from "./useOptimisticSave"
+import { useAuth } from "./useAuth"
 
 
 interface QuizSnapshotHook {
@@ -19,6 +20,7 @@ interface QuizSnapshotHook {
 }
 
 export function useQuizSnapshot(): QuizSnapshotHook {
+    const { userId } = useAuth()
     const { room } = useRoom()
     const [snapshot, setSnapshot] = useState<QuizSnapshot | undefined>(() => {
         if (room && isQuizSnapshot(room.activity_snapshot)) {
@@ -69,12 +71,10 @@ export function useQuizSnapshot(): QuizSnapshotHook {
 
     const addAnswer = useCallback(async (questionId: string, choiceId: string) => {
         if (!snapshot) return { data: null, error: 'Snapshot not found' }
-
-        const { user, error: userError  } = await fetchUser()
-        if (!user || userError) return { data: null, error: userError || 'User not found' }
+        if (!userId) return { data: null, error: 'User not found' }
 
         const newAnswer: QuizUserAnswer = {
-            userId: user.id,
+            userId: userId,
             timestamp: Date.now(),
             questionId,
             choiceId
@@ -92,7 +92,7 @@ export function useQuizSnapshot(): QuizSnapshotHook {
         } else {
             return { data: newAnswer, error: null }
         }
-    }, [snapshot, saveOptimistically])
+    }, [snapshot, saveOptimistically, userId])
 
 
     const removeAnswer = useCallback(async (answerId: string) => {
