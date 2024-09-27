@@ -25,7 +25,6 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 		setIsClosed(infos.roomClosed);
 	  }, [infos.roomClosed]);
 	const handleClick = () => {
-		logger.debug("react:component", "TableCell", navigationsIds, infos);
 		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
 			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}/${navigationsIds.roomId}`);
 		else

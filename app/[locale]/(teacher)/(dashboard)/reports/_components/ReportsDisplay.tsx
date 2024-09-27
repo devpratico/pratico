@@ -13,7 +13,6 @@ export function ReportsDisplay ({capsules, sessions}: {capsules?: CapsuleType[],
 	const [ option, setOption ] = useState("+ récent");
 	const [ display, setDisplay ] = useState(<></>);
 	useEffect(() => {
-		logger.log("react:component", "ReportsDisplay", "options", option);
 		switch (option) {
 			// case "capsules":
 			// 	setDisplay(<>

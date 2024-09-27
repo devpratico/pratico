@@ -5,7 +5,6 @@ import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
-	logger.log("react:component", "Chronological", sessions);
 	const sortedSessions = order
 		? [...sessions].sort((a, b) => {
 			return (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());

@@ -87,7 +87,6 @@ export default async function ReportsPage() {
 				sessions.push(tmp);
 			})
 		);
-		logger.log("next:page", "ReportsPage", sessions)
 	} catch (error){
 		logger.error("next:page", "ReportsPage", "Error caught", error);
 	} finally {
