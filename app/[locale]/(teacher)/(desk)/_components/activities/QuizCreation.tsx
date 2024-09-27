@@ -26,6 +26,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
+    const [isSaving, setIsSaving] = useState(false)
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
@@ -37,8 +38,10 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
+        setIsSaving(true)
         await saveActivity({id: idToSaveTo, activity: quiz })
         closeDialog()
+        setIsSaving(false)
     }, [quiz, closeDialog, idToSaveTo])
 
 
@@ -52,7 +55,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button variant='soft' onClick={handleSave}>Terminer</Button>
+                    <Button variant='soft' onClick={handleSave} disabled={isSaving}>Terminer</Button>
                 </Flex>
             </Flex>
 

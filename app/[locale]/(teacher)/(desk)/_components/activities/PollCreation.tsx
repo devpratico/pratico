@@ -9,6 +9,7 @@ import CancelButton from './CancelButton'
 import { PollCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
+import { set } from 'lodash'
 
 
 
@@ -26,6 +27,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
     const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(poll.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(poll.questions)[index]), [poll])
+    const [isSaving, setIsSaving] = useState(false)
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
@@ -37,8 +39,10 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
     }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
+        setIsSaving(true)
         await saveActivity({ id: idToSaveTo, activity: poll })
         closeDialog()
+        setIsSaving(false)
     }, [poll, closeDialog, idToSaveTo])
 
 
@@ -51,7 +55,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button variant='soft' onClick={handleSave}>Terminer</Button>
+                    <Button variant='soft' onClick={handleSave} disabled={isSaving}>Terminer</Button>
                 </Flex>
             </Flex>
 
