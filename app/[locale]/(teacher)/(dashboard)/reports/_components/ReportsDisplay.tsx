@@ -5,30 +5,14 @@ import { CapsuleType } from "../page";
 import { OptionsMenu } from "./OptionsMenu";
 import { useEffect, useState } from "react";
 import { Chronological } from "./Chronological";
-import logger from "@/app/_utils/logger";
-import { SessionInfoType } from "../[capsule_id]/page";
+import { SessionInfoType } from "../[room_id]/page";
 
-export function ReportsDisplay ({capsules, sessions}: {capsules?: CapsuleType[], sessions: SessionInfoType[]}) {
+export function ReportsDisplay ({sessions}: {sessions: SessionInfoType[]}) {
 	const options = ["+ récent", "- récent"];
 	const [ option, setOption ] = useState("+ récent");
 	const [ display, setDisplay ] = useState(<></>);
 	useEffect(() => {
 		switch (option) {
-			// case "capsules":
-			// 	setDisplay(<>
-			// 		<Grid 
-			// 			columns='4'
-			// 			gap="3"
-			// 		>
-			// 		{
-			// 			capsules.map((cap, index) => {
-			// 				if (cap.tld_snapshot)
-			// 					return (<CapsuleReports key={index} capsule={cap} />);
-			// 			})
-			// 		}
-			// 		</Grid>
-			// 	</>)
-			// 	break ;
 			case "- récent":
 				setDisplay(<Chronological sessions={sessions} order={true} />);
 				break ;

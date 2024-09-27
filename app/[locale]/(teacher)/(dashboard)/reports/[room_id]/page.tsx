@@ -1,12 +1,12 @@
 import { Link } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from "@radix-ui/themes";
+import { Button, Container, Flex, Heading, ScrollArea, Section, Table, Text } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-import { TableCell } from "../../_components/TableCell";
-import { Loading } from "../../_components/LoadingPage";
 import createClient from "@/supabase/clients/server";
+import { Loading } from "../_components/LoadingPage";
+import { TableCell } from "../_components/TableCell";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -14,24 +14,31 @@ export type AttendanceInfoType = {
 	last_name: string | null,
 	connexion: string | undefined,
 }
+// // TYPE
+export type SessionInfoType = {
+  id: string;
+  created_at: string;
+  numberOfParticipant: number;
+  status?: 'open' | 'closed';
+  capsule_id?: string;
+  capsule_title?: string | null
+};
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
-	const capsuleId = params.capsule_id;
-	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
 	let attendances: AttendanceInfoType[] = [];		
-	let capsuleTitle = "";
+	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
 	let loading = true;
 
-	if (!(roomId && capsuleId && sanitizedCapsuleId))
+	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
 		return ;				
 	}
 	try {
-		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at').eq('id', roomId).single();
+		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
 		if (roomData)
 			sessionDate = formatDate(roomData.created_at);	
 		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
@@ -40,9 +47,14 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		else if (!attendanceData || attendanceError) {
 			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
 		}
-		const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single();
-		if (capsuleData)
-			capsuleTitle = capsuleData.title;
+		const sanitizedCapsuleId = sanitizeUuid(roomData?.capsule_id);
+		if (sanitizedCapsuleId)
+		{
+			const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single();
+			if (capsuleData)
+				capsuleTitle = capsuleData.title;
+		}
+
 		if (attendanceData?.length)
 		{
 			await Promise.all(
@@ -94,9 +106,15 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 							</Table.Header>
 							<Table.Body>
 							{
-								attendances?.map((attendance, index) => {
+								!attendances.length
+								? <Table.Row>
+									<Table.Cell>
+										Aucun participant
+									</Table.Cell>
+								</Table.Row>
+								: attendances?.map((attendance, index) => {
 									return (
-										<TableCell key={index} index={index} navigationsIds={{capsuleId, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
 									);
 								})
 							}

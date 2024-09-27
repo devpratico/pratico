@@ -1,8 +1,7 @@
 import { Table } from "@radix-ui/themes";
-import { SessionInfoType } from "../[capsule_id]/page";
 import { TableCell } from "./TableCell";
-import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
+import { SessionInfoType } from "../[room_id]/page";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
 	const sortedSessions = order
@@ -29,7 +28,6 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						return (
 							<TableCell
 								key={index}
-								index={index}
 								navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
 								infos={{roomClosed: session.status === "closed", rowHeaderCell: session.capsule_title, cellOne: formatDate(session.created_at), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
 							/>

@@ -3,8 +3,8 @@ import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import { Loading } from './_components/LoadingPage';
-import { SessionInfoType } from './[capsule_id]/page';
 import createClient from '@/supabase/clients/server';
+import { SessionInfoType } from './[room_id]/page';
 
 // TYPE
 export type CapsuleType = {

@@ -1,7 +1,6 @@
 "use client";
 
 import { Badge, Table } from "@radix-ui/themes";
-import { sanitizeUuid } from "@/app/_utils/utils_functions";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
@@ -18,7 +17,7 @@ export type TableCellProps = {
 	cellTwo: string | null | undefined,
 }
 
-export function TableCell ({index, navigationsIds, infos}: {index: number, navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
+export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
 	const router = useRouter();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
 	useEffect(() => {
@@ -26,7 +25,7 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 	  }, [infos.roomClosed]);
 	const handleClick = () => {
 		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
-			router.push(`/reports/${sanitizeUuid(navigationsIds.capsuleId)}/${navigationsIds.roomId}`);
+			router.push(`/reports/${navigationsIds.roomId}`);
 		else
 		{
 			if (!(navigationsIds.capsuleId && navigationsIds.roomId))
