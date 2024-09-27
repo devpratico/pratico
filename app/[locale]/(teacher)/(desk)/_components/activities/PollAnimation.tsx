@@ -128,9 +128,9 @@ export default function PollAnimation() {
     }
 
     const handleClose = useCallback(async () => {
-        const roomCode = room?.code
-        if (!roomCode) return
-        await saveRoomActivitySnapshot(roomCode, null) // Remove the activity snapshot from the room
+        const roomId = room?.id
+        if (!roomId) return
+        await saveRoomActivitySnapshot(roomId, null) // Remove the activity snapshot from the room
     }, [room])
 
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {

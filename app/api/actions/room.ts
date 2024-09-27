@@ -290,7 +290,7 @@ export const saveRoomActivitySnapshot = async (roomId: number, snapshot: Activit
     if (error) logger.error('supabase:database', 'Error saving room activity snapshot', error.message)
 
 
-    return { data, error: error?.message }
+    return { data, error: error?.message || null}
 }
 
 

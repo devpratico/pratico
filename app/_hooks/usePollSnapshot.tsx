@@ -1,7 +1,7 @@
 'use client'
 import { useRoom } from "./useRoom"
 import { PollSnapshot, PollUserAnswer, isPollSnapshot } from "../_types/poll"
-import { saveRoomActivitySnapshot } from "../api/_actions/room"
+import { saveRoomActivitySnapshot } from "../api/actions/room"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
@@ -32,7 +32,7 @@ export function usePollSnapshot(): PollSnapshotHook {
 
     const saveSnapshot = useCallback(async (newSnapshot: PollSnapshot) => {
         if (!room?.code) return { error: 'Room not found' }
-        return await saveRoomActivitySnapshot(room.code, newSnapshot)
+        return await saveRoomActivitySnapshot(room.id, newSnapshot)
     }, [room])
 
     const { optimisticState: optimisticSnapshot, isPending, saveOptimistically } = useOptimisticSave({

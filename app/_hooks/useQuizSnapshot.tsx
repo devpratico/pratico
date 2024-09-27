@@ -1,8 +1,8 @@
 'use client'
 import { useRoom } from "./useRoom"
 import { QuizSnapshot, QuizUserAnswer, isQuizSnapshot } from "../_types/quiz"
-import { saveRoomActivitySnapshot } from "../api/_actions/room"
-import { fetchUser } from "../api/_actions/user"
+import { saveRoomActivitySnapshot } from "../api/actions/room"
+import { fetchUser } from "../api/actions/user"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
@@ -32,7 +32,7 @@ export function useQuizSnapshot(): QuizSnapshotHook {
 
     const saveSnapshot = useCallback(async (newSnapshot: QuizSnapshot) => {
         if (!room?.code) return { error: 'Room not found' }
-        return await saveRoomActivitySnapshot(room.code, newSnapshot)
+        return await saveRoomActivitySnapshot(room.id, newSnapshot)
     }, [room])
 
     const { optimisticState: optimisticSnapshot, isPending, saveOptimistically } = useOptimisticSave({

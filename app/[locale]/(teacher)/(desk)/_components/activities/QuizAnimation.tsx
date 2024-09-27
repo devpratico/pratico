@@ -117,9 +117,9 @@ export default function QuizAnimation() {
     }
 
     const handleClose = useCallback(async () => {
-        const roomCode = room?.code
-        if (!roomCode) return
-        await saveRoomActivitySnapshot(roomCode, null) // Remove the activity snapshot from the room
+        const roomId = room?.id
+        if (!roomId) return
+        await saveRoomActivitySnapshot(roomId, null) // Remove the activity snapshot from the room
     }, [room])
 
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
@@ -156,6 +156,7 @@ export default function QuizAnimation() {
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
                         {currentQuestionChoices.map((choice, index) => (
                             <QuizAnswerRow
+                                index={index}
                                 key={`${index}-${choice.text}`}
                                 text={choice.text}
                                 votes={votesArray[index]}

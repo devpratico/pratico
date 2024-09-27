@@ -50,7 +50,7 @@ export default function useOptimisticSave<T>({ state, setState, saveFunction }: 
     const [isPending, startTransition] = useTransition()
 
     const saveOptimistically = useCallback(async (newValue: T) => {
-        const errorPromise = new Promise<{error: string | null}>(async (resolve) => {
+        const errorPromise = new Promise<{error: string | null }>(async (resolve) => {
             // useOptimistic must be used inside a transition or a server action (see React docs)
             startTransition(async () => {
 
