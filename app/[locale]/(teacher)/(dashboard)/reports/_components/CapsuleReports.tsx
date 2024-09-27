@@ -55,7 +55,7 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 			}
 		}
 		getDatas();
-	},[capsuleId]);
+	},[capsuleId, sanitizedCapsuleId, supabase]);
 	
 	return (
 		<>

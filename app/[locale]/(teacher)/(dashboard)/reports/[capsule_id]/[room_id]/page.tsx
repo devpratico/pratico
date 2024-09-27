@@ -75,7 +75,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					: <>
 						<Flex>
 							<Button asChild variant="soft">
-								<Link href={`/reports/${sanitizeUuid(capsuleId)}`}>
+								<Link href={`/reports`}>
 									<ArrowLeft />Retour
 								</Link>
 							</Button>
