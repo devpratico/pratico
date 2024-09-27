@@ -6,7 +6,6 @@ import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/api/actions/room'
 import logger from '@/app/_utils/logger'
 import { fetchUserHasSignedAttendance } from '@/app/api/actions/attendance'
-import ErrorMessage from '@/app/[locale]/ErrorMessage'
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const { user, error: userError } = await fetchUser();
@@ -17,9 +16,9 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         return (null);
     }
 	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
-    if (roomError) { 
-		logger.error('next:page', 'No session found fetchOpenRoomByCode', roomError);
-		return <ErrorMessage message="La session est terminée"/>; // Solution temporaire
+    if (roomError) {
+		logger.log("next:page", "StudentViewPage", "room error", roomError);
+		throw (roomError);
 	}
 
 	logger.log('supabase:database', 'page classroom fetchOpenRoom id:', roomData?.id);
