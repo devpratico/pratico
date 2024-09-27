@@ -116,8 +116,7 @@ export const emptyPoll: Poll = {
             choicesIds: []
         }
     },
-    choices: {
-    }
+    choices: {}
 }
 
 export const testPoll: Poll = {

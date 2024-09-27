@@ -55,13 +55,13 @@ export const stopRoom = async (roomId: number) => {
 }
 
 
-export const getRoomId = cache(async (roomCode: string) => {
+export const getRoomId = async (roomCode: string) => {
     logger.log('supabase:database', 'getRoomId', 'roomCode:', roomCode)
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('id').eq('code', roomCode).eq('status', 'open').single()
     if (error) logger.error('supabase:database', 'Error getting room id', error)
     return { id: data?.id, error: error?.message }
-})
+}
 
 
 interface toggleCollaborationForArgs {
@@ -283,6 +283,8 @@ export const fetchRoomCreator = async (code: string) => {
 export const saveRoomActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
     const supabase = createClient()
 
+    logger.log('supabase:database', 'saveRoomActivitySnapshot', 'saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
+
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null
     }).eq('id', roomId).eq('status', 'open')
@@ -355,7 +357,13 @@ export const startActivity = async ({activityId, roomCode}: {activityId: number,
         return {error: error || 'No snapshot generated'}
     }
 
-    const { error: saveError } = await saveRoomActivitySnapshot(activityId, snapshot)
+    const { id: roomId, error: roomIdError } = await getRoomId(roomCode)
+    if (roomIdError || !roomId) {
+        logger.error('supabase:database', 'startActivity', 'No roomId found')
+        return {error: roomIdError || 'No roomId found'}
+    }
+
+    const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
     if (saveError) {
         logger.error('supabase:database', 'startActivity', 'Error saving activity snapshot:', saveError)
         return {error: saveError}

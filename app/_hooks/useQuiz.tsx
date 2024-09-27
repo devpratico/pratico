@@ -173,13 +173,8 @@ export const emptyQuiz: Quiz = {
     questions: {
         '1': {
             text: '',
-            choicesIds: ['1']
+            choicesIds: []
         }
     },
-    choices: {
-        '1': {
-            text: '',
-            isCorrect: false
-        }
-    }
+    choices: {}
 }
