@@ -30,10 +30,11 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
     const [newAnswerText, setNewAnswerText] = useState('')
 
     const handleAddNewQuestion = useCallback(() => {
-        addEmptyQuestion()
-        const lastQuestionId = Object.keys(poll.questions).pop()
-        if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
-    }, [addEmptyQuestion, setCurrentQuestionId, poll.questions])
+        const { questionId } = addEmptyQuestion()
+        //const lastQuestionId = Object.keys(poll.questions).pop()
+        //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
+        setCurrentQuestionId(questionId)
+    }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
         await saveActivity({ id: idToSaveTo, activity: poll })

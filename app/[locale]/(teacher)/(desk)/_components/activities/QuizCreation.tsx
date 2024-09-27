@@ -30,10 +30,11 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     const [newAnswerText, setNewAnswerText] = useState('')
 
     const handleAddNewQuestion = useCallback(() => {
-        addEmptyQuestion()
-        const lastQuestionId = Object.keys(quiz.questions).pop()
-        if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
-    }, [addEmptyQuestion, setCurrentQuestionId, quiz.questions])
+        const { questionId } = addEmptyQuestion()
+        //const lastQuestionId = Object.keys(quiz.questions).pop()
+        //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
+        setCurrentQuestionId(questionId)
+    }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
         await saveActivity({id: idToSaveTo, activity: quiz })
