@@ -285,7 +285,7 @@ export const saveRoomActivitySnapshot = async (roomId: number, snapshot: Activit
 
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null
-    }).eq('code', roomId).eq('status', 'open')
+    }).eq('id', roomId).eq('status', 'open')
 
     if (error) logger.error('supabase:database', 'Error saving room activity snapshot', error.message)
 
@@ -303,11 +303,13 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
 
     const { user } = await fetchUser()
     if (!user) {
+        logger.error('supabase:database', 'generateInitialActivitySnapshot', 'No user authenticated')
         return {snapshot: null, error: 'No user authenticated'}
     }
 
     const { data: activity, error: activityError } = await fetchActivity(activityId)
     if (activityError || !activity) {
+        logger.error('supabase:database', 'generateInitialActivitySnapshot', 'No activity found')
         return {snapshot: null, error: activityError || 'No activity found'}
     }
 
@@ -337,6 +339,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
         return {snapshot: null, error: 'Activity type not recognized'}
     }
 
+    logger.log('supabase:database', 'generateInitialActivitySnapshot', 'activitySnapshot:', activitySnapshot)
     return {snapshot: activitySnapshot, error: null}
 }
 
@@ -344,17 +347,20 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
 /**
  * Generates an initial 'snapshot' object for the activity, then saves it in the room row.
  */
-export const startActivity = cache(async ({activityId, roomCode}: {activityId: number, roomCode: string}) => {
+export const startActivity = async ({activityId, roomCode}: {activityId: number, roomCode: string}) => {
     logger.log('supabase:database', 'startActivity', 'activityId:', activityId, 'roomCode:', roomCode)
     const { snapshot, error } = await generateInitialActivitySnapshot(activityId)
     if (error || !snapshot) {
+        logger.error('supabase:database', 'startActivity', 'No snapshot generated')
         return {error: error || 'No snapshot generated'}
     }
 
     const { error: saveError } = await saveRoomActivitySnapshot(activityId, snapshot)
     if (saveError) {
+        logger.error('supabase:database', 'startActivity', 'Error saving activity snapshot:', saveError)
         return {error: saveError}
     }
 
+    logger.log('supabase:database', 'startActivity', 'Activity started successfully')
     return {error: null}
-})
+}

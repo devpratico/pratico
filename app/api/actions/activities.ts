@@ -103,15 +103,22 @@ export const fetchActivity = async (id: number) => {
     switch (type) {
         case 'quiz':
             const quiz = adapter.toQuiz(data.object)
-            if (!quiz) return { data: null, error: 'Error parsing quiz' }
+            if (!quiz) {
+                logger.error('supabase:database', 'Error parsing quiz')
+                return { data: null, error: 'Error parsing quiz' }
+            }
             return { data: { ...data, object: quiz }, error: null }
 
         case 'poll':
             const poll = adapter.toPoll(data.object)
-            if (!poll) return { data: null, error: 'Error parsing poll' }
+            if (!poll) {
+                logger.error('supabase:database', 'Error parsing poll')
+                return { data: null, error: 'Error parsing poll' }
+            }
             return { data: { ...data, object: poll }, error: null }
 
         default:
+            logger.error('supabase:database', 'Unknown activity type')
             return { data: null, error: 'Unknown activity type' }
     }
 }
