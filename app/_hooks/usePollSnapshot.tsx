@@ -61,7 +61,7 @@ export function usePollSnapshot(): PollSnapshotHook {
     const setCurrentQuestionId = useCallback(async (id: string) => {
         if (!snapshot) return { error: 'Snapshot not found' }
 
-        const newSnapshot = { ...snapshot, currentQuestionId: id }
+        const newSnapshot = { ...snapshot, currentQuestionId: id, currentQuestionState: 'answering' as const }
         return await saveOptimistically(newSnapshot)
     }, [snapshot, saveOptimistically])
 

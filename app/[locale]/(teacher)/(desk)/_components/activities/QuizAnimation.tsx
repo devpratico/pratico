@@ -124,7 +124,7 @@ export default function QuizAnimation() {
 
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         if (!quiz) return
-        setQuestionState('answering')
+        //setQuestionState('answering')
 
         if (typeof index === 'number') {
             setCurrentQuestionId(Object.keys(quiz.questions)[index])
@@ -135,7 +135,7 @@ export default function QuizAnimation() {
                 logger.log('react:component', 'QuizAnimation', 'handleSetCurrentQuestionIndex', 'currentQuestionIndex is undefined')
             }
         }
-    }, [quiz, currentQuestionIndex, setCurrentQuestionId, setQuestionState])
+    }, [quiz, currentQuestionIndex, setCurrentQuestionId])
     
     return (
         <Grid rows='auto 1fr auto' height='100%'>

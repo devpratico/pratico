@@ -135,7 +135,7 @@ export default function PollAnimation() {
 
     const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
         if (!poll) return
-        setQuestionState('answering')
+        //setQuestionState('answering')
 
         if (typeof index === 'number') {
             setCurrentQuestionId(Object.keys(poll.questions)[index])
@@ -146,7 +146,7 @@ export default function PollAnimation() {
                 logger.log('react:component', 'PollAnimation', 'handleSetCurrentQuestionIndex', 'currentQuestionIndex is undefined')
             }
         }
-    }, [poll, currentQuestionIndex, setCurrentQuestionId, setQuestionState])
+    }, [poll, currentQuestionIndex, setCurrentQuestionId])
 
 
     return (
