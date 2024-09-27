@@ -109,6 +109,7 @@ export default function QuizAnswering() {
                 <Flex direction='column' gap='3' mt='7' align='stretch'>
                     {currentQuestionChoices.map((choice, index) => (
                         <QuizAnswerRow
+                            index={index}
                             key={`${index}-${choice.text}`}
                             text={choice.text}
                             votes={votesArray[index]}

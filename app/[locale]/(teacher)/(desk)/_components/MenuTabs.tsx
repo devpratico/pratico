@@ -64,7 +64,7 @@ export default function MenuTabs({ padding, tabs }: MenuTabsProps) {
                         <TabElement key={tab.menu} menu={tab.menu}>
                             <Flex direction='column' align='center' gap='1' pt='1'>
                                 {tab.icon}
-                                <Text as='label' size='1'>{tab.label}</Text>
+                                <Text size='1'>{tab.label}</Text>
                             </Flex>
                         </TabElement>
                         // If no menu is defined, use the HomeTabElement
@@ -73,7 +73,7 @@ export default function MenuTabs({ padding, tabs }: MenuTabsProps) {
                         <HomeTabElement key='home'>
                             <Flex direction='column' align='center' gap='1' pt='1'>
                                 {tab.icon}
-                                <Text as='label' size='1'>{tab.label}</Text>
+                                <Text size='1'>{tab.label}</Text>
                             </Flex>
                         </HomeTabElement>
                     )

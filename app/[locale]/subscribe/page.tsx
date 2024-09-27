@@ -1,6 +1,6 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/api/_actions/user';
+import { fetchUser } from '@/app/api/actions/user';
 import config from '@/app/api/stripe/stripe.config';
 import { redirect } from '@/app/_intl/intlNavigation';
 

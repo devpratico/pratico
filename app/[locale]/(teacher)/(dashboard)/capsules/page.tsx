@@ -1,7 +1,7 @@
 import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
 import { Plus, LayoutGrid, List, Search } from "lucide-react"
-import { fetchUser } from "@/app/api/_actions/user";
-import { fetchCapsulesData } from "@/app/api/_actions/capsule";
+import { fetchUser } from "@/app/api/actions/user";
+import { fetchCapsulesData } from "@/app/api/actions/capsule";
 import { TLEditorSnapshot } from "tldraw";
 import { Link } from "@/app/_intl/intlNavigation";
 import Thumbnail from "@/app/[locale]/_components/Thumbnail";
@@ -65,7 +65,7 @@ export default async function Page() {
 
                             return (
                                 <Box position='relative' key={id}>
-                                    <Link href={url} style={{ all: 'unset'}}>
+                                    <Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
                                         <Miniature title={title} createdAt={created_at}>
                                             {snap && <Thumbnail snapshot={snap} scale={0.2} />}
                                         </Miniature>

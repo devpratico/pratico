@@ -15,28 +15,28 @@ interface Credentials {
 /**
  * Log in an existing user
  */
-export const login = cache(async ({ email, password }: Credentials) => {
+export const login = async ({ email, password }: Credentials) => {
     const supabase = createClient()
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (!error) { revalidatePath('/', 'layout')}
 
     return { user: data?.user, error: error?.message }
-})
+}
 
 
 
 /**
  * Create a new user
  */
-export const signup = cache(async ({ email, password }: Credentials) => {
+export const signup = async ({ email, password }: Credentials) => {
     const supabase = createClient()
     const { data, error } =  await supabase.auth.signUp({ email, password })
     return { user: data?.user, error: error?.message }
-})
+}
 
 
-export const signInAnonymously = cache(async () => {
+export const signInAnonymously = async () => {
     const supabase = createClient()
     const { data, error } = await supabase.auth.signInAnonymously({})
 
@@ -44,28 +44,28 @@ export const signInAnonymously = cache(async () => {
     revalidatePath('/', 'layout')
 
     return { data, error: error?.message }
-})
+}
 
 
 //export async function setNames({ id, first_name, last_name }: TablesInsert<'user_profiles'>) {
-export const setNames = cache(async ({ id, first_name, last_name }: { id: string, first_name: string, last_name: string }) => {
+export const setNames = async ({ id, first_name, last_name }: { id: string, first_name: string, last_name: string }) => {
     const supabase = createClient()
     const { error } = await supabase.from('user_profiles').upsert({id, first_name, last_name})
     if (error) logger.error('supabase:database', 'Error setting names', error.message)
     return { error: error?.message }
-})
+}
 
 
-export const signOut = cache(async () => {
+export const signOut = async () => {
     const supabase = createClient()
     const { error } = await supabase.auth.signOut()
     if (error) logger.error('supabase:auth', 'Error signing out', error.message)
     revalidatePath('/', 'layout')
     return { error: error?.message }
-})
+}
 
 
-export const isLoggedIn = cache(async () => {
+export const isLoggedIn = async () => {
     const supabase = createClient()
 
     try {
@@ -74,9 +74,27 @@ export const isLoggedIn = cache(async () => {
     } catch (error) {
         return { user: null, error: (error as Error).message }
     }   
-})
+}
 
-export const isUserAnonymous = cache(async () => {
+export const isUserAnonymous = async () => {
     const { user, error } = await fetchUser()
     return !!(user?.is_anonymous)
-})
+}
+
+
+
+export const resetPasswordForEmail = async (email: string) => {
+    logger.log('supabase:auth', 'Resetting password for email', email)
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    if (error) logger.log('supabase:auth', 'Error resetting password', error?.message)
+    return { error: error?.message }
+}
+
+
+export const updateUserPassword = async (password: string) => {
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) logger.error('supabase:auth', 'Error updating user password', error.message)
+    return { error: error?.message }
+}

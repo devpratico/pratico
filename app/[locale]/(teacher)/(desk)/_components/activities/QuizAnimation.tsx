@@ -8,7 +8,7 @@ import { Quiz } from "@/app/_types/quiz"
 import { useAuth } from "@/app/_hooks/useAuth"
 import createClient from "@/supabase/clients/client"
 import { useRoom } from "@/app/_hooks/useRoom"
-import { saveRoomActivitySnapshot } from "@/app/api/_actions/room"
+import { saveRoomActivitySnapshot } from "@/app/api/actions/room"
 
 
 
@@ -204,6 +204,7 @@ export default function QuizAnimation() {
 
 
 interface QuizAnswerRowProps {
+    index: number,
     text: string
     correct: boolean
     votes: number,
@@ -222,6 +223,8 @@ export function QuizAnswerRow({ text, correct, votes, questionState, answerState
     const isGreen = questionState == 'results' && correct
     const isGray = questionState == 'results' && !correct
     const color = isGreen ? 'green' : isGray ? 'gray' : undefined
+
+ 
 
     function handleClick() {
         if (questionState == 'results') return

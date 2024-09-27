@@ -9,7 +9,7 @@ import { QuizProvider } from '@/app/_hooks/useQuiz'
 import { PollProvider } from '@/app/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
 import PollCreation from './PollCreation'
-import { deleteActivity, duplicateActivity } from '@/app/api/_actions/activities'
+import { deleteActivity, duplicateActivity } from '@/app/api/actions/activities'
 
 
 interface EditButtonProps {
