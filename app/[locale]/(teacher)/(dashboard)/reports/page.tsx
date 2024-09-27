@@ -103,7 +103,7 @@ export default async function ReportsPage() {
 					loading
 					? <Loading />
 					: (capsules.length)
-						? 	<ReportsDisplay capsules={capsules} sessions={sessions} />
+						? 	<ReportsDisplay sessions={sessions} />
 						:	<Callout.Root mt='4'>
 							<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
 						</Callout.Root>

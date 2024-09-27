@@ -18,9 +18,8 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 			<Table.Root variant="surface">
 				<Table.Header>
 					<Table.Row>
-						<Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
-						<Table.ColumnHeaderCell>Nombre de participants</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell>Date de la session</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
 					</Table.Row>
 				</Table.Header>
@@ -33,7 +32,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 								key={index}
 								index={index}
 								navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
-								infos={{roomClosed: session.status === "closed", rowHeaderCell: formatDate(session.created_at), cellOne: session.numberOfParticipant.toString(), cellTwo: session.status === "open" ? "En cours" : "Terminé", title: session.capsule_title}}
+								infos={{roomClosed: session.status === "closed", rowHeaderCell: session.capsule_title, cellOne: formatDate(session.created_at), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
 							/>
 						);
 					})

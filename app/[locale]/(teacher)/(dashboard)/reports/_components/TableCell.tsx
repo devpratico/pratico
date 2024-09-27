@@ -4,6 +4,7 @@ import { Badge, Table } from "@radix-ui/themes";
 import { sanitizeUuid } from "@/app/_utils/utils_functions";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
+import { useEffect, useState } from "react";
 
 export type ReportsNavigationIDs = {
 	capsuleId?: string,
@@ -15,12 +16,14 @@ export type TableCellProps = {
 	rowHeaderCell: string | null | undefined
 	cellOne: string | null | undefined,
 	cellTwo: string | null | undefined,
-	title?: string | null | undefined;
 }
 
 export function TableCell ({index, navigationsIds, infos}: {index: number, navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
 	const router = useRouter();
-
+	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
+	useEffect(() => {
+		setIsClosed(infos.roomClosed);
+	  }, [infos.roomClosed]);
 	const handleClick = () => {
 		logger.debug("react:component", "TableCell", navigationsIds, infos);
 		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
@@ -34,16 +37,9 @@ export function TableCell ({index, navigationsIds, infos}: {index: number, navig
 		}
 	};
 	return (
-		<Table.Row key={index} style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: infos.roomClosed ? 'none': 'var(--gray-3)'}} onClick={handleClick}>
+		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
-			{
-				infos.title
-				?  infos.title === "Sans titre"
-					? <Table.Cell>{"Capsule sans titre"}</Table.Cell>
-					: <Table.Cell>{infos.title}</Table.Cell>
-				: null
-			}
 			<Table.Cell>
 				{
 					infos.cellTwo 
