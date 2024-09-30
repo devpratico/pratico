@@ -1,4 +1,5 @@
 'use server'
+import { sanitizeUuid } from './../../_utils/utils_functions';
 import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert, Json } from "@/supabase/types/database.types"
 import { TLStoreSnapshot } from "tldraw";
@@ -23,8 +24,11 @@ export const saveCapsule = async (capsule: TablesInsert<'capsules'>) => {
 }
 
 export const fetchCapsule = cache(async (capsuleId: string) => {
+	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
+	if (!sanitizedCapsuleId)
+		return ({data: null, error: 'fetchCapsule, capsuleId missing'})
     const supabase = createClient()
-    const { data, error } = await supabase.from('capsules').select('*').eq('id', capsuleId).single()
+    const { data, error } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule', error.message)
     return { data, error: error?.message }
 })
