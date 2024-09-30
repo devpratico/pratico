@@ -7,6 +7,7 @@ import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance } from '@/app/api/actions/attendance';
+import { janifera } from '@/app/Fonts';
 
 
 export default function StudentForm() {
@@ -21,6 +22,7 @@ export default function StudentForm() {
 	});
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
+	const [ name, setName ] = useState({firstname: "", lastname: ""});
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -57,13 +59,13 @@ export default function StudentForm() {
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder='Prénom' required/>
+                        <TextField.Root onChange={(e) => setName({...name, firstname: e.target.value})} placeholder='Prénom' required/>
                     </Form.Control>
                 </Form.Field>
 
                 <Form.Field key='last-name' name='last-name'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder='Nom' required/>
+                        <TextField.Root onChange={(e) => setName({...name, lastname: e.target.value})} placeholder='Nom' required/>
                     </Form.Control>
                 </Form.Field>
 
@@ -76,9 +78,11 @@ export default function StudentForm() {
 					</Flex>
 				</Box>
 
-                <Box style={{alignSelf: 'flex-end'}}>
+                <Flex mt='5' justify='between' height='20px'>
+					<Text mr='5' size='8' className={janifera.className}>{`${name.firstname} ${name.lastname}`}</Text>
+
                     <Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
-                </Box>
+                </Flex>
             </Flex>
         </Form.Root>
     )

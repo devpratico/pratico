@@ -28,6 +28,10 @@ export const luciole = localFont({
     display: 'swap',
 })
 
+export const janifera = localFont({
+	src: '../public/fonts/Janifera.ttf',
+	display: 'swap'
+})
 
 export const inter = Inter({
     variable: '--font-inter',
