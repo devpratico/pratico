@@ -35,7 +35,7 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsNavi
 		}
 	};
 	return (
-		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
+		<Table.Row style={{cursor: infos.roomClosed && navigationsIds.capsuleId ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell>{infos.cellOne}</Table.Cell>
 			<Table.Cell>
