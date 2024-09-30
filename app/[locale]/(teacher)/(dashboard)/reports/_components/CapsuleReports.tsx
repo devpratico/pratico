@@ -9,24 +9,13 @@ import logger from "@/app/_utils/logger";
 import { Card, DataList, Heading, Inset, Link, Separator } from "@radix-ui/themes";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
-import { Database, Json } from "@/supabase/types/database.types";
+import { Tables } from "@/supabase/types/database.types";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { Loading } from "../[room_id]/Loading";
 import { useEffect, useState } from "react";
 import createClient from "@/supabase/clients/client";
 
 // TYPE
-export type RoomType = {
-	activity_snapshot: Json | null;
-    capsule_id: string | null;
-    capsule_snapshot: Json | null;
-    code: string | null;
-    created_at: string;
-    created_by: string | null;
-    id: number;
-    params: Json | null;
-    status: Database["public"]["Enums"]["RoomStatus"];
-}
+export type RoomType = Tables<"rooms">;
 
 export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	const supabase = createClient();
@@ -41,15 +30,19 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	useEffect(() => {
 		const getDatas = async () => {
 			try {
-				const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId || capsuleId);
-				logger.log("supabase:database", "CapsuleReports component", "fetchRoomsByCapsuleId");
-				if (data?.length)
+				if (sanitizedCapsuleId)
 				{
-					const tmp = data.reduce((mostRecent, current) => {
-						return (new Date(current.created_at) > new Date(mostRecent.created_at) ? current : mostRecent);
-					});
-					setSessions((prev) => ({...prev, nbOfSession: data.length, lastSession: formatDate(tmp.created_at)}));
+					const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId);
+					logger.log("supabase:database", "CapsuleReports component", "fetchRoomsByCapsuleId");
+					if (data?.length)
+					{
+						const tmp = data.reduce((mostRecent, current) => {
+							return (new Date(current.created_at) > new Date(mostRecent.created_at) ? current : mostRecent);
+						});
+						setSessions((prev) => ({...prev, nbOfSession: data.length, lastSession: formatDate(tmp.created_at)}));
+					}
 				}
+			
 			} catch (error) {
 				logger.error("react:component", "CapsuleReports", "Error caugh", error);
 			}

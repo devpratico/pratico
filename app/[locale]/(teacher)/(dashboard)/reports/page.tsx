@@ -1,18 +1,12 @@
 import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
-import { Json } from '@/supabase/types/database.types';
+import { Json, TablesInsert } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import createClient from '@/supabase/clients/server';
 import { SessionInfoType } from './[room_id]/page';
 
 // TYPE
-export type CapsuleType = {
-	created_at: string;
-	created_by: string | null;
-	id: string;
-	title: string | null;
-	tld_snapshot: Json[] | null;
-};
+export type CapsuleType = TablesInsert<"capsules">;
 
 // export const getReportData = async (capsuleId: string) => {
 // 	const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);

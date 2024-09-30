@@ -7,7 +7,7 @@ export const formatDate = (date: string | undefined, language?: string, specify?
   }
 
 
-export const sanitizeUuid = (uuid: string) => {
+export const sanitizeUuid = (uuid: string | null | undefined) => {
 	if (!uuid || !uuid.length)
 		return ;
 	const sanitizedUuid = uuid.replace(/[^a-fA-F0-9-]/g, '')
