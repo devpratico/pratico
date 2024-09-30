@@ -89,6 +89,12 @@ export default function PollAnimation() {
         })
     }, [usersAnswers, currentQuestionChoicesIds])
 
+    const votersIds = useMemo(() => {
+        const ids = usersAnswers.map(answer => answer.userId)
+        // Remove duplicates
+        return Array.from(new Set(ids))
+    }, [usersAnswers])
+
     const myAnswers = useMemo(() => {
         logger.log('react:component', 'PollAnimation', 'myAnswers', 'computing myAnswers', 'userId', userId)
         if (!userId) return []
@@ -180,7 +186,7 @@ export default function PollAnimation() {
                     </Flex>
 
                     <Flex mt='3' justify='end'>
-                        <Badge>{'Nombre de votants : ' + votesArray.reduce((acc, curr) => acc + curr, 0)}</Badge>
+                        <Badge>{'Nombre de votants : ' + votersIds.length}</Badge>
                     </Flex>
 
                 </Section>

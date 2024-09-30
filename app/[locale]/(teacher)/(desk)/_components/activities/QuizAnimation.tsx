@@ -76,6 +76,12 @@ export default function QuizAnimation() {
         return currentQuestionAnswers
     }, [snapshot, currentQuestionId])
 
+    const votersIds = useMemo(() => {
+        const ids = usersAnswers.map(answer => answer.userId)
+        // Remove duplicates
+        return Array.from(new Set(ids))
+    }, [usersAnswers])
+
     const votesArray = useMemo(() => {
         return currentQuestionChoicesIds.map(choiceId => {
             return usersAnswers.filter(answer => answer.choiceId === choiceId).length
@@ -169,7 +175,7 @@ export default function QuizAnimation() {
                     </Flex>
 
                     <Flex mt='3' justify='end'>
-                        <Badge>{'Nombre de votants : ' + votesArray.reduce((acc, curr) => acc + curr, 0)}</Badge>
+                        <Badge>{'Nombre de votants : ' + votersIds.length}</Badge>
                     </Flex>
 
                 </Section>
