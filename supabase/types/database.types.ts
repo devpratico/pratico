@@ -166,6 +166,7 @@ export type Database = {
           capsule_id: string | null
           capsule_snapshot: Json | null
           code: string | null
+          created_at: string
           created_by: string | null
           id: number
           params: Json | null
@@ -176,6 +177,7 @@ export type Database = {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
+          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null
@@ -186,6 +188,7 @@ export type Database = {
           capsule_id?: string | null
           capsule_snapshot?: Json | null
           code?: string | null
+          created_at?: string
           created_by?: string | null
           id?: number
           params?: Json | null

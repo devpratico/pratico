@@ -7,7 +7,6 @@ import { fetchOpenRoomByCode } from '@/app/api/actions/room'
 import logger from '@/app/_utils/logger'
 import { fetchUserHasSignedAttendance } from '@/app/api/actions/attendance'
 
-
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const { user, error: userError } = await fetchUser();
     if (!user || userError) {
@@ -17,7 +16,11 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         return (null);
     }
 	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
-    if (roomError) throw roomError;
+    if (roomError) {
+		logger.log("next:page", "StudentViewPage", "room error", roomError);
+		throw (roomError);
+	}
+
 	logger.log('supabase:database', 'page classroom fetchOpenRoom id:', roomData?.id);
 	const { data , error  } = await fetchUserHasSignedAttendance(roomData?.id, user.id);
 	logger.log('supabase:database', 'fetUserHasSignedAttendance', data);
@@ -36,8 +39,8 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     }
   
     const snapshot = roomData?.capsule_snapshot || undefined as any
-
+	 
     return (
-        <StudentCanvas user={canvasUser} snapshot={snapshot} />
-    )
+		<StudentCanvas user={canvasUser} snapshot={snapshot} />
+	);
 }
