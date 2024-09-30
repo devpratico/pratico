@@ -50,31 +50,27 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	},[capsuleId, supabase]);
 	
 	return (
-		<>
-			{
-				<Card>
-					<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-						<Inset clip="padding-box" side="top" pb="current">
-							<Thumbnail snapshot={snap} scale={0.07}/>
-						</Inset>
-						<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
-						<Separator size='4' my='4' />
-						<DataList.Root orientation={"vertical"}>
-							<DataList.Item>
-								<DataList.Label minWidth="88px">Nombre de sessions</DataList.Label>
-								<DataList.Value>
-									{sessions.nbOfSession ? sessions.nbOfSession : "Aucune"}
-								</DataList.Value>
-							</DataList.Item>
-							<DataList.Item>
-								<DataList.Label minWidth="88px">Dernière session</DataList.Label>
-								<DataList.Value>{sessions.lastSession ? sessions.lastSession : "Jamais"}</DataList.Value>
-							</DataList.Item>
-						</DataList.Root>
-					</Link>
-				</Card>
-			}
-		</>
+		<Card>
+			<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+				<Inset clip="padding-box" side="top" pb="current">
+					<Thumbnail snapshot={snap} scale={0.07}/>
+				</Inset>
+				<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
+				<Separator size='4' my='4' />
+				<DataList.Root orientation={"vertical"}>
+					<DataList.Item>
+						<DataList.Label minWidth="88px">Nombre de sessions</DataList.Label>
+						<DataList.Value>
+							{sessions.nbOfSession ? sessions.nbOfSession : "Aucune"}
+						</DataList.Value>
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label minWidth="88px">Dernière session</DataList.Label>
+						<DataList.Value>{sessions.lastSession ? sessions.lastSession : "Jamais"}</DataList.Value>
+					</DataList.Item>
+				</DataList.Root>
+			</Link>
+		</Card>
 	);
 
 };

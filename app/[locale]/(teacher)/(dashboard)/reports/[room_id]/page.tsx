@@ -77,43 +77,41 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		<ScrollArea>
 			<Section>
 				<Container >
-					<>
-						<Flex>
-							<Button asChild variant="soft">
-								<Link href={`/reports`}>
-									<ArrowLeft />Retour
-								</Link>
-							</Button>
-							<Heading ml="3" mb="4" as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
-						</Flex>
-						<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
+					<Flex>
+						<Button asChild variant="soft">
+							<Link href={`/reports`}>
+								<ArrowLeft />Retour
+							</Link>
+						</Button>
+						<Heading ml="3" mb="4" as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
+					</Flex>
+					<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
 
-						<Table.Root variant="surface">
-							
-							<Table.Header>
-								<Table.Row>
-									<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-									<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
-									<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+					<Table.Root variant="surface">
+						
+						<Table.Header>
+							<Table.Row>
+								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{
+								!attendances.length
+								? <Table.Row>
+									<Table.Cell>
+										Aucun participant
+									</Table.Cell>
 								</Table.Row>
-							</Table.Header>
-							<Table.Body>
-								{
-									!attendances.length
-									? <Table.Row>
-										<Table.Cell>
-											Aucun participant
-										</Table.Cell>
-									</Table.Row>
-									: attendances?.map((attendance, index) => {
-										return (
-											<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
-										);
-									})
-								}
-							</Table.Body>
-						</Table.Root>
-					</>
+								: attendances?.map((attendance, index) => {
+									return (
+										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+									);
+								})
+							}
+						</Table.Body>
+					</Table.Root>
 				</Container>
 			</Section>
 		</ScrollArea>
