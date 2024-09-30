@@ -10,7 +10,7 @@ import { Card, DataList, Heading, Inset, Link, Separator } from "@radix-ui/theme
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { Tables } from "@/supabase/types/database.types";
-import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
+import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useState } from "react";
 import createClient from "@/supabase/clients/client";
 
@@ -20,7 +20,6 @@ export type RoomType = Tables<"rooms">;
 export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	const supabase = createClient();
 	const capsuleId = capsule.id;
-	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
 	const title = capsule.title;
 	const url = `/reports/${capsuleId}`;
 	const [ sessions, setSessions ] = useState<{nbOfSession: number, lastSession: string | undefined}>({nbOfSession: 0, lastSession: undefined});
@@ -30,9 +29,9 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 	useEffect(() => {
 		const getDatas = async () => {
 			try {
-				if (sanitizedCapsuleId)
+				if (capsuleId)
 				{
-					const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId);
+					const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId);
 					logger.log("supabase:database", "CapsuleReports component", "fetchRoomsByCapsuleId");
 					if (data?.length)
 					{
@@ -48,7 +47,7 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 			}
 		}
 		getDatas();
-	},[capsuleId, sanitizedCapsuleId, supabase]);
+	},[capsuleId, supabase]);
 	
 	return (
 		<>

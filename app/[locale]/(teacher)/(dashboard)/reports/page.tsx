@@ -1,5 +1,5 @@
 import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
-import { Json, TablesInsert } from '@/supabase/types/database.types';
+import { TablesInsert } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import createClient from '@/supabase/clients/server';

@@ -45,10 +45,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		else if (!attendanceData || attendanceError) {
 			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
 		}
-		const sanitizedCapsuleId = sanitizeUuid(roomData?.capsule_id);
-		if (sanitizedCapsuleId)
+		const capsuleId = roomData?.capsule_id;
+		if (capsuleId)
 		{
-			const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single();
+			const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
 			if (capsuleData)
 				capsuleTitle = capsuleData.title;
 		}
