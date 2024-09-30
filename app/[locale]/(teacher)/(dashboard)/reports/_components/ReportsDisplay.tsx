@@ -19,8 +19,7 @@ export function ReportsDisplay ({sessions}: {sessions: SessionInfoType[]}) {
 				setDisplay(<Chronological sessions={sessions} order={false} />);
 
 		};
-		 // eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [option]);
+	}, [option, sessions]);
 	return (
 		<>
 			<Flex justify={"between"}>

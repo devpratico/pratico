@@ -1,9 +1,9 @@
 'use client'
 import { useTLEditor } from "@/app/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
-import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Separator, Card, Text, Box, Grid } from "@radix-ui/themes"
-import { ArrowDown, Plus, File, CircleCheck } from "lucide-react"
-import { useRef, useState } from "react"
+import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
+import { Plus, File, CircleCheck } from "lucide-react"
+import { useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/_hooks/useNav"
 import { useDisable } from "@/app/_hooks/useDisable"
@@ -12,9 +12,6 @@ import { getPublicUrl } from "@/app/api/actions/capsule"
 import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
-import { Image } from "@radix-ui/react-avatar"
-
-
 
 interface ImageData {
     bitmap: string
