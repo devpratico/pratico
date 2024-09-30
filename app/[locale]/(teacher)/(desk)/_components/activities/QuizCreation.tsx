@@ -1,40 +1,47 @@
 'use client'
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card } from '@radix-ui/themes'
-import { useCallback, useState } from 'react'
-import { useQuizCreation } from '@/app/_hooks/usePollQuizCreation'
+import { useCallback, useState, useMemo } from 'react'
+import { useQuiz } from '@/app/_hooks/useQuiz'
 import { saveActivity } from '@/app/api/actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
-import { QuizCreationAnswerRow } from './CreationAnswerRow'
+import { QuizCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
+import { QuizChoice } from '@/app/_types/quiz'
 
 
 
 
-export default function QuizCreation({ closeDialog }: { closeDialog: () => void }) {
+export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?: number, closeDialog: () => void }) {
     const {
         quiz,
         setTitle,
-        idToSaveTo,
-        currentQuestionIndex,
-        setCurrentQuestionIndex,
-        setQuestionText,
-        addNewAnswer,
         addEmptyQuestion,
+        addChoice,
+        setQuestionText,
         deleteQuestion,
-    } = useQuizCreation()
+    } = useQuiz()
+
+    const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
+    const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
+    const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
+    const [isSaving, setIsSaving] = useState(false)
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
     const handleAddNewQuestion = useCallback(() => {
-        addEmptyQuestion()
-        setCurrentQuestionIndex(quiz.questions.length)
-    }, [addEmptyQuestion, setCurrentQuestionIndex, quiz.questions.length])
+        const { questionId } = addEmptyQuestion()
+        //const lastQuestionId = Object.keys(quiz.questions).pop()
+        //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
+        setCurrentQuestionId(questionId)
+    }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
-        await saveActivity({ id: idToSaveTo, activity: quiz })
+        setIsSaving(true)
+        await saveActivity({id: idToSaveTo, activity: quiz })
         closeDialog()
+        setIsSaving(false)
     }, [quiz, closeDialog, idToSaveTo])
 
 
@@ -48,7 +55,7 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button variant='soft' onClick={handleSave}>Terminer</Button>
+                    <Button variant='soft' onClick={handleSave} disabled={isSaving}>Terminer</Button>
                 </Flex>
             </Flex>
 
@@ -62,8 +69,8 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
                             placeholder="Question"
-                            value={quiz.questions[currentQuestionIndex].question.text}
-                            onChange={(event) => { setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value }) }}
+                            value={quiz.questions[currentQuestionId].text}
+                            onChange={(event) => { setQuestionText(currentQuestionId, event.target.value) }}
                         />
 
                         <Button
@@ -72,13 +79,13 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
                             size='1'
                             variant='soft'
                             color='gray'
-                            onClick={() => { deleteQuestion(currentQuestionIndex) }}
-                            disabled={quiz.questions.length <= 1}
+                            onClick={() => { deleteQuestion(currentQuestionId) }}
+                            disabled={Object.keys(quiz.questions).length <= 1}
                         >Supprimer la question</Button>
 
                         {/* ANSWERS */}
-                        {quiz.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <QuizCreationAnswerRow key={index} answerIndex={index} />
+                        {quiz.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
+                            <QuizCreationChoiceRow key={index} questionId={currentQuestionId} choiceId={choiceId} />
                         ))}
 
                         {/* ADD NEW ANSWER AREA*/}
@@ -93,7 +100,8 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
                             <IconButton
                                 size='3'
                                 onClick={() => {
-                                    addNewAnswer({ questionIndex: currentQuestionIndex, answer: { text: newAnswerText, correct: false } });
+                                    const newChoice: QuizChoice = { text: newAnswerText, isCorrect: false }
+                                    addChoice(currentQuestionId, newChoice)
                                     setNewAnswerText('');
                                 }}
                             ><Plus /></IconButton>
@@ -107,7 +115,7 @@ export default function QuizCreation({ closeDialog }: { closeDialog: () => void 
             <Flex p='3' pt='0' justify='center'>
                 <Card variant='classic'>
                     <Flex justify='center' gap='3'>
-                        <Navigator total={quiz.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
+                        <Navigator total={Object.keys(quiz.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
                 </Card>

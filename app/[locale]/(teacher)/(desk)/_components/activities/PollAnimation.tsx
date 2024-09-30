@@ -1,45 +1,129 @@
 'use client'
-import { Poll } from "@/app/_hooks/usePollQuizCreation"
-import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Text, Badge, Box, Switch, VisuallyHidden } from "@radix-ui/themes"
-import React, { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react"
+import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Badge, Box, VisuallyHidden } from "@radix-ui/themes"
+import React, { useMemo, useCallback, Dispatch, SetStateAction, useState, useEffect } from "react"
 import Navigator from "./Navigator"
-import { PollSnapshot, saveRoomActivitySnapshot } from "@/app/api/actions/room"
-import { set } from "lodash"
+import { usePollSnapshot } from "@/app/_hooks/usePollSnapshot"
+import logger from "@/app/_utils/logger"
+import { saveRoomActivitySnapshot } from "@/app/api/actions/room"
+import { useRoom } from "@/app/_hooks/useRoom"
+import { Poll } from "@/app/_types/poll"
+import { useAuth } from "@/app/_hooks/useAuth"
+import createClient from "@/supabase/clients/client"
 
 
-export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, pollId: number, roomId: number }) {
-    const [loading, setLoading] = useState(false)
-    const [questionState, setQuestionState] = useState<'answering' | 'results'>('answering')
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const [votesArray, setVotesArray] = useState<number[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 0)) // The number of votes for each answer
-    const [answersState, setAnswersState] = useState<('selected' | 'unselected')[]>(() => poll.questions[currentQuestionIndex].answers.map(() => 'unselected')) // The state of each answer (selected or unselected)
+export default function PollAnimation() {
+    const { userId } = useAuth()
+    const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
+    const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
+    const [poll, setPoll] = useState<Poll | undefined>(undefined)
 
-
-    // Consolidate the poll state in a single object
-    const pollSnapshot: PollSnapshot = useMemo(() => ({
-        activityId: pollId,
-        currentQuestionIndex,
-        currentQuestionState: questionState,
-        votes: votesArray
-    }), [pollId, currentQuestionIndex, questionState, votesArray])
-
-
-    // Side effect: when the pollSnapshot changes, save it in Supabase
+    // Change the activityId when the snapshot changes, if needed
     useEffect(() => {
-        async function _save() {
-            setLoading(true)
-            saveRoomActivitySnapshot(roomId, pollSnapshot)
-            setLoading(false)
+        if (snapshot?.activityId !== activityId) {
+            setActivityId(snapshot?.activityId)
         }
-        _save()
-    }, [pollSnapshot, roomId])
+    }, [snapshot, activityId])
 
+    // Fetch the poll if the activityId changes
+    useEffect(() => {
+        if (activityId) {
+            const supabase = createClient()
+            supabase.from('activities').select('*').eq('id', activityId).single().then(({ data, error }) => {
+                if (error || !data) {
+                    logger.error('supabase:database', 'Error fetching activity', error?.message)
+                } else {
+                    if (data.type === 'poll') {
+                        setPoll(data.object as any as Poll)
+                    }
+                }
+            })
+        }
+    }, [activityId])
 
-    async function handleClose() {
-        setLoading(true)
-        await saveRoomActivitySnapshot(roomId, null)
-        setLoading(false)
-    }
+    const currentQuestionId = useMemo(() => snapshot?.currentQuestionId, [snapshot])
+
+    const { room } = useRoom()
+
+    const currentQuestionIndex = useMemo(() => {
+        if (!poll) return undefined
+        return currentQuestionId ?
+        Object.keys(poll.questions).indexOf(currentQuestionId) : undefined
+    }, [poll, currentQuestionId])
+
+    const currentQuestionTitle = useMemo(() => {
+        if (!poll) return ''
+        return currentQuestionId ? poll.questions[currentQuestionId]?.text : ''
+    }, [poll, currentQuestionId])
+
+    const currentQuestionState = useMemo(() => {
+        return snapshot?.currentQuestionState || 'answering'
+    }, [snapshot])
+
+    const currentQuestionChoicesIds: string[] = useMemo(() => {
+        if (!poll) return []
+        return currentQuestionId ? poll.questions[currentQuestionId]?.choicesIds : []
+    }, [poll, currentQuestionId])
+
+    const currentQuestionChoices = useMemo(() => {
+        if (!poll) return []
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length == 0) return []
+        return currentQuestionChoicesIds.map(choiceId => poll.choices[choiceId])
+    }, [poll, currentQuestionChoicesIds])
+        
+    const usersAnswers = useMemo(() => {
+        const allAnswersAsArray = Object.values(snapshot?.answers || {})
+        const currentQuestionAnswers = allAnswersAsArray.filter(answer => answer.questionId == currentQuestionId)
+        return currentQuestionAnswers
+    }, [snapshot, currentQuestionId])
+
+    // Debug: show the users answers
+    /*
+    useEffect(() => {
+        logger.log('react:component', 'PollAnimation', 'usersAnswers', usersAnswers)
+    }, [usersAnswers])*/
+
+    const votesArray = useMemo(() => {
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length === 0) return []
+        return currentQuestionChoicesIds.map(choiceId => {
+            return usersAnswers.filter(answer => answer.choiceId === choiceId)?.length || 0
+        })
+    }, [usersAnswers, currentQuestionChoicesIds])
+
+    const votersIds = useMemo(() => {
+        const ids = usersAnswers.map(answer => answer.userId)
+        // Remove duplicates
+        return Array.from(new Set(ids))
+    }, [usersAnswers])
+
+    const myAnswers = useMemo(() => {
+        logger.log('react:component', 'PollAnimation', 'myAnswers', 'computing myAnswers', 'userId', userId)
+        if (!userId) return []
+        return usersAnswers.filter(answer => answer.userId == userId)
+    }, [usersAnswers, userId])
+
+    const choicesStates = useMemo(() => {
+        if (!currentQuestionChoicesIds || currentQuestionChoicesIds.length == 0) return []
+        return currentQuestionChoicesIds.map(choiceId => {
+            return myAnswers.some(answer => answer.choiceId === choiceId) ? 'selected' : 'unselected'
+        })
+    }, [myAnswers, currentQuestionChoicesIds])
+
+    const setAnswerState = useCallback(async (index: number, value: 'selected' | 'unselected') => {
+        if (!currentQuestionId) return
+        const choiceId = currentQuestionChoicesIds[index]
+        if (value === 'selected') {
+            logger.log('react:component', 'PollAnimation', 'setAnswerState', 'addAnswer', choiceId)
+            await addAnswer(currentQuestionId, choiceId)
+        } else {
+            const answer = myAnswers.find(answer => answer.choiceId == choiceId)
+            const answerId = snapshot?.answers ? Object.keys(snapshot.answers).find(key => snapshot.answers[key] == answer) : undefined
+            if (answerId) {
+                logger.log('react:component', 'PollAnimation', 'setAnswerState', 'removeAnswer', answerId)
+                await removeAnswer(answerId)
+            }
+        }
+    }, [currentQuestionId, currentQuestionChoicesIds, addAnswer, removeAnswer, myAnswers, snapshot])
+
 
     function handleShowAnswer() {
         setQuestionState('results')
@@ -49,70 +133,60 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
         setQuestionState('answering')
     }
 
-    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = (index) => {
-        setQuestionState('answering')
-        setCurrentQuestionIndex((prev) => {
-            const nextIndex = typeof index === 'number' ? index : index(prev)
-            setVotesArray(poll.questions[nextIndex].answers.map(() => 0))
-            return nextIndex
-        })
-        setAnswersState(poll.questions[currentQuestionIndex].answers.map(() => 'unselected'))
-    }
+    const handleClose = useCallback(async () => {
+        const roomId = room?.id
+        if (!roomId) return
+        await saveRoomActivitySnapshot(roomId, null) // Remove the activity snapshot from the room
+    }, [room])
 
-    // When selecting an answer, deselect all other answers, and update the votesArray
-    function setAnswerState(index: number, value: 'selected' | 'unselected') {
-        if (questionState === 'results') return
+    const handleSetCurrentQuestionIndex: Dispatch<SetStateAction<number>> = useCallback((index) => {
+        if (!poll) return
+        //setQuestionState('answering')
 
-        setAnswersState((prevAnswers) => {
-            let newAnswersState: ('selected' | 'unselected')[] = []
-
-            if (value === 'selected') {
-                newAnswersState = prevAnswers.map((_, i) => i === index ? 'selected' : 'unselected')
+        if (typeof index === 'number') {
+            setCurrentQuestionId(Object.keys(poll.questions)[index])
+        } else { // Index is a function that needs the prev (current) value to give us the new value.
+            if (currentQuestionIndex) {
+                setCurrentQuestionId(Object.keys(poll.questions)[index(currentQuestionIndex)])
             } else {
-                newAnswersState = prevAnswers.map(() => 'unselected')
+                logger.log('react:component', 'PollAnimation', 'handleSetCurrentQuestionIndex', 'currentQuestionIndex is undefined')
             }
+        }
+    }, [poll, currentQuestionIndex, setCurrentQuestionId])
 
-            const prevAnswersMatrix = prevAnswers.map((state, i) => state === 'selected' ? 1 : 0)
-            const newAnswersMatrix = newAnswersState.map((state, i) => state === 'selected' ? 1 : 0)
-            const diffMatrix = newAnswersMatrix.map((state, i) => state - prevAnswersMatrix[i])
-            setVotesArray(votesArray.map((votes, i) => votes + diffMatrix[i]))
-
-            return newAnswersState
-        })
-    }
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
 
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title size='4' color='gray'>{poll.title}</Dialog.Title>
+                <Dialog.Title size='4' color='gray'>{poll?.title}</Dialog.Title>
                 <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden>
-                <Button variant='soft' color='gray' onClick={handleClose} loading={loading}>Terminer</Button>
+                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
             </Flex>
 
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
-                    <Heading as='h2' size='5' align='center'>{poll.questions[currentQuestionIndex].question.text}</Heading>
+                    <Heading as='h2' size='5' align='center'>{currentQuestionTitle}</Heading>
                 </Section>
 
                 <Section size='1'>
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
-                        {poll.questions[currentQuestionIndex].answers.map((answer, index) => (
+                        {currentQuestionChoices.map((choice, index) => (
                             <PollAnswerRow 
-                                key={`${index}-${answer.text}`}
-                                text={answer.text}
+                                key={`${index}-${choice.text}`}
+                                text={choice.text}
                                 votes={votesArray[index]}
-                                questionState={questionState}
-                                answerState={answersState[index]}
+                                questionState={currentQuestionState}
+                                answerState={choicesStates[index]}
                                 setAnswerState={(value) => setAnswerState(index, value)}
                             />
                         ))}
                     </Flex>
 
                     <Flex mt='3' justify='end'>
-                        <Badge>{'Nombre de votants : ' + votesArray.reduce((acc, curr) => acc + curr, 0)}</Badge>
+                        <Badge>{'Nombre de votants : ' + votersIds.length}</Badge>
                     </Flex>
 
                 </Section>
@@ -124,16 +198,16 @@ export default function PollAnimation({ poll, pollId, roomId }: { poll: Poll, po
                     <Flex justify='center' gap='3'>
 
                         <Navigator
-                            total={poll.questions.length}
-                            currentQuestionIndex={currentQuestionIndex}
+                            total={poll?.questions ? Object.keys(poll.questions).length : 0}
+                            currentQuestionIndex={currentQuestionIndex || 0}
                             setCurrentQuestionIndex={handleSetCurrentQuestionIndex}
                         />
 
-                        <Button size='3' onClick={handleShowAnswer} style={{ display: questionState == 'results' ? 'none' : 'flex' }}>
+                        <Button size='3' onClick={handleShowAnswer} style={{ display: currentQuestionState == 'results' ? 'none' : 'flex' }}>
                             Voir les résultats
                         </Button>
 
-                        <Button size='3' onClick={handleHideAnswer} style={{ display: questionState == 'results' ? 'flex' : 'none' }} variant='soft'>
+                        <Button size='3' onClick={handleHideAnswer} style={{ display: currentQuestionState == 'results' ? 'flex' : 'none' }} variant='soft'>
                             Masquer les résultats
                         </Button>
 
@@ -150,7 +224,7 @@ interface PollAnswerRowProps {
     text: string,
     votes: number,
     questionState: 'answering' | 'results'
-    answerState?: 'selected' | 'unselected'
+    answerState: 'selected' | 'unselected'
     setAnswerState: (value: 'selected' | 'unselected') => void
 }
 
@@ -163,7 +237,7 @@ export function PollAnswerRow({ text, votes, questionState, answerState='unselec
 
     function handleClick() {
         if (questionState == 'results') return
-        setAnswerState(answerState === 'selected' ? 'unselected' : 'selected')
+        setAnswerState(answerState == 'selected' ? 'unselected' : 'selected')
     }
 
     return (

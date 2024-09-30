@@ -32,13 +32,13 @@ export const getSession = cache(async () => {
 })*/
 
 
-export const fetchUser =  cache(async () => {
+export const fetchUser = async () => {
     const supabase = createClient()
     const { data: {user}, error } = await supabase.auth.getUser()
     if (error) logger.error('supabase:auth', `error fetching user`, error.message)
     if (user)  logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
     return ({ user, error: error?.message || null })
-})
+}
 
 export const fetchNames = cache(async (userId: string): Promise<Names> => {
     const supabase = createClient()

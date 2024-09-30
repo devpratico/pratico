@@ -1,40 +1,48 @@
 'use client'
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
-import { useCallback, useState } from 'react'
-import { usePollCreation } from '@/app/_hooks/usePollQuizCreation'
+import { useCallback, useMemo, useState } from 'react'
+import { usePoll } from '@/app/_hooks/usePoll'
+import { PollChoice } from '@/app/_types/poll'
 import { saveActivity } from '@/app/api/actions/activities'
 import Title from './Title'
 import CancelButton from './CancelButton'
-import { PollCreationAnswerRow } from './CreationAnswerRow'
+import { PollCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
+import { set } from 'lodash'
 
 
 
 
-export default function PollCreation({ closeDialog }: { closeDialog: () => void }) {
+export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?: number, closeDialog: () => void }) {
     const {
         poll,
         setTitle,
-        idToSaveTo,
-        currentQuestionIndex,
-        setCurrentQuestionIndex,
-        setQuestionText,
-        addNewAnswer,
         addEmptyQuestion,
+        setQuestionText,
+        addChoice,
+        setChoiceText,
         deleteQuestion,
-    } = usePollCreation()
+    } = usePoll()
+    const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(poll.questions)[0])
+    const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
+    const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(poll.questions)[index]), [poll])
+    const [isSaving, setIsSaving] = useState(false)
 
     const [newAnswerText, setNewAnswerText] = useState('')
 
     const handleAddNewQuestion = useCallback(() => {
-        addEmptyQuestion()
-        setCurrentQuestionIndex(poll.questions.length)
-    }, [addEmptyQuestion, setCurrentQuestionIndex, poll.questions.length])
+        const { questionId } = addEmptyQuestion()
+        //const lastQuestionId = Object.keys(poll.questions).pop()
+        //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
+        setCurrentQuestionId(questionId)
+    }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
+        setIsSaving(true)
         await saveActivity({ id: idToSaveTo, activity: poll })
         closeDialog()
+        setIsSaving(false)
     }, [poll, closeDialog, idToSaveTo])
 
 
@@ -47,7 +55,7 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
 
                 <Flex gap='3' align='baseline'>
                     <CancelButton onCancel={closeDialog} />
-                    <Button variant='soft' onClick={handleSave}>Terminer</Button>
+                    <Button variant='soft' onClick={handleSave} disabled={isSaving}>Terminer</Button>
                 </Flex>
             </Flex>
 
@@ -60,8 +68,8 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
                             placeholder="Question"
-                            value={poll.questions[currentQuestionIndex].question.text}
-                            onChange={(event) => { setQuestionText({ questionIndex: currentQuestionIndex, text: event.target.value }) }}
+                            value={poll.questions[currentQuestionId].text}
+                            onChange={(event) => { setQuestionText(currentQuestionId, event.target.value )}}
                         />
 
                         <Button
@@ -70,13 +78,13 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                             size='1'
                             variant='soft'
                             color='gray'
-                            onClick={() => { deleteQuestion(currentQuestionIndex) }}
-                            disabled={poll.questions.length <= 1}
+                            onClick={() => { deleteQuestion(currentQuestionId) }}
+                            disabled={Object.keys(poll.questions).length <= 1}
                         >Supprimer la question</Button>
 
                         {/* ANSWERS */}
-                        {poll.questions[currentQuestionIndex].answers.map((answer, index) => (
-                            <PollCreationAnswerRow key={index} answerIndex={index} />
+                        {poll.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
+                            <PollCreationChoiceRow key={index} questionId={currentQuestionId} choiceId={choiceId} />
                         ))}
 
                         {/* ADD NEW ANSWER AREA*/}
@@ -91,7 +99,8 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
                             <IconButton
                                 size='3'
                                 onClick={() => {
-                                    addNewAnswer({ questionIndex: currentQuestionIndex, answer: { text: newAnswerText } });
+                                    const newChoice: PollChoice = { text: newAnswerText }
+                                    addChoice(currentQuestionId, newChoice)
                                     setNewAnswerText('');
                                 }}
                             ><Plus /></IconButton>
@@ -107,7 +116,7 @@ export default function PollCreation({ closeDialog }: { closeDialog: () => void 
             <Flex p='3' pt='0' justify='center'>
                 <Card variant='classic'>
                     <Flex justify='center' gap='3'>
-                        <Navigator total={poll.questions.length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
+                        <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
                     </Flex>
                 </Card>

@@ -1,7 +1,8 @@
 'use server'
 import createClient from "@/supabase/clients/server"
 import { Tables, TablesInsert, Json } from "@/supabase/types/database.types"
-import { Quiz, Poll } from "@/app/_hooks/usePollQuizCreation"
+import { Quiz } from "@/app/_types/quiz"
+import { Poll } from "@/app/_types/poll"
 import logger from "@/app/_utils/logger"
 import { cache } from "react"
 import { fetchUser } from "./user"
@@ -24,7 +25,7 @@ const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '1':
+            case '2':
                 return rawObject as Quiz
             default:
                 logger.error('supabase:database', 'Error parsing quiz', 'Unknown schema version')
@@ -42,7 +43,7 @@ const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '1':
+            case '2':
                 return rawObject as Poll
             default:
                 logger.error('supabase:database', 'Error parsing poll', 'Unknown schema version')
@@ -60,10 +61,12 @@ interface saveActivityArgs {
 export async function saveActivity({ id, activity }: saveActivityArgs) {
     const supabase = createClient()
 
+    const activityJson = adapter.toJson(activity)
+
     const upsert: TablesInsert<'activities'> = {
         id: id,
         type: activity.type,
-        object: adapter.toJson(activity)
+        object: activityJson,
     }
 
     logger.log('supabase:database', `Saving ${activity.type}${id ? ''+id : ''}...`)
@@ -85,7 +88,7 @@ interface ReturnedData extends Omit<Tables<'activities'>, 'object'> {
 
 
 //export const fetchActivity = cache(async <T extends Quiz | Poll>(id: number): Promise<{ data: ReturnedData<T> | null, error: string | null }> => {
-export const fetchActivity = cache(async (id: number) => {
+export const fetchActivity = async (id: number) => {
     const supabase = createClient()
     logger.log('supabase:database', `Fetching activity ${id}...`)
     const { data, error } = await supabase.from('activities').select().eq('id', id).single()
@@ -100,18 +103,25 @@ export const fetchActivity = cache(async (id: number) => {
     switch (type) {
         case 'quiz':
             const quiz = adapter.toQuiz(data.object)
-            if (!quiz) return { data: null, error: 'Error parsing quiz' }
+            if (!quiz) {
+                logger.error('supabase:database', 'Error parsing quiz')
+                return { data: null, error: 'Error parsing quiz' }
+            }
             return { data: { ...data, object: quiz }, error: null }
 
         case 'poll':
             const poll = adapter.toPoll(data.object)
-            if (!poll) return { data: null, error: 'Error parsing poll' }
+            if (!poll) {
+                logger.error('supabase:database', 'Error parsing poll')
+                return { data: null, error: 'Error parsing poll' }
+            }
             return { data: { ...data, object: poll }, error: null }
 
         default:
+            logger.error('supabase:database', 'Unknown activity type')
             return { data: null, error: 'Unknown activity type' }
     }
-})
+}
 
 
 

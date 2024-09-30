@@ -3,8 +3,10 @@ import { IconButton, DropdownMenu, AlertDialog, Button, Flex } from '@radix-ui/t
 import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
 import CardDialog from '../CardDialog'
-import { Quiz, Poll } from '@/app/_hooks/usePollQuizCreation'
-import { QuizCreationProvider, PollCreationProvider } from '@/app/_hooks/usePollQuizCreation'
+import { Quiz } from '@/app/_types/quiz'
+import { Poll } from '@/app/_types/poll'
+import { QuizProvider } from '@/app/_hooks/useQuiz'
+import { PollProvider } from '@/app/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
 import PollCreation from './PollCreation'
 import { deleteActivity, duplicateActivity } from '@/app/api/actions/activities'
@@ -64,13 +66,13 @@ export default function EditButton({ activityId, initialActivity }: EditButtonPr
             <CardDialog open={open} setOpen={setOpen} preventClose>
                 {
                     initialActivity.type === 'quiz' ? (
-                        <QuizCreationProvider initialQuiz={initialActivity as Quiz} idToSaveTo={activityId}>
-                            <QuizCreation closeDialog={() => setOpen(false)} />
-                        </QuizCreationProvider>
+                        <QuizProvider quiz={initialActivity as Quiz}>
+                            <QuizCreation idToSaveTo={activityId} closeDialog={() => setOpen(false)} />
+                        </QuizProvider>
                     ) : (
-                        <PollCreationProvider initialPoll={initialActivity as Poll} idToSaveTo={activityId}>
-                            <PollCreation closeDialog={() => setOpen(false)} />
-                        </PollCreationProvider>
+                        <PollProvider poll={initialActivity as Poll}>
+                            <PollCreation idToSaveTo={activityId} closeDialog={() => setOpen(false)} />
+                        </PollProvider>
                     )
                 }
             </CardDialog>
