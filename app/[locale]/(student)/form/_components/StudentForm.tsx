@@ -1,6 +1,6 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Text, Checkbox, Link, ScrollArea } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/api/actions/auth';
 import { fetchUser } from '@/app/api/actions/user';
 import { useState } from 'react';
@@ -59,13 +59,21 @@ export default function StudentForm() {
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>
                     <Form.Control asChild>
-                        <TextField.Root onChange={(e) => setName({...name, firstname: e.target.value})} placeholder='Prénom' required/>
+                        <TextField.Root onChange={(e) => {
+							if (e.target.value.length < 140)
+								setName({...name, firstname: e.target.value})
+							}}
+							placeholder='Prénom' required/>
                     </Form.Control>
                 </Form.Field>
 
                 <Form.Field key='last-name' name='last-name'>
                     <Form.Control asChild>
-                        <TextField.Root onChange={(e) => setName({...name, lastname: e.target.value})} placeholder='Nom' required/>
+                        <TextField.Root onChange={(e) =>  {
+								if (e.target.value.length < 140)
+									setName({...name, lastname: e.target.value})
+							}}
+							placeholder='Nom' required/>
                     </Form.Control>
                 </Form.Field>
 
@@ -78,11 +86,11 @@ export default function StudentForm() {
 					</Flex>
 				</Box>
 
-                <Flex mt='5' justify='between' height='20px'>
+				<Flex mt='5' justify='between' height='20px'>
 					<Text mr='5' size='8' className={janifera.className}>{`${name.firstname} ${name.lastname}`}</Text>
 
-                    <Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
-                </Flex>
+					<Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
+				</Flex>
             </Flex>
         </Form.Root>
     )
