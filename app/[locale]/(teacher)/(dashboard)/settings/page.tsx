@@ -5,7 +5,7 @@ import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
-//import { doesCustomerExist } from '@/app/api/_actions/stripe';
+//import { doesCustomerExist } from '@/app/api/actions/stripe';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
 
 

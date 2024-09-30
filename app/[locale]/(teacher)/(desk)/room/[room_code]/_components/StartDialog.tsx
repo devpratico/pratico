@@ -82,17 +82,6 @@ export default function StartDialog() {
                         </Flex>
                     </Flex>
 
-
-
-                    <TooltipL content='Bientôt' side='left'>
-                        <Flex as='span' gap='2' align='center'>
-                            <Switch disabled />
-                            <Text color='gray'>{`Émargement`}</Text>
-                        </Flex>
-                    </TooltipL>
-
-
-
                     <Button size='4' id='OkBtn' onClick={() => setOpen(false)}>
                         {`C'est parti !`}
                     </Button>

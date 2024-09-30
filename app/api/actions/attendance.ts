@@ -56,15 +56,15 @@ export const fetchAttendance = async (id: number | undefined) => {
     return ({ data, error: error?.message });
 };
 
-export const fetchAttendanceByRoomId = async (roomId: string) => {
+export const fetchAttendanceByRoomId = async (roomId: number | undefined) => {
 	if (!roomId)
 	{
-		logger.error('next:api', 'fetchAttendanceByYser id missing');
-		return ({data: null, error: 'fetchAttendanceByroom id missing'});
+		logger.error('next:api', 'fetchAttendanceByRoomId id missing');
+		return ({data: null, error: 'fetchAttendanceByrRoomId id missing'});
 	}
 	const supabase = createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
-    if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId.slice(0, 5)}...`, error.message)
+    if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId}...`, error.message);
     return ({ data, error: error?.message });
 };
 
@@ -72,7 +72,7 @@ export const fetchAttendanceByRoomId = async (roomId: string) => {
 export const fetchAttendanceByUser = async (userId: string) => {
 	if (!userId)
 	{
-		logger.error('next:api', 'fetchAttendanceByYser id missing');
+		logger.error('next:api', 'fetchAttendanceByUser id missing');
 		return ({data: null, error: 'fetchAttendanceByUser id missing'});
 	}
 	const supabase = createClient();

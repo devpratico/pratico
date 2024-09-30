@@ -1,4 +1,5 @@
 'use server'
+import { sanitizeUuid } from './../../_utils/utils_functions';
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { cache } from "react"
@@ -12,7 +13,6 @@ import { ActivitySnapshot } from "@/app/_types/activity"
 import { fetchActivity } from "./activities"
 import { Poll } from "@/app/_types/poll"
 import { log } from "console"
-
 
 export type RoomInsert = TablesInsert<'rooms'>
 export type Capsule = Tables<'capsules'>
@@ -164,6 +164,26 @@ export const deleteRoom = async (roomId: number) => {
     return { data, error: error?.message }
 }
 
+export const fetchSessionInfoByUser = cache(async (userId: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('id, created_at, status, capsule_id').eq('created_by', userId)
+    if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
+    return { data, error: error?.message }
+})
+
+export const fetchRoomsbyUser = cache(async (userId: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('id, created_at').eq('created_by', userId)
+    if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
+    return { data, error: error?.message }
+})
+
+export const fetchClosedRoomsCodes = cache(async () => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('code').eq('status', 'closed')
+    if (error) logger.error('supabase:database', 'Error fetching rooms codes', error.message)
+    return { data, error: error?.message }
+})
 
 export const fetchOpenRoomsCodes = cache(async () => {
     logger.log('supabase:database', 'fetchOpenRoomsCodes')
@@ -232,11 +252,25 @@ export const saveRoomSnapshot = async (roomId: number, snapshot: any) => {
     return { data, error: error?.message }
 }
 
+export const fetchRoomDate = cache(async (roomId: number) => {
+	if (!roomId)
+		return ({data: null, error: 'fetchRoom: roomId missing'})
+	logger.debug("next:api", "fetchRoomsByroomId", roomId, "sanitized: ", roomId);
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('created_at').eq('id', roomId).single();
+    if (error) logger.error('supabase:database', 'Error fetching rooms by room id', error.message)
+    return { data, error: error?.message }
+})
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
-    logger.log('supabase:database', 'fetchRoomsByCapsuleId', 'capsuleId:', capsuleId)
+
+	const sanitizedCapsuleId = sanitizeUuid(capsuleId);
+	if (!sanitizedCapsuleId)
+		return ({data: null, error: 'fetchRoomsByCapsuleId: capsuleId missing'})
+	logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", sanitizedCapsuleId);
+
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
+    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId)
     if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
     return { data, error: error?.message }
 })
