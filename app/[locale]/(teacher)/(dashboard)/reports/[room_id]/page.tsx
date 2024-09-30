@@ -94,6 +94,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
 								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
 								<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Signature</Table.ColumnHeaderCell>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
