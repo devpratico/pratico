@@ -2,7 +2,6 @@ import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
 import { Json } from '@/supabase/types/database.types';
 import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
-import { Loading } from './_components/LoadingPage';
 import createClient from '@/supabase/clients/server';
 import { SessionInfoType } from './[room_id]/page';
 
@@ -42,7 +41,6 @@ export type CapsuleType = {
 // };
 
 export default async function ReportsPage() {
-	let loading = true;
 	let capsules: CapsuleType[] = [];
 	let sessions: SessionInfoType[] = [];
 	const supabase = createClient();
@@ -89,23 +87,18 @@ export default async function ReportsPage() {
 		);
 	} catch (error){
 		logger.error("next:page", "ReportsPage", "Error caught", error);
-	} finally {
-		loading = false;
 	}
-
 
     return (
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 				{
-					loading
-					? <Loading />
-					: (capsules.length)
-						? 	<ReportsDisplay sessions={sessions} />
-						:	<Callout.Root mt='4'>
-							<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
-						</Callout.Root>
+					(capsules.length)
+					? 	<ReportsDisplay sessions={sessions} />
+					:	<Callout.Root mt='4'>
+						<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>
+					</Callout.Root>
 				}					
 				</Container>
 			</Section>

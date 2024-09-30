@@ -1,7 +1,6 @@
 "use client";
 
 import { Flex, Heading, Text } from "@radix-ui/themes";
-import { CapsuleType } from "../page";
 import { OptionsMenu } from "./OptionsMenu";
 import { useEffect, useState } from "react";
 import { Chronological } from "./Chronological";

@@ -11,8 +11,8 @@ import { TLEditorSnapshot } from "tldraw";
 import { CapsuleType } from "../page";
 import { Database, Json } from "@/supabase/types/database.types";
 import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { Loading } from "./LoadingPage";
-import { Suspense, useEffect, useState } from "react";
+import { Loading } from "../[room_id]/Loading";
+import { useEffect, useState } from "react";
 import createClient from "@/supabase/clients/client";
 
 // TYPE
@@ -61,27 +61,25 @@ export default function CapsuleReports ({ capsule }:{ capsule: CapsuleType }) {
 		<>
 			{
 				<Card>
-					<Suspense fallback={<Loading />}>
-						<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-							<Inset clip="padding-box" side="top" pb="current">
-								<Thumbnail snapshot={snap} scale={0.07}/>
-							</Inset>
-							<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
-							<Separator size='4' my='4' />
-							<DataList.Root orientation={"vertical"}>
-								<DataList.Item>
-									<DataList.Label minWidth="88px">Nombre de sessions</DataList.Label>
-									<DataList.Value>
-										{sessions.nbOfSession ? sessions.nbOfSession : "Aucune"}
-									</DataList.Value>
-								</DataList.Item>
-								<DataList.Item>
-									<DataList.Label minWidth="88px">Dernière session</DataList.Label>
-									<DataList.Value>{sessions.lastSession ? sessions.lastSession : "Jamais"}</DataList.Value>
-								</DataList.Item>
-							</DataList.Root>
-						</Link>
-					</Suspense>
+					<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+						<Inset clip="padding-box" side="top" pb="current">
+							<Thumbnail snapshot={snap} scale={0.07}/>
+						</Inset>
+						<Heading>{title === 'Sans titre' ? 'Capsule sans titre' : title}</Heading>
+						<Separator size='4' my='4' />
+						<DataList.Root orientation={"vertical"}>
+							<DataList.Item>
+								<DataList.Label minWidth="88px">Nombre de sessions</DataList.Label>
+								<DataList.Value>
+									{sessions.nbOfSession ? sessions.nbOfSession : "Aucune"}
+								</DataList.Value>
+							</DataList.Item>
+							<DataList.Item>
+								<DataList.Label minWidth="88px">Dernière session</DataList.Label>
+								<DataList.Value>{sessions.lastSession ? sessions.lastSession : "Jamais"}</DataList.Value>
+							</DataList.Item>
+						</DataList.Root>
+					</Link>
 				</Card>
 			}
 		</>

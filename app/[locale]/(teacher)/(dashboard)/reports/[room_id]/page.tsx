@@ -5,7 +5,6 @@ import { Button, Container, Flex, Heading, ScrollArea, Section, Table, Text } fr
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import { Loading } from "../_components/LoadingPage";
 import { TableCell } from "../_components/TableCell";
 
 // TYPE
@@ -30,7 +29,6 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	let attendances: AttendanceInfoType[] = [];		
 	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
-	let loading = true;
 
 	if (!(roomId))
 	{
@@ -74,17 +72,12 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		}
 	} catch (err) {
 		console.error('Error getting attendances', err);
-	} finally {
-		loading = false;
 	}
 	return (<>
 		<ScrollArea>
 			<Section>
 				<Container >
-				{
-					loading
-					? <Loading />
-					: <>
+					<>
 						<Flex>
 							<Button asChild variant="soft">
 								<Link href={`/reports`}>
@@ -105,23 +98,22 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-							{
-								!attendances.length
-								? <Table.Row>
-									<Table.Cell>
-										Aucun participant
-									</Table.Cell>
-								</Table.Row>
-								: attendances?.map((attendance, index) => {
-									return (
-										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
-									);
-								})
-							}
+								{
+									!attendances.length
+									? <Table.Row>
+										<Table.Cell>
+											Aucun participant
+										</Table.Cell>
+									</Table.Row>
+									: attendances?.map((attendance, index) => {
+										return (
+											<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+										);
+									})
+								}
 							</Table.Body>
 						</Table.Root>
 					</>
-				}
 				</Container>
 			</Section>
 		</ScrollArea>
