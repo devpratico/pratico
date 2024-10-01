@@ -2,7 +2,6 @@
 import { AlertDialog, Button, Flex } from "@radix-ui/themes"
 import { useState } from "react"
 import { Link } from "@/app/_intl/intlNavigation"
-import { usePathname } from "@/app/_intl/intlNavigation"
 import { signInAnonymously } from "@/app/api/actions/auth"
 import { saveCapsule } from "@/app/api/actions/capsule"
 import { useRouter } from "@/app/_intl/intlNavigation"
@@ -12,8 +11,13 @@ import { useAuth } from "@/app/_hooks/useAuth"
 export default function WelcomeDialog() {
     const { user } = useAuth()
     const [show, setShow] = useState(!user)
-    const pathname = usePathname()
     const router = useRouter()
+
+    const routes = {
+        login:  `/auth?authTab=login&nextUrl=${encodeURIComponent('/capsules')}`,
+        signup: `/auth?authTab=signup&nextUrl=${encodeURIComponent('/capsules')}`,
+        later:  (capsuleId: string) => `/capsule/${capsuleId}`
+    }
 
     async function handleLater() {
 
@@ -24,7 +28,7 @@ export default function WelcomeDialog() {
         const { data: capsuleData, error: capsuleError } = await saveCapsule({ created_by: userData.user.id, title: 'Sans titre' })
         if (capsuleError || !capsuleData) throw capsuleError || new Error('No capsule data')
         
-        router.push(`/capsule/${capsuleData.id}`)
+        router.push(routes.later(capsuleData.id))
     }
 
     return (
@@ -49,7 +53,7 @@ export default function WelcomeDialog() {
                     <Flex gap='2'>
                         <AlertDialog.Action>
                             <Button asChild variant='soft'>
-                                <Link href={`/auth?authTab=login&nextUrl=${pathname}`}>
+                                <Link href={routes.login}>
                                     Se connecter
                                 </Link>
                             </Button>
@@ -57,7 +61,7 @@ export default function WelcomeDialog() {
 
                         <AlertDialog.Action>
                             <Button asChild>
-                                <Link href={`/auth?authTab=signup&nextUrl=${pathname}`}>
+                                <Link href={routes.signup}>
                                     Créer un compte
                                 </Link>
                             </Button>
