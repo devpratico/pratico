@@ -4,6 +4,7 @@ import QuizAnswering from './QuizAnswering'
 import { useState, useEffect, useMemo } from "react"
 import { useRoom } from '@/app/_hooks/useRoom'
 import PollAnswering from './PollAnswering'
+import { ScrollArea } from '@radix-ui/themes'
 
 export default function ActivityCard() {
     const [open, setOpen] = useState(false)
@@ -15,10 +16,10 @@ export default function ActivityCard() {
         setOpen(!!room?.activity_snapshot)
     }, [room])
 
-    let activityAnswering: JSX.Element
 
     return (
         <CardDialog open={open} setOpen={setOpen} preventClose topMargin='0'>
+            <ScrollArea>
             {
                 activityType == 'quiz' ? <QuizAnswering />
                 :
@@ -26,6 +27,7 @@ export default function ActivityCard() {
                 :
                 <p>{'Unknown activity type: ' + activityType}</p>
             }
+            </ScrollArea>
         </CardDialog>
     )
 
