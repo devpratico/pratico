@@ -50,7 +50,7 @@ export default function CreateSpecificActivityBtn({type} : {type: ActivityType |
         {
             !openActivityCreation
             ?   type
-                ? <Button disabled={activity !== 0} onClick={handleClick}>Créer un {frActivity}</Button>
+                ? <Button onClick={handleClick}>Créer un {frActivity}</Button>
                 : null
             : whichActivity
         }

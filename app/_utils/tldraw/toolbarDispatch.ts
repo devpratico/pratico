@@ -186,9 +186,11 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
             // So we need to continue in the onload handler
             const image = new Image()
             const assetId = AssetRecordType.createId()
+            
 
             // This handler will be called when the image is done loading
             image.onload = async () => {
+                logger.log('tldraw:tools', 'Uploading image...')
 
                 //Upload to supabase
                 const { data, error } = await uploadCapsuleFile(
@@ -201,10 +203,13 @@ export function toolbarDispatch({ editor, action, payload }: DispatchArgs) {
                 )
 
                 if (error || !data) {
-                    logger.error('system:file', 'Error uploading file', error)
+                    logger.error('supabase:storage', 'Error uploading file', error)
                     return
                 }
-                const publicUrl = await getPublicUrl(data.fullPath)
+
+                logger.log('supabase:storage', 'Getting public URL for path:', data.path)
+                const publicUrl = await getPublicUrl(data.path)
+                logger.log('supabase:storage', 'Image uploaded. Public URL:', publicUrl)
 
                 const imageWidth  = image.width
                 const imageHeight = image.height
