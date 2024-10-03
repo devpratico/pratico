@@ -31,7 +31,7 @@ export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherC
     return (
         <Canvas store={store}>
             <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
-            <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} />
+            <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} saveOnMount/>
             <NavigatorSync />
         </Canvas>
     )
