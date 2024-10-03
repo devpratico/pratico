@@ -45,7 +45,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     // Set canvas to read only if user is not allowed to collab
     const { editor } = useTLEditor()
     useEffect(() => {
-        editor?.updateInstanceState({ isReadonly: !canCollab })
+		editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
     return (

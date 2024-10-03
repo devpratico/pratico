@@ -1,12 +1,13 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Text, Checkbox, Link, ScrollArea } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/api/actions/auth';
 import { fetchUser } from '@/app/api/actions/user';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance } from '@/app/api/actions/attendance';
+import { janifera } from '@/app/Fonts';
 
 
 export default function StudentForm() {
@@ -21,6 +22,7 @@ export default function StudentForm() {
 	});
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
+	const [ name, setName ] = useState({firstname: "", lastname: ""});
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -57,13 +59,21 @@ export default function StudentForm() {
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder='Prénom' required/>
+                        <TextField.Root onChange={(e) => {
+							if (e.target.value.length < 140)
+								setName({...name, firstname: e.target.value})
+							}}
+							placeholder='Prénom' required/>
                     </Form.Control>
                 </Form.Field>
 
                 <Form.Field key='last-name' name='last-name'>
                     <Form.Control asChild>
-                        <TextField.Root placeholder='Nom' required/>
+                        <TextField.Root onChange={(e) =>  {
+								if (e.target.value.length < 140)
+									setName({...name, lastname: e.target.value})
+							}}
+							placeholder='Nom' required/>
                     </Form.Control>
                 </Form.Field>
 
@@ -76,9 +86,11 @@ export default function StudentForm() {
 					</Flex>
 				</Box>
 
-                <Box style={{alignSelf: 'flex-end'}}>
-                    <Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
-                </Box>
+				<Flex mt='5' justify='between' height='20px'>
+					<Text mr='5' size='8' className={janifera.className}>{`${name.firstname} ${name.lastname}`}</Text>
+
+					<Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
+				</Flex>
             </Flex>
         </Form.Root>
     )

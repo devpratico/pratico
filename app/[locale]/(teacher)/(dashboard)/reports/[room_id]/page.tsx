@@ -91,9 +91,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 						
 						<Table.Header>
 							<Table.Row>
-								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
 								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
 								<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
+								<Table.ColumnHeaderCell>Signature</Table.ColumnHeaderCell>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -106,7 +107,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 								</Table.Row>
 								: attendances?.map((attendance, index) => {
 									return (
-										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.last_name, cellOne: attendance.first_name, cellTwo: attendance.connexion}} />
+										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.first_name, cellOne: attendance.last_name, cellTwo: attendance.connexion}} />
 									);
 								})
 							}
