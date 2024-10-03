@@ -10,7 +10,8 @@ import { useEffect, useCallback } from 'react';
 export type AutoSaverProps = {
     saveTo:
           { destination: 'remote capsule', capsuleId: string }
-        | { destination: 'remote room',    roomId:    number }
+        | { destination: 'remote room',    roomId:    number },
+    saveOnMount?: boolean
 }
 
 
@@ -20,7 +21,7 @@ export type AutoSaverProps = {
  * * A room (while in collaboration mode)
  * * A capsule (while in solo edit mode)
  */
-const AutoSaver = track(({saveTo}: AutoSaverProps) => {
+const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
     const editor  = useEditor()
     const save = useCallback(async (snapshot: TLEditorSnapshot) => {
         let _id: string | number
@@ -45,9 +46,11 @@ const AutoSaver = track(({saveTo}: AutoSaverProps) => {
 
     // Save on mount
     useEffect(() => {
-        logger.log('react:component', 'AutoSaver', 'First save of autosaver')
-        if (editor) save(editor.getSnapshot())
-    }, [editor, save])
+        if (editor && saveOnMount) {
+            logger.log('react:component', 'AutoSaver', 'First save of autosaver')
+            save(editor.getSnapshot())
+        }
+    }, [editor, save, saveOnMount])
 
 
     // Save when the snapshot changes
