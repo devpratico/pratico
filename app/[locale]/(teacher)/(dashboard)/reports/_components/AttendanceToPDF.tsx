@@ -21,7 +21,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				<Button onClick={() => toPDF()}>Générer PDF</Button>
 			</Flex>
 
-			<div ref={targetRef} style={{color: '#000000' , backgroundColor: '#FFFFFF', padding: '10px'}} >
+			<div ref={targetRef} >
 				<Heading mb="4" as="h2">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
 				<Heading ml="3" mb="4" as="h4">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
 
