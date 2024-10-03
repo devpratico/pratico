@@ -8,7 +8,7 @@ import { TablesInsert, Tables, Json } from "@/supabase/types/database.types"
 import { TLStoreSnapshot } from "tldraw"
 import { revalidatePath } from "next/cache"
 import { generateRandomCode } from "@/app/_utils/codeGen"
-import { fetchCapsuleSnapshot } from "./capsule"
+import { fetchCapsuleSnapshot } from "./capsule2"
 import { ActivitySnapshot } from "@/app/_types/activity"
 import { fetchActivity } from "./activities"
 import { Poll } from "@/app/_types/poll"
@@ -195,14 +195,23 @@ export const fetchOpenRoomsCodes = cache(async () => {
 
 
 export const createRoom = async (capsuleId: string) => {
+    const supabase = createClient()
     const { user, error: userError } = await fetchUser()
     if (userError) return { room: null, error: userError }
     if (!user) return { room: null, error: 'No user' }
 
-    const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+    //const { data, error } = await fetchCapsuleSnapshot(capsuleId)
+    //const snapshot = data?.tld_snapshot?.[0]
+    //if (error) return { room: null, error }
+    //if (!snapshot) return { room: null, error: 'No capsule snapshot to use for room' }
+
+    // Get the snapshot to use for the room
+    logger.log('supabase:database', 'Fetching capsule snapshot for capsuleId', capsuleId)
+    const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
+    if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
+
     const snapshot = data?.tld_snapshot?.[0]
-    if (error) return { room: null, error }
-    if (!snapshot) return { room: null, error: 'No capsule snapshot to use for room' }
+
 
     let code = generateRandomCode()
 
