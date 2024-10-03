@@ -60,7 +60,7 @@ export default function StudentForm() {
                 <Form.Field key='first-name' name='first-name'>
                     <Form.Control asChild>
                         <TextField.Root onChange={(e) => {
-							if (e.target.value.length < 140)
+							if (e.target.value.length < 100)
 								setName({...name, firstname: e.target.value})
 							}}
 							placeholder='Prénom' required/>
@@ -70,7 +70,7 @@ export default function StudentForm() {
                 <Form.Field key='last-name' name='last-name'>
                     <Form.Control asChild>
                         <TextField.Root onChange={(e) =>  {
-								if (e.target.value.length < 140)
+								if (e.target.value.length < 100)
 									setName({...name, lastname: e.target.value})
 							}}
 							placeholder='Nom' required/>
