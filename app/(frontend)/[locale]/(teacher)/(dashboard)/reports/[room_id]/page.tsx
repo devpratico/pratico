@@ -1,11 +1,9 @@
-import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from "@radix-ui/themes";
-import { ArrowLeft } from "lucide-react";
+import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import { TableCell } from "../_components/TableCell";
+import AttendanceToPDF from "../_components/AttendanceToPDF";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -76,45 +74,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	return (<>
 		<ScrollArea>
 			<Section>
-				<Container >
-					<Flex>
-						<Button asChild variant="soft">
-							<Link href={`/reports`}>
-								<ArrowLeft />Retour
-							</Link>
-						</Button>
-						<Heading ml="3" mb="4" as="h1">{`Emargements${sessionDate ? ` du ${sessionDate}` : ""}`}</Heading>
-					</Flex>
-					<Heading mb="4" as="h3">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
-
-					<Table.Root variant="surface">
-						
-						<Table.Header>
-							<Table.Row>
-								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>{"Heure d'arrivée"}</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Signature</Table.ColumnHeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{
-								!attendances.length
-								? <Table.Row>
-									<Table.Cell>
-										Aucun participant
-									</Table.Cell>
-								</Table.Row>
-								: attendances?.map((attendance, index) => {
-									return (
-										<TableCell key={index} navigationsIds={{attendanceView: true, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.first_name, cellOne: attendance.last_name, cellTwo: attendance.connexion}} />
-									);
-								})
-							}
-						</Table.Body>
-					</Table.Root>
+				<Container>
+					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} roomId={roomId} />
 				</Container>
-			</Section>
+			</Section>	
 		</ScrollArea>
 	</>);
 };

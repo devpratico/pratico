@@ -1,7 +1,7 @@
 "use client";
 
-import { Badge, Flex, Table, Text } from "@radix-ui/themes";
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Badge, Table, Text } from "@radix-ui/themes";
+import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { janifera } from "@/app/(frontend)/Fonts";
