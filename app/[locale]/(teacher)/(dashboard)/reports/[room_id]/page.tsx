@@ -1,7 +1,7 @@
 import { Link } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
-import { formatDate, sanitizeUuid } from "@/app/_utils/utils_functions";
-import { Button, Container, Flex, Heading, ScrollArea, Section, Table, Text } from "@radix-ui/themes";
+import { formatDate } from "@/app/_utils/utils_functions";
+import { Button, Container, Flex, Heading, ScrollArea, Section, Table } from "@radix-ui/themes";
 import { ArrowLeft } from "lucide-react";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
@@ -107,7 +107,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 								</Table.Row>
 								: attendances?.map((attendance, index) => {
 									return (
-										<TableCell key={index} navigationsIds={{roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.first_name, cellOne: attendance.last_name, cellTwo: attendance.connexion}} />
+										<TableCell key={index} navigationsIds={{attendanceView: true, roomId}} infos={{roomClosed: true, rowHeaderCell: attendance.first_name, cellOne: attendance.last_name, cellTwo: attendance.connexion}} />
 									);
 								})
 							}
