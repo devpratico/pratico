@@ -39,7 +39,8 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', user?.id).single();
 		if (error)
 			logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
-		userInfo = data;
+		if (data)
+			userInfo = data;
 		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
 		if (roomData)
 			sessionDate = roomData.created_at;	
@@ -81,8 +82,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<>{userInfo}</>
-					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} roomId={roomId} user={userInfo}/>
+					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={userInfo}/>
 				</Container>
 			</Section>	
 		</ScrollArea>
