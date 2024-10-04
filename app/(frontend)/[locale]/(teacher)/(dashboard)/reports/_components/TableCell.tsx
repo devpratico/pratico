@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Table, Text } from "@radix-ui/themes";
+import { Badge, Flex, Table, Text } from "@radix-ui/themes";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
