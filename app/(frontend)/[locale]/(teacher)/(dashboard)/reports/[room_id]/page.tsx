@@ -3,7 +3,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import AttendanceToPDF from "../_components/AttendanceToPDF";
+import AttendanceToPDF, { TeacherInfo } from "../_components/AttendanceToPDF";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -27,6 +27,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	let attendances: AttendanceInfoType[] = [];		
 	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
+	let userInfo: TeacherInfo | null = null;
 
 	if (!(roomId))
 	{
@@ -34,9 +35,14 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		return ;				
 	}
 	try {
+		const {data: { user }} = await supabase.auth.getUser();
+		const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', user?.id).single();
+		if (error)
+			logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
+		userInfo = data;
 		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
 		if (roomData)
-			sessionDate = formatDate(roomData.created_at);	
+			sessionDate = roomData.created_at;	
 		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
 		if (!attendanceData?.length)
 			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
@@ -73,9 +79,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	}
 	return (<>
 		<ScrollArea>
-			<Section>
+			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} roomId={roomId} />
+					<>{userInfo}</>
+					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} roomId={roomId} user={userInfo}/>
 				</Container>
 			</Section>	
 		</ScrollArea>
