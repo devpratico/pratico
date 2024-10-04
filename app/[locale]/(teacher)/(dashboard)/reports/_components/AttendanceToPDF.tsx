@@ -12,7 +12,7 @@ export type TeacherInfo = {
 	last_name: string,
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user }:
-	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, roomId: string, user: TeacherInfo | null}
+	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: TeacherInfo | null}
 ) {
 	const { targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
 	
@@ -21,7 +21,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-		<Text>{user?.first_name} {user?.last_name}</Text>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
 					<Link href={`/reports`}>
@@ -35,12 +34,12 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 			<div  style={{margin: "50px 50px"}} >
 				<Text>Pratico</Text>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
-				<h2 style={{textAlign: 'left'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<h3 style={{textAlign: 'left', color: "var(--gray-8)", marginBottom: "50px"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
+				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
+				<h3 style={{color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					user ?
-					<h3>{`Animateur: ${user?.first_name} ${user?.last_name}`}</h3>
-					: null
+					<h4 style={{marginBottom: "50px"}}>{`Animateur: ${user?.first_name} ${user?.last_name}`}</h4>
+					: ""
 				}
 				<Flex justify="between" mb='3'>
 					<h2>Émargement</h2>
