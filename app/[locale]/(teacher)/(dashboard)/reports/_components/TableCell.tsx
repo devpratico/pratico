@@ -1,13 +1,13 @@
 "use client";
 
-import { Badge, Table, Text } from "@radix-ui/themes";
+import { Badge, Flex, Table, Text } from "@radix-ui/themes";
 import { useRouter } from "@/app/_intl/intlNavigation";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { janifera } from "@/app/Fonts";
 
-export type ReportsNavigationIDs = {
-	capsuleId?: string,
+export type ReportsProps = {
+	attendanceView: boolean,
 	roomId?: string,
 }
 
@@ -19,14 +19,14 @@ export type TableCellProps = {
 	cellThree?: string | undefined
 }
 
-export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsNavigationIDs, infos: TableCellProps}) {
+export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProps, infos: TableCellProps}) {
 	const router = useRouter();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
 	useEffect(() => {
 		setIsClosed(infos.roomClosed);
 	  }, [infos.roomClosed]);
 	const handleClick = () => {
-		if (navigationsIds.capsuleId && navigationsIds.roomId && infos.roomClosed)
+		if (!navigationsIds.attendanceView && navigationsIds.roomId && infos.roomClosed)
 			router.push(`/reports/${navigationsIds.roomId}`);
 		else
 		{
@@ -37,7 +37,7 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsNavi
 		}
 	};
 	return (
-		<Table.Row style={{cursor: infos.roomClosed && navigationsIds.capsuleId ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
+		<Table.Row style={{cursor: infos.roomClosed && !navigationsIds.attendanceView ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell style={{verticalAlign: 'middle'}}>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
 			<Table.Cell style={{verticalAlign: 'middle'}}>
 					{infos.cellOne}
@@ -56,7 +56,7 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsNavi
 				}				
 			</Table.Cell>
 			{
-				!navigationsIds.capsuleId
+				navigationsIds.attendanceView
 				? <Table.Cell style={{verticalAlign: 'middle'}}>
 					<Text size='6' className={janifera.className}>{`${infos.rowHeaderCell} ${infos.cellOne}`}</Text>
 				</Table.Cell>			

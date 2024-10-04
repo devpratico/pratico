@@ -27,7 +27,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 					return (
 						<TableCell
 							key={index}
-							navigationsIds={{capsuleId: session.capsule_id, roomId: session.id}}
+							navigationsIds={{attendanceView: false, roomId: session.id}}
 							infos={{roomClosed: session.status === "closed", rowHeaderCell: session.capsule_title, cellOne: formatDate(session.created_at), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
 						/>
 					);
