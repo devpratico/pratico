@@ -21,6 +21,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
+		<Text>{user?.first_name} {user?.last_name}</Text>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
 					<Link href={`/reports`}>
@@ -31,18 +32,17 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 			</Flex>
 
 			<div ref={targetRef}>
-			{/* <div ref={targetRef} style={{display: 'none'}}> */}
 			<div  style={{margin: "50px 50px"}} >
 				<Text>Pratico</Text>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2 style={{textAlign: 'left'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<h3 style={{textAlign: 'left', color: "var(--gray-8)", marginBottom: "50px"}}>{`${date ? `Session du ${date}` : null} ${date && hour ? ` à ${hour}` : null}`}</h3>
+				<h3 style={{textAlign: 'left', color: "var(--gray-8)", marginBottom: "50px"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					user ?
 					<h3>{`Animateur: ${user?.first_name} ${user?.last_name}`}</h3>
 					: null
 				}
-				<Flex justify="between">
+				<Flex justify="between" mb='3'>
 					<h2>Émargement</h2>
 					<Text>{`Participants: ${attendances.length || "Aucun"}`}</Text>		
 				</Flex>
