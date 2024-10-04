@@ -9,11 +9,11 @@ const withNextIntl = createNextIntlPlugin('./app/(frontend)/_intl/i18n.ts')
 const nextConfig = {
     reactStrictMode: true,
 	// optimization: {
-	// 	// minimize: false,
-	// 	minify: true
+	// 	minimize: false
 	// },
     webpack: (config, {dev, isServer}) => {
         config.resolve.alias.canvas = false;
+		
 		
         config.module.rules.push({
             test: /\.mjs$/,
