@@ -1,9 +1,19 @@
 export const formatDate = (date: string | undefined, language?: string, specify?: string) => {
 	if (!date)
 		return ;
-	if (specify === "hour")
-		return (new Date(date).toLocaleString(language ? language : 'fr-FR', { hour: '2-digit', minute: '2-digit', hour12: true }));
-	return (new Date(date).toLocaleString(language ? language : 'fr-FR'));
+	let formatedDate = null;
+	switch (specify)
+	{
+		case "hour":
+			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false });
+			break ;
+		case "date":
+			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { day: '2-digit', month: '2-digit', year: "numeric" });
+			break ;
+		default:
+			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR');
+	}
+	return (formatedDate);
   }
 
 
