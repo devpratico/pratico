@@ -2,7 +2,7 @@
 import { useTLEditor } from "@/app/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
-import { Plus, File, CircleCheck } from "lucide-react"
+import { CircleCheck, FolderUp, StickyNote } from "lucide-react"
 import { useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/_hooks/useNav"
@@ -54,7 +54,7 @@ function NewPageBtn() {
 
     return (
         <Button variant='outline' style={{ justifyContent: 'start' }} onClick={handleClick} disabled={disabled}>
-            <Plus size='15' /> Page blanche
+            <StickyNote size='15' /> Page blanche
         </Button>
     )
 }
@@ -163,7 +163,7 @@ function ImportDocumentBtn() {
 
             <AlertDialog.Trigger>
                 <Button disabled={disabled} style={{ justifyContent: 'start' }}>
-                    <File size='15' /> Document
+                    <FolderUp size='15' /> Importer
                 </Button>
             </AlertDialog.Trigger>
 

@@ -12,21 +12,25 @@ import logger from "../_utils/logger"
 type AuthProviderType = {
     user: User | undefined
     userId: string | undefined
+    firstName: string | undefined
+    lastName: string | undefined
 }
 
 interface AuthContextProviderProps {
     user: User | undefined
+    firstName: string | undefined
+    lastName: string | undefined
     children: React.ReactNode
 }
 
 const AuthContext = createContext<AuthProviderType | undefined>(undefined)
 
-export const AuthContextProvider = ({ user, children }: AuthContextProviderProps) => {
+export const AuthContextProvider = ({ user, firstName, lastName, children }: AuthContextProviderProps) => {
     const userId = user?.id
     logger.log('react:layout', 'AuthContextProvider', { userId })
     
     return (
-        <AuthContext.Provider value={{ user, userId }}>
+        <AuthContext.Provider value={{ user, userId, firstName, lastName }}>
             {children}
         </AuthContext.Provider>
     )
