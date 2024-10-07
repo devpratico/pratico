@@ -2,11 +2,10 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { fetchNames } from "@/app/api/actions/user";
 import { getRandomColor } from "@/app/_utils/codeGen";
 import { getUserPreferences } from "tldraw";
-import { fetchUser } from "@/app/api/actions/user";
 import { useParams } from "next/navigation";
+import { useAuth } from "./useAuth";
 
 
 interface PresenceUser {
@@ -43,16 +42,8 @@ const PresencesContext = createContext<PresencesContext>(emptyPresencesContext)
 // Note : https://discord.com/channels/859816885297741824/1211824474056433717/1216702120431063040
 export function PresencesProvider({ children }: PresencesProviderProps) {
     const [presences, setPresences] = useState<PresenceState[]>([])
-    const [userId, setUserId] = useState<string | null>(null)
     const { room_code }: { room_code: string } = useParams();
-
-    useEffect(() => {
-        try {
-            fetchUser().then(({user, error}) => {setUserId(user?.id || null)})
-        } catch (error) {
-            logger.error('supabase:auth', 'Error fetching user', (error as Error).message)
-        }
-    }, [])
+    const { userId, firstName, lastName } = useAuth()
 
     useEffect(() => {
         logger.log('supabase:realtime', 'usePresences', presences)
@@ -96,13 +87,11 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
             logger.log('supabase:realtime', room_code + "_presence", 'Presence status', status)
             if (status !== 'SUBSCRIBED') { return }
 
-            const names = await fetchNames(userId)
-
             const myPresence: PresenceState = {
                 id: userId || 'unknown',
                 color: getUserPreferences().color || getRandomColor(),
-                firstName: names.first_name || getUserPreferences().name || 'Inconnu',
-                lastName: names.last_name || '',
+                firstName: firstName || getUserPreferences().name || 'Inconnu',
+                lastName: lastName || '',
                 isMe: true,
                 state: 'online',
                 connectedAt: new Date().toISOString(),
@@ -121,7 +110,7 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
             supabase.removeChannel(room).then((res) => { logger.log('supabase:realtime', room_code + "_presence", 'channel removed:', res)})
         }
 
-    }, [room_code, userId])
+    }, [room_code, userId, firstName, lastName])
 
 
     if (!room_code) {
