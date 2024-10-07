@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import generatePDF, { usePDF } from "react-to-pdf";
 import { janifera } from "@/app/Fonts";
 import { formatDate } from "@/app/_utils/utils_functions";
+import { useEffect, useState } from "react";
 
 /// TYPE
 export type TeacherInfo = {
@@ -15,13 +16,21 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: TeacherInfo | null}
 ) {
 	const { targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
-	attendances.sort((a, b) => {
-		const tmpA = a.last_name || '';
-		const tmpB = b.last_name || '';
-		return (tmpA.localeCompare(tmpB));
-	});
 	const date = formatDate(sessionDate, undefined, "date");
 	const hour = formatDate(sessionDate, undefined, "hour");
+
+	useEffect(() => {
+		const getAttendancesList = () => {
+			const slicedAttendances: AttendanceInfoType[] = [];
+			attendances.sort((a, b) => {
+				const tmpA = a.last_name || '';
+				const tmpB = b.last_name || '';
+				return (tmpA.localeCompare(tmpB));
+			});
+		}
+		getAttendancesList();
+	}, []);
+
 	
 	return (
 		<>
@@ -51,18 +60,18 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Flex>
 
 				<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid var(--gray-6)'}}>
-					<thead style={{ backgroundColor: 'var(--gray-3)', borderBottom: '2px solid var(--gray-6)' }}>
+					<thead style={{ maxInlineSize: '50px', backgroundColor: 'var(--gray-3)', borderBottom: '2px solid var(--gray-6)' }}>
 						<tr>
-						<th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
+						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
 							<Text ml='1'>Prénom</Text>
 						</th>
-						<th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
+						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
 							<Text ml='1'>Nom</Text>
 						</th>
-						<th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
+						<th style={{ maxInlineSize: '50px', padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
 							<Text ml='1'>{"Heure d'arrivée"}</Text>
 						</th>
-						<th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
+						<th style={{ maxInlineSize: '300px', padding: '10px', textAlign: 'left', borderBottom: '1px solid var(--gray-3)' }}>
 							<Text ml='1'>Signature</Text>
 						</th>
 						</tr>
@@ -77,16 +86,16 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 							</tr>
 							: attendances.map((attendance, index) => (
 								<tr key={index} style={{ borderBottom: '1px solid var(--gray-3)' }}>
-									<td style={{ padding: '10px' }}>
+									<td style={{ maxInlineSize: '200px', padding: '10px' }}>
 										<Text ml='1'>{attendance.first_name}</Text>
 									</td>
-									<td style={{ padding: '10px' }}>
+									<td style={{ maxInlineSize: '300px', padding: '10px' }}>
 										<Text ml='1'>{attendance.last_name}</Text>
 									</td>
-									<td style={{ padding: '10px' }}>
+									<td style={{ maxInlineSize: '100px',  padding: '10px' }}>
 										<Text ml='1'>{attendance.connexion}</Text>
 									</td>
-									<td style={{ padding: '10px' }}>
+									<td style={{ maxInlineSize: '150px', padding: '10px' }}>
 										<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
 									</td>
 								</tr>
