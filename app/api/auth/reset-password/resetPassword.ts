@@ -11,7 +11,7 @@ export default async function resetPassword(email: string): Promise<ResetPasswor
     const encodedEmail = encodeURIComponent(email);
 
     try {
-        const response = await fetch(`/api/auth/reset-password?email=${encodedEmail}`);
+        const response = await fetch(`/api/auth/reset-password?email=${encodedEmail}`, { method: 'POST' });
         logger.log('next:api', 'resetPassword', response);
 
         // Check for HTTP response errors
