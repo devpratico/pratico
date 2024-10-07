@@ -22,14 +22,15 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 
 	useEffect(() => {
 		const getAttendancesList = () => {
-			setSortedAttendances(attendances.sort((a, b) => {
-				const tmpA = a.last_name || '';
-				const tmpB = b.last_name || '';
-				return (tmpA.localeCompare(tmpB));
-			}));
+			if (!sortedAttendances)
+				setSortedAttendances(attendances.sort((a, b) => {
+					const tmpA = a.last_name || '';
+					const tmpB = b.last_name || '';
+					return (tmpA.localeCompare(tmpB));
+				}));
 		}
 		getAttendancesList();
-	}, [attendances]);
+	}, [attendances, sortedAttendances]);
 
 	
 	return (
