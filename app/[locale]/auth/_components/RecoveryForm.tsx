@@ -2,7 +2,7 @@
 import { Button, Flex, TextField, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, TriangleAlert } from 'lucide-react';
-import { resetPasswordForEmail } from '@/app/api/actions/auth';
+import resetPassword from '@/app/api/auth/reset-password/resetPassword';
 import { useState } from 'react';
 import { sendDiscordMessage } from '@/app/api/actions/discord';
 import Feedback from './Feedback';
@@ -24,7 +24,7 @@ export default function RecoveryForm() {
         const formData = Object.fromEntries(new FormData(e.currentTarget));
         const { email } = formData as { email: string };
 
-        const { error } = await resetPasswordForEmail(email);
+        const { error } = await resetPassword(email);
         setDisabled(false);
 
 
