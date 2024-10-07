@@ -4,13 +4,14 @@ import { saveCapsuleSnapshot } from '@/app/api/actions/capsule'
 import { saveRoomSnapshot } from '@/app/api/actions/room'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 
 export type AutoSaverProps = {
     saveTo:
           { destination: 'remote capsule', capsuleId: string }
-        | { destination: 'remote room',    roomId:    number }
+        | { destination: 'remote room',    roomId:    number },
+    saveOnMount?: boolean
 }
 
 
@@ -20,32 +21,40 @@ export type AutoSaverProps = {
  * * A room (while in collaboration mode)
  * * A capsule (while in solo edit mode)
  */
-const AutoSaver = track(({saveTo}: AutoSaverProps) => {
+const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
     const editor  = useEditor()
+    const save = useCallback(async (snapshot: TLEditorSnapshot) => {
+        let _id: string | number
 
-    useEffect(() => {
-        const save = async (snapshot: TLEditorSnapshot) => {
+        try {
+            switch (saveTo.destination) {
+                case 'remote capsule':
+                    _id = saveTo.capsuleId
+                    await saveCapsuleSnapshot(_id, snapshot)
+                    break
 
-            let _id: string | number
-
-            try {
-                switch (saveTo.destination) {
-                    case 'remote capsule':
-                        _id = saveTo.capsuleId
-                        await saveCapsuleSnapshot(_id, snapshot)
-                        break
-
-                    case 'remote room':
-                        _id = saveTo.roomId
-                        await saveRoomSnapshot(_id, snapshot)
-                        break
-                }
-                logger.log('supabase:database', `Saved snapshot to ${saveTo.destination} ${_id}`)
-            } catch (error) {
-                logger.error('supabase:database', 'Error saving snapshot', (error as Error).message)
+                case 'remote room':
+                    _id = saveTo.roomId
+                    await saveRoomSnapshot(_id, snapshot)
+                    break
             }
+            logger.log('supabase:database', `Saved snapshot to ${saveTo.destination} ${_id}`)
+        } catch (error) {
+            logger.error('supabase:database', 'Error saving snapshot', (error as Error).message)
         }
+    }, [saveTo])
 
+    // Save on mount
+    useEffect(() => {
+        if (editor && saveOnMount) {
+            logger.log('react:component', 'AutoSaver', 'First save of autosaver')
+            save(editor.getSnapshot())
+        }
+    }, [editor, save, saveOnMount])
+
+
+    // Save when the snapshot changes
+    useEffect(() => {
         let timeout: NodeJS.Timeout
         const debouncedSave = (snapshot: TLEditorSnapshot) => {
             clearTimeout(timeout)
@@ -60,7 +69,7 @@ const AutoSaver = track(({saveTo}: AutoSaverProps) => {
             clearTimeout(timeout)
             listener?.() // Removes the listener (returned from store.listen())
         }
-    }, [editor, saveTo])
+    }, [editor, save])
 
     return null
 })

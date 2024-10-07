@@ -85,6 +85,7 @@ export const fetchCapsuleSnapshot = async (capsuleId: string) => {
     logger.log('supabase:database', 'Fetching capsule snapshot for capsuleId', capsuleId)
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
+    if (!data) logger.error('supabase:database', 'No data found for capsule snapshot', capsuleId)
     return { data, error: error?.message }
 }
 

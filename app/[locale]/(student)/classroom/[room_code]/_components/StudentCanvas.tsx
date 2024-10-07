@@ -15,6 +15,7 @@ import { Box } from "@radix-ui/themes";
 import useWindow from "@/app/_hooks/useWindow";
 import ToolBarBox from "./ToolBarBox";
 import MobileToolbar from "@/app/[locale]/(teacher)/(desk)/_components/MobileToolbar";
+import logger from "@/app/_utils/logger";
 
 
 interface StudentCanvasProps {
@@ -29,7 +30,6 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
-    // TODO: remove the server side fetch and use a server action
     useEffect(() => {
         setUserPreferences({
             id: user.id,
@@ -45,7 +45,8 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     // Set canvas to read only if user is not allowed to collab
     const { editor } = useTLEditor()
     useEffect(() => {
-		editor?.updateInstanceState({ isReadonly: !canCollab })
+        logger.log('react:component', 'StudentCanvas', 'canCollab changed:', canCollab)
+        editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
     return (
