@@ -25,10 +25,10 @@ export default function RecoveryForm() {
         const formData = Object.fromEntries(new FormData(e.currentTarget));
         const { email } = formData as { email: string };
 
-        //const { error } = await resetPassword(email);
+        const { error } = await resetPassword(email);
         
-        const supabase = createClient()
-        const { error } = await supabase.auth.resetPasswordForEmail(email)
+        //const supabase = createClient()
+        //const { error } = await supabase.auth.resetPasswordForEmail(email)
 
         setDisabled(false);
 
@@ -36,7 +36,8 @@ export default function RecoveryForm() {
         if (!error) {
             setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
         } else {
-            const fullMessage = error.name + ': ' + error.message + error.cause ? ' - ' + error.cause : '';
+            //const fullMessage = error.name + ': ' + error.message + error.cause ? ' - ' + error.cause : '';
+            const fullMessage = error;
             setErrorMessage(fullMessage);
             await sendDiscordMessage(`⚠️ _${email}_ a voulu réinitialiser son mot de passe mais une erreur est survenue: *"${fullMessage}"*`);
         }
