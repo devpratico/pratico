@@ -3,7 +3,7 @@ import { Button, Flex, TextField, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
-import sendDiscordMessage from '@/app/api/discord/wrapper';
+import { sendDiscordMessage } from '@/app/api/discord/wrappers';
 import Feedback from './Feedback';
 import { useDisable } from '@/app/_hooks/useDisable';
 import ClientMismatchMessage from './ClientMismatchMessage';

@@ -1,3 +1,6 @@
+import { sendDiscordError } from "../api/discord/wrappers";
+
+
 const logCategories = {
     react: ['layout', 'page', 'component', 'hook'] as const,
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
@@ -88,30 +91,51 @@ class Logger {
 
         // Now, depending on the environment, we'll style the output differently
 
-        // In local dev, we'll use colors in the browser console
+        // In local dev, client-side (browser console), we use colors
         if (process.env.NODE_ENV === 'development' && this.isBrowser()) {
             const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
             consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
+            return;
         }
 
         // In local dev but server-side, we'll use colors in the terminal
         if (process.env.NODE_ENV === 'development' && !this.isBrowser()) {
             const serverStyle = serverConsoleStyles[category.split(':')[0] as ParentCategory];
             consoleFunctions[type](`${serverStyle}${category}\x1b[0m ${message}`, ...optionalParams);
+            return;
         }
 
-        // In Vercel previews (or dev), we'll use colors in the browser console
+        // In Vercel previews (or dev), (browser console), we use colors
         if ((process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && this.isBrowser()) {
             const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
             consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
+            return;
         }
 
         // In Vercel previews (or dev) server-side, we'll print without colors
         if ((process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && !this.isBrowser()) {
             consoleFunctions[type](category, message, ...optionalParams);
+            return;
         }
 
-        // If not in the previous cases, don't print.
+        // In Vercel prod, client-side (browser console), we only run error logs, without styling
+        if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && this.isBrowser()) {
+            if ( type === 'error' ) {
+                consoleFunctions[type](category, message, ...optionalParams);
+            }
+            return;
+        }
+
+        // In Vercel prod, server-side, we only run error logs, without styling
+        if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && !this.isBrowser()) {
+            if ( type === 'error' ) {
+                consoleFunctions[type](category, message, ...optionalParams);
+                sendDiscordError(`${category} ${message} ${optionalParams}`);
+            }
+            return;
+        }
+        
+        // If not in the previous cases, do nothing.
     }
 
     public log(category: ChildCategory, message: string, ...optionalParams: any[]): void {
