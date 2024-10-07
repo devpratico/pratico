@@ -1,3 +1,5 @@
+import logger from "@/app/_utils/logger";
+
 
 interface ResetPasswordReturn {
     error: string | null
@@ -5,8 +7,12 @@ interface ResetPasswordReturn {
 
 
 export default async function resetPassword(email: string): Promise<ResetPasswordReturn> {
+
+    const encodedEmail = encodeURIComponent(email);
+
     try {
-        const response = await fetch(`/api/auth/reset-password?email=${email}`);
+        const response = await fetch(`/api/auth/reset-password?email=${encodedEmail}`);
+        logger.log('next:api', 'resetPassword', response);
 
         // Check for HTTP response errors
         if (!response.ok) {
