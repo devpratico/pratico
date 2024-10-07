@@ -8,6 +8,7 @@ import { sendDiscordMessage } from '@/app/api/actions/discord';
 import Feedback from './Feedback';
 import { useDisable } from '@/app/_hooks/useDisable';
 import ClientMismatchMessage from './ClientMismatchMessage';
+import createClient from '@/supabase/clients/client';
 
 
 export default function RecoveryForm() {
@@ -24,14 +25,17 @@ export default function RecoveryForm() {
         const formData = Object.fromEntries(new FormData(e.currentTarget));
         const { email } = formData as { email: string };
 
-        const { error } = await resetPassword(email);
+        //const { error } = await resetPassword(email);
         setDisabled(false);
+
+        const supabase = createClient()
+        const { error } = await supabase.auth.resetPasswordForEmail(email)
 
 
         if (!error) {
             setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
         } else {
-            setErrorMessage(error);
+            setErrorMessage(error.message);
             await sendDiscordMessage(`⚠️ ${email} a voulu réinitialiser son mot de passe mais une erreur est survenue: "${error}"`);
         }
     }
