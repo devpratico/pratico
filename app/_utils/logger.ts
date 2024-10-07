@@ -1,4 +1,4 @@
-import { sendDiscordError } from "../api/discord/wrappers";
+//import { sendDiscordError } from "../api/discord/wrappers";
 
 
 const logCategories = {
@@ -130,7 +130,7 @@ class Logger {
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && !this.isBrowser()) {
             if ( type === 'error' ) {
                 consoleFunctions[type](category, message, ...optionalParams);
-                sendDiscordError(`${category} ${message} ${optionalParams}`);
+                //sendDiscordError(`${category} ${message} ${optionalParams}`);
             }
             return;
         }
