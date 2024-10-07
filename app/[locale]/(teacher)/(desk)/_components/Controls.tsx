@@ -5,6 +5,12 @@ import { useNav } from "@/app/_hooks/useNav"
 import AddMenu from "./menus/AddMenu"
 //import dynamic from "next/dynamic"
 //const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
+import { useState, useEffect, useMemo } from "react"
+import { debounce } from "lodash"
+
+
+
+const iconSize = '30'
 
 
 export default function Controls() {
@@ -19,13 +25,30 @@ export default function Controls() {
     const leftNumber = pageIds && currentPageId ? Array.from(pageIds).indexOf(currentPageId) + 1 : 0
     const rightNumber = pageIds ? Array.from(pageIds).length : 0
 
-    const iconSize = '30'
+    const [openImport, setOpenImport] = useState(false)
+    const numberOfPages = useMemo(() => pageIds ? Array.from(pageIds).length : 0, [pageIds])
+
+    useEffect(() => {
+        const debouncedSetOpenImport = debounce((pages) => {
+            if (pages <= 1) {
+                setOpenImport(true)
+            } else {
+                setOpenImport(false)
+            }
+        }, 1000)
+
+        debouncedSetOpenImport(numberOfPages)
+
+        return () => {
+            debouncedSetOpenImport.cancel()
+        }
+    }, [numberOfPages])
 
 
     return (
         <Flex gap='4' justify='between' align='center' height='100%'>
 
-            <Popover.Root>
+            <Popover.Root open={openImport} onOpenChange={setOpenImport}>
                 <Popover.Trigger>
                     <IconButton size='3'>
                         <Plus size={iconSize} />
