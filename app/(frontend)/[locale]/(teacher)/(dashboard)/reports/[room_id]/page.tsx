@@ -24,7 +24,9 @@ export type SessionInfoType = {
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
-	let attendances: AttendanceInfoType[] = [];		
+	let attendances: AttendanceInfoType[] = [];
+	let splittedAttendances: AttendanceInfoType[][] = [];
+	const maxLengthAttendances = 21;
 	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
 	let userInfo: TeacherInfo | null = null;
@@ -74,6 +76,16 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					attendances.push(infos);
 				})
 			);
+			if (attendances.length > maxLengthAttendances)
+			{
+				if (attendances.length > maxLengthAttendances) {
+					for (let i = 0; i < attendances.length; i += maxLengthAttendances) {
+						splittedAttendances.push(attendances.slice(i, i + maxLengthAttendances));
+					}
+					} else {
+						splittedAttendances.push(attendances);
+					}
+			}
 		}
 	} catch (err) {
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
@@ -82,7 +94,18 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={userInfo}/>
+				{
+					// splittedAttendances.length
+					// ? <>
+					<>
+					{
+						splittedAttendances.map((item, index) => {
+							return (<AttendanceToPDF key={index} attendances={item} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={userInfo} />);
+						})
+					}
+					</>
+					// : <AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={userInfo}/>
+				}
 				</Container>
 			</Section>	
 		</ScrollArea>
