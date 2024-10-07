@@ -15,7 +15,11 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: TeacherInfo | null}
 ) {
 	const { targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
-	
+	attendances.sort((a, b) => {
+		const tmpA = a.last_name || '';
+		const tmpB = b.last_name || '';
+		return (tmpA.localeCompare(tmpB));
+	});
 	const date = formatDate(sessionDate, undefined, "date");
 	const hour = formatDate(sessionDate, undefined, "hour");
 	
@@ -65,29 +69,27 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</thead>
 					<tbody style={{backgroundColor: 'white'}}>
 						{
-							!attendances.length ? (
+							!attendances.length ?
 							<tr>
 								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 									<Text>Aucun participant</Text>
 								</td>
 							</tr>
-							) : (
-								attendances.map((attendance, index) => (
-									<tr key={index} style={{ borderBottom: '1px solid var(--gray-3)' }}>
-										<td style={{ padding: '10px' }}>
-											<Text ml='1'>{attendance.first_name}</Text>
-										</td>
-										<td style={{ padding: '10px' }}>
-											<Text ml='1'>{attendance.last_name}</Text>
-										</td>
-										<td style={{ padding: '10px' }}>
-											<Text ml='1'>{attendance.connexion}</Text>
-										</td>
-										<td style={{ padding: '10px' }}>
-											<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
-										</td>
-									</tr>
-								)
+							: attendances.map((attendance, index) => (
+								<tr key={index} style={{ borderBottom: '1px solid var(--gray-3)' }}>
+									<td style={{ padding: '10px' }}>
+										<Text ml='1'>{attendance.first_name}</Text>
+									</td>
+									<td style={{ padding: '10px' }}>
+										<Text ml='1'>{attendance.last_name}</Text>
+									</td>
+									<td style={{ padding: '10px' }}>
+										<Text ml='1'>{attendance.connexion}</Text>
+									</td>
+									<td style={{ padding: '10px' }}>
+										<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
+									</td>
+								</tr>
 							)
 						)}
 					</tbody>
