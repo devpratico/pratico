@@ -18,6 +18,6 @@ export default async function resetPassword(email: string): Promise<ResetPasswor
         return { error: null };
     } catch (err) {
         // Catch network errors or unexpected issues
-        return { error: 'Network error or unexpected issue' };
+        return { error: 'An error occurred. ' + (err as Error).message }; // Provide a more specific message
     }
 }
