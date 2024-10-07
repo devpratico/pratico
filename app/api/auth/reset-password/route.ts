@@ -2,6 +2,10 @@ import logger from "@/app/_utils/logger"
 import { NextRequest, NextResponse } from "next/server"
 import createClient from '@/supabase/clients/server'
 
+export const maxDuration = 30
+export const dynamic = 'force-dynamic';
+
+
 
 export async function POST(request: NextRequest) {
     const { searchParams } = new URL(request.url)
