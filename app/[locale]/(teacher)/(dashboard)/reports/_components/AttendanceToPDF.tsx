@@ -41,18 +41,26 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						<ArrowLeft />Retour
 					</Link>
 				</Button>
-				<Button mr="8" onClick={() => generatePDF(targetRef, {method: 'open'})}>Générer PDF</Button>
+				<Button mr="8" onClick={() => {
+					generatePDF(targetRef, {filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`,
+					method: 'open'})}}>
+					Générer PDF
+				</Button>
 			</Flex>
 
 			<div ref={targetRef}>
-			<div  style={{margin: "50px 50px"}} >
-				<Text>Pratico</Text>
+			<div style={{margin: "100px"}} >
+				<p style={{paddingTop: '50px'}}>Pratico</p>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 				<h3 style={{color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					user ?
-					<h4 style={{marginBottom: "50px"}}>{`Animateur: ${user?.first_name} ${user?.last_name}`}</h4>
+					<>
+						<h4>{`Animateur: ${user?.first_name} ${user?.last_name}`}</h4>
+						<h1 style={{ marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${user.first_name} ${user.last_name}`}</h1>
+					</>
+
 					: ""
 				}
 				<Flex justify="between" mb='3'>
