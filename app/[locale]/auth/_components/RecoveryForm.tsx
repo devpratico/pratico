@@ -2,12 +2,12 @@
 import { Button, Flex, TextField, Text } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, TriangleAlert } from 'lucide-react';
-import { resetPasswordForEmail } from '@/app/api/actions/auth';
 import { useState } from 'react';
-import { sendDiscordMessage } from '@/app/api/actions/discord';
+import sendDiscordMessage from '@/app/api/discord/wrapper';
 import Feedback from './Feedback';
 import { useDisable } from '@/app/_hooks/useDisable';
 import ClientMismatchMessage from './ClientMismatchMessage';
+import createClient from '@/supabase/clients/client';
 
 
 export default function RecoveryForm() {
@@ -23,16 +23,19 @@ export default function RecoveryForm() {
 
         const formData = Object.fromEntries(new FormData(e.currentTarget));
         const { email } = formData as { email: string };
+        
+        const supabase = createClient()
+        const { error } = await supabase.auth.resetPasswordForEmail(email)
 
-        const { error } = await resetPasswordForEmail(email);
         setDisabled(false);
 
 
         if (!error) {
             setSuccessMessage('Un email de réinitialisation a été envoyé à cette adresse. Vérifiez vos spams !');
         } else {
-            setErrorMessage(error);
-            await sendDiscordMessage(`⚠️ ${email} a voulu réinitialiser son mot de passe mais une erreur est survenue: "${error}"`);
+            const fullMessage = error.name + ': ' + error.message + error.cause ? ' - ' + error.cause : '';
+            setErrorMessage(fullMessage);
+            sendDiscordMessage(`⚠️ _${email}_ a voulu réinitialiser son mot de passe mais une erreur est survenue : *"${fullMessage}"*`);
         }
     }
 
