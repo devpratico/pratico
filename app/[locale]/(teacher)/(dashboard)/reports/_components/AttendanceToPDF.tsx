@@ -6,6 +6,7 @@ import generatePDF, { usePDF } from "react-to-pdf";
 import { janifera } from "@/app/Fonts";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useState } from "react";
+import ReactToPdf from "react-to-pdf";
 
 /// TYPE
 export type TeacherInfo = {
@@ -15,7 +16,7 @@ export type TeacherInfo = {
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user }:
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: TeacherInfo | null}
 ) {
-	const { targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
+	const { toPDF, targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate, undefined, "date");
 	const hour = formatDate(sessionDate, undefined, "hour");
@@ -42,14 +43,14 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</Link>
 				</Button>
 				<Button mr="8" onClick={() => {
-					generatePDF(targetRef, {filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`,
-					method: 'open'})}}>
+					generatePDF(targetRef, {method: 'open', page: { format: 'a4'},
+						filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`})}}>
 					Générer PDF
 				</Button>
 			</Flex>
 
 			<div ref={targetRef}>
-			<div style={{margin: "100px"}} >
+			<div style={{margin: "100px", pageBreakAfter: 'always'}} >
 				<p style={{paddingTop: '50px'}}>Pratico</p>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
