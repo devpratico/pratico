@@ -2,11 +2,10 @@
 import { Button, Flex, Link, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
 import { ArrowLeft } from "lucide-react";
-import generatePDF, { usePDF } from "react-to-pdf";
+import { usePDF } from "react-to-pdf";
 import { janifera } from "@/app/Fonts";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useState } from "react";
-import ReactToPdf from "react-to-pdf";
 
 /// TYPE
 export type TeacherInfo = {
@@ -16,7 +15,8 @@ export type TeacherInfo = {
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user }:
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: TeacherInfo | null}
 ) {
-	const { toPDF, targetRef } = usePDF({filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
+	const { toPDF, targetRef } = usePDF({method: 'open', page: { format: 'a4'},
+		filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`});
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate, undefined, "date");
 	const hour = formatDate(sessionDate, undefined, "hour");
@@ -42,9 +42,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						<ArrowLeft />Retour
 					</Link>
 				</Button>
-				<Button mr="8" onClick={() => {
-					generatePDF(targetRef, {method: 'open', page: { format: 'a4'},
-						filename: `emargement_${capsuleTitle && capsuleTitle !== "Sans titre" ? capsuleTitle : null}_${formatDate(sessionDate, undefined, "date") || null}.pdf`})}}>
+				<Button mr="8" onClick={() => toPDF(targetRef.current)}>
 					Générer PDF
 				</Button>
 			</Flex>
