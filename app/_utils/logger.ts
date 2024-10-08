@@ -2,8 +2,7 @@
  * Logger utility
  * Use this utilisty instead of console.log, console.debug, console.warn, console.error
  * The first parameter is the category, the second should be the function name, and the third the message
- * All the errors (`.error`) in production and preview, server-side, will be sent to Discord.
- * To send a client-side error to Discord, add the string 'discord' as the last parameter (only for production and preview).
+ * To send an error to discord, add 'discord' as the last parameter (works only for errors)
  */
 
 
@@ -87,7 +86,6 @@ class Logger {
         return typeof window !== 'undefined' && typeof window.document !== 'undefined';
     }
 
-
     
     private print(category: ChildCategory, type: ConsoleType, message: string, ...optionalParams: any[]): void {
         
@@ -98,6 +96,12 @@ class Logger {
         // First, check if the logger is enabled and the category is enabled. Otherwise, do nothing
         if (!this.options.enable || !isCategoryEnabled) {
             return;
+        }
+
+        // For errors, no matter the environment, if we opted-in discord, we send the message
+        if (type === 'error' && [...optionalParams].pop() == 'discord') {
+            optionalParams.pop(); // Effectively remove the last parameter
+            sendDiscordError(`${category} ${message} ${optionalParams}`);
         }
 
         // Now, depending on the environment, we'll style the output differently
@@ -120,27 +124,18 @@ class Logger {
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && this.isBrowser()) {
             const browserStyle = browserConsoleStyles[category.split(':')[0] as ParentCategory];
             consoleFunctions[type](`%c${category}%c ${message}`, browserStyle, '', ...optionalParams);
-            if (type === 'error' && optionalParams.pop() == 'discord') {
-                sendDiscordError(`${category} ${message} ${optionalParams}`);
-            }
             return;
         }
 
         // In Vercel previews server-side, we'll print without colors
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' && !this.isBrowser()) {
             consoleFunctions[type](category, message, ...optionalParams);
-            if (type === 'error') sendDiscordError(`${category} ${message} ${optionalParams}`);
             return;
         }
 
         // In Vercel prod, client-side (browser console), we only run error and warnlogs, without styling
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && this.isBrowser()) {
-            if ( type === 'error' ) {
-                consoleFunctions[type](category, message, ...optionalParams);
-                if (optionalParams.pop() == 'discord') {
-                    sendDiscordError(`${category} ${message} ${optionalParams}`);
-                }
-            } else if ( type === 'warn' ) {
+            if ( type === 'error' || type === 'warn' ) {
                 consoleFunctions[type](category, message, ...optionalParams);
             }
             return;
@@ -148,11 +143,7 @@ class Logger {
 
         // In Vercel prod, server-side, we only run error and warn logs, without styling
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && !this.isBrowser()) {
-            if ( type === 'error' ) {
-                consoleFunctions[type](category, message, ...optionalParams);
-                sendDiscordError(`${category} ${message} ${optionalParams}`);
-
-            } else if ( type === 'warn' ) {
+            if ( type === 'error' || type === 'warn' ) {
                 consoleFunctions[type](category, message, ...optionalParams);
             }
             return;
