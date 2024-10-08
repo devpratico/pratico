@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!response.ok) {
-            console.error('next:api', 'sendDiscordMessage', 'Error sending message');
+            console.error('next:api', 'sendDiscordMessage', 'Error sending message', JSON.stringify(response));
             return NextResponse.json({ error: 'Error sending message' }, { status: 500 });
         }
 
