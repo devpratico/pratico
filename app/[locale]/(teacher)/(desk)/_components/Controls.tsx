@@ -30,7 +30,7 @@ export default function Controls() {
 
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
-            if (pages <= 1) {
+            if (pages == 1) {
                 setOpenImport(true)
             } else {
                 setOpenImport(false)

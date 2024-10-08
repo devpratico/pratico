@@ -11,6 +11,7 @@ import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
 import ClientMismatchMessage from './ClientMismatchMessage';
+import { sendDiscordMessage } from '@/app/api/discord/wrappers';
 
 
 
@@ -49,6 +50,7 @@ export default function SignUpForm() {
 
         } else {
             await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
+            sendDiscordMessage(`🎉 **Nouvel inscrit !** ${formData.firstname} ${formData.lastname} (${formData.email})`);
             setIsLoading(false);
             setDisabled(false);
             router.push('/capsules');
