@@ -12,7 +12,7 @@ export default function Page() {
     const authTab = searchParams.get('authTab');
 
     const onChangeTab = (value: string) => {
-        setSearchParam('authTab', value) // Dummy commit
+        setSearchParam('authTab', value)
     }
 
     return (

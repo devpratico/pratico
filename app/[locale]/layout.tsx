@@ -34,9 +34,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
 
     if (data.user) {
         const { data: names, error: namesError } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', data.user.id).single()
-        if (namesError) {
-            console.error('Error fetching names', namesError)
-        } else {
+        if (!namesError) {
             firstName = names?.first_name
             lastName = names?.last_name
         }
