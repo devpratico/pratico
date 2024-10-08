@@ -48,7 +48,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 			</Flex>
 
 			<div ref={targetRef}>
-			<div style={{margin: "100px", pageBreakAfter: 'always'}} >
+			<div style={{margin: "100px"}} >
 				<p style={{paddingTop: '50px'}}>Pratico</p>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>

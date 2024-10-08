@@ -1,6 +1,7 @@
 //import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-const createNextIntlPlugin = require('next-intl/plugin')
+const createNextIntlPlugin = require('next-intl/plugin');
+const { minify } = require('next/dist/build/swc');
 const withNextIntl = createNextIntlPlugin('./app/_intl/i18n.ts')
 
 
@@ -9,7 +10,8 @@ const withNextIntl = createNextIntlPlugin('./app/_intl/i18n.ts')
 const nextConfig = {
     reactStrictMode: true,
 	// optimization: {
-	// 	minimize: false
+	// 	// minimize: false,
+	// 	minify: true
 	// },
     webpack: (config, {dev, isServer}) => {
         config.resolve.alias.canvas = false;
@@ -19,7 +21,6 @@ const nextConfig = {
             include: /node_modules/,
             type: "javascript/auto",
         });
-
         // Add browser-sync plugin https://blog.ndoizo.ca/posts/nextjs-browsersync/
         if (dev && !isServer) {
             config.plugins.push(
