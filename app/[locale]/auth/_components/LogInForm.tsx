@@ -11,7 +11,7 @@ import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
 import ClientMismatchMessage from './ClientMismatchMessage';
-import { sendDiscordMessage } from '@/app/api/discord/wrappers';
+//import { sendDiscordMessage } from '@/app/api/discord/wrappers';
 
 
 export default function LogInForm() {
@@ -41,7 +41,7 @@ export default function LogInForm() {
             setErrorMessage(error || 'error signing in');
             
         } else {
-            sendDiscordMessage(`🔑 **Connexion** de __${email}__`);
+            //sendDiscordMessage(`🔑 **Connexion** de __${email}__`);
             router.push('/capsules');
         }
     }
