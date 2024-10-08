@@ -8,6 +8,8 @@ import { updateUserPassword } from "@/app/api/actions/auth"
 import { useDisable } from "@/app/_hooks/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
 import { useRouter } from "@/app/_intl/intlNavigation"
+import { sendDiscordMessage } from "@/app/api/discord/wrappers"
+import { useAuth } from "@/app/_hooks/useAuth"
 
 
 
@@ -17,6 +19,7 @@ export default function ChangePasswordForm() {
     const [successMessage, setSuccessMessage ] = useState<string | null>(null);
     const [showPasswords, setShowPasswords] = useState<boolean>(false);
     const { disabled, setDisabled } = useDisable();
+    const { user } = useAuth();
 
 
     const handleShowPasswords = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -44,6 +47,7 @@ export default function ChangePasswordForm() {
 
         } else {
             setSuccessMessage('Mot de passe mis à jour avec succès. Vous allez être redirigé vers votre dashboard.');
+            sendDiscordMessage(`🔑 **Changement de mot de passe** pour ${user?.email}`)
             setTimeout(() => {
                 setDisabled(false);
                 router.push('/capsules');

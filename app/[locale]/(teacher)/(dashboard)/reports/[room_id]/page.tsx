@@ -71,7 +71,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 			);
 		}
 	} catch (err) {
-		console.error('Error getting attendances', err);
+        logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
 	return (<>
 		<ScrollArea>
