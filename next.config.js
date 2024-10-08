@@ -9,7 +9,8 @@ const withNextIntl = createNextIntlPlugin('./app/(frontend)/_intl/i18n.ts')
 const nextConfig = {
     reactStrictMode: true,
 	// optimization: {
-	// 	minimize: false
+	// 	// minimize: false,
+	// 	minify: true
 	// },
     webpack: (config, {dev, isServer}) => {
         config.resolve.alias.canvas = false;
