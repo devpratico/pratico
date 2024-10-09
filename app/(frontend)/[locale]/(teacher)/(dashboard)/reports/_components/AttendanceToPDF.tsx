@@ -72,7 +72,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Button>
 			</Flex>
 		
-			<div style={{margin: '20px'}} ref={contentRef} className={luciole.className} >
+			<div style={{fontSize: '12px',margin: '20px'}} ref={contentRef} className={luciole.className} >
 				{/* <Text>Pratico</Text>
 				<Heading as='h1' style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</Heading>
 				<Heading mb="4" as="h2">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
@@ -132,7 +132,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						</Table.Body>
 					</Table.Root> */}
 				<p>Pratico</p>
-				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
+				<h1 style={{ textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 				<h3 style={{color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
