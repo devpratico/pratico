@@ -40,7 +40,7 @@ function DesktopSideBar() {
     const iconSize = '21'
 
     return (
-		<Card className='no-print' variant='classic' style={{ height: '100%' }}>
+		<Card variant='classic' style={{ height: '100%' }}>
 
 			<Flex direction='column' gap='1' justify='between' height='100%'>
 
