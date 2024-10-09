@@ -40,35 +40,35 @@ function DesktopSideBar() {
     const iconSize = '21'
 
     return (
-        <Card variant='classic' style={{ height: '100%' }}>
+		<Card className='no-print' variant='classic' style={{ height: '100%' }}>
 
-            <Flex direction='column' gap='1' justify='between' height='100%'>
+			<Flex direction='column' gap='1' justify='between' height='100%'>
 
-                <SideBarBtn href='/capsules' message='Capsules'>
-                    <FlaskRound size={iconSize} />
-                </SideBarBtn>
+				<SideBarBtn href='/capsules' message='Capsules'>
+					<FlaskRound size={iconSize} />
+				</SideBarBtn>
 
-                <SideBarBtn href='/activities' message='Activités'>
-                    <Puzzle size={iconSize} />
-                </SideBarBtn>
+				<SideBarBtn href='/activities' message='Activités'>
+					<Puzzle size={iconSize} />
+				</SideBarBtn>
 
-                <SideBarBtn href='/reports' message='Rapports'>
-                    <NotepadText size={iconSize} />
-                </SideBarBtn>
+				<SideBarBtn href='/reports' message='Rapports'>
+					<NotepadText size={iconSize} />
+				</SideBarBtn>
 
-                <Box height='100%' display={{ initial: 'none', xs: 'block' }}></Box>
+				<Box height='100%' display={{ initial: 'none', xs: 'block' }}></Box>
 
-                <SideBarBtn href='/resources' message='Ressources'>
-                    <BookOpen size={iconSize} />
-                </SideBarBtn>
+				<SideBarBtn href='/resources' message='Ressources'>
+					<BookOpen size={iconSize} />
+				</SideBarBtn>
 
-                <SideBarBtn href='/settings' message='Paramètres'>
-                    <Cog size={iconSize} />
-                </SideBarBtn>
+				<SideBarBtn href='/settings' message='Paramètres'>
+					<Cog size={iconSize} />
+				</SideBarBtn>
 
-            </Flex>
+			</Flex>
 
-        </Card>
+		</Card>
     )
 }
 
@@ -77,12 +77,12 @@ function DesktopTopBar(props: BoxProps) {
     const logoScale = 0.25
 
     return (
-        <Box {...props}>
-            <Flex align='center' justify='between'>
-                <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
-                <UserInfo />
-            </Flex>
-        </Box>
+		<Box {...props}>
+			<Flex align='center' justify='between'>
+				<Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+				<UserInfo />
+			</Flex>
+		</Box>
     )
 }
 
