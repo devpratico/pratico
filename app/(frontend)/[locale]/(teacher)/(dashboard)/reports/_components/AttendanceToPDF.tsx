@@ -35,7 +35,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-			<style>
+			{/* <style>
 			{`
 				@media print {
 					body
