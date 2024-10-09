@@ -134,6 +134,6 @@ export default async function PlayGround () {
 	}]
 	return (<>
 	
-		<AttendanceToPDF attendances={attendances} sessionDate={(new Date()).toString()} capsuleTitle="Une capsule inexistante" user={{first_name: "Johanna", last_name: "Courtois"}}/>
+		<AttendanceToPDF attendances={attendances} sessionDate={(new Date()).toString()} capsuleTitle="Une capsule inexistante" user={{userInfo: {first_name: "Johanna", last_name: "Courtois"}}}/>
 	</>);
 };
