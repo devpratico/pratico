@@ -35,6 +35,30 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
+			<style>
+			{`
+				@media print {
+					body
+					{
+						visibility: hidden;
+						margin:0;
+						padding: 0;
+					}
+					.print-only
+					{
+						visibility: visible;
+						display: block;
+						position: fixed;
+						top: 0;
+						left: 0;
+						width: 100%;
+						height: 100%;
+					 	background-color: white;
+        				z-index: 1000;
+					}
+				}
+			`}
+		</style>
 		<div className='no-print'>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
