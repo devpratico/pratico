@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "./scripts/start.sh",
     "lint": "next lint",
-    "storybook:dev": "storybook dev -p 6006",
-    "storybook:build": "storybook build -o .storybook/static",
     "supabase:reset": "./scripts/supabase-db-reset.sh"
   },
   "dependencies": {
