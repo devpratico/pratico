@@ -132,21 +132,21 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						</Table.Body>
 					</Table.Root> */}
 				<p>Pratico</p>
-				<h1 style={{ textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
-				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<h3 style={{color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
+				<h1 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
+				<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
+				<h3 style={{fontSize: '14px', color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					userInfo ?
 					userInfo ?
 					<>
-						<h4>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</h4>
+						<h4 style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</h4>
 						<h1 style={{ marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</h1>
 					</>
 
 					: ""
 				}
 				<Flex justify="between" mt='9' mb='3'>
-					<h2>Émargement</h2>
+					<h2 style={{ fontSize: '14px'}}>Émargement</h2>
 					<Text> {`Participants: ${attendances.length || "Aucun"}`}</Text>		
 				</Flex>
 
