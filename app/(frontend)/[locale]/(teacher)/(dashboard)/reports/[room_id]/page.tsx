@@ -82,7 +82,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					 <AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={userInfo}/>
+					 <AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={{userInfo, roomId}}/>
 				</Container>
 			</Section>	
 		</ScrollArea>
