@@ -72,7 +72,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Button>
 			</Flex>
 		
-			<div style={{fontSize: '12px',margin: '20px'}} ref={contentRef} className={luciole.className} >
+			<div style={{fontSize: '12px', margin: '20px 100px'}} ref={contentRef} className={luciole.className} >
 				{/* <Text>Pratico</Text>
 				<Heading as='h1' style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</Heading>
 				<Heading mb="4" as="h2">{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</Heading>
