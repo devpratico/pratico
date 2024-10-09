@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import logger from "@/app/_utils/logger";
+import { revalidatePath } from "next/cache";
 
 
 export interface RequestBody {
@@ -26,6 +27,8 @@ export async function POST(request: Request) {
         )
 
         const response: ResponseBody = { codes, error: null }
+
+        revalidatePath('/admin')
 
         return new Response(JSON.stringify(response), {headers: {'content-type': 'application/json'}})
 
