@@ -13,7 +13,7 @@ export type TeacherInfo = {
 	last_name: string,
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
-	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId: string}}
+	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
 ) {
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate, undefined, "date");
