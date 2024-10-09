@@ -63,12 +63,17 @@ export default async function ReportsPage() {
 					logger.error('supabase:database', 'ReportsPage', error ? error : 'No attendance data for this room');
 				}
 
+                if (!elem.capsule_id) {
+                    logger.error('supabase:database', 'ReportsPage', 'No capsule id');
+                    return;
+                }
+
 				const { data: capsuleData, error: capsuleError } = await supabase.from("capsules").select("title").eq("id", elem.capsule_id).single();
 				if (!capsuleData || capsuleError) {
 					logger.error('supabase:database', 'ReportsPage', error ? error : 'No capsule data');
 				}
 				const tmp: SessionInfoType = {
-					id: elem.id,
+					id: `${elem.id}`,
 					numberOfParticipant: data?.length || 0,
 					created_at: elem.created_at, 
 					status: elem.status,

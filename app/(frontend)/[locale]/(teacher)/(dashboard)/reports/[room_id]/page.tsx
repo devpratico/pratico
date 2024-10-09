@@ -50,7 +50,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		{
 			const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
 			if (capsuleData)
-				capsuleTitle = capsuleData.title;
+				capsuleTitle = capsuleData.title ? capsuleData.title : "Sans titre";
 		}
 
 		if (attendanceData?.length)

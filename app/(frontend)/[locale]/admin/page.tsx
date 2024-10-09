@@ -1,4 +1,4 @@
-import { Heading, Button, Container, Section, Link, DataList, Card, Flex, Table } from "@radix-ui/themes"
+import { Heading, Container, Section, Link, DataList, Card, Flex, Table } from "@radix-ui/themes"
 import { listAllCoupons, listAllCodes } from "@/app/(backend)/data-access/stripe"
 import Stripe from "stripe"
 import { getFormatter } from "next-intl/server"
