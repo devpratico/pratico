@@ -1,7 +1,7 @@
 import { RequestBody, ResponseBody } from "./route";
 
 
-export default async function createPromotionsCodes({ number, params }: RequestBody): Promise<ResponseBody> {
+export default async function createPromotionCodes({ number, params }: RequestBody): Promise<ResponseBody> {
     return fetch('/api/stripe/create-promotion-codes', {
         method: 'POST',
         headers: {

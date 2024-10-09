@@ -6,7 +6,7 @@
 source ./scripts/load-env.sh
 
 # Start Supabase in the background
-./app/_scripts/start-docker.sh && pnpm supabase start
+./scripts/start-docker.sh && pnpm supabase start
 
 echo
 

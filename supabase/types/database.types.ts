@@ -217,6 +217,7 @@ export type Database = {
           id: string
           last_name: string | null
           nickname: string | null
+          role: Database["public"]["Enums"]["Role"] | null
           stripe_id: string | null
         }
         Insert: {
@@ -224,6 +225,7 @@ export type Database = {
           id: string
           last_name?: string | null
           nickname?: string | null
+          role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }
         Update: {
@@ -231,6 +233,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           nickname?: string | null
+          role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }
         Relationships: [
@@ -251,6 +254,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      Role: "pratico_admin"
       RoomStatus: "open" | "closed"
     }
     CompositeTypes: {
