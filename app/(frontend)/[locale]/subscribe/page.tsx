@@ -1,7 +1,7 @@
 import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/app/(backend)/api/actions/user';
-import config from '@/app/(backend)/api/stripe/stripe.config';
+import config from '@/app/(backend)/api/stripe/(receive-webhook-event)/stripe.config';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
 
 declare global {
