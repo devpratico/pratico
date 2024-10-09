@@ -35,6 +35,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
+		<div className='no-print'>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
 					<Link href={`/reports`}>

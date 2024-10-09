@@ -24,7 +24,7 @@ export default function AnonWarningToast() {
         <Toast.Provider duration={10000}>
 
             <Toast.Root open={show} onOpenChange={setShow} asChild>
-                <Card variant='classic' style={{boxShadow:'var(--shadow-5)'}}>
+                <Card className ='no-print' variant='classic' style={{boxShadow:'var(--shadow-5)'}}>
 
                     <Toast.Title>
                         <Text size='2' weight='bold'>{`⚠️ Vous n'êtes pas connecté`}</Text>
