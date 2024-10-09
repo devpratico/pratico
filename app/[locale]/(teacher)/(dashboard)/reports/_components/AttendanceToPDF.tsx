@@ -45,7 +45,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					{
 						visibility: visible;
 						display: block;
-						position: fixed;
+						// position: fixed;
 						top: 0;
 						left: 0;
 						width: 100%;
@@ -64,10 +64,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</Link>
 				</Button>
 				<Button mr="8" onClick={() => {
-						// reactToPrint();
-					// setTimeout(() => {
-						window.print();
-					// }, 100);
+					window.print();
 				}}>
 					Générer PDF
 				</Button>
