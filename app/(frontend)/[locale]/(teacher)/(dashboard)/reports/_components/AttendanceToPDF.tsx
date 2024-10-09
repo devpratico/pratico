@@ -48,7 +48,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					{
 						visibility: visible;
 						display: block;
-						position: fixed;
+						// position: fixed;
 						top: 0;
 						left: 0;
 						width: 100%;
