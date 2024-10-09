@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { janifera } from "@/app/Fonts";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string,
@@ -16,6 +17,8 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate, undefined, "date");
 	const hour = formatDate(sessionDate, undefined, "hour");
+	const contentRef = useRef<HTMLDivElement>(null);
+	const reactToPrint = useReactToPrint({contentRef})
 
 	useEffect(() => {
 		const getAttendancesList = () => {
@@ -32,7 +35,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-			<style>
+			{/* <style>
 			{`
 				@media print {
 					body
@@ -55,23 +58,19 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					}
 				}
 			`}
-		</style>
-		<div className='no-print'>
-			<Flex justify='between'>
-				<Button asChild variant="soft">
-					<Link href={`/reports`}>
-						<ArrowLeft />Retour
-					</Link>
-				</Button>
-				<Button mr="8" onClick={() => {
-					window.print();
-				}}>
-					Générer PDF
-				</Button>
-			</Flex>
-		</div>
+		</style> */}
+		<Flex justify='between'>
+			<Button asChild variant="soft">
+				<Link href={`/reports`}>
+					<ArrowLeft />Retour
+				</Link>
+			</Button>
+			<Button mr="8" onClick={() => reactToPrint()}>
+				Générer PDF
+			</Button>
+		</Flex>
 	
-		<div className='print-only'>
+		<div ref={contentRef}>
 			<p>Pratico</p>
 			<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 			<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>

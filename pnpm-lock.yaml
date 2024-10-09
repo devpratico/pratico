@@ -95,6 +95,9 @@ importers:
       react-qr-code:
         specifier: ^2.0.15
         version: 2.0.15(react@18.3.1)
+      react-to-print:
+        specifier: ^3.0.1
+        version: 3.0.1(react@18.3.1)
       stripe:
         specifier: ^16.8.0
         version: 16.12.0
@@ -5656,6 +5659,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-to-print@3.0.1:
+    resolution: {integrity: sha512-WcGiim2VWiHW7TR0PB9Xqv/SOOtnDJbjhlSOeMB1N+lxyFLuoQ8GIoNAw/ci7+sCkbXreEKmiy1ZWgd87v7U2Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ~19
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -13356,6 +13364,10 @@ snapshots:
       tslib: 2.7.0
     optionalDependencies:
       '@types/react': 18.3.10
+
+  react-to-print@3.0.1(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react@18.3.1:
     dependencies:
