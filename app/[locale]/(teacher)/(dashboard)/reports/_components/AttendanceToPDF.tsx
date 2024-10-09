@@ -47,9 +47,8 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 		</div>
 			
 
-		<div className='print-only'>
-			<div style={{margin: "100px"}} >
-				<p style={{paddingTop: '50px'}}>Pratico</p>
+			<div className='print-only'>
+				<p>Pratico</p>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 				<h3 style={{color: "#666666"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
@@ -68,7 +67,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Flex>
 
 				<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc'}}>
-					<thead style={{ backgroundColor: ' #f2f2f2', borderBottom: '2px solid #cccccc' }}>
+					<thead style={{ backgroundColor: ' #66666', borderBottom: '2px solid #cccccc' }}>
 						<tr>
 						<th style={{  maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  #f2f2f2' }}>
 							<Text ml='1'>Prénom</Text>
@@ -112,7 +111,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</tbody>
 				</table>
 			</div>
-		</div>
 		<style>
 			{`
 				@media print {
@@ -130,6 +128,9 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						height:100%;
 						margin:0;
 						padding: 0;
+					}
+					h3 {
+						color: #666666;
 					}
 				}
 			`}
