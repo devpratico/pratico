@@ -50,7 +50,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				<p>Pratico</p>
 				<h1 style={{textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<h3 style={{color: "#666666"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
+				<h3 style={{color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					user ?
 					<>
@@ -66,18 +66,18 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Flex>
 
 				<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc'}}>
-					<thead style={{ backgroundColor: ' #66666', borderBottom: '2px solid #cccccc' }}>
+					<thead style={{ backgroundColor: 'var(--gray-6)', borderBottom: '2px solid #cccccc' }}>
 						<tr>
-						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  #f2f2f2'}}>
+						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
 							<Text ml='1'>Prénom</Text>
 						</th>
-						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  #f2f2f2'}}>
+						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
 							<Text ml='1'>Nom</Text>
 						</th>
-						<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  #f2f2f2' }}>
+						<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
 							<Text  ml='1'>{"Heure d'arrivée"}</Text>
 						</th>
-						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  #f2f2f2' }}>
+						<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
 							<Text ml='1'>Signature</Text>
 						</th>
 						</tr>
@@ -87,12 +87,12 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						{
 							!sortedAttendances || !sortedAttendances.length ?
 							<tr>
-								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid #f2f2f2' }}>
+								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 									<Text >Aucun participant</Text>
 								</td>
 							</tr>
 							: sortedAttendances.map((attendance, index) => (
-								<tr className={index === 0 ? "test" : "none"} key={index} style={{ borderBottom: '1px solid  #f2f2f2' }}>
+								<tr className={index === 0 ? "test" : "none"} key={index} style={{ borderBottom: '1px solid  var(--gray-3)' }}>
 									<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
 										<Text ml='1'>{attendance.first_name}</Text>
 									</td>
