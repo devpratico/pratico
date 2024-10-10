@@ -46,7 +46,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Button>
 			</Flex>
 
-			<Card>
+			<Card mt='5'>
 				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
@@ -55,14 +55,14 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					{
 						userInfo ?
 						<>
-							<Text as='div' style={{ marginTop: '10px', fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
-							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
+							<Text as='div' style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
+							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
 						</>
 
 						: ""
 					}
 					
-					<Flex justify="between" mt='9' mb='3'>
+					<Flex style={{ marginTop: '50px'}} justify="between" mt='9' mb='3'>
 						<h2 style={{ fontSize: '14px'}}>Émargement</h2>
 						<Text> {`Participants: ${attendances.length || "Aucun"}`}</Text>		
 					</Flex>
