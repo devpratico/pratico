@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex, Link, Text } from "@radix-ui/themes";
+import { Button, Card, Flex, Link, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/app/_utils/utils_functions";
@@ -41,77 +41,80 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						<ArrowLeft />Retour
 					</Link>
 				</Button>
-				<Button mr="8" onClick={() => reactToPrint()}>
+				<Button onClick={() => reactToPrint()}>
 					Générer PDF
 				</Button>
 			</Flex>
-		
-			<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
-				<p>Pratico</p>
-				<h1 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
-				<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<Text as='div' style={{ color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</Text>
-				{
-					userInfo ?
-					<>
-						<Text as='div' style={{ marginTop: '10px', fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
-						<Text as='div' style={{ fontSize: '25px', marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
-					</>
 
-					: ""
-				}
-				
-				<Flex justify="between" mt='9' mb='3'>
-					<h2 style={{ fontSize: '14px'}}>Émargement</h2>
-					<Text> {`Participants: ${attendances.length || "Aucun"}`}</Text>		
-				</Flex>
+			<Card>
+				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
+					<p>Pratico</p>
+					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
+					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
+					<Text as='div' style={{ color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</Text>
+					{
+						userInfo ?
+						<>
+							<Text as='div' style={{ marginTop: '10px', fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
+							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
+						</>
 
-				<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc'}}>
-					<thead style={{ backgroundColor: 'var(--gray-6)', borderBottom: '2px solid #cccccc' }}>
-						<tr>
-							<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
-								<Text ml='1'>Prénom</Text>
-							</th>
-							<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
-								<Text ml='1'>Nom</Text>
-							</th>
-							<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
-								<Text  ml='1'>{"Heure d'arrivée"}</Text>
-							</th>
-							<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
-								<Text ml='1'>Signature</Text>
-							</th>
-						</tr>
-					</thead>
-				
-					<tbody style={{backgroundColor: 'white'}}>
-						{
-							!sortedAttendances || !sortedAttendances.length ?
+						: ""
+					}
+					
+					<Flex justify="between" mt='9' mb='3'>
+						<h2 style={{ fontSize: '14px'}}>Émargement</h2>
+						<Text> {`Participants: ${attendances.length || "Aucun"}`}</Text>		
+					</Flex>
+
+					<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc'}}>
+						<thead style={{ backgroundColor: 'var(--gray-6)', borderBottom: '2px solid #cccccc' }}>
 							<tr>
-								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
-									<Text >Aucun participant</Text>
-								</td>
+								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
+									<Text ml='1'>Prénom</Text>
+								</th>
+								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
+									<Text ml='1'>Nom</Text>
+								</th>
+								<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
+									<Text  ml='1'>{"Heure d'arrivée"}</Text>
+								</th>
+								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
+									<Text ml='1'>Signature</Text>
+								</th>
 							</tr>
-							: sortedAttendances.map((attendance, index) => (
-								<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
-									<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-										<Text ml='1'>{attendance.first_name}</Text>
-									</td>
-									<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-										<Text ml='1'>{attendance.last_name}</Text>
-									</td>
-									<td style={{ maxInlineSize: '100px', padding: '10px' }}>
-										<Text ml='1'>{attendance.connexion}</Text>
-									</td>
-									<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-										<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
+						</thead>
+					
+						<tbody style={{backgroundColor: 'white'}}>
+							{
+								!sortedAttendances || !sortedAttendances.length ?
+								<tr>
+									<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
+										<Text >Aucun participant</Text>
 									</td>
 								</tr>
-							)
-						)}
-					</tbody>
-				</table>
-			</div>
+								: sortedAttendances.map((attendance, index) => (
+									<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
+										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+											<Text ml='1'>{attendance.first_name}</Text>
+										</td>
+										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+											<Text ml='1'>{attendance.last_name}</Text>
+										</td>
+										<td style={{ maxInlineSize: '100px', padding: '10px' }}>
+											<Text ml='1'>{attendance.connexion}</Text>
+										</td>
+										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+											<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
+										</td>
+									</tr>
+								)
+							)}
+						</tbody>
+					</table>
+				</div>
+			</Card>
+			
 			<style jsx global>{`
 				@media print {
 					@page {
