@@ -37,7 +37,6 @@
     "react-qr-code": "^2.0.15",
     "react-to-print": "^3.0.1",
     "server-only": "^0.0.1",
-    "react-to-print": "^3.0.1",
     "stripe": "^16.8.0",
     "tldraw": "^2.4.4"
   },

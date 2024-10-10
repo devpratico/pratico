@@ -30,8 +30,6 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
-    console.log('👨‍🎓 Student canvas rendering')
-
     useEffect(() => {
         setUserPreferences({
             id: user.id,

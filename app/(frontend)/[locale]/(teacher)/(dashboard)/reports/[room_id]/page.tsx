@@ -28,7 +28,6 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
 	let userInfo: TeacherInfo | null = null;
-
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");

@@ -60,6 +60,7 @@ export default function StudentForm() {
                 <Form.Field key='first-name' name='first-name'>
                     <Form.Control asChild>
                         <TextField.Root onChange={(e) => {
+							if (e.target.value.length < 140)
 								setName({...name, firstname: e.target.value})
 							}}
 							placeholder='Prénom' required/>
@@ -69,7 +70,8 @@ export default function StudentForm() {
                 <Form.Field key='last-name' name='last-name'>
                     <Form.Control asChild>
                         <TextField.Root onChange={(e) =>  {
-								setName({...name, lastname: e.target.value})
+								if (e.target.value.length < 140)
+									setName({...name, lastname: e.target.value})
 							}}
 							placeholder='Nom' required/>
                     </Form.Control>
@@ -84,8 +86,8 @@ export default function StudentForm() {
 					</Flex>
 				</Box>
 
-				<Flex mt='5' justify='between' height='30px'>
-					<Text style={{maxInlineSize: '1200px'}} mr='5' size='8' className={janifera.className}>{`${name.firstname} ${name.lastname}`}</Text>
+				<Flex mt='5' justify='between' height='20px'>
+					<Text mr='5' size='8' className={janifera.className}>{`${name.firstname} ${name.lastname}`}</Text>
 
 					<Button onClick={() => setChecked({...checked, submit: true})} type="submit" loading={isLoading}>OK</Button>
 				</Flex>

@@ -4,6 +4,7 @@ import logger from '@/app/_utils/logger';
 import { ReportsDisplay } from './_components/ReportsDisplay';
 import createClient from '@/supabase/clients/server';
 import { SessionInfoType } from './[room_id]/page';
+
 // TYPE
 export type CapsuleType = TablesInsert<"capsules">;
 
