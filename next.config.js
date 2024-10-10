@@ -8,16 +8,19 @@ const withNextIntl = createNextIntlPlugin('./app/(frontend)/_intl/i18n.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-
+	// optimization: {
+	// 	// minimize: false,
+	// 	minify: true
+	// },
     webpack: (config, {dev, isServer}) => {
         config.resolve.alias.canvas = false;
-
+		
+		
         config.module.rules.push({
             test: /\.mjs$/,
             include: /node_modules/,
             type: "javascript/auto",
         });
-
         // Add browser-sync plugin https://blog.ndoizo.ca/posts/nextjs-browsersync/
         if (dev && !isServer) {
             config.plugins.push(

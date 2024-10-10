@@ -93,7 +93,7 @@ export default async function ReportsPage() {
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 				{
-					(capsules.length)
+					(sessions.length)
 					? 	<ReportsDisplay sessions={sessions} />
 					:	<Callout.Root mt='4'>
 						<p>Vous retrouverez ici des rapports détaillés concernant vos sessions.</p>

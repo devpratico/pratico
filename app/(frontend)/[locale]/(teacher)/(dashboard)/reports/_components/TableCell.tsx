@@ -1,10 +1,10 @@
 "use client";
 
-import { Badge, Flex, Table, Text } from "@radix-ui/themes";
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Badge, Table, Text } from "@radix-ui/themes";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { janifera } from "@/app/(frontend)/Fonts";
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 
 export type ReportsProps = {
 	attendanceView: boolean,
