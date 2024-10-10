@@ -50,12 +50,12 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				<p>Pratico</p>
 				<h1 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h1>
 				<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-				<h3 style={{fontSize: '14px', color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
+				<Text style={{ color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</Text>
 				{
 					userInfo ?
 					<>
-						<h4 style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</h4>
-						<h1 style={{ marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</h1>
+						<Text style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
+						<Text style={{ marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
 					</>
 
 					: ""
