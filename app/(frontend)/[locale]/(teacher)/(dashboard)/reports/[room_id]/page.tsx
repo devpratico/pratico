@@ -35,45 +35,49 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	}
 	try {
 		const {data: { user }} = await supabase.auth.getUser();
-		const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', user?.id).single();
-		if (error)
-			logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
-		if (data)
-			userInfo = data;
-		const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
-		if (roomData)
-			sessionDate = roomData.created_at;	
-		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
-		if (!attendanceData?.length)
-			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
-		else if (!attendanceData || attendanceError) {
-			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
-		}
-		const capsuleId = roomData?.capsule_id;
-		if (capsuleId)
+		if (user)
 		{
-			const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
-			if (capsuleData)
-				capsuleTitle = capsuleData.title ? capsuleData.title : "Sans titre";
-		}
+			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', user?.id).single();
+			if (error)
+				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
+			if (data)
+				userInfo = data;
+			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
+			if (roomData)
+				sessionDate = roomData.created_at;	
+			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+			if (!attendanceData?.length)
+				logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
+			else if (!attendanceData || attendanceError) {
+				logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
+			}
+			const capsuleId = roomData?.capsule_id;
+			if (capsuleId)
+			{
+				const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
+				if (capsuleData)
+					capsuleTitle = capsuleData.title ? capsuleData.title : "Sans titre";
+			}
 
-		if (attendanceData?.length)
-		{
-			await Promise.all(
-				attendanceData.map(async (attendance) => {
-					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
-					if (!data || error) {
-						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
-					}
-					const infos: AttendanceInfoType = {
-						first_name: attendance.first_name,
-						last_name: attendance.last_name,
-						connexion: formatDate(attendance.created_at, undefined, "hour")
-					};
-					attendances.push(infos);
-				})
-			);
+			if (attendanceData?.length)
+			{
+				await Promise.all(
+					attendanceData.map(async (attendance) => {
+						const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
+						if (!data || error) {
+							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
+						}
+						const infos: AttendanceInfoType = {
+							first_name: attendance.first_name,
+							last_name: attendance.last_name,
+							connexion: formatDate(attendance.created_at, undefined, "hour")
+						};
+						attendances.push(infos);
+					})
+				);
+			}
 		}
+		
 	} catch (err) {
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}

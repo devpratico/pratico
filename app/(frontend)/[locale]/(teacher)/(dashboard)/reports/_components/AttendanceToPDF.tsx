@@ -2,14 +2,14 @@
 import { Button, Flex, Link, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
 import { ArrowLeft } from "lucide-react";
-import { janifera, luciole } from "@/app/Fonts";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+import { janifera, luciole } from "@/app/(frontend)/Fonts";
 /// TYPE
 export type TeacherInfo = {
-	first_name: string,
-	last_name: string,
+	first_name: string | null,
+	last_name: string | null,
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
@@ -35,31 +35,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-			{/* <style>
-			{`
-				@media print {
-					body
-					{
-						visibility: hidden;
-						margin:0;
-						padding: 0;
-					}
-					.print-only
-					{
-						visibility: visible;
-						display: block;
-						// position: fixed;
-						top: 0;
-						left: 0;
-						width: 100%;
-						height: 100%;
-					 	background-color: white;
-        				z-index: 1000;
-					}
-				}
-			`}
-		</style>
-		<div className='no-print'>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
 					<Link href={`/reports`}>
@@ -78,7 +53,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				<h3 style={{fontSize: '14px', color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</h3>
 				{
 					userInfo ?
-					userInfo ?
 					<>
 						<h4 style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</h4>
 						<h1 style={{ marginLeft: "20px", marginBottom: "50px"}} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</h1>
@@ -92,7 +66,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 				</Flex>
 
 				<table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #cccccc'}}>
-					<thead style={{ backgroundColor: 'var(--gray-6)', borderBottom: '2px solid #cccccc' }}>
 					<thead style={{ backgroundColor: 'var(--gray-6)', borderBottom: '2px solid #cccccc' }}>
 						<tr>
 							<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
@@ -114,7 +87,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						{
 							!sortedAttendances || !sortedAttendances.length ?
 							<tr>
-								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 								<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 									<Text >Aucun participant</Text>
 								</td>
