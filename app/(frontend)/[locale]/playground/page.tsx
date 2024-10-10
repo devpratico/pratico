@@ -1,139 +1,80 @@
-import { formatDate } from "@/app/_utils/utils_functions";
-import { AttendanceInfoType } from "../(teacher)/(dashboard)/reports/[room_id]/page";
-import AttendanceToPDF from "../(teacher)/(dashboard)/reports/_components/AttendanceToPDF";
+import { getTranslations } from 'next-intl/server';
+import { fetchProfile, fetchUser } from '@/app/(backend)/api/actions/user'
+import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
+import { ResetPasswordBtn } from '../(teacher)/(dashboard)/settings/_buttons/ResetPasswordBtn';
+import { ManageSubscriptionBtn } from '../(teacher)/(dashboard)/settings/_buttons/ManageSubscriptionBtn';
+import { SignOutBtn } from '../(teacher)/(dashboard)/settings/_buttons/SignOutBtn';
+import { SubscribeBtn } from '../(teacher)/(dashboard)/settings/_buttons/SubscribeBtn';
 
 export default async function PlayGround () {
 	if (process.env.NODE_ENV === 'production') {
 		return (null);
 	}
-		
-	const attendances: AttendanceInfoType[] = [{
-		first_name: "Pierre-Louis",
-		last_name: "Calvet Doublet de Persan de Bandeville",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "Edmond",
-		last_name: "Dantès",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "Ryan",
-		last_name: "Reynolds",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "Angele",
-		last_name: "Van Laeken",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		last_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "0Pierre-Louis",
-		last_name: "Calvet Doublet de Persan de Bandeville",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "0Edmond",
-		last_name: "Dantès",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "0Ryan",
-		last_name: "Reynolds",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "0Angele",
-		last_name: "Van Laeken",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "0AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		last_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "1Pierre-Louis",
-		last_name: "Calvet Doublet de Persan de Bandeville",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "1Edmond",
-		last_name: "Dantès",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "1Ryan",
-		last_name: "Reynolds",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "1Angele",
-		last_name: "Van Laeken",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "1AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		last_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "2Pierre-Louis",
-		last_name: "Calvet Doublet de Persan de Bandeville",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "2Edmond",
-		last_name: "Dantès",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "2Ryan",
-		last_name: "Reynolds",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "2Angele",
-		last_name: "Van Laeken",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "2AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		last_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "3Pierre-Louis",
-		last_name: "Calvet Doublet de Persan de Bandeville",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "3Edmond",
-		last_name: "Dantès",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "3Ryan",
-		last_name: "Reynolds",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "3Angele",
-		last_name: "Van Laeken",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	},
-	{
-		first_name: "3AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		last_name: "AnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellementAnticonsitutionnellement",
-		connexion: formatDate(new Date().toString(), undefined, "hour")
-	}]
-	return (<>
-	
-		<AttendanceToPDF attendances={attendances} sessionDate={(new Date()).toString()} capsuleTitle="Une capsule inexistante" user={{userInfo: {first_name: "Johanna", last_name: "Courtois"}}}/>
-	</>);
-};
+	const user = {
+		first_name: "Earl",
+		last_name: "Hickey",
+		email: "ehickey@student.42.fr",
+		organization: {
+			name: "The Doctor",
+			adress: "123 diitkejjh, Gallifrey"
+		}
+	}
+    return (
+        <ScrollArea>
+            <Container pr='3' px={{ initial: '3', xs: '0' }}>
+
+                <Section>
+
+                        <Heading as='h1' mb='2'>{'information'}</Heading>
+                        <Card size='4'>
+                            <DataList.Root>
+                                <DataList.Item>
+                                    <DataList.Label>{'name'}</DataList.Label>
+                                    <DataList.Value>{user.first_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                </DataList.Item>
+                                <DataList.Item>
+                                    <DataList.Label>{'surname'}</DataList.Label>
+                                    <DataList.Value>{user.last_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                </DataList.Item>
+                                <DataList.Item>
+                                    <DataList.Label>{"email"}</DataList.Label>
+                                    <DataList.Value>{user.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                </DataList.Item>
+								<DataList.Item>
+                                    <DataList.Label>{"organization"}</DataList.Label>
+									<Flex>
+										<DataList.Label style={{marginLeft: '10px'}}>{"name"}</DataList.Label>
+										<DataList.Value>{user.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										<DataList.Label style={{marginLeft: '10px'}}>{"adress"}</DataList.Label>
+										<DataList.Value>{user.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+
+									</Flex>
+									
+                                </DataList.Item>
+                            </DataList.Root>
+
+                            <Separator size='4' my='4'/>
+
+                            <Flex gap='4' wrap='wrap'>
+                                <ResetPasswordBtn message={"change password"}/>
+                                <SignOutBtn message={"sign out"}/>
+                            </Flex>
+                        </Card>
+
+                </Section>
+
+                <Section>
+                    <Heading as='h1' mb='2'>{'subscription'}</Heading>
+                    <Card size='4'>
+
+                        <Flex gap='4'>
+                            <SubscribeBtn message={"subscribe"} disabled={true}/>
+                            <ManageSubscriptionBtn message={"manage subscription"} disabled={true}/>
+                        </Flex>
+                    </Card>
+                </Section>
+
+            </Container>
+        </ScrollArea>
+    )
+}
