@@ -23,11 +23,13 @@ export default function CreateCodeForm() {
 
         const coupon = formData['coupon-id'] as string
         const number = (formData['number'] as string).length ? parseInt(formData['number'] as string) : 0
+        const max_redemptions = (formData['max-redemptions'] as string).length ? parseInt(formData['max-redemptions'] as string) : undefined
 
         console.log({ coupon, number })
 
         const params: CreateCodeParams = {
             coupon,
+            max_redemptions
         }
 
         const { codes, error } = await createPromotionCodes({ number, params })
@@ -61,7 +63,7 @@ export default function CreateCodeForm() {
 
                 <Form.Field name='max-redemptions'>
                     <Form.Label>Max redemptions</Form.Label>
-                    <Form.Control asChild disabled><TextField.Root /></Form.Control>
+                    <Form.Control asChild><TextField.Root type="number" placeholder="1"/></Form.Control>
                 </Form.Field>
 
                 <Form.Field name='metadata'>
