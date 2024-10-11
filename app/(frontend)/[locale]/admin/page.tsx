@@ -9,7 +9,9 @@ import { getUserRole } from "@/app/(backend)/data-access/auth"
 export default async function Page() {
 
     // Page protection
-    if (process.env.NODE_ENV === 'production') {
+    const env = process.env.NEXT_PUBLIC_VERCEL_ENV
+    console.log('environment:', env)
+    if (env === 'production') {
         const { role } = await getUserRole()
         if (role !== 'pratico_admin') return <p>Unauthorized</p>
     }
