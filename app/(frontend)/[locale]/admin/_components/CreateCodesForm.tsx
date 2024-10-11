@@ -63,7 +63,7 @@ export default function CreateCodeForm() {
 
                 <Form.Field name='max-redemptions'>
                     <Form.Label>Max redemptions</Form.Label>
-                    <Form.Control asChild><TextField.Root type="number" placeholder="1"/></Form.Control>
+                    <Form.Control asChild><TextField.Root type="number" required defaultValue={"1"}/></Form.Control>
                 </Form.Field>
 
                 <Form.Field name='metadata'>
