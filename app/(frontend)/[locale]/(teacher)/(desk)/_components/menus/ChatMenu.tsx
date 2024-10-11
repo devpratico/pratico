@@ -4,10 +4,10 @@ import { Section, Callout, VisuallyHidden, Dialog } from '@radix-ui/themes'
 export default function ChatMenu() {
     return (
         <>
-            <VisuallyHidden>
+            {/* <VisuallyHidden>
                 <Dialog.Title>Chat</Dialog.Title>
                 <Dialog.Description>Discutez avec les apprenants</Dialog.Description>
-            </VisuallyHidden>
+            </VisuallyHidden> */}
 
             <Section size='1'>
 

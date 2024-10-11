@@ -34,10 +34,10 @@ export default function MoreMenu() {
 
     return (
         <>
-            <VisuallyHidden>
+            {/* <VisuallyHidden>
                 <Dialog.Title>Plus</Dialog.Title>
                 <Dialog.Description>{`Plus d'options`}</Dialog.Description>
-            </VisuallyHidden>
+            </VisuallyHidden> */}
 
             <Section size='1'>
 
