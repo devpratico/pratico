@@ -9,8 +9,10 @@ import { getUserRole } from "@/app/(backend)/data-access/auth"
 export default async function Page() {
 
     // Page protection
-    const { role } = await getUserRole()
-    if (role !== 'pratico_admin') return <p>Unauthorized</p>
+    if (process.env.NODE_ENV === 'production') {
+        const { role } = await getUserRole()
+        if (role !== 'pratico_admin') return <p>Unauthorized</p>
+    }
 
     const coupons = await listAllCoupons()
     const codes = await listAllCodes()
