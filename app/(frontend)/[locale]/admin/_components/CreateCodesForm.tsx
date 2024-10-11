@@ -4,6 +4,7 @@ import { Button, Card, TextField, Link } from "@radix-ui/themes"
 import Stripe from "stripe"
 import createPromotionCodes from "@/app/(backend)/api/stripe/create-promotion-codes/wrapper"
 import { useState } from "react"
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 
 type CreateCodeParams = Stripe.PromotionCodeCreateParams
 
@@ -11,6 +12,7 @@ type CreateCodeParams = Stripe.PromotionCodeCreateParams
 
 export default function CreateCodeForm() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const router = useRouter()
 
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,14 +25,18 @@ export default function CreateCodeForm() {
 
         const coupon = formData['coupon-id'] as string
         const number = (formData['number'] as string).length ? parseInt(formData['number'] as string) : 0
+        const max_redemptions = (formData['max-redemptions'] as string).length ? parseInt(formData['max-redemptions'] as string) : undefined
 
         console.log({ coupon, number })
 
         const params: CreateCodeParams = {
             coupon,
+            max_redemptions
         }
 
         const { codes, error } = await createPromotionCodes({ number, params })
+
+        router.refresh()
 
         console.log({ codes, error })
 
@@ -61,7 +67,7 @@ export default function CreateCodeForm() {
 
                 <Form.Field name='max-redemptions'>
                     <Form.Label>Max redemptions</Form.Label>
-                    <Form.Control asChild disabled><TextField.Root /></Form.Control>
+                    <Form.Control asChild><TextField.Root type="number" required defaultValue={"1"}/></Form.Control>
                 </Form.Field>
 
                 <Form.Field name='metadata'>
