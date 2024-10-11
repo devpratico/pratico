@@ -35,6 +35,7 @@ export default async function AccountPage() {
 
                         <Card size='4'>
                             <DataList.Root>
+								<Heading size='5'>Personnelles</Heading>
                                 {/*
                                 <DataList.Item>
                                     <DataList.Label>{t("nickname")}</DataList.Label>
@@ -56,6 +57,15 @@ export default async function AccountPage() {
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
                                 </DataList.Item>*/}
+								<Heading size='5'>Organisation</Heading>
+								<DataList.Item>
+                                    <DataList.Label>{t("name")}</DataList.Label>
+                                    <DataList.Value>{profileData?.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                </DataList.Item>
+                                <DataList.Item>
+                                    <DataList.Label>{t("address")}</DataList.Label>
+                                    <DataList.Value>{profileData?.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                </DataList.Item>
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>

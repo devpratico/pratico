@@ -217,6 +217,7 @@ export type Database = {
           id: string
           last_name: string | null
           nickname: string | null
+          organization: Json | null
           role: Database["public"]["Enums"]["Role"] | null
           stripe_id: string | null
         }
@@ -225,6 +226,7 @@ export type Database = {
           id: string
           last_name?: string | null
           nickname?: string | null
+          organization?: Json | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }
@@ -233,6 +235,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           nickname?: string | null
+          organization?: Json | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }
