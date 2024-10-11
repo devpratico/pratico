@@ -4,6 +4,7 @@ import { Button, Card, TextField, Link } from "@radix-ui/themes"
 import Stripe from "stripe"
 import createPromotionCodes from "@/app/(backend)/api/stripe/create-promotion-codes/wrapper"
 import { useState } from "react"
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 
 type CreateCodeParams = Stripe.PromotionCodeCreateParams
 
@@ -11,6 +12,7 @@ type CreateCodeParams = Stripe.PromotionCodeCreateParams
 
 export default function CreateCodeForm() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const router = useRouter()
 
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +35,8 @@ export default function CreateCodeForm() {
         }
 
         const { codes, error } = await createPromotionCodes({ number, params })
+
+        router.refresh()
 
         console.log({ codes, error })
 
