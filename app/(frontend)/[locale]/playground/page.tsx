@@ -1,11 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 import { fetchProfile, fetchUser } from '@/app/(backend)/api/actions/user'
-import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
+import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea, Button } from '@radix-ui/themes';
 import { ResetPasswordBtn } from '../(teacher)/(dashboard)/settings/_buttons/ResetPasswordBtn';
 import { ManageSubscriptionBtn } from '../(teacher)/(dashboard)/settings/_buttons/ManageSubscriptionBtn';
 import { SignOutBtn } from '../(teacher)/(dashboard)/settings/_buttons/SignOutBtn';
 import { SubscribeBtn } from '../(teacher)/(dashboard)/settings/_buttons/SubscribeBtn';
 import { Dot } from 'lucide-react';
+import AddOrganizationBtn from '../(teacher)/(dashboard)/settings/_buttons/AddOrganizationBtn';
 
 export default async function PlayGround () {
 	if (process.env.NODE_ENV === 'production') {
@@ -18,6 +19,7 @@ export default async function PlayGround () {
 		last_name: "Hickey",
 		email: "ehickey@student.42.fr",
 		organization: {
+			active: false,
 			name: "The Doctor",
 			adress: "123 diitkejjh, Gallifrey"
 		}
@@ -54,15 +56,24 @@ export default async function PlayGround () {
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
                                 </DataList.Item>*/}
+								<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 								<Heading size='5'>Organisation</Heading>
-								<DataList.Item>
-                                    <DataList.Label>{t("surname")}</DataList.Label>
-                                    <DataList.Value>{profileData?.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-                                </DataList.Item>
-                                <DataList.Item>
-                                    <DataList.Label>{t("address")}</DataList.Label>
-                                    <DataList.Value>{profileData?.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-                                </DataList.Item>
+								{
+
+									(profileData.organization.active)
+									? <>
+										<DataList.Item>
+											<DataList.Label>{t("surname")}</DataList.Label>
+											<DataList.Value>{profileData?.organization?.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</DataList.Item>
+										<DataList.Item>
+											<DataList.Label>{t("address")}</DataList.Label>
+											<DataList.Value>{profileData?.organization?.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</DataList.Item>
+									</>
+									: <AddOrganizationBtn />
+								}
+								</div>
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
