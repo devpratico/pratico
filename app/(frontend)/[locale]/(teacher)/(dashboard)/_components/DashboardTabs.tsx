@@ -32,7 +32,7 @@ export default function DashboardTabs() {
 
             <TabElement href='/capsules'>
                 <FlaskRound size='21' />
-                <Text as='label' size='1'>Capsuules</Text>
+                <Text as='label' size='1'>Capsules</Text>
             </TabElement>
 
             <TabElement href='/activities'>

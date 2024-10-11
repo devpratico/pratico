@@ -18,10 +18,10 @@ export default function ParticipantMenu() {
 
     return (
         <>
-            <VisuallyHidden>
+            {/* <VisuallyHidden>
                 <Dialog.Title>Participants</Dialog.Title>
                 <Dialog.Description>La liste des participants</Dialog.Description>
-            </VisuallyHidden>
+            </VisuallyHidden> */}
 
             <Section size='1'>
 

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
-import { ScrollArea, Container } from "@radix-ui/themes";
+import { ScrollArea, Container, VisuallyHidden } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 
@@ -47,6 +47,11 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
                     if (event.target instanceof Element && event.target.closest('#menu-tabs')) {event.preventDefault()}
                 }}
             >
+				<VisuallyHidden>
+					<Dialog.Title />
+					<Dialog.Description />
+				</VisuallyHidden>
+
                 <style>{slideLeftAnimation}</style>
                 <ScrollArea>
                     <Container px='5'>

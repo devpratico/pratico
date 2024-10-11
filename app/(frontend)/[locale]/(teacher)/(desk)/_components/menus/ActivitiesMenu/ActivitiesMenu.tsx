@@ -8,10 +8,10 @@ import ActivitiesTable from './ActivitiesTable'
 export default function ActivitiesMenu() {
     return (
         <>
-            <VisuallyHidden>
+            {/* <VisuallyHidden>
                 <Dialog.Title>Activités</Dialog.Title>
                 <Dialog.Description>Créer, modifier et consulter les activités</Dialog.Description>
-            </VisuallyHidden>
+            </VisuallyHidden> */}
 
             <Section size='1'>
                 <CreateActivityBtn />
