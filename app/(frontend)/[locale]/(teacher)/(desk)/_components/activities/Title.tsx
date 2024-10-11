@@ -28,8 +28,8 @@ export default function Title({ type, title, onEdit }: TitleProps) {
     return (
         <Flex gap='3' align='center'>
 
-            <Dialog.Title style={{ margin: 0 }} trim='both'>{title || defaultTitle}</Dialog.Title>
-            <VisuallyHidden><Dialog.Description>{title || defaultTitle}</Dialog.Description></VisuallyHidden>
+            {/* <Dialog.Title style={{ margin: 0 }} trim='both'>{title || defaultTitle}</Dialog.Title>
+            <VisuallyHidden><Dialog.Description>{title || defaultTitle}</Dialog.Description></VisuallyHidden> */}
 
             <Popover.Root open={open} onOpenChange={setOpen}>
 

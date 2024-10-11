@@ -68,7 +68,8 @@ export default function CardDialog({trigger, preventClose=false, open, setOpen, 
                         onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
                     >   
 						<VisuallyHidden>
-							<Dialog.Title />	
+							<Dialog.Title />
+							<Dialog.Description />
 						</VisuallyHidden>
 
                         {children}
