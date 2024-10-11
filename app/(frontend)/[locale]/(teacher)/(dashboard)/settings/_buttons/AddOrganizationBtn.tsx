@@ -1,31 +1,33 @@
 'use client'
-import { Button, Flex, TextField, Link } from '@radix-ui/themes';
+import { Button, Flex, TextField } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
-import { Building2, Mail, MapPin, RectangleEllipsis, TriangleAlert } from 'lucide-react';
-import { login } from '@/app/(backend)/api/actions/auth';
+import { Building2, MapPin, } from 'lucide-react';
 import logger from '@/app/_utils/logger';
-import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams';
-import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
 import { useState } from 'react';
+import createClient from '@/supabase/clients/client';
+import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
 
-//import { sendDiscordMessage } from '@/app/(backend)/api/discord/wrappers';
 
-
-export default function AddOrganizationBtn() {
+export default function AddOrganizationBtn ({userId}: {userId: string | undefined}) {
+	const supabase = createClient();
+	const router = useRouter();
 	const [ isLoading, setIsLoading ] = useState(false);
 	const [ clicked, setClicked ] = useState(false);
-
+	if (!userId)
+		return ;
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
 
         const formData = Object.fromEntries(new FormData(event.currentTarget));
-        const { email, password } = formData as { email: string, password: string };
+        const { name, address } = formData as { name: string, address: string };
 
-        logger.log('supabase:auth', 'Signing in with email', email);
-		// HERE add in supabase
+        logger.log('supabase:auth', 'Add organization name and address', name, address);
+		const { error } = await supabase.from("user_profiles").update({organization: {name: name, address: address}}).eq("id", userId);
+		console.log("error", error);
         setIsLoading(false);
+		router.push("/settings");
+
 
     }
 
@@ -60,7 +62,6 @@ export default function AddOrganizationBtn() {
 						</Button>
 					</Form.Submit>
 					<Button mt='4' ml='1'onClick={() => setClicked(false)}>Annuler</Button>
-
 				</Flex>
 				
 

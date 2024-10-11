@@ -15,6 +15,7 @@ export default async function PlayGround () {
 	const t = await getTranslations("settings");
 
 	const profileData = {
+		id: "blabla",
 		first_name: "Earl",
 		last_name: "Hickey",
 		email: "ehickey@student.42.fr",
@@ -71,7 +72,7 @@ export default async function PlayGround () {
 											<DataList.Value>{profileData?.organization?.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
 										</DataList.Item>
 									</>
-									: <AddOrganizationBtn />
+									: <AddOrganizationBtn userId={profileData.id} />
 								}
 								</div>
                             </DataList.Root>

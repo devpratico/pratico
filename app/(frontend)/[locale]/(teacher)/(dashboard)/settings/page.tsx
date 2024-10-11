@@ -7,6 +7,7 @@ import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
 //import { doesCustomerExist } from '@/app/(backend)/api/actions/stripe';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
+import AddOrganizationBtn from './_buttons/AddOrganizationBtn';
 
 
 
@@ -24,8 +25,7 @@ export default async function AccountPage() {
 
     //const {name, surname, stripe_id, nickname} = profileData?.[0] ?? {name: "no name", surname: "no surname", stripe_id: "no stripe_id", nickname: "no nickname"}
     //const customerExists = await doesCustomerExist(stripe_id)
-
-    return (
+	return (
         <ScrollArea>
             <Container pr='3' px={{ initial: '3', xs: '0' }}>
 
@@ -51,21 +51,31 @@ export default async function AccountPage() {
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("email")}</DataList.Label>
-                                    <DataList.Value>{user?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                    <DataList.Value>{profileData?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
                                 {/*<DataList.Item>
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
                                 </DataList.Item>*/}
-								<Heading size='5'>Organisation</Heading>
-								<DataList.Item>
-                                    <DataList.Label>{t("name")}</DataList.Label>
-                                    <DataList.Value>{profileData?.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-                                </DataList.Item>
-                                <DataList.Item>
-                                    <DataList.Label>{t("address")}</DataList.Label>
-                                    <DataList.Value>{profileData?.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-                                </DataList.Item>
+								
+								{
+
+									(profileData.organization)
+									? <>
+										<DataList.Item>
+											<DataList.Label>{t("surname")}</DataList.Label>
+											<DataList.Value>{profileData?.organization?.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</DataList.Item>
+										<DataList.Item>
+											<DataList.Label>{t("address")}</DataList.Label>
+											<DataList.Value>{profileData?.organization?.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</DataList.Item>
+									</>
+									: <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+										<Heading size='5'>Organisation</Heading>
+										<AddOrganizationBtn userId={user?.id} />
+								</div>
+								}
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
