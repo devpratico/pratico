@@ -41,16 +41,21 @@ export default async function PlayGround () {
                                     <DataList.Value>{user.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
 								<DataList.Item>
-                                    <DataList.Label>{"organization"}</DataList.Label>
-									<Flex>
-										<DataList.Label style={{marginLeft: '10px'}}>{"name"}</DataList.Label>
-										<DataList.Value>{user.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-										<DataList.Label style={{marginLeft: '10px'}}>{"adress"}</DataList.Label>
-										<DataList.Value>{user.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+								<DataList.Label>{"organization"}</DataList.Label>
+								<Flex style={{ display: 'flex', flexDirection: 'column'}}>
+									<div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+										<div>
+											{/* <DataList.Label>{"name"}</DataList.Label> */}
+											<DataList.Value>{user.organization.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</div>
+										<div>
+											<DataList.Label>{"adress"}</DataList.Label>
+											<DataList.Value>{user.organization.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+										</div>
+									</div>
+								</Flex>
+							</DataList.Item>
 
-									</Flex>
-									
-                                </DataList.Item>
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
