@@ -1,5 +1,5 @@
 'use client'
-import { Container, Section, Dialog, Flex } from "@radix-ui/themes"
+import { Container, Section, Dialog, Flex, Heading } from "@radix-ui/themes"
 import { Poll } from "@/app/_types/poll"
 import { PollAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/activities/PollAnimation"
 import { useAuth } from "@/app/(frontend)/_hooks/useAuth"
@@ -102,7 +102,8 @@ export default function PollAnswering() {
     return (
         <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
             <Section size='2'>
-                <Dialog.Title align='center'>{questionText}</Dialog.Title>
+                {/* <Dialog.Title align='center'>{questionText}</Dialog.Title> */}
+				<Heading align='center'>{questionText}</Heading>
             </Section>
 
             <Section size='2'>
