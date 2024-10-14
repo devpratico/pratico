@@ -10,6 +10,10 @@ import { janifera, luciole } from "@/app/(frontend)/Fonts";
 export type TeacherInfo = {
 	first_name: string | null,
 	last_name: string | null,
+	organization?: {
+		name: string | undefined,
+		address: string | undefined
+	}
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
 	{ attendances: AttendanceInfoType[], sessionDate: string | undefined, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
@@ -51,14 +55,26 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
-					<Text as='div' style={{ color: "var(--gray-8)"}}>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</Text>
+					{
+						date !== "Invalid Date" && hour !== "Invalid Date"
+						? <Text as='div' mb='4'>{`${date ? `Session du ${date}` : ""} ${date && hour ? ` à ${hour}` : ""}`}</Text>
+						: <Text as='div' mb='4'></Text>
+					}
 					{
 						userInfo ?
 						<>
-							<Text as='div' style={{ fontSize: '14px'}}>{`Animateur: ${userInfo?.first_name} ${userInfo?.last_name}`}</Text>
+						{
+								userInfo.organization && userInfo.organization.name && userInfo.organization.address
+								? <Text >{`${userInfo.organization.name}, ${userInfo.organization.address}`}</Text>
+								: <></>
+							}
+							<Text as='div'>
+								<Text style={{ fontSize: '12px', fontWeight: 'bold'}}>Animateur: </Text>
+								<Text >{`${userInfo.first_name}, ${userInfo.last_name}`}</Text>
+							</Text>	
+							
 							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
 						</>
-
 						: ""
 					}
 					
