@@ -147,9 +147,10 @@ export default function QuizAnimation() {
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
-                <Dialog.Title size='4' color='gray'>{quiz?.title}</Dialog.Title>
-                <VisuallyHidden><Dialog.Description>Activité Quiz</Dialog.Description></VisuallyHidden>
-                <Dialog.Close onClick={handleClose}><Button variant='soft' color='gray' disabled={isPending}>Terminer</Button></Dialog.Close>
+                {/* <Dialog.Title size='4' color='gray'>{quiz?.title}</Dialog.Title> */}
+				<Heading size='4' color='gray'>{quiz?.title}</Heading>
+                {/* <VisuallyHidden><Dialog.Description>Activité Quiz</Dialog.Description></VisuallyHidden> */}
+                 <Button onClick={handleClose} variant='soft' color='gray' disabled={isPending}>Terminer</Button>
             </Flex>
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
