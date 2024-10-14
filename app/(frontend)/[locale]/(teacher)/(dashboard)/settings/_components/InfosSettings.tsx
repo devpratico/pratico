@@ -2,7 +2,7 @@
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
 import { Badge, Flex, TextField } from "@radix-ui/themes";
-import { FocusEvent, FocusEventHandler, useEffect, useState } from "react";
+import { useState } from "react";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -24,9 +24,62 @@ export default function InfosSettings ({id, field, value}: {id: string | undefin
 	const organization = field.match("organization") ? field.split(" ") : null;
 	const supabase = createClient();
 
+	const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (timeout)
+			clearTimeout(timeout);
+		if (id && newValue.length && e.key === "Enter") {
+			if (organization)
+			{
+					const { data: profileData, error: profileError } = await supabase.from('user_profiles').select('organization').eq('id', id).single();
 		
-	const handleUpdate= async (e: FocusEventHandler<HTMLInputElement> | undefined | FocusEvent<HTMLInputElement, Element>) => {
-		console.log("orroofg", organization, newValue, organization ? organization[1] : null);
+					if (profileError) {
+						logger.error('supabase:database', 'Error while fetching existing organization', profileError, 'discord');
+						return ;
+					}
+		
+					const existingOrganization = (profileData?.organization ?? {}) as Record<string, string>;
+		
+					const updatedOrganization = {
+						...existingOrganization,
+						[organization[1]]: newValue
+					};
+		
+					const { data, error } = await supabase.from('user_profiles').update({ organization: updatedOrganization }).eq('id', id);
+		
+				if (error) {
+					logger.error('supabase:database', 'Error while update', error, 'discord');
+				} else {
+					logger.log('supabase:database', 'Updated success:', data);
+				}
+			} else {
+				if (field === "email")
+				{
+					const { data: user, error } = await supabase.auth.admin.updateUserById(id, { email: newValue });
+					if (error) {
+						logger.error('supabase:database', 'Error while update', error, 'discord');
+					} else {
+						logger.log('supabase:database', 'Updated success:', user);
+					}
+				}
+				else
+				{
+					const { data, error } = await supabase.from('user_profiles').update({ [field]: newValue }).eq('id', id);
+
+					if (error) {
+						logger.error('supabase:database', 'Error while update', error, 'discord');
+					} else {
+						logger.log('supabase:database', 'Updated success:', data);
+					}
+				}
+			}
+			setUpdated(true);
+			timeout = setTimeout(() => {
+				setUpdated(false);
+			}, 2000);
+		}
+	}
+		
+	const handleBlur = async (e: React.FocusEventHandler<HTMLInputElement> | undefined | React.FocusEvent<HTMLInputElement, Element>) => {
 		if (timeout)
 			clearTimeout(timeout);
 		if (id && newValue.length) {
@@ -84,7 +137,7 @@ export default function InfosSettings ({id, field, value}: {id: string | undefin
 
 	return (
 		<Flex>
-			<TextField.Root onBlur={handleUpdate} onChange={(e) => setNewValue(e.target.value)} value={newValue} />
+			<TextField.Root onKeyDown={handleKeyDown} onBlur={handleBlur} onChange={(e) => setNewValue(e.target.value)} value={newValue} />
 			{
 				updated
 				? <Badge ml='2' color="violet" variant="soft">updated</Badge>
