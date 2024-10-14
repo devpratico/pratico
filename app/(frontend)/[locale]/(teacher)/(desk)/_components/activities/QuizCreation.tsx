@@ -2,18 +2,21 @@
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card } from '@radix-ui/themes'
 import { useCallback, useState, useMemo } from 'react'
 import { useQuiz } from '@/app/(frontend)/_hooks/useQuiz'
-import { saveActivity } from '@/app/(backend)/api/actions/activities'
+import saveActivity from '@/app/(backend)/api/activity/save/wrapper'
 import Title from './Title'
 import CancelButton from './CancelButton'
 import { QuizCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 import { QuizChoice } from '@/app/_types/quiz'
+import logger from '@/app/_utils/logger'
+import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 
 
 
 
 export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?: number, closeDialog: () => void }) {
+    const router = useRouter()
     const {
         quiz,
         setTitle,
@@ -38,10 +41,13 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
+        logger.log('react:component', 'QuizCreation', 'handleSave', 'saving quiz...')
         setIsSaving(true)
         await saveActivity({id: idToSaveTo, activity: quiz })
         closeDialog()
         setIsSaving(false)
+        logger.log('react:component', 'QuizCreation', 'handleSave', 'quiz saved')
+        router.refresh()
     }, [quiz, closeDialog, idToSaveTo])
 
 

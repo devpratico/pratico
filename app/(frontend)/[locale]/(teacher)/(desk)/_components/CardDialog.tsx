@@ -1,7 +1,8 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
-import { Theme, VisuallyHidden } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import useWindow from '@/app/(frontend)/_hooks/useWindow';
+import { useCallback } from 'react';
 
 
 interface CardDialogProps {
@@ -14,7 +15,7 @@ interface CardDialogProps {
 
     open?: boolean
 
-    setOpen?: (open: boolean) => void
+    onOpenChange?: (open: boolean) => void
 
     topMargin?: string
 
@@ -27,32 +28,49 @@ interface CardDialogProps {
  * It can be used independently from the `GlobalCardDialog` system, with its own trigger or open state.
  * Prefer using the `GlobalCardDialog` system when possible.
  */
-export default function CardDialog({trigger, preventClose=false, open, setOpen, topMargin, children}: CardDialogProps) {
+export default function CardDialog({trigger, preventClose=false, open, onOpenChange, topMargin, children}: CardDialogProps) {
     const { width: viewPortWidth } = useWindow()
     const topPosition = topMargin || (viewPortWidth && viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)')
 
+    const resetPointerEvents = useCallback(() => {document.body.style.pointerEvents = 'auto'}, [])
+
+    const _onOpenChange = useCallback((open: boolean) => {
+        if (open === false) {
+            resetPointerEvents()
+        }
+        onOpenChange?.(open)
+    }, [onOpenChange, resetPointerEvents])
+
+    if (!open) {
+        resetPointerEvents()
+    }
+
     return (
-        <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Root open={open} onOpenChange={_onOpenChange} modal={true}>
 
             { trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
             <Dialog.Portal>
                 {/* The portal puts its content out of the Theme provider, so we need to wrap it in a Theme provider */}
-                {/* No need to configure the theme, it will inherit the parent theme */}
                 {/* https://www.radix-ui.com/themes/docs/overview/styling#missing-styles-in-portals */}
                 <Theme>
 
                     <style>{slideUpAnimation}</style>
                     <style>{fadeInAnimation}</style>
 
-                    <Dialog.Overlay style={{
-                        position: 'fixed',
-                        inset: 0,
-                        backgroundColor: 'var(--gray-a10)',
-                        animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }} />
+                    <Dialog.Overlay
+                        id='card-dialog-overlay'
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            backgroundColor: 'var(--gray-a10)',
+                            animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}
+                    />
 
                     <Dialog.Content
+                        onInteractOutside={(event) => { if (preventClose) event.preventDefault() }}
+                        id='card-dialog-content'
                         style={{
                             position: 'absolute',
                             bottom:'0',
@@ -65,13 +83,7 @@ export default function CardDialog({trigger, preventClose=false, open, setOpen, 
                             borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
                             animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         }}
-                        onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
-                    >   
-						<VisuallyHidden>
-							<Dialog.Title />
-							<Dialog.Description />
-						</VisuallyHidden>
-
+                    >
                         {children}
                     </Dialog.Content>
                 </Theme>

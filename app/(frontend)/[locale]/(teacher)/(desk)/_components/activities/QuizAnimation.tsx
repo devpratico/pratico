@@ -1,5 +1,6 @@
 'use client'
-import { Container, Section, Grid, Flex, Heading, Button, Box, Card, Dialog, VisuallyHidden, Badge } from "@radix-ui/themes"
+import { Container, Section, Grid, Flex, Heading, Button, Box, Card, VisuallyHidden, Badge } from "@radix-ui/themes"
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {  useMemo,useCallback, useState, useEffect, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
 import { useQuizSnapshot } from "@/app/(frontend)/_hooks/useQuizSnapshot"
@@ -147,9 +148,8 @@ export default function QuizAnimation() {
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
-                {/* <Dialog.Title size='4' color='gray'>{quiz?.title}</Dialog.Title> */}
-				<Heading size='4' color='gray'>{quiz?.title}</Heading>
-                {/* <VisuallyHidden><Dialog.Description>Activité Quiz</Dialog.Description></VisuallyHidden> */}
+                <DialogPrimitive.Title asChild><Heading size='4' color='gray'>{quiz?.title}</Heading></DialogPrimitive.Title>
+                <VisuallyHidden><DialogPrimitive.Description>Activité Quiz</DialogPrimitive.Description></VisuallyHidden>
                  <Button onClick={handleClose} variant='soft' color='gray' disabled={isPending}>Terminer</Button>
             </Flex>
 

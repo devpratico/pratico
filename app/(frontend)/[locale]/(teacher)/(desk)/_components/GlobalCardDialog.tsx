@@ -10,7 +10,7 @@ export default function GlobalCardDialog() {
     const { open, setOpen, preventClose, content } = useCardDialog()
 
     return (
-        <CardDialog open={open} setOpen={setOpen} preventClose={preventClose}>
+        <CardDialog open={open} onOpenChange={setOpen} preventClose={preventClose}>
             {content}
         </CardDialog>
     )
