@@ -1,7 +1,7 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { TextField } from "@radix-ui/themes";
+import { Badge, Flex, TextField } from "@radix-ui/themes";
 import { FocusEvent, FocusEventHandler, useEffect, useState } from "react";
 
 export type UserInfoType = {
@@ -19,11 +19,16 @@ export type UserInfoType = {
 
 export default function InfosSettings ({id, field, value}: {id: string | undefined, field: string, value: string}) {
 	const [ newValue, setNewValue ] = useState(value);
+	const [ updated, setUpdated ] = useState(false);
+	let timeout: null | NodeJS.Timeout = null;
 	const organization = field.match("organization") ? field.split(" ") : null;
 	const supabase = createClient();
+
 		
 	const handleUpdate= async (e: FocusEventHandler<HTMLInputElement> | undefined | FocusEvent<HTMLInputElement, Element>) => {
-		console.log("orroofg", organization, newValue, organization ? organization[1] : null)
+		console.log("orroofg", organization, newValue, organization ? organization[1] : null);
+		if (timeout)
+			clearTimeout(timeout);
 		if (id && newValue.length) {
 			if (organization)
 			{
@@ -69,13 +74,22 @@ export default function InfosSettings ({id, field, value}: {id: string | undefin
 					}
 				}
 			}
-		
+			setUpdated(true);
+			timeout = setTimeout(() => {
+				setUpdated(false);
+			}, 2000);
+
 		}
 	};
 
 	return (
-		<>
-			<TextField.Root onBlur={handleUpdate} onChange={(e) => setNewValue(e.target.value)} value={newValue}></TextField.Root>
-		</>
+		<Flex>
+			<TextField.Root onBlur={handleUpdate} onChange={(e) => setNewValue(e.target.value)} value={newValue} />
+			{
+				updated
+				? <Badge ml='2' color="violet" variant="soft">updated</Badge>
+				: <></>
+			}
+		</Flex>
 	);
 };
