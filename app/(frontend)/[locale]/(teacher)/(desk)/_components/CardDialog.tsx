@@ -73,6 +73,7 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
                         id='card-dialog-content'
                         style={{
                             position: 'absolute',
+                            zIndex: 1,
                             bottom:'0',
                             top: topPosition,
                             width: '100%',
