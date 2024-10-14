@@ -21,10 +21,14 @@ export default function AddOrganizationBtn ({userId}: {userId: string | undefine
 
         const formData = Object.fromEntries(new FormData(event.currentTarget));
         const { name, address } = formData as { name: string, address: string };
-
+		console.log("address", address)
+		const organization = {
+			name: name,
+			address: address
+		};
         logger.log('supabase:auth', 'Add organization name and address', name, address);
-		const { error } = await supabase.from("user_profiles").update({organization: {name: name, address: address}}).eq("id", userId);
-		console.log("error", error);
+		const { data, error } = await supabase.from("user_profiles").update({organization}).eq("id", userId).select();
+		console.log("error", error), "data:", data;
         setIsLoading(false);
 		router.push("/settings");
 
@@ -48,7 +52,7 @@ export default function AddOrganizationBtn ({userId}: {userId: string | undefine
 
                 </Form.Field>
 
-                <Form.Field key='address' name='adress'>
+                <Form.Field key='address' name='address'>
                     <Form.Control asChild>
                         <TextField.Root placeholder={"Adresse"} type="text" >
                             <TextField.Slot><MapPin /></TextField.Slot>

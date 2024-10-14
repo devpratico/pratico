@@ -51,7 +51,7 @@ export default async function AccountPage() {
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("email")}</DataList.Label>
-                                    <DataList.Value>{profileData?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+                                    <DataList.Value>{user?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
                                 </DataList.Item>
                                 {/*<DataList.Item>
                                     <DataList.Label>{t("id")}</DataList.Label>
@@ -62,13 +62,15 @@ export default async function AccountPage() {
 
 									(profileData.organization)
 									? <>
+										<Heading size='5'>Organisation</Heading>
+
 										<DataList.Item>
 											<DataList.Label>{t("surname")}</DataList.Label>
 											<DataList.Value>{profileData?.organization?.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
 										</DataList.Item>
 										<DataList.Item>
 											<DataList.Label>{t("address")}</DataList.Label>
-											<DataList.Value>{profileData?.organization?.adress || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+											<DataList.Value>{profileData?.organization?.address || <Badge color='gray'>aucun</Badge>}</DataList.Value>
 										</DataList.Item>
 									</>
 									: <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
