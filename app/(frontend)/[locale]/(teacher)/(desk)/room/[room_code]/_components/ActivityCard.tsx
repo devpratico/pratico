@@ -21,7 +21,7 @@ export default function ActivityCard() {
     }, [room])
 
     return (
-        <CardDialog open={open} setOpen={setOpen} preventClose>
+        <CardDialog open={open} onOpenChange={setOpen} preventClose>
             {
                 activityType == 'quiz' ? <QuizAnimation />
                 :

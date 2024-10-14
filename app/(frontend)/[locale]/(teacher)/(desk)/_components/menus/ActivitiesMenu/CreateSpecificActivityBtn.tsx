@@ -25,7 +25,7 @@ export default function CreateSpecificActivityBtn({type} : {type: ActivityType |
         case 0:
             frActivity = "quizz";
             whichActivity = <>
-                <CardDialog preventClose open={openActivityCreation} setOpen={setOpenActivityCreation}>
+                <CardDialog preventClose open={openActivityCreation} onOpenChange={setOpenActivityCreation}>
                     <QuizProvider quiz={emptyQuiz}>
                         <QuizCreation closeDialog={() => setOpenActivityCreation(false)} />
                     </QuizProvider>
@@ -35,7 +35,7 @@ export default function CreateSpecificActivityBtn({type} : {type: ActivityType |
         case 1:
             frActivity = "sondage"
             whichActivity = <>
-                <CardDialog preventClose open={openActivityCreation} setOpen={setOpenActivityCreation}>
+                <CardDialog preventClose open={openActivityCreation} onOpenChange={setOpenActivityCreation}>
                     <PollProvider poll={emptyPoll}>
                         <PollCreation closeDialog={() => setOpenActivityCreation(false)} />
                     </PollProvider>

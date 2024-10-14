@@ -28,13 +28,13 @@ export default function CreateActivityBtn() {
             </DropdownMenu.Root>
 
 
-            <CardDialog preventClose open={openQuizCreation} setOpen={setOpenQuizCreation}>
+            <CardDialog preventClose open={openQuizCreation} onOpenChange={setOpenQuizCreation}>
                 <QuizProvider quiz={emptyQuiz}>
                     <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
                 </QuizProvider>
             </CardDialog>
 
-            <CardDialog preventClose open={openPollCreation} setOpen={setOpenPollCreation}>
+            <CardDialog preventClose open={openPollCreation} onOpenChange={setOpenPollCreation}>
                 <PollProvider poll={emptyPoll}>
                     <PollCreation closeDialog={() => setOpenPollCreation(false)} />
                 </PollProvider>
