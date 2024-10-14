@@ -11,8 +11,10 @@ export type TeacherInfo = {
 	first_name: string | null,
 	last_name: string | null,
 	organization?: {
-		name: string | undefined,
-		address: string | undefined
+		name: string,
+		address: string,
+		zip_code: string, 
+		city: string
 	}
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
@@ -64,8 +66,8 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						userInfo ?
 						<>
 						{
-								userInfo.organization && userInfo.organization.name && userInfo.organization.address
-								? <Text >{`${userInfo.organization.name}, ${userInfo.organization.address}`}</Text>
+								userInfo.organization
+								? <Text >{`${`${userInfo.organization.name}, ` || ""}${userInfo.organization.address || ""} ${userInfo.organization.zip_code || ""} ${userInfo.organization.city || ""} `}</Text>
 								: <></>
 							}
 							<Text as='div'>
