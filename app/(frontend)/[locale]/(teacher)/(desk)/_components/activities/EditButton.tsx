@@ -63,7 +63,7 @@ export default function EditButton({ activityId, initialActivity }: EditButtonPr
 
 
 
-            <CardDialog open={open} setOpen={setOpen} preventClose>
+            <CardDialog open={open} onOpenChange={setOpen}>
                 {
                     initialActivity.type === 'quiz' ? (
                         <QuizProvider quiz={initialActivity as Quiz}>

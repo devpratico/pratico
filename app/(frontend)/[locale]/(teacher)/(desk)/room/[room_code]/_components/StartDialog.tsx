@@ -25,7 +25,7 @@ export default function StartDialog() {
 
     return (
         <CardDialog
-            open={open} setOpen={setOpen}
+            open={open} onOpenChange={setOpen}
             trigger={<IconButton style={{backgroundColor:'transparent'}}><QrCode /></IconButton>}
         >
 
