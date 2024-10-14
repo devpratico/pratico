@@ -1,10 +1,11 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Badge, Flex, TextField } from "@radix-ui/themes";
-import { emPropDefs } from "@radix-ui/themes/dist/esm/components/em.props.js";
-import { Save } from "lucide-react";
+import { Button, Card, DataList, Flex, Heading, Separator, TextField } from "@radix-ui/themes";
 import { useState } from "react";
+import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
+import { SignOutBtn } from "../_buttons/SignOutBtn";
+import { User } from "@supabase/supabase-js";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -13,98 +14,115 @@ export type UserInfoType = {
 	organization? : {
 		name?: string,
 		address?: string,
-		postal_code?: string, 
+		zip_code?: string, 
 		city?: string
 	}
 }
 
 
-export default function InfosSettings ({id, field, value}: {id: string | undefined, field: string, value: string}) {
-	const [ newValue, setNewValue ] = useState(value);
+export default function InfosSettings ({user, profileData}: {user: User | null, profileData: any}) {
+	const tmpInfo: UserInfoType = {
+		first_name: profileData?.first_name || "",
+		last_name: profileData?.last_name || "",
+		email: user?.email || "",
+		organization: {
+			name: profileData?.organization?.name || "",
+			address: profileData?.organization?.address || "",
+			zip_code: profileData?.organization?.zip_code || "",
+			city: profileData?.organization?.city || "",
+		}
+	}
+	const [ values, setValues ] = useState<UserInfoType>(tmpInfo);
 	const [ updated, setUpdated ] = useState(false);
 	const [ modifying, setModifying ] = useState(false);
 	let timeout: null | NodeJS.Timeout = null;
-	const organization = field.match("organization") ? field.split(" ") : null;
 	const supabase = createClient();
 
 	const updateData = async () => {
 		if (timeout)
 			clearTimeout(timeout);
-		if (id && newValue.length)
+		if (user?.id)
 		{
-			if (organization)
-				{
-						const { data: profileData, error: profileError } = await supabase.from('user_profiles').select('organization').eq('id', id).single();
-			
-						if (profileError) {
-							logger.error('supabase:database', 'Error while fetching existing organization', profileError, 'discord');
-							return ;
-						}
-			
-						const existingOrganization = (profileData?.organization ?? {}) as Record<string, string>;
-			
-						const updatedOrganization = {
-							...existingOrganization,
-							[organization[1]]: newValue
-						};
-			
-						const { data, error } = await supabase.from('user_profiles').update({ organization: updatedOrganization }).eq('id', id);
-			
-					if (error) {
-						logger.error('supabase:database', 'Error while update', error, 'discord');
-					} else {
-						logger.log('supabase:database', 'Updated success:', data);
-					}
-				} else {
-					if (field === "email")
-					{
-						const { data: user, error } = await supabase.auth.admin.updateUserById(id, { email: newValue });
-						if (error) {
-							logger.error('supabase:database', 'Error while update', error, 'discord');
-						} else {
-							logger.log('supabase:database', 'Updated success:', user);
-						}
-					}
-					else
-					{
-						const { data, error } = await supabase.from('user_profiles').update({ [field]: newValue }).eq('id', id);
-		
-						if (error) {
-							logger.error('supabase:database', 'Error while update', error, 'discord');
-						} else {
-							logger.log('supabase:database', 'Updated success:', data);
-						}
-					}
-				}
-				// setUpdated(true);
-				// setModifying(false);
-				timeout = setTimeout(() => {
-					setUpdated(false);
-				}, 2000);
+
+			setUpdated(true);
+			setModifying(false);
+			timeout = setTimeout(() => {
+				setUpdated(false);
+			}, 2000);
 		}
 	}
-	const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter") {
-			updateData();
-		}
-	}
+	// const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+	// 	if (e.key === "Enter") {
+	// 		updateData();
+	// 	}
+	// }
 
 	return (
-		<Flex>
-			<TextField.Root onKeyDown={handleKeyDown} onBlur={updateData} onChange={(e) => {
-					e.preventDefault();
-					setNewValue(e.target.value);
-					setModifying(true);
-				}
-			} value={newValue} />
-			{
-				modifying ? <Save style={{marginLeft: '5px', color: 'var(--violet-8)'}} onClick={updateData} /> : <></>
-			}
-			{
-				updated
-				? <Badge ml='2' color="violet" variant="soft">updated</Badge>
-				: <></>
-			}
-		</Flex>
+		<>
+            <Heading as='h1' mb='2'>{'Informations'}</Heading>
+
+			<Card size='4'>
+				<DataList.Root>
+					<Heading size='5'>Personnelles</Heading>
+					{/*
+					<DataList.Item>
+						<DataList.Label>{"nickname")}</DataList.Label>
+						<DataList.Value>{nickname}</DataList.Value>
+					</DataList.Item>*/}
+					<DataList.Item>
+						<DataList.Label>{"Prenom"}</DataList.Label>
+						<TextField.Root onChange={(e) =>{
+								setValues({...values, first_name: e.target.value})
+								setModifying(true);
+							}} value={values?.first_name} />
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label>{"Nom"}</DataList.Label>
+						<TextField.Root onChange={(e) => {
+							setValues({...values, last_name: e.target.value});
+							setModifying(true);
+						}}
+						value={values?.last_name} />
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label>{"Email"}</DataList.Label>
+						<TextField.Root onChange={(e) => setValues({...values, email: e.target.value})} value={values?.email} />
+					</DataList.Item>
+					{/*<DataList.Item>
+						<DataList.Label>{"id"}</DataList.Label>
+						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
+					</DataList.Item>*/}
+					
+					<Heading size='5'>Organisation</Heading>
+
+					<DataList.Item>
+						<DataList.Label>{"Nom"}</DataList.Label>
+						<TextField.Root onChange={(e) => setValues({...values, organization: {name: e.target.value}})} value={values?.organization?.name} />
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label>{"Adresse"}</DataList.Label>
+						<TextField.Root onChange={(e) => setValues({...values, organization: {address: e.target.value}})} value={values?.organization?.address} />
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label>{"Code postal"}</DataList.Label>
+						<TextField.Root onChange={(e) => setValues({...values, organization: {zip_code: e.target.value}})} value={values?.organization?.zip_code} />
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label>{"Ville"}</DataList.Label>
+						<TextField.Root onChange={(e) => setValues({...values, organization: {city: e.target.value}})} value={values?.organization?.city} />
+					</DataList.Item>
+				</DataList.Root>
+
+				<Separator size='4' my='4'/>
+
+				<Flex gap='4' wrap='wrap'>
+					<ResetPasswordBtn message={"change password"}/>
+					<SignOutBtn message={"sign out"}/>
+					<Button disabled={!modifying}>Enregistrer</Button>
+				</Flex>
+			</Card>
+
+		
+		</>
 	);
 };

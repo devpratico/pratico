@@ -32,85 +32,31 @@ export default async function AccountPage() {
 
                 <Section>
 
-                        <Heading as='h1' mb='2'>{t('information')}</Heading>
+					<InfosSettings user={user} profileData={profileData}/>
+					</Section>
 
-                        <Card size='4'>
-                            <DataList.Root>
-								<Heading size='5'>Personnelles</Heading>
-                                {/*
-                                <DataList.Item>
-                                    <DataList.Label>{t("nickname")}</DataList.Label>
-                                    <DataList.Value>{nickname}</DataList.Value>
-                                </DataList.Item>*/}
-                                <DataList.Item>
-                                    <DataList.Label>{t("name")}</DataList.Label>
-									<InfosSettings id={user?.id} field="first_name" value={profileData?.first_name || ""} />
-                                </DataList.Item>
-                                <DataList.Item>
-                                    <DataList.Label>{t("surname")}</DataList.Label>
-									<InfosSettings field="last_name" id={user?.id} value={profileData?.last_name || ""} />
-                                </DataList.Item>
-                                <DataList.Item>
-                                    <DataList.Label>{t("email")}</DataList.Label>
-									<InfosSettings field="email" id={user?.id} value={user?.email || ""} />
-                                </DataList.Item>
-                                {/*<DataList.Item>
-                                    <DataList.Label>{t("id")}</DataList.Label>
-                                    <DataList.Value><Code>{user?.id}</Code></DataList.Value>
-                                </DataList.Item>*/}
-								
-								<Heading size='5'>Organisation</Heading>
+				<Section>
+					<Heading as='h1' mb='2'>{t('subscription')}</Heading>
+					<Card size='4'>
 
-								<DataList.Item>
-									<DataList.Label>{t("surname")}</DataList.Label>
-									<InfosSettings id={user?.id} field="organization name" value={profileData.organization ? profileData?.organization.name || "" : ""} />
-								</DataList.Item>
-								<DataList.Item>
-									<DataList.Label>{t("address")}</DataList.Label>
-									<InfosSettings field="organization address" id={user?.id} value={profileData.organization ? profileData?.organization.address || "" : ""} />
-								</DataList.Item>
-								<DataList.Item>
-									<DataList.Label>{t("zip code")}</DataList.Label>
-									<InfosSettings id={user?.id} field="organization zip_code" value={profileData.organization ? profileData?.organization.zip_code || "" : ""} />
-								</DataList.Item>
-								<DataList.Item>
-									<DataList.Label>{t("city")}</DataList.Label>
-									<InfosSettings id={user?.id} field="organization city" value={profileData.organization ? profileData?.organization.city || "" : ""} />
-								</DataList.Item>
-                            </DataList.Root>
+					{/*<DataList.Root>
+						<DataList.Item>
+							<DataList.Label>{t("customer exists")}</DataList.Label>
+							<DataList.Value>{customerExists ? <Badge color='green' radius='full'>yes</Badge> : <Badge color='red' radius='full'>no</Badge>}</DataList.Value>
+						</DataList.Item>
+						<DataList.Item>
+							<DataList.Label>{t("stripe id")}</DataList.Label>
+							<DataList.Value><Code>{stripe_id}</Code></DataList.Value>
+						</DataList.Item>
+					</DataList.Root>
 
-                            <Separator size='4' my='4'/>
+					<Separator size='4' my='4'/>*/}
 
-                            <Flex gap='4' wrap='wrap'>
-                                <ResetPasswordBtn message={t("change password")}/>
-                                <SignOutBtn message={t("sign out")}/>
-                            </Flex>
-                        </Card>
-
-                </Section>
-
-                <Section>
-                    <Heading as='h1' mb='2'>{t('subscription')}</Heading>
-                    <Card size='4'>
-
-                        {/*<DataList.Root>
-                            <DataList.Item>
-                                <DataList.Label>{t("customer exists")}</DataList.Label>
-                                <DataList.Value>{customerExists ? <Badge color='green' radius='full'>yes</Badge> : <Badge color='red' radius='full'>no</Badge>}</DataList.Value>
-                            </DataList.Item>
-                            <DataList.Item>
-                                <DataList.Label>{t("stripe id")}</DataList.Label>
-                                <DataList.Value><Code>{stripe_id}</Code></DataList.Value>
-                            </DataList.Item>
-                        </DataList.Root>
-
-                        <Separator size='4' my='4'/>*/}
-
-                        <Flex gap='4'>
-                            <SubscribeBtn message={t("subscribe")} disabled={true}/>
-                            <ManageSubscriptionBtn message={t("manage subscription")} disabled={true}/>
-                        </Flex>
-                    </Card>
+						<Flex gap='4'>
+							<SubscribeBtn message={t("subscribe")} disabled={true}/>
+							<ManageSubscriptionBtn message={t("manage subscription")} disabled={true}/>
+						</Flex>
+					</Card>
                 </Section>
 
                 
