@@ -7,6 +7,7 @@ import logger from "@/app/_utils/logger"
 import { cache } from "react"
 import { fetchUser } from "./user"
 import { revalidatePath } from "next/cache"
+import saveActivity from "../activity/save/wrapper"
 
 
 // TODO: Remove the 'type' ('quiz' or 'poll') field from supabase and use the json content ('object' column) instead
@@ -52,30 +53,6 @@ const adapter = {
     }
 }
 
-
-interface saveActivityArgs {
-    id?: number
-    activity: Quiz | Poll
-}
-
-export async function saveActivity({ id, activity }: saveActivityArgs) {
-    const supabase = createClient()
-
-    const activityJson = adapter.toJson(activity)
-
-    const upsert: TablesInsert<'activities'> = {
-        id: id,
-        type: activity.type,
-        object: activityJson,
-    }
-
-    logger.log('supabase:database', `Saving ${activity.type}${id ? ''+id : ''}...`)
-    const { data, error } = await supabase.from('activities').upsert(upsert).select().single()
-    if (error || !data) logger.error('supabase:database', `Error saving ${activity.type}${id ? ''+id : ''}`, error?.message)
-    
-    revalidatePath('/')
-    return { data, error: error?.message }
-}
 
 // Supabase returns `Json` instead of `Quiz` or `Poll` objects
 // Let's declare the type of data we want to return
