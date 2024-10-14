@@ -6,8 +6,9 @@ import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
 //import { doesCustomerExist } from '@/app/(backend)/api/actions/stripe';
-import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea } from '@radix-ui/themes';
+import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea, TextField } from '@radix-ui/themes';
 import AddOrganizationBtn from './_buttons/AddOrganizationBtn';
+import InfosSettings from './_components/InfosSettings';
 
 
 
@@ -43,41 +44,39 @@ export default async function AccountPage() {
                                 </DataList.Item>*/}
                                 <DataList.Item>
                                     <DataList.Label>{t("name")}</DataList.Label>
-                                    <DataList.Value>{profileData?.first_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+									<InfosSettings id={user?.id} field="first_name" value={profileData?.first_name || ""} />
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("surname")}</DataList.Label>
-                                    <DataList.Value>{profileData?.last_name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+									<InfosSettings field="last_name" id={user?.id} value={profileData?.last_name || ""} />
                                 </DataList.Item>
                                 <DataList.Item>
                                     <DataList.Label>{t("email")}</DataList.Label>
-                                    <DataList.Value>{user?.email || <Badge color='gray'>aucun</Badge>}</DataList.Value>
+									<InfosSettings field="email" id={user?.id} value={user?.email || ""} />
                                 </DataList.Item>
                                 {/*<DataList.Item>
                                     <DataList.Label>{t("id")}</DataList.Label>
                                     <DataList.Value><Code>{user?.id}</Code></DataList.Value>
                                 </DataList.Item>*/}
 								
-								{
+								<Heading size='5'>Organisation</Heading>
 
-									(profileData.organization)
-									? <>
-										<Heading size='5'>Organisation</Heading>
-
-										<DataList.Item>
-											<DataList.Label>{t("surname")}</DataList.Label>
-											<DataList.Value>{profileData?.organization?.name || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-										</DataList.Item>
-										<DataList.Item>
-											<DataList.Label>{t("address")}</DataList.Label>
-											<DataList.Value>{profileData?.organization?.address || <Badge color='gray'>aucun</Badge>}</DataList.Value>
-										</DataList.Item>
-									</>
-									: <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-										<Heading size='5'>Organisation</Heading>
-										<AddOrganizationBtn userId={user?.id} />
-								</div>
-								}
+								<DataList.Item>
+									<DataList.Label>{t("surname")}</DataList.Label>
+									<InfosSettings id={user?.id} field="organization name" value={profileData.organization ? profileData?.organization.name || "" : ""} />
+								</DataList.Item>
+								<DataList.Item>
+									<DataList.Label>{t("address")}</DataList.Label>
+									<InfosSettings field="organization address" id={user?.id} value={profileData.organization ? profileData?.organization.address || "" : ""} />
+								</DataList.Item>
+								<DataList.Item>
+									<DataList.Label>{t("zip code")}</DataList.Label>
+									<InfosSettings id={user?.id} field="organization zip_code" value={profileData.organization ? profileData?.organization.zip_code || "" : ""} />
+								</DataList.Item>
+								<DataList.Item>
+									<DataList.Label>{t("city")}</DataList.Label>
+									<InfosSettings id={user?.id} field="organization city" value={profileData.organization ? profileData?.organization.city || "" : ""} />
+								</DataList.Item>
                             </DataList.Root>
 
                             <Separator size='4' my='4'/>
