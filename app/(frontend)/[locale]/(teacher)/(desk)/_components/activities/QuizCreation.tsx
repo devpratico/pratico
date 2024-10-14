@@ -10,11 +10,13 @@ import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 import { QuizChoice } from '@/app/_types/quiz'
 import logger from '@/app/_utils/logger'
+import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 
 
 
 
 export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?: number, closeDialog: () => void }) {
+    const router = useRouter()
     const {
         quiz,
         setTitle,
@@ -45,6 +47,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         closeDialog()
         setIsSaving(false)
         logger.log('react:component', 'QuizCreation', 'handleSave', 'quiz saved')
+        router.refresh()
     }, [quiz, closeDialog, idToSaveTo])
 
 
