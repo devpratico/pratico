@@ -28,7 +28,7 @@ export default function AddOrganizationBtn ({userId}: {userId: string | undefine
 		};
         logger.log('supabase:auth', 'Add organization name and address', name, address);
 		const { data, error } = await supabase.from("user_profiles").update({organization}).eq("id", userId).select();
-		console.log("error", error), "data:", data;
+		console.log("error", error, "data:", data);
         setIsLoading(false);
 		router.push("/settings");
 

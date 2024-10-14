@@ -27,7 +27,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: string | undefined = "";
-	let userInfo: TeacherInfo | null = null;
+	let userInfo: any = null;
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
@@ -37,7 +37,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		const {data: { user }} = await supabase.auth.getUser();
 		if (user)
 		{
-			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', user?.id).single();
+			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
 			if (error)
 				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (data)
