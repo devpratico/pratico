@@ -1,5 +1,6 @@
 'use client'
-import { Section, Callout, Box, Flex, VisuallyHidden, Dialog } from '@radix-ui/themes'
+import { Section, Callout, Box, Flex, VisuallyHidden } from '@radix-ui/themes'
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
@@ -34,10 +35,10 @@ export default function MoreMenu() {
 
     return (
         <>
-            {/* <VisuallyHidden>
-                <Dialog.Title>Plus</Dialog.Title>
-                <Dialog.Description>{`Plus d'options`}</Dialog.Description>
-            </VisuallyHidden> */}
+            <VisuallyHidden>
+                <DialogPrimitive.Title>Plus</DialogPrimitive.Title>
+                <DialogPrimitive.Description>{`Plus d'options`}</DialogPrimitive.Description>
+            </VisuallyHidden>
 
             <Section size='1'>
 

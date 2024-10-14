@@ -1,6 +1,6 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
-import { Theme, VisuallyHidden } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import useWindow from '@/app/(frontend)/_hooks/useWindow';
 
 
@@ -53,6 +53,8 @@ export default function CardDialog({trigger, preventClose=false, open, setOpen, 
                     }} />
 
                     <Dialog.Content
+                        onInteractOutside={(event) => { if (preventClose) event.preventDefault() }}
+                        id='card-dialog-content'
                         style={{
                             position: 'absolute',
                             bottom:'0',
@@ -65,13 +67,7 @@ export default function CardDialog({trigger, preventClose=false, open, setOpen, 
                             borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
                             animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         }}
-                        onInteractOutside={(event) => { if (preventClose) event.preventDefault()}}
-                    >   
-						<VisuallyHidden>
-							<Dialog.Title />
-							<Dialog.Description />
-						</VisuallyHidden>
-
+                    >
                         {children}
                     </Dialog.Content>
                 </Theme>

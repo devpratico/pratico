@@ -7,7 +7,7 @@ import Image from "next/image";
 import TooltipL from "@/app/(frontend)/[locale]/_components/TooltipL";
 import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
-import * as Dialog from '@radix-ui/react-dialog';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 
 export default function StartDialog() {
@@ -48,14 +48,14 @@ export default function StartDialog() {
                         <Image src='/illustrations/rocket.svg' alt='rocket' layout='fill' objectFit='contain' />
                     </Box>
 
-                    <Dialog.Title asChild>
+                    <DialogPrimitive.Title asChild>
                         <Heading size='8' align='center'>{`La session est en cours`}</Heading>
-                    </Dialog.Title>
+                    </DialogPrimitive.Title>
 
                     <VisuallyHidden>
-                        <Dialog.Description>
+                        <DialogPrimitive.Description>
                             {`Vous pouvez maintenant partager le lien de la session avec les participants.`}
-                        </Dialog.Description>
+                        </DialogPrimitive.Description>
                     </VisuallyHidden>
 
                     <Flex direction='column' align='center'>

@@ -47,10 +47,10 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
                     if (event.target instanceof Element && event.target.closest('#menu-tabs')) {event.preventDefault()}
                 }}
             >
-				<VisuallyHidden>
+				{/*<VisuallyHidden>
 					<Dialog.Title />
 					<Dialog.Description />
-				</VisuallyHidden>
+				</VisuallyHidden>*/}
 
                 <style>{slideLeftAnimation}</style>
                 <ScrollArea>
