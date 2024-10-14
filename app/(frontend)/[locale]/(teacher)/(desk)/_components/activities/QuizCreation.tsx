@@ -9,6 +9,7 @@ import { QuizCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
 import { QuizChoice } from '@/app/_types/quiz'
+import logger from '@/app/_utils/logger'
 
 
 
@@ -38,10 +39,12 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     }, [addEmptyQuestion, setCurrentQuestionId])
 
     const handleSave = useCallback(async () => {
+        logger.log('react:component', 'QuizCreation', 'handleSave', 'saving quiz...')
         setIsSaving(true)
         await saveActivity({id: idToSaveTo, activity: quiz })
         closeDialog()
         setIsSaving(false)
+        logger.log('react:component', 'QuizCreation', 'handleSave', 'quiz saved')
     }, [quiz, closeDialog, idToSaveTo])
 
 
