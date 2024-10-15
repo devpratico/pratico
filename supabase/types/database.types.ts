@@ -168,6 +168,7 @@ export type Database = {
           code: string | null
           created_at: string
           created_by: string | null
+          end_of_session: string | null
           id: number
           params: Json | null
           status: Database["public"]["Enums"]["RoomStatus"]
@@ -179,6 +180,7 @@ export type Database = {
           code?: string | null
           created_at?: string
           created_by?: string | null
+          end_of_session?: string | null
           id?: number
           params?: Json | null
           status?: Database["public"]["Enums"]["RoomStatus"]
@@ -190,6 +192,7 @@ export type Database = {
           code?: string | null
           created_at?: string
           created_by?: string | null
+          end_of_session?: string | null
           id?: number
           params?: Json | null
           status?: Database["public"]["Enums"]["RoomStatus"]
@@ -217,6 +220,7 @@ export type Database = {
           id: string
           last_name: string | null
           nickname: string | null
+          organization: Json | null
           role: Database["public"]["Enums"]["Role"] | null
           stripe_id: string | null
         }
@@ -225,6 +229,7 @@ export type Database = {
           id: string
           last_name?: string | null
           nickname?: string | null
+          organization?: Json | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }
@@ -233,6 +238,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           nickname?: string | null
+          organization?: Json | null
           role?: Database["public"]["Enums"]["Role"] | null
           stripe_id?: string | null
         }

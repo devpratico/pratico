@@ -57,7 +57,11 @@
         "unsubscribe": "Se désabonner",
         "subscription status": "Statut de l'abonnement",
         "subscription end": "Fin de l'abonnement",
-        "manage subscription": "Gérer l'abonnement"
+        "manage subscription": "Gérer l'abonnement",
+		"organization": "Organisation",
+		"address": "Adresse",
+		"zip code": "Code postal",
+		"city": "Ville"
     },
 
     "subscribe": {
