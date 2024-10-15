@@ -64,17 +64,17 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					first_name: values.first_name,
 					last_name: values.last_name,
 					organization: {
-					name: values.organization?.name,
-					address: values.organization?.address,
-					zip_code: values.organization?.zip_code,
-					city: values.organization?.city
+						name: values.organization?.name,
+						address: values.organization?.address,
+						zip_code: values.organization?.zip_code,
+						city: values.organization?.city
 					}
 				}
 
 				const { data, error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
 				if (error)
 					logger.error("supabase:database", "InfoSettings", error, "discord");
-				else
+				else if (data)
 					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
 			}
 			setLoading(false);
@@ -85,6 +85,43 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 			}, 1000);
 		}
 	}
+
+	const handleCancelUpdate = async () => {
+
+		if (teacher?.id)
+		{
+			const { data: { user }, error: userError } = await supabase.auth.getUser();
+			if (userError)
+				logger.error('supabase:database', 'InfoSetting', 'error getting datas', userError, 'discord');
+			const { data, error } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
+			if (error)
+				logger.error('supabase:database', 'InfoSetting', 'error getting datas', error, 'discord');
+			if (data)
+			{
+				setValues({
+					first_name: data.first_name || "",
+					last_name: data.last_name || "",
+					email: user?.email || "",
+					organization: data.organization as Record<string, string> || { 
+						name: "",
+						address: "",
+						zip_code: "",
+						city: ""
+					}
+				})
+			}
+			else
+				setValues(tmpInfo);
+		}
+		if (timeout)
+			clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			setModifying(false);
+			setUpdated(false);
+			setLoading(false);
+		}, 200);
+
+	};
 
 	return (
 		<>
@@ -182,7 +219,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 				<Flex mt='3' gap='4' wrap='wrap' style={{justifyContent: 'flex-end'}}>
 					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
-					<Button variant='soft' color='gray' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
+					<Button variant='soft' color='gray' onClick={handleCancelUpdate} disabled={!modifying}>Annuler</Button>
 				</Flex>
 
 				<Separator size='4' my='4'/>
