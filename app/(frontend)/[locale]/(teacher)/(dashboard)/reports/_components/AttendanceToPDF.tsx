@@ -63,9 +63,9 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						date !== "Invalid Date" &&  start !== "Invalid Date"
 						? 
 							date && start && end
-							? 	date === dateEnd
-								? <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text>
-								: <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
+							? 	dateEnd && date !== dateEnd
+								? <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
+								: <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
 							: <Text as='div' mb='4'>{`${date ? `Session du ${date}` : ""} ${date && start ? ` à ${start}` : ""}`}</Text>
 						: <Text as='div' mb='4'></Text>
 					}
