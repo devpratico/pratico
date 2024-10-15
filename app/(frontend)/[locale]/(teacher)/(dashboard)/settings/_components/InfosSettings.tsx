@@ -36,6 +36,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	const [ values, setValues ] = useState<UserInfoType>(tmpInfo);
 	const [ updated, setUpdated ] = useState(false);
 	const [ modifying, setModifying ] = useState(false);
+	const [ loading, setLoading ] = useState(false);
 	let timeout: null | NodeJS.Timeout = null;
 	const supabase = createClient();
 
@@ -43,6 +44,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	const updateData = async () => {
 		if (timeout)
 			clearTimeout(timeout);
+		setLoading(true);
 		if (teacher?.id && values)
 		{
 			if (values.email?.length && values.email !== teacher.email)
@@ -75,12 +77,12 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				else
 					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
 			}
-		
+			setLoading(false);
 			setUpdated(true);
 			setModifying(false);
 			timeout = setTimeout(() => {
 				setUpdated(false);
-			}, 10000);
+			}, 1000);
 		}
 	}
 
@@ -178,11 +180,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				</DataList.Root>
 
 				<Flex mt='3' gap='4' wrap='wrap'>
-					{
-						!modifying && updated
-						? <Button style={{ width: '100px' }} color="green"><Check /></Button>
-						: <Button style={{ width: '100px' }} onClick={updateData} loading={updated} disabled={!modifying && !updated}>Enregistrer</Button>
-					}
+					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
 					<Button color='red' variant='soft' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
 				</Flex>
 
