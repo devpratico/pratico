@@ -100,7 +100,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"nickname")}</DataList.Label>
 						<DataList.Value>{nickname}</DataList.Value>
 					</DataList.Item>*/}
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Prénom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) =>{
@@ -109,7 +110,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 								}} value={values?.first_name} />
 						</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Nom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
@@ -119,7 +121,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							value={values?.last_name} />
 						</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Email"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
@@ -140,7 +143,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					</DataList.Item>*/}
 					<Heading size='5'>Organisation</Heading>
 
-					<DataList.Item>
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Nom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
@@ -149,7 +152,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							}} value={values?.organization?.name} />						
 						</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Adresse"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
@@ -158,7 +162,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							}} value={values?.organization?.address} />						
 						</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Code postal"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
@@ -167,7 +172,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							}} value={values?.organization?.zip_code} />						
 						</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
+
+					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Ville"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
