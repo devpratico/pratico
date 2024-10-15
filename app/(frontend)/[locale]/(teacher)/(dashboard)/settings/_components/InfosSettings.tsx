@@ -1,7 +1,7 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Badge, Button, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
+import { Button, Card, DataList, Flex, Heading, Separator, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
 import { SignOutBtn } from "../_buttons/SignOutBtn";
@@ -180,9 +180,9 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 				</DataList.Root>
 
-				<Flex mt='3' gap='4' wrap='wrap'>
+				<Flex mt='3' gap='4' wrap='wrap' style={{justifyContent: 'flex-end'}}>
 					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
-					<Button color='red' variant='soft' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
+					<Button variant='soft' color='gray' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
 				</Flex>
 
 				<Separator size='4' my='4'/>

@@ -6,6 +6,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -20,6 +21,7 @@ export type TeacherInfo = {
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
 	{ attendances: AttendanceInfoType[], sessionDate: { date: string, end?: string | null | undefined }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
 ) {
+	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate.date, undefined, "date");
 	const start = formatDate(sessionDate.date, undefined, "hour");
@@ -28,6 +30,9 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef})
 
+	useEffect(() => {
+		router.refresh();
+	}, [router]);
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
