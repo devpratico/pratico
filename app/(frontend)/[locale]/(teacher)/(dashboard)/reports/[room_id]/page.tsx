@@ -26,7 +26,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	const roomId = params.room_id;
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
-	let sessionDate: string | undefined = "";
+	let sessionDate: { date: string, end: string | null | undefined } = {
+		date: "",
+		end: ""
+	};
 	let userInfo: any = null;
 	if (!(roomId))
 	{
@@ -42,9 +45,9 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (data)
 				userInfo = data;
-			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id').eq('id', roomId).single();
+			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
 			if (roomData)
-				sessionDate = roomData.created_at;	
+				sessionDate = { date: roomData.created_at, end: roomData.end_of_session };	
 			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
 			if (!attendanceData?.length)
 				logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
