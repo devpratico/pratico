@@ -1,11 +1,12 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, Card, DataList, Flex, Heading, Separator, TextField } from "@radix-ui/themes";
+import { Badge, Button, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
 import { SignOutBtn } from "../_buttons/SignOutBtn";
 import { User } from "@supabase/supabase-js";
+import { Check } from "lucide-react";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -20,11 +21,11 @@ export type UserInfoType = {
 }
 
 
-export default function InfosSettings ({user, profileData}: {user: User | null, profileData: any}) {
+export default function InfosSettings ({teacher, profileData}: {teacher: User | null, profileData: any}) {
 	const tmpInfo: UserInfoType = {
 		first_name: profileData?.first_name || "",
 		last_name: profileData?.last_name || "",
-		email: user?.email || "",
+		email: teacher?.email || "",
 		organization: {
 			name: profileData?.organization?.name || "",
 			address: profileData?.organization?.address || "",
@@ -38,12 +39,43 @@ export default function InfosSettings ({user, profileData}: {user: User | null, 
 	let timeout: null | NodeJS.Timeout = null;
 	const supabase = createClient();
 
+
 	const updateData = async () => {
 		if (timeout)
 			clearTimeout(timeout);
-		if (user?.id)
+		if (teacher?.id && values)
 		{
+			if (values.email?.length && values.email !== teacher.email)
+			{
+				const { data: user, error: userError } = await supabase.auth.updateUser({email: values.email });
+				if (userError)
+					logger.error("supabase:database", "InfoSettings, error updating email", userError, "discord");
+				else
+					logger.log("supabase:database", "InfoSettings", "Email updated successfully", user);
+			}
+			const { data: userProfileData, error: userProfileError } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
+			if (userProfileError)
+				logger.error("supabase:database", "InfoSettings, error getting existing user_profiles", userProfileError, "discord");
+			else
+			{
+				const userProfileCopy = { ...userProfileData,
+					first_name: values.first_name,
+					last_name: values.last_name,
+					organization: {
+					name: values.organization?.name,
+					address: values.organization?.address,
+					zip_code: values.organization?.zip_code,
+					city: values.organization?.city
+					}
+				}
 
+				const { data, error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
+				if (error)
+					logger.error("supabase:database", "InfoSettings", error, "discord");
+				else
+					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
+			}
+		
 			setUpdated(true);
 			setModifying(false);
 			timeout = setTimeout(() => {
@@ -51,11 +83,6 @@ export default function InfosSettings ({user, profileData}: {user: User | null, 
 			}, 2000);
 		}
 	}
-	// const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-	// 	if (e.key === "Enter") {
-	// 		updateData();
-	// 	}
-	// }
 
 	return (
 		<>
@@ -86,7 +113,10 @@ export default function InfosSettings ({user, profileData}: {user: User | null, 
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Email"}</DataList.Label>
-						<TextField.Root onChange={(e) => setValues({...values, email: e.target.value})} value={values?.email} />
+						<TextField.Root onChange={(e) => {
+							setValues({...values, email: e.target.value});
+							setModifying(true);
+						}} value={values?.email} />
 					</DataList.Item>
 					{/*<DataList.Item>
 						<DataList.Label>{"id"}</DataList.Label>
@@ -97,19 +127,31 @@ export default function InfosSettings ({user, profileData}: {user: User | null, 
 
 					<DataList.Item>
 						<DataList.Label>{"Nom"}</DataList.Label>
-						<TextField.Root onChange={(e) => setValues({...values, organization: {name: e.target.value}})} value={values?.organization?.name} />
+						<TextField.Root onChange={(e) => {
+							setValues({...values, organization: {...values.organization, name: e.target.value}});
+							setModifying(true);
+						}} value={values?.organization?.name} />
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Adresse"}</DataList.Label>
-						<TextField.Root onChange={(e) => setValues({...values, organization: {address: e.target.value}})} value={values?.organization?.address} />
+						<TextField.Root onChange={(e) => {
+							setValues({...values, organization: {...values.organization, address: e.target.value}});
+							setModifying(true);
+						}} value={values?.organization?.address} />
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Code postal"}</DataList.Label>
-						<TextField.Root onChange={(e) => setValues({...values, organization: {zip_code: e.target.value}})} value={values?.organization?.zip_code} />
+						<TextField.Root onChange={(e) => {
+							setValues({...values, organization: {...values.organization, zip_code: e.target.value}});
+							setModifying(true);
+						}} value={values?.organization?.zip_code} />
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Ville"}</DataList.Label>
-						<TextField.Root onChange={(e) => setValues({...values, organization: {city: e.target.value}})} value={values?.organization?.city} />
+						<TextField.Root onChange={(e) => {
+							setValues({...values, organization: {...values.organization, city: e.target.value}});
+							setModifying(true);
+						}} value={values?.organization?.city} />
 					</DataList.Item>
 				</DataList.Root>
 
@@ -117,8 +159,13 @@ export default function InfosSettings ({user, profileData}: {user: User | null, 
 
 				<Flex gap='4' wrap='wrap'>
 					<ResetPasswordBtn message={"change password"}/>
+					<Button onClick={updateData} disabled={!modifying}>Enregistrer</Button>
+					{
+						updated
+						? <Check color="green" />
+						: <Text mr='5' />
+					}
 					<SignOutBtn message={"sign out"}/>
-					<Button disabled={!modifying}>Enregistrer</Button>
 				</Flex>
 			</Card>
 

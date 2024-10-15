@@ -7,7 +7,6 @@ import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
 //import { doesCustomerExist } from '@/app/(backend)/api/actions/stripe';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea, TextField } from '@radix-ui/themes';
-import AddOrganizationBtn from './_buttons/AddOrganizationBtn';
 import InfosSettings from './_components/InfosSettings';
 
 
@@ -32,7 +31,7 @@ export default async function AccountPage() {
 
                 <Section>
 
-					<InfosSettings user={user} profileData={profileData}/>
+					<InfosSettings teacher={user} profileData={profileData}/>
 					</Section>
 
 				<Section>
