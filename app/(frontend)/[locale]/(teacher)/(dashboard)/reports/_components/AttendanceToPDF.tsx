@@ -23,7 +23,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate.date, undefined, "date");
 	const start = formatDate(sessionDate.date, undefined, "hour");
-	// const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
+	const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
 	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "hour") : undefined; 
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef})
@@ -63,10 +63,9 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 						date !== "Invalid Date" &&  start !== "Invalid Date"
 						? 
 							date && start && end
-							// ? 	dateEnd && date !== dateEnd
-							// 	? <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
-							// 	: <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
-							? <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
+							? 	dateEnd && date !== dateEnd
+								? <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
+								: <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
 							: <Text as='div' mb='4'>{`${date ? `Session du ${date}` : ""} ${date && start ? ` à ${start}` : ""}`}</Text>
 						: <Text as='div' mb='4'></Text>
 					}
