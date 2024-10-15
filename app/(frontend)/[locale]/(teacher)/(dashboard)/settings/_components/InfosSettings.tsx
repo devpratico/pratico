@@ -80,7 +80,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 			setModifying(false);
 			timeout = setTimeout(() => {
 				setUpdated(false);
-			}, 2000);
+			}, 1000);
 		}
 	}
 
@@ -98,25 +98,31 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					</DataList.Item>*/}
 					<DataList.Item>
 						<DataList.Label>{"Prénom"}</DataList.Label>
-						<TextField.Root onChange={(e) =>{
-								setValues({...values, first_name: e.target.value})
-								setModifying(true);
-							}} value={values?.first_name} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) =>{
+									setValues({...values, first_name: e.target.value})
+									setModifying(true);
+								}} value={values?.first_name} />
+						</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Nom"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, last_name: e.target.value});
-							setModifying(true);
-						}}
-						value={values?.last_name} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, last_name: e.target.value});
+								setModifying(true);
+							}}
+							value={values?.last_name} />
+						</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Email"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, email: e.target.value});
-							setModifying(true);
-						}} value={values?.email} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, email: e.target.value});
+								setModifying(true);
+							}} value={values?.email} />						
+						</DataList.Value>
 					</DataList.Item>
 					{/*<DataList.Item>
 						<DataList.Label>{"id"}</DataList.Label>
@@ -127,48 +133,57 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 					<DataList.Item>
 						<DataList.Label>{"Nom"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, organization: {...values.organization, name: e.target.value}});
-							setModifying(true);
-						}} value={values?.organization?.name} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, organization: {...values.organization, name: e.target.value}});
+								setModifying(true);
+							}} value={values?.organization?.name} />						
+						</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Adresse"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, organization: {...values.organization, address: e.target.value}});
-							setModifying(true);
-						}} value={values?.organization?.address} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, organization: {...values.organization, address: e.target.value}});
+								setModifying(true);
+							}} value={values?.organization?.address} />						
+						</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Code postal"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, organization: {...values.organization, zip_code: e.target.value}});
-							setModifying(true);
-						}} value={values?.organization?.zip_code} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, organization: {...values.organization, zip_code: e.target.value}});
+								setModifying(true);
+							}} value={values?.organization?.zip_code} />						
+						</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.Label>{"Ville"}</DataList.Label>
-						<TextField.Root onChange={(e) => {
-							setValues({...values, organization: {...values.organization, city: e.target.value}});
-							setModifying(true);
-						}} value={values?.organization?.city} />
+						<DataList.Value>
+							<TextField.Root onChange={(e) => {
+								setValues({...values, organization: {...values.organization, city: e.target.value}});
+								setModifying(true);
+							}} value={values?.organization?.city} />							
+						</DataList.Value>
 					</DataList.Item>
 				</DataList.Root>
 
 				<Separator size='4' my='4'/>
 
-				<Flex  justify='between'>
+				<Flex justify='between'>
+					<Flex gap='4' wrap='wrap'>
+						{
+							!modifying && updated
+							? <Button style={{ width: '100px' }} color="green"><Check /></Button>
+							: <Button style={{ width: '100px' }} onClick={updateData} loading={updated} disabled={!modifying && !updated}>Enregistrer</Button>
+						}
+						<Button color='red' variant='soft' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
+					</Flex>
 					<Flex gap='4' wrap='wrap'>
 						<ResetPasswordBtn message={"Changer le mot de passe"}/>
-						<Button onClick={updateData} disabled={!modifying}>Enregistrer</Button>
-						{
-							updated
-							? <Check color="green" />
-							: <Text mr='5' />
-						}
+						<SignOutBtn message={"Se déconnecter"}/>
 					</Flex>
-					
-					<SignOutBtn message={"Se déconnecter"}/>
 				</Flex>
 			</Card>
 
