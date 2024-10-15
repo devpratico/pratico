@@ -132,11 +132,6 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						</DataList.Value>
 					</DataList.Item>
 
-				</DataList.Root>
-
-				<Separator size='4' my='4'/>
-
-				<DataList.Root>
 					{/*<DataList.Item>
 						<DataList.Label>{"id"}</DataList.Label>
 						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
