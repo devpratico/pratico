@@ -80,7 +80,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 			setModifying(false);
 			timeout = setTimeout(() => {
 				setUpdated(false);
-			}, 1000);
+			}, 10000);
 		}
 	}
 
@@ -89,7 +89,9 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
             <Heading as='h1' mb='2'>{'Informations'}</Heading>
 
 			<Card size='4'>
+
 				<DataList.Root>
+
 					<Heading size='5'>Personnelles</Heading>
 					{/*
 					<DataList.Item>
@@ -124,11 +126,16 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							}} value={values?.email} />						
 						</DataList.Value>
 					</DataList.Item>
+
+				</DataList.Root>
+
+				<Separator size='4' my='4'/>
+
+				<DataList.Root>
 					{/*<DataList.Item>
 						<DataList.Label>{"id"}</DataList.Label>
 						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
 					</DataList.Item>*/}
-					
 					<Heading size='5'>Organisation</Heading>
 
 					<DataList.Item>
@@ -167,24 +174,26 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 							}} value={values?.organization?.city} />							
 						</DataList.Value>
 					</DataList.Item>
+
 				</DataList.Root>
 
-				<Separator size='4' my='4'/>
-
-				<Flex justify='between'>
-					<Flex gap='4' wrap='wrap'>
-						{
-							!modifying && updated
-							? <Button style={{ width: '100px' }} color="green"><Check /></Button>
-							: <Button style={{ width: '100px' }} onClick={updateData} loading={updated} disabled={!modifying && !updated}>Enregistrer</Button>
-						}
-						<Button color='red' variant='soft' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
-					</Flex>
-					<Flex gap='4' wrap='wrap'>
-						<ResetPasswordBtn message={"Changer le mot de passe"}/>
-						<SignOutBtn message={"Se déconnecter"}/>
-					</Flex>
+				<Flex mt='3' gap='4' wrap='wrap'>
+					{
+						!modifying && updated
+						? <Button style={{ width: '100px' }} color="green"><Check /></Button>
+						: <Button style={{ width: '100px' }} onClick={updateData} loading={updated} disabled={!modifying && !updated}>Enregistrer</Button>
+					}
+					<Button color='red' variant='soft' onClick={() => setModifying(false)} disabled={!modifying}>Annuler</Button>
 				</Flex>
+
+				<Separator size='4' my='4'/>
+			
+				<Heading mb='3' size='5'>Compte Pratico</Heading>
+				<Flex mt='5' gap='4' wrap='wrap'>					
+					<ResetPasswordBtn message={"Changer le mot de passe"}/>
+					<SignOutBtn message={"Se déconnecter"}/>
+				</Flex>
+		
 			</Card>
 
 		

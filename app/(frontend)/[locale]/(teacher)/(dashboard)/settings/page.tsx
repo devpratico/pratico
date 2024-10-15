@@ -32,7 +32,8 @@ export default async function AccountPage() {
                 <Section>
 
 					<InfosSettings teacher={user} profileData={profileData}/>
-					</Section>
+					
+				</Section>
 
 				<Section>
 					<Heading as='h1' mb='2'>{t('subscription')}</Heading>
