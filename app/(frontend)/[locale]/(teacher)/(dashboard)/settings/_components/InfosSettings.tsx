@@ -97,7 +97,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Value>{nickname}</DataList.Value>
 					</DataList.Item>*/}
 					<DataList.Item>
-						<DataList.Label>{"Prenom"}</DataList.Label>
+						<DataList.Label>{"Prénom"}</DataList.Label>
 						<TextField.Root onChange={(e) =>{
 								setValues({...values, first_name: e.target.value})
 								setModifying(true);
@@ -157,15 +157,18 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 				<Separator size='4' my='4'/>
 
-				<Flex gap='4' wrap='wrap'>
-					<ResetPasswordBtn message={"change password"}/>
-					<Button onClick={updateData} disabled={!modifying}>Enregistrer</Button>
-					{
-						updated
-						? <Check color="green" />
-						: <Text mr='5' />
-					}
-					<SignOutBtn message={"sign out"}/>
+				<Flex  justify='between'>
+					<Flex gap='4' wrap='wrap'>
+						<ResetPasswordBtn message={"Changer le mot de passe"}/>
+						<Button onClick={updateData} disabled={!modifying}>Enregistrer</Button>
+						{
+							updated
+							? <Check color="green" />
+							: <Text mr='5' />
+						}
+					</Flex>
+					
+					<SignOutBtn message={"Se déconnecter"}/>
 				</Flex>
 			</Card>
 
