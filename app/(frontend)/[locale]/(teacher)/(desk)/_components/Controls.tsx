@@ -32,7 +32,7 @@ export default function Controls() {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 		  if (e.key === 'ArrowRight') {
-			logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT", pageIds, currentPageId);
+			logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT");
 			e.preventDefault();
 			goNextPage();
 		  } else if (e.key === 'ArrowLeft') {
@@ -46,7 +46,7 @@ export default function Controls() {
 		  window.removeEventListener('keydown', handleKeyDown);
 		};
 	  }, [goNextPage, goPrevPage]);
-	  
+
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
             if (pages == 1) {
