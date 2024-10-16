@@ -3,7 +3,7 @@ import { listAllCoupons, listAllCodes } from "@/app/(backend)/data-access/stripe
 import Stripe from "stripe"
 import { getFormatter } from "next-intl/server"
 import CreateCodeForm from "./_components/CreateCodesForm"
-import { getUserRole } from "@/app/(backend)/data-access/auth"
+import { getUserRole } from "@/app/(backend)/data-access/user"
 
 
 export default async function Page() {

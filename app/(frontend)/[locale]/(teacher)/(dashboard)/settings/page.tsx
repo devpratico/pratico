@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/(backend)/api/actions/user'
-import { fetchProfile, fetchStripeId } from './actions';
+import { getProfile, getStripeId, getUser } from '@/app/(backend)/data-access/user';
 import { SignOutBtn } from './_buttons/SignOutBtn';
 import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
@@ -13,11 +12,11 @@ import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Ca
 export default async function AccountPage() {
     const t = await getTranslations("settings")
 
-    const { user, error } = await fetchUser()
+    const { data: {user: user} , error } = await getUser()
     let profileData: any = undefined
 
     if (user) {
-        profileData = (await fetchProfile(user.id)).data
+        profileData = (await getProfile(user.id)).data
     }
     
 
