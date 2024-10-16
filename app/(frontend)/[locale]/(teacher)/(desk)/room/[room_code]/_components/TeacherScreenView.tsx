@@ -7,19 +7,21 @@ import StartDialog from "./StartDialog";
 import StopBtn from "./StopBtn";
 import MenuTabs from "../../../_components/MenuTabs";
 import { useState } from "react";
+import TeacherCanvas from "./TeacherCanvasServer";
+import { useFullscreen } from "@/app/(frontend)/_hooks/useFullscreen";
 
 export default function TeacherScreenView ({room_code}: {room_code: string}) {
     const logoScale = 0.25;
-	const [ fullscreen, setFullscreen ] = useState(false);
 	const [ onActivity, setOnActivity ] = useState(false);
+	const { setIsFullscreen, isFullscreen } = useFullscreen();
 
 	return (<>
 		<Button onClick={() => {
-			setFullscreen(!fullscreen);
+			setIsFullscreen(!isFullscreen);
 			setOnActivity(true);
-		}}>{fullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
+		}}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
 		{
-			fullscreen
+			isFullscreen
 			? <></>
 			: <>
 				<TopBarPortal>
@@ -60,19 +62,15 @@ export default function TeacherScreenView ({room_code}: {room_code: string}) {
 								{ menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
 								{ menu: 'more', label: 'Plus', icon: <Ellipsis /> }
 							]} />
-						</Box>
-
-
-						{/* Activity Card, that automatically opens when an activity is running */}
-						
+						</Box>					
 							
-
 					</Flex>
 
 				</TopBarPortal>
 
 			</>
 		}
+
 		
 	</>);
 };

@@ -99,10 +99,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             options={options}
         >
             {children}
-            {/*<Resizer/>*/}
+            {/* <Resizer/> */}
             <EmbedHint/>
 			<KeyboardShortcuts/>
-        </Tldraw>
+    	</Tldraw>
     )
 }
 
