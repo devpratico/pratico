@@ -2,7 +2,7 @@ import 'server-only'
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { adapter } from '../api/activity/utils'
-import { getUser } from './auth'
+import { getUser } from './user'
 import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
@@ -58,7 +58,7 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
     const userId = user?.id
 
     if (!userId || userError) {
-        logger.error('supabase:database', 'Error fetching user', userError)
+        logger.error('supabase:database', 'Error fetching user', userError?.message)
         return { data: [], error: userError?.message || null }
     }
 
