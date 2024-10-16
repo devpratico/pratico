@@ -48,7 +48,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         setIsSaving(false)
         logger.log('react:component', 'QuizCreation', 'handleSave', 'quiz saved')
         router.refresh()
-    }, [quiz, closeDialog, idToSaveTo])
+    }, [quiz, closeDialog, idToSaveTo, router])
 
 
     return (
