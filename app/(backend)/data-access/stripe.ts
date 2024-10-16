@@ -1,17 +1,29 @@
 import 'server-only'
 import Stripe from "stripe";
 import logger from "@/app/_utils/logger";
+import { getStripeId, getUser } from './user';
 
 
-export async function doesCustomerExist(id: string) {
+
+export async function getCustomer() {
+
+    const { data: { user: user } } = await getUser();
+    if (!user) return null;
+
+    const { data } = await getStripeId(user.id);
+    if (!data?.stripe_id) return null;
+
+    const stripeId = data.stripe_id;
+
     try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-        const _ = await stripe.customers.retrieve(id);
-        return true;
+        const customer = await stripe.customers.retrieve(stripeId);
+        logger.log('next:api', 'getCustomer:', customer.id);
+        return customer;
 
     } catch (error) {
         logger.error('next:api', 'doesCustomerExist', (error as Error).message);
-        return false;
+        return null
     }
 }
 

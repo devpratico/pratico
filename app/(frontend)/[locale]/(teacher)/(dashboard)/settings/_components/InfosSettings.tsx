@@ -1,10 +1,8 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, Card, DataList, Flex, Heading, Separator, TextField } from "@radix-ui/themes";
+import { Button, DataList, Flex, Heading, TextField } from "@radix-ui/themes";
 import { useState } from "react";
-import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
-import { SignOutBtn } from "../_buttons/SignOutBtn";
 import { User } from "@supabase/supabase-js";
 import { Check } from "lucide-react";
 
@@ -56,27 +54,26 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					logger.log("supabase:database", "InfoSettings", "Email updated successfully", user);
 			}
 			const { data: userProfileData, error: userProfileError } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
-			if (userProfileError)
-				logger.error("supabase:database", "InfoSettings, error getting existing user_profiles", userProfileError, "discord");
-			else
-			{
-				const userProfileCopy = { ...userProfileData,
-					first_name: values.first_name,
-					last_name: values.last_name,
-					organization: {
-						name: values.organization?.name,
-						address: values.organization?.address,
-						zip_code: values.organization?.zip_code,
-						city: values.organization?.city
-					}
-				}
+			
+            if (userProfileError) logger.log("supabase:database", "InfoSettings, no user_profile for current user", userProfileError);
 
-				const { data, error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
-				if (error)
-					logger.error("supabase:database", "InfoSettings", error, "discord");
-				else if (data)
-					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
-			}
+            const userProfileCopy = { ...userProfileData,
+                id: teacher?.id,
+                first_name: values.first_name,
+                last_name: values.last_name,
+                organization: {
+                    name: values.organization?.name,
+                    address: values.organization?.address,
+                    zip_code: values.organization?.zip_code,
+                    city: values.organization?.city
+                }
+            }
+
+            const { data, error } = await supabase.from('user_profiles').upsert(userProfileCopy)
+            
+            if (error) logger.error("supabase:database", "InfoSettings", error, "discord");
+            else if (data) logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
+
 			setLoading(false);
 			setUpdated(true);
 			setModifying(false);
@@ -124,11 +121,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	};
 
 	return (
-		<>
-            <Heading as='h1' mb='2'>{'Informations'}</Heading>
 
-			<Card size='4'>
-
+            <>
 				<DataList.Root>
 
 					<Heading size='5'>Personnelles</Heading>
@@ -173,7 +167,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"id"}</DataList.Label>
 						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
 					</DataList.Item>*/}
-					<Heading size='5'>Organisation</Heading>
+					<Heading size='5' mt='5'>Organisation</Heading>
 
 					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Nom"}</DataList.Label>
@@ -221,18 +215,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
 					<Button variant='soft' color='gray' onClick={handleCancelUpdate} disabled={!modifying}>Annuler</Button>
 				</Flex>
-
-				<Separator size='4' my='4'/>
-			
-				<Heading mb='3' size='5'>Compte Pratico</Heading>
-				<Flex mt='5' gap='4' wrap='wrap'>					
-					<ResetPasswordBtn message={"Changer le mot de passe"}/>
-					<SignOutBtn message={"Se déconnecter"}/>
-				</Flex>
+        </>
 		
-			</Card>
-
-		
-		</>
 	);
 };

@@ -1,9 +1,6 @@
 import 'server-only'
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
-import { Tables } from '@/supabase/types/database.types'
-
-type Profile = Tables<'user_profiles'>
 
 
 export async function getUser() {
@@ -33,17 +30,11 @@ export async function getUserRole() {
 
 export async function getProfile(userId: string) {
     const supabase = createClient()
-    return await supabase.from('user_profiles').select().eq('id', userId).returns<Profile[]>().limit(1).single()
+    return await supabase.from('user_profiles').select().eq('id', userId).limit(1).single()
 }
 
 
 export async function getStripeId(userId: string) {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId)
-    if (error) {
-        console.error("error getting stripe id", error)
-        throw error
-    } else {
-        return data
-    }
+    return await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
 }
