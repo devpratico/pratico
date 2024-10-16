@@ -1,5 +1,6 @@
 'use client'
-import { Flex, IconButton, TextField, Popover, VisuallyHidden, Dialog, Heading } from '@radix-ui/themes'
+import { Flex, IconButton, TextField, Popover, VisuallyHidden, Heading } from '@radix-ui/themes'
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Check, SquarePen } from 'lucide-react'
 import { useState } from 'react'
 
@@ -28,10 +29,8 @@ export default function Title({ type, title, onEdit }: TitleProps) {
     return (
         <Flex gap='3' align='center'>
 
-            {/* <Dialog.Title > */}
-			<Heading style={{ margin: 0 }} trim='both'>{title || defaultTitle}</Heading>
-			{/* </Dialog.Title> */}
-            {/* <VisuallyHidden><Dialog.Description>{title || defaultTitle}</Dialog.Description></VisuallyHidden> */}
+            <DialogPrimitive.Title asChild><Heading style={{ margin: 0 }} trim='both'>{title || defaultTitle}</Heading></DialogPrimitive.Title>
+            <VisuallyHidden><DialogPrimitive.Description>{title || defaultTitle}</DialogPrimitive.Description></VisuallyHidden>
 
             <Popover.Root open={open} onOpenChange={setOpen}>
 

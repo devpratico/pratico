@@ -1,5 +1,6 @@
 'use client'
-import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout, VisuallyHidden, Dialog } from '@radix-ui/themes'
+import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout, VisuallyHidden } from '@radix-ui/themes'
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Pen, Coins, ChevronRight, Info } from "lucide-react"
 import { usePresences } from "@/app/(frontend)/_hooks/usePresences"
 import CollabSwitch from "./CollabSwitch"
@@ -18,10 +19,10 @@ export default function ParticipantMenu() {
 
     return (
         <>
-            {/* <VisuallyHidden>
-                <Dialog.Title>Participants</Dialog.Title>
-                <Dialog.Description>La liste des participants</Dialog.Description>
-            </VisuallyHidden> */}
+            <VisuallyHidden>
+                <DialogPrimitive.Title>Participants</DialogPrimitive.Title>
+                <DialogPrimitive.Description>La liste des participants</DialogPrimitive.Description>
+            </VisuallyHidden>
 
             <Section size='1'>
 

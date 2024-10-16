@@ -18,7 +18,7 @@ export default function ActivityCard() {
 
 
     return (
-        <CardDialog open={open} setOpen={setOpen} preventClose topMargin='0'>
+        <CardDialog open={open} onOpenChange={setOpen} preventClose topMargin='0'>
             <ScrollArea>
             {
                 activityType == 'quiz' ? <QuizAnswering />

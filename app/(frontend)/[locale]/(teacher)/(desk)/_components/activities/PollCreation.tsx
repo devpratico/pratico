@@ -3,13 +3,12 @@ import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea
 import { useCallback, useMemo, useState } from 'react'
 import { usePoll } from '@/app/(frontend)/_hooks/usePoll'
 import { PollChoice } from '@/app/_types/poll'
-import { saveActivity } from '@/app/(backend)/api/actions/activities'
+import saveActivity from '@/app/(backend)/api/activity/save/wrapper'
 import Title from './Title'
 import CancelButton from './CancelButton'
 import { PollCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
 import { Plus } from 'lucide-react'
-import { set } from 'lodash'
 
 
 

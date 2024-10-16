@@ -41,7 +41,8 @@ export default function CanvasSL() {
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
-    useEffect(() => {
+	
+	useEffect(() => {
         async function _setInitialSnapshot() {
             const { data, error } = await fetchCapsuleSnapshot(capsuleId)
             const snapshot = data?.tld_snapshot?.[0]
@@ -55,8 +56,7 @@ export default function CanvasSL() {
         }
         _setInitialSnapshot()
     }, [capsuleId])
-
-
+	  
     // Create the store
     /*
     const [store, setStore] = useState(createTLStore({shapeUtils: defaultShapeUtils}))

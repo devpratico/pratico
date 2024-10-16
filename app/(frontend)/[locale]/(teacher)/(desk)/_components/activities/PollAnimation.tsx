@@ -1,5 +1,6 @@
 'use client'
-import { Container, Section, Grid, Flex, Heading, Button, Card, Dialog, Badge, Box, VisuallyHidden } from "@radix-ui/themes"
+import { Container, Section, Grid, Flex, Heading, Button, Card, Badge, Box, VisuallyHidden } from "@radix-ui/themes"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
 import React, { useMemo, useCallback, Dispatch, SetStateAction, useState, useEffect } from "react"
 import Navigator from "./Navigator"
 import { usePollSnapshot } from "@/app/(frontend)/_hooks/usePollSnapshot"
@@ -159,11 +160,10 @@ export default function PollAnimation() {
         <Grid rows='auto 1fr auto' height='100%'>
 
             <Flex justify='between' gap='3' align='center' p='4'>
-                {/* <Dialog.Title size='4' color='gray'>{poll?.title}</Dialog.Title> */}
-				<Heading size='4' color="gray">{poll?.title}</Heading>
-                {/* <VisuallyHidden><Dialog.Description>Activité sondage</Dialog.Description></VisuallyHidden> */}
+                <DialogPrimitive.Title asChild><Heading size='4' color="gray">{poll?.title}</Heading></DialogPrimitive.Title>
+                <VisuallyHidden><DialogPrimitive.Description>Activité sondage</DialogPrimitive.Description></VisuallyHidden>
 				<Button onClick={handleClose} variant='soft' color='gray' disabled={isPending}>Terminer</Button>
-				</Flex>
+			</Flex>
 
 
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>

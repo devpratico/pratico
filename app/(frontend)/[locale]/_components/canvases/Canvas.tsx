@@ -16,11 +16,10 @@ import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/useTLEditor'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
-
 
 export interface CanvasUser {
     id: string
@@ -42,7 +41,6 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
-
     const { setEditor } = useTLEditor()
 
     /**
@@ -87,8 +85,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     }, [setEditor, onMount])
 
-
-    const options = useMemo(() => ({ maxPages: 300 }), []);
+    const options = useMemo(() => ({ maxPages: 300 }), [])
 
     return (
         <Tldraw
@@ -104,7 +101,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {children}
             {/*<Resizer/>*/}
             <EmbedHint/>
-            <KeyboardShortcuts/>
+			<KeyboardShortcuts/>
         </Tldraw>
     )
 }

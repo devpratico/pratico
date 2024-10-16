@@ -7,6 +7,7 @@ import AddMenu from "./menus/AddMenu"
 //const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
 import { useState, useEffect, useMemo } from "react"
 import { debounce } from "lodash"
+import logger from "@/app/_utils/logger"
 
 
 
@@ -27,6 +28,24 @@ export default function Controls() {
 
     const [openImport, setOpenImport] = useState(false)
     const numberOfPages = useMemo(() => pageIds ? Array.from(pageIds).length : 0, [pageIds])
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+		  if (e.key === 'ArrowRight') {
+			logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT");
+			e.preventDefault();
+			goNextPage();
+		  } else if (e.key === 'ArrowLeft') {
+			logger.log("react:component", "CanvasSL", "TEST ARROW LEFT");
+			e.preventDefault();
+			goPrevPage();
+		  }
+		};
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+		  window.removeEventListener('keydown', handleKeyDown);
+		};
+	  }, [goNextPage, goPrevPage]);
 
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
