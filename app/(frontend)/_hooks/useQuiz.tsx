@@ -1,7 +1,8 @@
 'use client'
-import { useState, useContext, createContext } from "react"
+import { useState, useContext, createContext, useEffect } from "react"
 import { produce } from 'immer'
 import { Quiz, QuizChoice } from "@/app/_types/quiz"
+import { set } from "lodash"
 
 
 type QuizContextType = {
@@ -22,6 +23,7 @@ const QuizContext = createContext<QuizContextType | undefined>(undefined)
 
 export function QuizProvider({ children, quiz }: { children: React.ReactNode, quiz: Quiz }) {
     const [quizState, setQuizState] = useState<Quiz>(quiz)
+
 
     const setTitle = (title: string) => {
         setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
@@ -85,14 +87,12 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
 	const duplicateQuestion = (questionId: string, copiedQuestionId: string) => {
-		const copiedQuestion = quizState.questions[copiedQuestionId];
+		const copiedQuestion = {...quizState.questions[copiedQuestionId]};
 
-		console.log(copiedQuestion, " HERE ")
-	
-		copiedQuestion.choicesIds.map((item) => {
-			addChoice(questionId, quizState.choices[item]);
-		});
-
+		setQuizState(prevState => produce(prevState, draft => {
+            draft.questions[questionId] = copiedQuestion;
+        }))
+		console.log(copiedQuestion, quizState.questions);
     }
 
 
