@@ -5,6 +5,24 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 import config from "@/app/(backend)/api/stripe/(receive-webhook-event)/stripe.config"
 
 
+type Plan = 'free' | 'pro' | 'entreprise'
+type State = { activePlan: Plan }
+
+async function getState(): Promise<State> {
+    const customer = await getCustomer()
+
+    console.log('💶 customer', customer)
+
+    let activePlan: Plan = 'free'
+
+    if (customer) {
+        activePlan = 'pro'
+    }
+
+    return { activePlan }
+}
+
+
 /** Allows to easily put a list in a Callout */
 function CalloutList({items}: {items: string[]}) {
     return (
@@ -42,7 +60,7 @@ function ProPlan({ active=false }: { active?: boolean }) {
 
             <Box display={active ? 'none' : 'block'}>
                 <Button asChild color='violet'>
-                    <Link href='/subscribe'>S'abonner</Link>
+                    <Link href='/subscribe' target="_blank">S'abonner</Link>
                 </Button>
             </Box>
 
@@ -78,14 +96,7 @@ function EntreprisePlan({ active=false }: { active?: boolean }) {
 
 
 export default async function StripeSettings() {
-    const customer = await getCustomer()
-
-    let activePlan: 'free' | 'pro' | 'entreprise' = 'free'
-
-    if (customer) {
-        activePlan = 'pro'
-    }
-
+    const { activePlan } = await getState()
 
     return (
         <Flex gap='5' direction='column'>

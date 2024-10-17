@@ -38,3 +38,10 @@ export async function getStripeId(userId: string) {
     const supabase = createClient()
     return await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
 }
+
+export async function getEmail(userId: string) {
+    const supabase = createClient()
+    const response = await supabase.auth.admin.getUserById(userId)
+    if (response.error) logger.error('supabase:auth', 'getEmail', 'error getting email', response.error.message)
+    return response.data?.user?.email
+}

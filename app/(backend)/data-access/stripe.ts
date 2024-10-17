@@ -5,12 +5,17 @@ import { getStripeId, getUser } from './user';
 
 
 
-export async function getCustomer() {
+export async function getCustomer(userId?: string) {
 
-    const { data: { user: user } } = await getUser();
-    if (!user) return null;
+    let _userId = userId;
 
-    const { data } = await getStripeId(user.id);
+    if (!_userId) {
+        const { data: { user: user } } = await getUser();
+        if (!user) return null;
+        _userId = user.id;
+    }
+
+    const { data } = await getStripeId(_userId);
     if (!data?.stripe_id) return null;
 
     const stripeId = data.stripe_id;
@@ -25,6 +30,15 @@ export async function getCustomer() {
         logger.error('next:api', 'doesCustomerExist', (error as Error).message);
         return null
     }
+}
+
+// TODO: Really check if the existence of a customer means they are subscribed
+export async function customerIsSubscribed(userId?: string) {
+    const customer = await getCustomer(userId);
+
+    if (!customer) return false;
+
+    return true
 }
 
 
