@@ -19,15 +19,11 @@ import ChatMenu from "./_components/menus/ChatMenu"
 import MoreMenu from "./_components/menus/MoreMenu"
 import { CardDialogProvider } from "@/app/(frontend)/_hooks/useCardDialog"
 import GlobalCardDialog from "./_components/GlobalCardDialog"
-import { ClientLayoutController } from "./room/[room_code]/_components/ClientLayoutController"
-import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
 
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-		<FullscreenProvider>
-		{/* <ClientLayoutController> */}
         <TLEditorProvider>
         <NavProvider>
         <PresencesProvider>
@@ -107,7 +103,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </PresencesProvider>
         </NavProvider>
         </TLEditorProvider>
-		{/* </ClientLayoutController> */}
-		</FullscreenProvider>
     )
 }

@@ -16,10 +16,13 @@ import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/useTLEditor'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import { Button } from '@radix-ui/themes'
+import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
+import { Maximize2, Minimize2 } from 'lucide-react'
 
 export interface CanvasUser {
     id: string
@@ -42,6 +45,8 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { setEditor } = useTLEditor()
+	const { setIsFullscreen, isFullscreen } = useFullscreen();
+	const targetRef = useRef<HTMLDivElement>(null);
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -87,22 +92,35 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
+	const handleFullscreen = () => {
+		setIsFullscreen(!isFullscreen);
+		if (targetRef.current)
+		{
+			if (targetRef.current.requestFullscreen)
+				targetRef.current.requestFullscreen();
+		}
+	  };
     return (
-        <Tldraw
-            className='tldraw-canvas'
-            hideUi={true}
-            onMount={handleMount}
-            components={{Background: Background, OnTheCanvas: CanvasArea}}
-            store={store}
-            snapshot={ store ? undefined : initialSnapshot }
-            persistenceKey={persistenceKey}
-            options={options}
-        >
-            {children}
-            {/* <Resizer/> */}
-            <EmbedHint/>
-			<KeyboardShortcuts/>
-    	</Tldraw>
+		<>
+		<Button style={{ }} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
+		<div ref={targetRef} style={{ width: '100%'}}>
+			<Tldraw
+				className='tldraw-canvas'
+				hideUi={true}
+				onMount={handleMount}
+				components={{Background: Background, OnTheCanvas: CanvasArea}}
+				store={store}
+				snapshot={ store ? undefined : initialSnapshot }
+				persistenceKey={persistenceKey}
+				options={options}
+			>
+				{children}
+				{/* <Resizer/> */}
+				<EmbedHint/>
+				<KeyboardShortcuts/>
+			</Tldraw>
+		</div>
+		</>
     )
 }
 
