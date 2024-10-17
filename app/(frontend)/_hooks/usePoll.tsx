@@ -92,8 +92,8 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {
-        const { questionId } = addEmptyQuestion();
-		const copiedQuestion = pollState.questions[copiedQuestionId];
+        const questionId = `${Object.keys(pollState.questions).length + 1}`
+		const copiedQuestion = structuredClone(pollState.questions[copiedQuestionId]);
 		setPollState(prevState => produce(prevState, draft => {
 			draft.questions[questionId] = copiedQuestion;
 		}));

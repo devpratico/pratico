@@ -15,7 +15,7 @@ type QuizContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
     deleteChoice: (choiceId: string) => void
-	duplicateQuestion: (copiedQuestionId: string) =>  {questionId: string}
+	duplicateQuestion: (questionId: string, copiedQuestionId: string) =>  void
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
@@ -84,13 +84,15 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
         })
     }
 
-	const duplicateQuestion = (copiedQuestionId: string) => {
-        const { questionId } = addEmptyQuestion();
+	const duplicateQuestion = (questionId: string, copiedQuestionId: string) => {
 		const copiedQuestion = quizState.questions[copiedQuestionId];
-		setQuizState(prevState => produce(prevState, draft => {
-			draft.questions[questionId] = copiedQuestion;
-		}));
-		return ({questionId});
+
+		console.log(copiedQuestion, " HERE ")
+	
+		copiedQuestion.choicesIds.map((item) => {
+			addChoice(questionId, quizState.choices[item]);
+		});
+
     }
 
 

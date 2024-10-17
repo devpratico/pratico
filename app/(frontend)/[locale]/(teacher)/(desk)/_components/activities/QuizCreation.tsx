@@ -42,10 +42,11 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     }, [addEmptyQuestion, setCurrentQuestionId])
 
 	const handleDuplicateQuestion = useCallback(() => {
-			const { questionId } = duplicateQuestion(currentQuestionId);
 
+			const { questionId } = addEmptyQuestion();
+			duplicateQuestion(questionId, currentQuestionId);
 			setCurrentQuestionId(questionId);
-    }, [duplicateQuestion, setCurrentQuestionId, currentQuestionId])
+    }, [duplicateQuestion, addEmptyQuestion, setCurrentQuestionId, currentQuestionId])
 
     const handleSave = useCallback(async () => {
         logger.log('react:component', 'QuizCreation', 'handleSave', 'saving quiz...')
