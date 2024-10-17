@@ -42,7 +42,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 		const { questionId } = duplicateQuestion(currentQuestionId);
 
 		setCurrentQuestionId(questionId);
-	}, [duplicateQuestion, setCurrentQuestionId])
+	}, [duplicateQuestion, setCurrentQuestionId, currentQuestionId])
 
     const handleSave = useCallback(async () => {
         setIsSaving(true)
