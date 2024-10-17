@@ -20,9 +20,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
-import { Button } from '@radix-ui/themes'
-import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
-import { Maximize2, Minimize2 } from 'lucide-react'
 
 export interface CanvasUser {
     id: string
@@ -44,10 +41,7 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
-    const { setEditor } = useTLEditor()
-	const { setIsFullscreen, isFullscreen } = useFullscreen();
-	const targetRef = useRef<HTMLDivElement>(null);
-	const [ showButton, setShowButton ] = useState(true);
+    const { setEditor } = useTLEditor();
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -93,64 +87,9 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
-	const handleFullscreen = () => {
-		if (targetRef.current)
-		{
-			if (targetRef.current.requestFullscreen)
-			{
-				setIsFullscreen(!isFullscreen);
-				targetRef.current.requestFullscreen();
-			}	
-		}
-	  };
-
-	  useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && isFullscreen)
-			{
-				document.exitFullscreen();
-				setIsFullscreen(false);
-		  	}
-		};	
-		window.addEventListener('keydown', handleKeyPress);
-
-		return () => {
-		  window.removeEventListener('keydown', handleKeyPress);
-		};
-	  }, [isFullscreen, setIsFullscreen]);
-	
-	  useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			const { innerWidth, innerHeight } = window;
-			const edgeDistance = 20;
-			console.log('Mouse position:', e.clientX, e.clientY);
-			console.log('Window size:', innerWidth, innerHeight);
-			console.log('Edge distance:', edgeDistance);
-			
-			if (e.clientX < edgeDistance ||
-			e.clientX > innerWidth - edgeDistance ||
-			e.clientY < edgeDistance ||
-			e.clientY > innerHeight - edgeDistance)
-				setShowButton(true);
-			else
-				setShowButton(false);
-		};
-		logger.log('react:component', 'Canvas', 'EventListener mousemove', showButton);
-		if (isFullscreen)
-		{
-			window.addEventListener('mousemove', handleMouseMove);
-
-			return () => {
-				window.removeEventListener('mousemove', handleMouseMove);
-			};
-		}
-
-	  }, [showButton, isFullscreen]);
-
     return (
 		<>
-			<Button hidden={!showButton} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
-			<div ref={targetRef} style={{ width: '100%'}}>
+			<div id='tldrawId' style={{ width: '100%'}}>
 				<Tldraw
 					className='tldraw-canvas'
 					hideUi={true}

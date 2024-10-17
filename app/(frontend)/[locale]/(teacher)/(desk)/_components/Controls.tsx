@@ -1,13 +1,14 @@
 'use client'
 import { Flex, IconButton, Text, Popover } from "@radix-ui/themes"
-import { Plus, ChevronLeft, ChevronRight, Maximize } from "lucide-react"
+import { Plus, ChevronLeft, ChevronRight, Minimize2, Maximize2, Maximize } from "lucide-react"
 import { useNav } from "@/app/(frontend)/_hooks/useNav"
 import AddMenu from "./menus/AddMenu"
 //import dynamic from "next/dynamic"
 //const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { debounce } from "lodash"
 import logger from "@/app/_utils/logger"
+import { useFullscreen } from "@/app/(frontend)/_hooks/useFullscreen"
 
 
 
@@ -15,6 +16,8 @@ const iconSize = '30'
 
 
 export default function Controls() {
+	const { setIsFullscreen, isFullscreen } = useFullscreen();
+	const tldrawId  = document.getElementById('tldrawId');
 
     const {
         pageIds,
@@ -63,6 +66,31 @@ export default function Controls() {
         }
     }, [numberOfPages])
 
+	const handleFullscreen = () => {
+		if (tldrawId)
+		{
+			if (tldrawId?.requestFullscreen)
+			{
+				setIsFullscreen(!isFullscreen);
+				tldrawId?.requestFullscreen();
+			}	
+		}
+	  };
+
+	  useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && isFullscreen)
+			{
+				document.exitFullscreen();
+				setIsFullscreen(false);
+		  	}
+		};	
+		window.addEventListener('keydown', handleKeyPress);
+
+		return () => {
+		  window.removeEventListener('keydown', handleKeyPress);
+		};
+	  }, [isFullscreen, setIsFullscreen]);
 
     return (
         <Flex gap='4' justify='between' align='center' height='100%'>
@@ -91,8 +119,8 @@ export default function Controls() {
                 <ChevronRight size={iconSize} />
             </IconButton>
 
-            <IconButton variant='ghost' size='3' disabled={true}>
-                <Maximize size={iconSize} />
+            <IconButton variant='ghost' size='3' onClick={handleFullscreen}>
+                {isFullscreen ? <Minimize2 size={iconSize} /> : <Maximize2 size={iconSize} />}
             </IconButton>
         </Flex>
     )
