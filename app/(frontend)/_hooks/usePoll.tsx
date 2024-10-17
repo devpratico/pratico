@@ -14,6 +14,7 @@ type PollContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     deleteChoice: (choiceId: string) => void
     deleteQuestion: (questionId: string) => void
+	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
 const PollContext = createContext<PollContextType | undefined>(undefined)
@@ -90,8 +91,18 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
         }))
     }
 
+	const duplicateQuestion = (copiedQuestionId: string) => {
+        const { questionId } = addEmptyQuestion();
+		const copiedQuestion = pollState.questions[copiedQuestionId];
+		setPollState(prevState => produce(prevState, draft => {
+			draft.questions[questionId] = copiedQuestion;
+		}));
+		return ({questionId});
+    }
+
+
     return (
-        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, addChoice, setChoiceText, deleteChoice, deleteQuestion }}>
+        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, addChoice, setChoiceText, deleteChoice, deleteQuestion, duplicateQuestion }}>
             {children}
         </PollContext.Provider>
     )
