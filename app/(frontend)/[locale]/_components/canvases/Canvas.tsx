@@ -47,6 +47,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const { setEditor } = useTLEditor()
 	const { setIsFullscreen, isFullscreen } = useFullscreen();
 	const targetRef = useRef<HTMLDivElement>(null);
+	const [ showButton, setShowButton ] = useState(true);
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -100,9 +101,49 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 				targetRef.current.requestFullscreen();
 		}
 	  };
+
+	  useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && isFullscreen)
+			{
+				document.exitFullscreen();
+				setIsFullscreen(false);
+		  	}
+		};	
+		window.addEventListener('keydown', handleKeyPress);
+		
+		return () => {
+		  window.removeEventListener('keydown', handleKeyPress);
+		};
+	  }, [isFullscreen]);
+	
+	  useEffect(() => {
+		const handleMouseMove = (e: MouseEvent) => {
+		  const { innerWidth, innerHeight } = window;
+		  const edgeDistance = 50;
+		  console.log('Mouse position:', e.clientX, e.clientY);
+		  console.log('Window size:', innerWidth, innerHeight);
+		  console.log('Edge distance:', edgeDistance);
+
+		  if (e.clientX < edgeDistance ||
+			e.clientX > innerWidth - edgeDistance ||
+			e.clientY < edgeDistance ||
+			e.clientY > innerHeight - edgeDistance)
+				setShowButton(true);
+		 	else
+				setShowButton(false);
+		};
+		logger.log('react:component', 'Canvas', 'EventListener mousemove', showButton);
+		window.addEventListener('mouseup', handleMouseMove);
+
+		return () => {
+			window.removeEventListener('mouseup', handleMouseMove);
+		};
+	  }, []);
+
     return (
 		<>
-		<Button style={{ }} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
+		<Button hidden={!showButton} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
 		<div ref={targetRef} style={{ width: '100%'}}>
 			<Tldraw
 				className='tldraw-canvas'
