@@ -15,6 +15,7 @@ type QuizContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
     deleteChoice: (choiceId: string) => void
+	duplicateQuestion: (questionId: string) => void 
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
@@ -83,6 +84,21 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
         })
     }
 
+	const duplicateQuestion = (questionId: string) => {
+        // // Delete the question itself
+        // setQuizState(prevState => produce(prevState, draft => {
+        //     delete draft.questions[questionId]
+        // }))
+
+        // // Delete all choices that belong to the question
+        // Object.entries(quizState.choices).forEach(([choiceId, choice]) => {
+        //     if (quizState.questions[questionId].choicesIds.includes(choiceId)) {
+        //         deleteChoice(choiceId)
+        //     }
+        // })
+    }
+
+
     const deleteChoice = (choiceId: string) => {
         setQuizState(prevState => produce(prevState, draft => {
             // Delete the choice itself
@@ -108,7 +124,8 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
             setChoiceText,
             setChoiceIsCorrect,
             deleteQuestion,
-            deleteChoice
+            deleteChoice,
+			duplicateQuestion
         }}>
             {children}
         </QuizContext.Provider>

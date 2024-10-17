@@ -8,7 +8,7 @@ import Title from './Title'
 import CancelButton from './CancelButton'
 import { PollCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
-import { Plus } from 'lucide-react'
+import { Copy, Plus, Trash2 } from 'lucide-react'
 
 
 
@@ -22,6 +22,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         addChoice,
         setChoiceText,
         deleteQuestion,
+		duplicateQuestion
     } = usePoll()
     const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(poll.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
@@ -117,6 +118,8 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
+						<Copy onClick={() => duplicateQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
+						<Trash2 onClick={() => deleteQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}}/>
                     </Flex>
                 </Card>
             </Flex>
