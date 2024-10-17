@@ -1,18 +1,44 @@
 import 'server-only'
 import Stripe from "stripe";
 import logger from "@/app/_utils/logger";
+import { getStripeId, getUser } from './user';
 
 
-export async function doesCustomerExist(id: string) {
+
+export async function getCustomer(userId?: string) {
+
+    let _userId = userId;
+
+    if (!_userId) {
+        const { data: { user: user } } = await getUser();
+        if (!user) return null;
+        _userId = user.id;
+    }
+
+    const { data } = await getStripeId(_userId);
+    if (!data?.stripe_id) return null;
+
+    const stripeId = data.stripe_id;
+
     try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-        const _ = await stripe.customers.retrieve(id);
-        return true;
+        const customer = await stripe.customers.retrieve(stripeId);
+        logger.log('next:api', 'getCustomer:', customer.id);
+        return customer;
 
     } catch (error) {
         logger.error('next:api', 'doesCustomerExist', (error as Error).message);
-        return false;
+        return null
     }
+}
+
+// TODO: Really check if the existence of a customer means they are subscribed
+export async function customerIsSubscribed(userId?: string) {
+    const customer = await getCustomer(userId);
+
+    if (!customer) return false;
+
+    return true
 }
 
 
