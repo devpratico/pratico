@@ -94,11 +94,13 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
 	const handleFullscreen = () => {
-		setIsFullscreen(!isFullscreen);
 		if (targetRef.current)
 		{
 			if (targetRef.current.requestFullscreen)
+			{
+				setIsFullscreen(!isFullscreen);
 				targetRef.current.requestFullscreen();
+			}	
 		}
 	  };
 
@@ -119,48 +121,52 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 	
 	  useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
-		  const { innerWidth, innerHeight } = window;
-		  const edgeDistance = 50;
-		  console.log('Mouse position:', e.clientX, e.clientY);
-		  console.log('Window size:', innerWidth, innerHeight);
-		  console.log('Edge distance:', edgeDistance);
-
-		  if (e.clientX < edgeDistance ||
+			const { innerWidth, innerHeight } = window;
+			const edgeDistance = 20;
+			console.log('Mouse position:', e.clientX, e.clientY);
+			console.log('Window size:', innerWidth, innerHeight);
+			console.log('Edge distance:', edgeDistance);
+			
+			if (e.clientX < edgeDistance ||
 			e.clientX > innerWidth - edgeDistance ||
 			e.clientY < edgeDistance ||
 			e.clientY > innerHeight - edgeDistance)
 				setShowButton(true);
-		 	else
+			else
 				setShowButton(false);
 		};
 		logger.log('react:component', 'Canvas', 'EventListener mousemove', showButton);
-		window.addEventListener('mouseup', handleMouseMove);
+		if (isFullscreen)
+		{
+			window.addEventListener('mousemove', handleMouseMove);
 
-		return () => {
-			window.removeEventListener('mouseup', handleMouseMove);
-		};
-	  }, [showButton]);
+			return () => {
+				window.removeEventListener('mousemove', handleMouseMove);
+			};
+		}
+
+	  }, [showButton, isFullscreen]);
 
     return (
 		<>
-		<Button hidden={!showButton} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
-		<div ref={targetRef} style={{ width: '100%'}}>
-			<Tldraw
-				className='tldraw-canvas'
-				hideUi={true}
-				onMount={handleMount}
-				components={{Background: Background, OnTheCanvas: CanvasArea}}
-				store={store}
-				snapshot={ store ? undefined : initialSnapshot }
-				persistenceKey={persistenceKey}
-				options={options}
-			>
-				{children}
-				{/* <Resizer/> */}
-				<EmbedHint/>
-				<KeyboardShortcuts/>
-			</Tldraw>
-		</div>
+			<Button hidden={!showButton} onClick={handleFullscreen}>{isFullscreen ? <Minimize2 /> : <Maximize2 />}</Button>
+			<div ref={targetRef} style={{ width: '100%'}}>
+				<Tldraw
+					className='tldraw-canvas'
+					hideUi={true}
+					onMount={handleMount}
+					components={{Background: Background, OnTheCanvas: CanvasArea}}
+					store={store}
+					snapshot={ store ? undefined : initialSnapshot }
+					persistenceKey={persistenceKey}
+					options={options}
+				>
+					{children}
+					{/* <Resizer/> */}
+					<EmbedHint/>
+					<KeyboardShortcuts/>
+				</Tldraw>
+			</div>
 		</>
     )
 }
