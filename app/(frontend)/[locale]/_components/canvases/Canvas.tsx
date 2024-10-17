@@ -88,25 +88,23 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
     return (
-		<>
-			<div id='tldrawId' style={{ width: '100%'}}>
-				<Tldraw
-					className='tldraw-canvas'
-					hideUi={true}
-					onMount={handleMount}
-					components={{Background: Background, OnTheCanvas: CanvasArea}}
-					store={store}
-					snapshot={ store ? undefined : initialSnapshot }
-					persistenceKey={persistenceKey}
-					options={options}
-				>
-					{children}
-					{/* <Resizer/> */}
-					<EmbedHint/>
-					<KeyboardShortcuts/>
-				</Tldraw>
-			</div>
-		</>
+		<div id='tldrawId' style={{ width: '100%'}}>
+			<Tldraw
+				className='tldraw-canvas'
+				hideUi={true}
+				onMount={handleMount}
+				components={{Background: Background, OnTheCanvas: CanvasArea}}
+				store={store}
+				snapshot={ store ? undefined : initialSnapshot }
+				persistenceKey={persistenceKey}
+				options={options}
+			>
+				{children}
+				{/* <Resizer/> */}
+				<EmbedHint/>
+				<KeyboardShortcuts/>
+			</Tldraw>
+		</div>
     )
 }
 
