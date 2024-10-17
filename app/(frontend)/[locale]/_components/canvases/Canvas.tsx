@@ -111,11 +111,11 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		  	}
 		};	
 		window.addEventListener('keydown', handleKeyPress);
-		
+
 		return () => {
 		  window.removeEventListener('keydown', handleKeyPress);
 		};
-	  }, [isFullscreen]);
+	  }, [isFullscreen, setIsFullscreen]);
 	
 	  useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
@@ -139,7 +139,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		return () => {
 			window.removeEventListener('mouseup', handleMouseMove);
 		};
-	  }, []);
+	  }, [showButton]);
 
     return (
 		<>
