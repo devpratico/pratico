@@ -38,6 +38,12 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         setCurrentQuestionId(questionId)
     }, [addEmptyQuestion, setCurrentQuestionId])
 
+	const handleDuplicateQuestion = useCallback(() => {
+		const { questionId } = duplicateQuestion(currentQuestionId);
+
+		setCurrentQuestionId(questionId);
+	}, [duplicateQuestion, setCurrentQuestionId])
+
     const handleSave = useCallback(async () => {
         setIsSaving(true)
         await saveActivity({ id: idToSaveTo, activity: poll })
@@ -67,20 +73,11 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
+							mb='9'
                             placeholder="Question"
                             value={poll.questions[currentQuestionId].text}
                             onChange={(event) => { setQuestionText(currentQuestionId, event.target.value )}}
                         />
-
-                        <Button
-                            mb='8'
-                            style={{ alignSelf: 'flex-end' }}
-                            size='1'
-                            variant='soft'
-                            color='gray'
-                            onClick={() => { deleteQuestion(currentQuestionId) }}
-                            disabled={Object.keys(poll.questions).length <= 1}
-                        >Supprimer la question</Button>
 
                         {/* ANSWERS */}
                         {poll.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
@@ -118,8 +115,8 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<Copy onClick={() => duplicateQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
-						<Trash2 onClick={() => deleteQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}}/>
+						<Copy onClick={handleDuplicateQuestion} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
+						<Button onClick={() => deleteQuestion(currentQuestionId)} disabled><Trash2 style={{/*marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'*/}}/></Button>
                     </Flex>
                 </Card>
             </Flex>

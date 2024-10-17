@@ -41,6 +41,12 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         setCurrentQuestionId(questionId)
     }, [addEmptyQuestion, setCurrentQuestionId])
 
+	const handleDuplicateQuestion = useCallback(() => {
+			const { questionId } = duplicateQuestion(currentQuestionId);
+
+			setCurrentQuestionId(questionId);
+    }, [duplicateQuestion, setCurrentQuestionId])
+
     const handleSave = useCallback(async () => {
         logger.log('react:component', 'QuizCreation', 'handleSave', 'saving quiz...')
         setIsSaving(true)
@@ -115,8 +121,8 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(quiz.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<Copy onClick={() => duplicateQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
-						<Trash2 onClick={() => deleteQuestion(currentQuestionId)} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}}/>
+						<Copy onClick={handleDuplicateQuestion} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
+						<Button onClick={() => deleteQuestion(currentQuestionId)} disabled><Trash2 style={{/*marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'*/}}/></Button>
                     </Flex>
                 </Card>
             </Flex>
