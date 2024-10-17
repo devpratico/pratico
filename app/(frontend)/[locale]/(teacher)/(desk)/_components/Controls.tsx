@@ -119,7 +119,7 @@ export default function Controls() {
                 <ChevronRight size={iconSize} />
             </IconButton>
 
-            <IconButton variant='ghost' size='3' onClick={handleFullscreen}>
+            <IconButton mt='3' mb='3' mr='1' variant='ghost' size='3' onClick={handleFullscreen}>
                 {isFullscreen ? <Minimize2 size={iconSize} /> : <Maximize2 size={iconSize} />}
             </IconButton>
         </Flex>
