@@ -7,7 +7,7 @@ import Title from './Title'
 import CancelButton from './CancelButton'
 import { QuizCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
-import { Plus } from 'lucide-react'
+import { Copy, Plus, Trash2 } from 'lucide-react'
 import { QuizChoice } from '@/app/_types/quiz'
 import logger from '@/app/_utils/logger'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
@@ -24,6 +24,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         addChoice,
         setQuestionText,
         deleteQuestion,
+		duplicateQuestion,
     } = useQuiz()
 
     const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
@@ -39,6 +40,13 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
         setCurrentQuestionId(questionId)
     }, [addEmptyQuestion, setCurrentQuestionId])
+
+	const handleDuplicateQuestion = useCallback(() => {
+		const { questionId } = duplicateQuestion(currentQuestionId);
+
+		setCurrentQuestionId(questionId);
+
+    }, [duplicateQuestion, currentQuestionId])
 
     const handleSave = useCallback(async () => {
         logger.log('react:component', 'QuizCreation', 'handleSave', 'saving quiz...')
@@ -74,20 +82,11 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
+							mb='9'
                             placeholder="Question"
                             value={quiz.questions[currentQuestionId].text}
                             onChange={(event) => { setQuestionText(currentQuestionId, event.target.value) }}
                         />
-
-                        <Button
-                            mb='8'
-                            style={{ alignSelf: 'flex-end' }}
-                            size='1'
-                            variant='soft'
-                            color='gray'
-                            onClick={() => { deleteQuestion(currentQuestionId) }}
-                            disabled={Object.keys(quiz.questions).length <= 1}
-                        >Supprimer la question</Button>
 
                         {/* ANSWERS */}
                         {quiz.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
@@ -123,6 +122,12 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(quiz.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
+						<IconButton mt='1' variant='ghost'>
+							<Copy onClick={handleDuplicateQuestion} />
+						</IconButton>
+						<IconButton mt='1' variant='ghost'>
+							<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+						</IconButton>
                     </Flex>
                 </Card>
             </Flex>

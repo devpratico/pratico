@@ -1,7 +1,9 @@
 'use client'
-import { useState, useContext, createContext } from "react"
+import { useState, useContext, createContext, useEffect } from "react"
 import { produce } from 'immer'
 import { Quiz, QuizChoice } from "@/app/_types/quiz"
+import { set } from "lodash"
+import logger from "@/app/_utils/logger"
 
 
 type QuizContextType = {
@@ -15,12 +17,14 @@ type QuizContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
     deleteChoice: (choiceId: string) => void
+	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
 
 export function QuizProvider({ children, quiz }: { children: React.ReactNode, quiz: Quiz }) {
     const [quizState, setQuizState] = useState<Quiz>(quiz)
+
 
     const setTitle = (title: string) => {
         setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
@@ -83,6 +87,44 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
         })
     }
 
+	const duplicateQuestion = (copiedQuestionId: string) => {
+		let questionId = `${Object.keys(quizState.questions).length + 1}`;
+		const choicesLength = quizState.questions[copiedQuestionId].choicesIds.length;
+		const newChoicesIds = quizState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
+		const copiedQuestion = {
+			text: structuredClone(quizState.questions[copiedQuestionId].text),
+			choicesIds: newChoicesIds
+		}
+		setQuizState(prevState => produce(prevState, draft => {
+			copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
+				draft.questions[questionId] = copiedQuestion;
+				if (quizState.questions[copiedQuestionId].choicesIds[index]) {
+					const originalChoiceId = quizState.questions[copiedQuestionId].choicesIds[index];
+					draft.choices[newChoiceId] = structuredClone(quizState.choices[originalChoiceId]);
+				}
+			});
+		}));
+
+		// questionId = rearrangeQuestions(questionId, copiedQuestionId) || questionId;
+		rearrangeQuestions(questionId, copiedQuestionId);
+		return { questionId };
+	};
+		
+	const rearrangeQuestions = (currentId: string, newId: string) => {
+		if (!currentId || !newId)
+		{
+			logger.error("react:hook", "useQuiz", "rearrangeQuestion id undefined", currentId, newId);
+			return ;
+		}
+		console.log("LES Id", currentId, newId);
+		const questions = Object.entries(quizState.questions);
+		questions.forEach((item) => {
+			console.log(item);
+		})
+	  
+		return newId;
+	}
+
     const deleteChoice = (choiceId: string) => {
         setQuizState(prevState => produce(prevState, draft => {
             // Delete the choice itself
@@ -108,7 +150,8 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
             setChoiceText,
             setChoiceIsCorrect,
             deleteQuestion,
-            deleteChoice
+            deleteChoice,
+			duplicateQuestion
         }}>
             {children}
         </QuizContext.Provider>
