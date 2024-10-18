@@ -8,8 +8,8 @@ import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/actions/attend
 import { getUser } from '@/app/(backend)/data-access/user'
 import { roomCreatorIsPaidCustomer, getRoomCreator } from '@/app/(backend)/data-access/room'
 import { countAttendances } from '@/app/(backend)/data-access/attendance'
-import { sendDiscordMessage } from '@/app/(backend)/api/discord/wrappers'
-import { getEmail } from '@/app/(backend)/data-access/user'
+import { discordMessageSender } from '@/app/(backend)/api/discord/utils'
+import { getProfile } from '@/app/(backend)/data-access/user'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
@@ -45,15 +45,19 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
     if (!isPaidCustomer) {
         // Only 10 participants are allowed for free customers.
+        const maxParticipants = 10;
         const attendanceCount = await countAttendances(roomData.id);
-        if (attendanceCount >= 10) {
+        if (attendanceCount >= maxParticipants) {
             logger.log('next:page', 'StudentViewPage', 'attendance count is greater than 10. Blocking user.');
 
             const { data: creatorData, error: creatorError } = await getRoomCreator(roomData!.id);
             const creatorId = creatorData?.created_by;
             if (creatorId) {
-                const creatorEmail = await getEmail(creatorId!);
-                await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte pour ${creatorEmail} dans la salle ${params.room_code} !`);
+                //const creatorName = (await getProfile(creatorId)
+                const { data } = await getProfile(creatorId);
+                let creatorName = (data?.first_name || '')  + ' ' + (data?.last_name || '');
+                if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
+                await discordMessageSender(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants)  pour ${creatorName} dans la salle ${params.room_code} !`);
             }
 
             throw new Error('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
