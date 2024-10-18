@@ -115,8 +115,12 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<Copy onClick={handleDuplicateQuestion} style={{marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'}} />
-						<Button onClick={() => deleteQuestion(currentQuestionId)} disabled><Trash2 style={{/*marginTop: '3px', cursor: 'pointer', color: 'var(--violet-9)'*/}}/></Button>
+						<IconButton mt='1' variant='ghost'>
+							<Copy onClick={handleDuplicateQuestion} />
+						</IconButton>
+						<IconButton mt='1' variant='ghost'>
+							<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+						</IconButton>
                     </Flex>
                 </Card>
             </Flex>
