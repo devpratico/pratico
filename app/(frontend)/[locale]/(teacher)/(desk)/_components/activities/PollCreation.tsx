@@ -118,7 +118,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 						<IconButton mt='1' variant='ghost'>
 							<Copy onClick={handleDuplicateQuestion} />
 						</IconButton>
-						<IconButton mt='1' variant='ghost'>
+						<IconButton disabled mt='1' variant='ghost'>
 							<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
 						</IconButton>
                     </Flex>
