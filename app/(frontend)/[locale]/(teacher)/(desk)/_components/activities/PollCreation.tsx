@@ -51,6 +51,17 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         setIsSaving(false)
     }, [poll, closeDialog, idToSaveTo])
 
+	const handleDelete = useCallback(() => {
+        const questionKeys = Object.keys(poll.questions)
+        const index = questionKeys.indexOf(currentQuestionId)
+        console.log("Here", questionKeys.length, index)
+        const newCurrentQuestionId = questionKeys.length > 1
+            ? (index > 0 ? questionKeys[index - 1] : questionKeys[1])
+            : null 
+        if (newCurrentQuestionId)
+            setCurrentQuestionId(newCurrentQuestionId);
+        deleteQuestion(currentQuestionId);
+    }, [poll.questions, currentQuestionId, deleteQuestion, handleAddNewQuestion]);
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -121,7 +132,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 							</IconButton>
 						</Tooltip>
 						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton onClick={() => deleteQuestion(currentQuestionId)} disabled mt='1' variant='ghost'>
+							<IconButton onClick={handleDelete} disabled={Object.keys(poll.questions).length < 2} mt='1' variant='ghost'>
 								<Trash2 />
 							</IconButton>
 						</Tooltip>
