@@ -97,13 +97,16 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
 			choicesIds: newChoicesIds
 		}
 		setQuizState(prevState => produce(prevState, draft => {
-			copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
-				draft.questions[questionId] = copiedQuestion;
-				if (quizState.questions[copiedQuestionId].choicesIds[index]) {
-					const originalChoiceId = quizState.questions[copiedQuestionId].choicesIds[index];
-					draft.choices[newChoiceId] = structuredClone(quizState.choices[originalChoiceId]);
-				}
-			});
+			draft.questions[questionId] = copiedQuestion;
+			if (copiedQuestion.choicesIds.length)
+			{
+				copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
+					if (quizState.questions[copiedQuestionId].choicesIds[index]) {
+						const originalChoiceId = quizState.questions[copiedQuestionId].choicesIds[index];
+						draft.choices[newChoiceId] = structuredClone(quizState.choices[originalChoiceId]);
+					}
+				});	
+			}
 		}));
 		return { questionId };
 	};

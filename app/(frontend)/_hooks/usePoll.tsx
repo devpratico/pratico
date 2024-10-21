@@ -101,14 +101,16 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
 			choicesIds: newChoicesIds
 		}
         setPollState(prevState => produce(prevState, draft => {
-            draft.questions[questionId] = copiedQuestion;
+			draft.questions[questionId] = copiedQuestion;
+			if (copiedQuestion.choicesIds.length)
+			{
 				copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
-				if (pollState.questions[copiedQuestionId].choicesIds[index])
-				{
-					const originalChoiceId = pollState.questions[copiedQuestionId].choicesIds[index];
-					draft.choices[newChoiceId] = structuredClone(pollState.choices[originalChoiceId]);
-				}
-			  });
+					if (pollState.questions[copiedQuestionId].choicesIds[index]) {
+						const originalChoiceId = pollState.questions[copiedQuestionId].choicesIds[index];
+						draft.choices[newChoiceId] = structuredClone(pollState.choices[originalChoiceId]);
+					}
+				});	
+			}
         }))
 		return ({questionId});
     }
