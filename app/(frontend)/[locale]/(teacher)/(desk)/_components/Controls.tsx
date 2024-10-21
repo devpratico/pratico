@@ -17,12 +17,12 @@ const iconSize = '30'
 
 export default function Controls() {
 	const { setIsFullscreen, isFullscreen } = useFullscreen();
-	const [ tldrawId, setTldrawId ] = useState<HTMLElement | null>(null)
+	const [ tldrawId, setTldrawId ] = useState<HTMLElement | null>(document.getElementById('tldrawId'))
 
-	useEffect(() => {	
-		const elem = document?.getElementById('tldrawId');
-		setTldrawId(elem);
-	}, [])
+	// useEffect(() => {	
+	// 	const elem = document.getElementById('tldrawId');
+	// 	setTldrawId(elem);
+	// }, [])
 
     const {
         pageIds,
