@@ -91,6 +91,7 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
 		let questionId = `${Object.keys(quizState.questions).length + 1}`;
 		const choicesLength = quizState.questions[copiedQuestionId].choicesIds.length;
 		const newChoicesIds = quizState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
+		
 		const copiedQuestion = {
 			text: structuredClone(quizState.questions[copiedQuestionId].text),
 			choicesIds: newChoicesIds
@@ -104,26 +105,8 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
 				}
 			});
 		}));
-
-		// questionId = rearrangeQuestions(questionId, copiedQuestionId) || questionId;
-		rearrangeQuestions(questionId, copiedQuestionId);
 		return { questionId };
 	};
-		
-	const rearrangeQuestions = (currentId: string, newId: string) => {
-		if (!currentId || !newId)
-		{
-			logger.error("react:hook", "useQuiz", "rearrangeQuestion id undefined", currentId, newId);
-			return ;
-		}
-		console.log("LES Id", currentId, newId);
-		const questions = Object.entries(quizState.questions);
-		questions.forEach((item) => {
-			console.log(item);
-		})
-	  
-		return newId;
-	}
 
     const deleteChoice = (choiceId: string) => {
         setQuizState(prevState => produce(prevState, draft => {
