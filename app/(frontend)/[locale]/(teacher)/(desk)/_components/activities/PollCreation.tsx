@@ -120,11 +120,11 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 								<Copy onClick={handleDuplicateQuestion} />
 							</IconButton>
 						</Tooltip>
-						{/* <Tooltip content={'Prochainement disponible / Supprimer la question'}> */}
+						<Tooltip content={'Supprimer (bientôt disponible)'}>
 							<IconButton disabled mt='1' variant='ghost'>
 								<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
 							</IconButton>
-						{/* </Tooltip> */}
+						</Tooltip>
                     </Flex>
                 </Card>
             </Flex>
