@@ -14,6 +14,7 @@ type PollContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     deleteChoice: (choiceId: string) => void
     deleteQuestion: (questionId: string) => void
+	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
 const PollContext = createContext<PollContextType | undefined>(undefined)
@@ -90,8 +91,32 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
         }))
     }
 
+	const duplicateQuestion = (copiedQuestionId: string) => {
+		const questionId = `${Object.keys(pollState.questions).length + 1}`;
+		const choicesLength = pollState.questions[copiedQuestionId].choicesIds.length;
+		const newChoicesIds = pollState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
+		
+		const copiedQuestion = {
+			text: structuredClone(pollState.questions[copiedQuestionId].text),
+			choicesIds: newChoicesIds
+		}
+        setPollState(prevState => produce(prevState, draft => {
+			draft.questions[questionId] = copiedQuestion;
+			if (copiedQuestion.choicesIds.length)
+			{
+				copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
+					if (pollState.questions[copiedQuestionId].choicesIds[index]) {
+						const originalChoiceId = pollState.questions[copiedQuestionId].choicesIds[index];
+						draft.choices[newChoiceId] = structuredClone(pollState.choices[originalChoiceId]);
+					}
+				});	
+			}
+        }))
+		return ({questionId});
+    }
+
     return (
-        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, addChoice, setChoiceText, deleteChoice, deleteQuestion }}>
+        <PollContext.Provider value={{ poll: pollState, setTitle, addEmptyQuestion, setQuestionText, addEmptyChoice, addChoice, setChoiceText, deleteChoice, deleteQuestion, duplicateQuestion }}>
             {children}
         </PollContext.Provider>
     )

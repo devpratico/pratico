@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
+import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card, Tooltip } from '@radix-ui/themes'
 import { useCallback, useMemo, useState } from 'react'
 import { usePoll } from '@/app/(frontend)/_hooks/usePoll'
 import { PollChoice } from '@/app/_types/poll'
@@ -8,7 +8,7 @@ import Title from './Title'
 import CancelButton from './CancelButton'
 import { PollCreationChoiceRow } from './CreationChoiceRow'
 import Navigator from './Navigator'
-import { Plus } from 'lucide-react'
+import { Copy, Plus, Trash2 } from 'lucide-react'
 
 
 
@@ -22,6 +22,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         addChoice,
         setChoiceText,
         deleteQuestion,
+		duplicateQuestion
     } = usePoll()
     const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(poll.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
@@ -36,6 +37,12 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
         setCurrentQuestionId(questionId)
     }, [addEmptyQuestion, setCurrentQuestionId])
+
+	const handleDuplicateQuestion = useCallback(() => {
+		const { questionId } = duplicateQuestion(currentQuestionId);
+
+		setCurrentQuestionId(questionId);
+	}, [duplicateQuestion, setCurrentQuestionId, currentQuestionId])
 
     const handleSave = useCallback(async () => {
         setIsSaving(true)
@@ -66,20 +73,11 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 
                         {/* QUESTION TEXT AREA */}
                         <TextArea
+							mb='9'
                             placeholder="Question"
                             value={poll.questions[currentQuestionId].text}
                             onChange={(event) => { setQuestionText(currentQuestionId, event.target.value )}}
                         />
-
-                        <Button
-                            mb='8'
-                            style={{ alignSelf: 'flex-end' }}
-                            size='1'
-                            variant='soft'
-                            color='gray'
-                            onClick={() => { deleteQuestion(currentQuestionId) }}
-                            disabled={Object.keys(poll.questions).length <= 1}
-                        >Supprimer la question</Button>
 
                         {/* ANSWERS */}
                         {poll.questions[currentQuestionId].choicesIds.map((choiceId, index) => (
@@ -117,6 +115,16 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
+						<Tooltip content={'Dupliquer'}>
+							<IconButton onClick={handleDuplicateQuestion} mt='1' variant='ghost'>
+								<Copy />
+							</IconButton>
+						</Tooltip>
+						<Tooltip content={'Supprimer (bientôt disponible)'}>
+							<IconButton onClick={() => deleteQuestion(currentQuestionId)} disabled mt='1' variant='ghost'>
+								<Trash2 />
+							</IconButton>
+						</Tooltip>
                     </Flex>
                 </Card>
             </Flex>
