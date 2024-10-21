@@ -53,7 +53,12 @@ export default function SignUpForm() {
             sendDiscordMessage(`🎉 **Nouvel inscrit !** ${formData.firstname} ${formData.lastname} (${formData.email})`);
             setIsLoading(false);
             setDisabled(false);
-            router.push('/capsules');
+
+            if (nextUrl == '/capsule') {
+                router.push('/capsules');
+            } else {
+                router.push(nextUrl || '/capsules');
+            }
         }
     }
 

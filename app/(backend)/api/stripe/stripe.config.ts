@@ -6,9 +6,9 @@ const config = {
 
     // Used to show the pricing table Stripe component
     pricingTableId: {
-        production:  "prctbl_1OjgFAHe86NEHYtm7UPAU6g0",
-        development: "prctbl_1OjgQvHe86NEHYtm9wI19OQj",
-        test:        "prctbl_1OjgQvHe86NEHYtm9wI19OQj",
+        production:  "prctbl_1QCHklHe86NEHYtmJjE5iEU3",
+        development: "prctbl_1QCIDQHe86NEHYtmuGCQEDOr",
+        test:        "prctbl_1QCIDQHe86NEHYtmuGCQEDOr",
     },
 
     // Used to redirect the user when wanting to manage its subscription

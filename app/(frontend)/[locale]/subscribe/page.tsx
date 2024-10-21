@@ -1,8 +1,7 @@
-import styles from './page.module.css'
-import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/(backend)/api/actions/user';
-import config from '@/app/(backend)/api/stripe/(receive-webhook-event)/stripe.config';
+import { getUser } from '@/app/(backend)/data-access/user';
+import config from '@/app/(backend)/api/stripe/stripe.config';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
+import { Container, Section, Card, Heading } from '@radix-ui/themes';
 
 declare global {
     namespace JSX {
@@ -14,27 +13,31 @@ declare global {
 
 
 export default async function SubScribePage() {
-    const t = await getTranslations("subscribe")
     // On passe l'id de l'utilisateur à stripe afin de pouvoir facilement le retrouver parmis
     // les events émis par le webhook de stripe.
-    const { user, error } = await fetchUser()
+    const { data: {user: user}, error } = await getUser()
 
-    if (error || !user) {
-        redirect('/auth?nextUrl=/subscribe')
+    // If no user or user is anonymous, redirect to the auth page
+    if (error || !user || user.is_anonymous) {
+        redirect('/auth?authTab=signup&nextUrl=/subscribe')
         return null
     }
 
     return (
-        <div className={styles.container}>
-            <script async src="https://js.stripe.com/v3/pricing-table.js"/>
-            <div className={styles.card}>
-                <h1 className={styles.title}>{t('subscribe to pratico')}</h1>
-                <stripe-pricing-table
-                    client-reference-id={user.id}
-                    pricing-table-id={config.pricingTableId[process.env.NODE_ENV]}
-                    publishable-key={process.env.STRIPE_PUBLIC_KEY}
-                />
-            </div>
-        </div>
+        <main style={{backgroundColor: 'var(--accent-2)', minHeight:'100dvh'}}>
+            <Container size='2'  p='3'>
+                <Section>
+                    <Heading mb='3'>S'abonner à Pratico</Heading>
+                    <Card variant='classic'>
+                        <script async src="https://js.stripe.com/v3/pricing-table.js"/>
+                        <stripe-pricing-table
+                            client-reference-id={user.id}
+                            pricing-table-id={config.pricingTableId[process.env.NODE_ENV]}
+                            publishable-key={process.env.STRIPE_PUBLIC_KEY}
+                        />
+                    </Card>
+                </Section>
+            </Container>
+        </main>
     )
 }

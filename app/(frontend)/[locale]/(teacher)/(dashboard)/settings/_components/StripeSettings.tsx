@@ -2,7 +2,7 @@ import { Heading, Flex, Callout, Button, Box } from "@radix-ui/themes"
 import { getCustomer } from "@/app/(backend)/data-access/stripe"
 import { Gift, Star, Gem } from "lucide-react"
 import { Link } from "@/app/(frontend)/_intl/intlNavigation"
-import config from "@/app/(backend)/api/stripe/(receive-webhook-event)/stripe.config"
+import config from "@/app/(backend)/api/stripe/stripe.config"
 
 
 type Plan = 'free' | 'pro' | 'entreprise'

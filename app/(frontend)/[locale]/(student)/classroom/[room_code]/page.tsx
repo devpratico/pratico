@@ -57,7 +57,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
                 const { data } = await getProfile(creatorId);
                 let creatorName = (data?.first_name || '')  + ' ' + (data?.last_name || '');
                 if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
-                await discordMessageSender(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants)  pour ${creatorName} dans la salle ${params.room_code} !`);
+                await discordMessageSender(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
             }
 
             throw new Error('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');

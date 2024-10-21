@@ -38,7 +38,28 @@ export async function customerIsSubscribed(userId?: string) {
 
     if (!customer) return false;
 
-    return true
+    try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+        // Retrieve subscriptions for the customer
+        const subscriptions = await stripe.subscriptions.list({
+            customer: customer.id,
+            status: 'all',  // Fetch all statuses to check if any are active
+        });
+
+        logger.log('next:api', 'customerIsSubscribed:', subscriptions);
+
+        // Check if any subscription is active or trialing
+        const isSubscribed = subscriptions.data.some(sub =>
+            sub.status === 'active' || sub.status === 'trialing'
+        );
+
+        return isSubscribed;
+
+    } catch (error) {
+        logger.error('next:api', 'customerIsSubscribed', (error as Error).message);
+        return false;
+    }
 }
 
 
