@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card } from '@radix-ui/themes'
+import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Box, Card, Tooltip } from '@radix-ui/themes'
 import { useCallback, useMemo, useState } from 'react'
 import { usePoll } from '@/app/(frontend)/_hooks/usePoll'
 import { PollChoice } from '@/app/_types/poll'
@@ -115,12 +115,16 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<IconButton mt='1' variant='ghost'>
-							<Copy onClick={handleDuplicateQuestion} />
-						</IconButton>
-						<IconButton disabled mt='1' variant='ghost'>
-							<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
-						</IconButton>
+						<Tooltip content={'Dupliquer la question'}>
+							<IconButton mt='1' variant='ghost'>
+								<Copy onClick={handleDuplicateQuestion} />
+							</IconButton>
+						</Tooltip>
+						{/* <Tooltip content={'Prochainement disponible / Supprimer la question'}> */}
+							<IconButton disabled mt='1' variant='ghost'>
+								<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+							</IconButton>
+						{/* </Tooltip> */}
                     </Flex>
                 </Card>
             </Flex>

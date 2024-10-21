@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card } from '@radix-ui/themes'
+import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card, Tooltip } from '@radix-ui/themes'
 import { useCallback, useState, useMemo } from 'react'
 import { useQuiz } from '@/app/(frontend)/_hooks/useQuiz'
 import saveActivity from '@/app/(backend)/api/activity/save/wrapper'
@@ -122,12 +122,16 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(quiz.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<IconButton mt='1' variant='ghost'>
-							<Copy onClick={handleDuplicateQuestion} />
-						</IconButton>
-						<IconButton disabled mt='1' variant='ghost'>
-							<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
-						</IconButton>
+						<Tooltip content={'Dupliquer la question'}>
+							<IconButton mt='1' variant='ghost'>
+								<Copy onClick={handleDuplicateQuestion} />
+							</IconButton>
+						</Tooltip>
+						{/* <Tooltip content={'Prochainement disponible / Supprimer la question'}> */}
+							<IconButton disabled mt='1' variant='ghost'>
+								<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+							</IconButton>
+						{/* </Tooltip> */}
                     </Flex>
                 </Card>
             </Flex>
