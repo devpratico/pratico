@@ -115,14 +115,14 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                     <Flex justify='center' gap='3'>
                         <Navigator total={Object.keys(poll.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
-						<Tooltip content={'Dupliquer la question'}>
-							<IconButton mt='1' variant='ghost'>
-								<Copy onClick={handleDuplicateQuestion} />
+						<Tooltip content={'Dupliquer'}>
+							<IconButton onClick={handleDuplicateQuestion} mt='1' variant='ghost'>
+								<Copy />
 							</IconButton>
 						</Tooltip>
 						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton disabled mt='1' variant='ghost'>
-								<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+							<IconButton onClick={() => deleteQuestion(currentQuestionId)} disabled mt='1' variant='ghost'>
+								<Trash2 />
 							</IconButton>
 						</Tooltip>
                     </Flex>

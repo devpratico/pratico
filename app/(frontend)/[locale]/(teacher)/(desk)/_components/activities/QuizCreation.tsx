@@ -123,13 +123,13 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                         <Navigator total={Object.keys(quiz.questions).length} currentQuestionIndex={currentQuestionIndex} setCurrentQuestionIndex={setCurrentQuestionIndex} />
                         <Button onClick={handleAddNewQuestion}>Nouvelle question</Button>
 						<Tooltip content={'Dupliquer'}>
-							<IconButton mt='1' variant='ghost'>
-								<Copy onClick={handleDuplicateQuestion} />
+							<IconButton onClick={handleDuplicateQuestion} mt='1' variant='ghost'>
+								<Copy />
 							</IconButton>
 						</Tooltip>
 						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton disabled mt='1' variant='ghost'>
-								<Trash2  onClick={() => deleteQuestion(currentQuestionId)} />
+							<IconButton onClick={() => deleteQuestion(currentQuestionId)} disabled mt='1' variant='ghost'>
+								<Trash2 />
 							</IconButton>
 						</Tooltip>
                     </Flex>
