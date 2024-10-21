@@ -17,8 +17,8 @@ const iconSize = '30'
 
 export default function Controls() {
 	const { setIsFullscreen, isFullscreen } = useFullscreen();
-	let tldrawId = document.getElementById('tldrawId');
-	
+	const tldrawId = typeof document !== 'undefined' ? document.getElementById('tldrawId') : null;
+
     const {
         pageIds,
         currentPageId,
