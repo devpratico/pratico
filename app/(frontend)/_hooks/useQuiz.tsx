@@ -11,7 +11,7 @@ type QuizContextType = {
     setTitle: (title: string) => void
     addEmptyQuestion: () => { questionId: string }
     setQuestionText: (questionId: string, text: string) => void
-    deleteQuestion: (questionId: string) => void
+    deleteQuestion: (questionId: string) => boolean
     addEmptyChoice: (questionId: string) => { choiceId: string }
     addChoice: (questionId: string, choice: QuizChoice) => void
     setChoiceText: (choiceId: string, text: string) => void
@@ -74,17 +74,28 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const deleteQuestion = (questionId: string) => {
-        // Delete the question itself
-        setQuizState(prevState => produce(prevState, draft => {
-            delete draft.questions[questionId]
-        }))
-
+		let isLastQuestionEmpty = false;
+		if (Object.keys(quizState.questions).length > 1)
+		{
+			// Delete the question itself
+			setQuizState(prevState => produce(prevState, draft => {
+				delete draft.questions[questionId]
+			}))
+		}
+		else
+		{
+			setQuizState(prevState => produce(prevState, draft => {
+				draft.questions[questionId].text = "";
+			}))
+			isLastQuestionEmpty = true;
+		}
         // Delete all choices that belong to the question
         Object.entries(quizState.choices).forEach(([choiceId, choice]) => {
             if (quizState.questions[questionId].choicesIds.includes(choiceId)) {
                 deleteChoice(choiceId)
             }
         })
+		return (isLastQuestionEmpty);
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {

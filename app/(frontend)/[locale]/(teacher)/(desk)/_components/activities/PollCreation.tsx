@@ -28,20 +28,22 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
     const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(poll.questions)[index]), [poll])
     const [isSaving, setIsSaving] = useState(false)
-
+	const [ deleteActive, setDeleteActive ] = useState(false);
     const [newAnswerText, setNewAnswerText] = useState('')
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
         //const lastQuestionId = Object.keys(poll.questions).pop()
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
-        setCurrentQuestionId(questionId)
+        setCurrentQuestionId(questionId);
+		setDeleteActive(true);
     }, [addEmptyQuestion, setCurrentQuestionId])
 
 	const handleDuplicateQuestion = useCallback(() => {
 		const { questionId } = duplicateQuestion(currentQuestionId);
 
 		setCurrentQuestionId(questionId);
+		setDeleteActive(true);
 	}, [duplicateQuestion, setCurrentQuestionId, currentQuestionId])
 
     const handleSave = useCallback(async () => {
@@ -54,13 +56,13 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 	const handleDelete = useCallback(() => {
         const questionKeys = Object.keys(poll.questions)
         const index = questionKeys.indexOf(currentQuestionId)
-        console.log("Here", questionKeys.length, index)
-        const newCurrentQuestionId = questionKeys.length > 1
-            ? (index > 0 ? questionKeys[index - 1] : questionKeys[1])
+        const newCurrentQuestionId = questionKeys.length > 0
+            ? (index > 0 ? questionKeys[index - 1] : questionKeys[0])
             : null 
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
-        deleteQuestion(currentQuestionId);
+      	const isLastQuestionEmpty = deleteQuestion(currentQuestionId);
+		setDeleteActive(!isLastQuestionEmpty);
     }, [poll.questions, currentQuestionId, deleteQuestion]);
 
     return (
@@ -87,7 +89,10 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 							mb='9'
                             placeholder="Question"
                             value={poll.questions[currentQuestionId].text}
-                            onChange={(event) => { setQuestionText(currentQuestionId, event.target.value )}}
+                            onChange={(event) => {
+								setQuestionText(currentQuestionId, event.target.value);
+								setDeleteActive(true);
+							}}
                         />
 
                         {/* ANSWERS */}
@@ -102,7 +107,10 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
                                 value={newAnswerText}
                                 placeholder="Ajouter une réponse"
                                 style={{ width: '100%' }}
-                                onChange={(event) => { setNewAnswerText(event.target.value) }}
+                                onChange={(event) => {
+									setNewAnswerText(event.target.value)
+									setDeleteActive(true);
+								}}
                             />
                             <IconButton
                                 size='3'
@@ -132,7 +140,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 							</IconButton>
 						</Tooltip>
 						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton onClick={handleDelete} disabled={Object.keys(poll.questions).length < 2} mt='1' variant='ghost'>
+							<IconButton onClick={handleDelete} disabled={!deleteActive} mt='1' variant='ghost'>
 								<Trash2 />
 							</IconButton>
 						</Tooltip>

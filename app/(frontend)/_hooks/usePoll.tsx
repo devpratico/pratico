@@ -13,7 +13,7 @@ type PollContextType = {
     addChoice: (questionId: string, choice: PollChoice) => void
     setChoiceText: (choiceId: string, text: string) => void
     deleteChoice: (choiceId: string) => void
-    deleteQuestion: (questionId: string) => void
+    deleteQuestion: (questionId: string) => boolean
 	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
@@ -78,17 +78,28 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
     const deleteQuestion = (questionId: string) => {
-        // Delete the question itself
-        setPollState(produce(pollState, draft => {
-            delete draft.questions[questionId]
-        }))
-
-        // Delete all choices that are referenced by this question
-        setPollState(produce(pollState, draft => {
-            for (const choiceId of draft.questions[questionId].choicesIds) {
-                delete draft.choices[choiceId]
+		let isLastQuestionEmpty = false;
+		if (Object.keys(pollState.questions).length > 1)
+		{
+			// Delete the question itself
+			setPollState(prevState => produce(prevState, draft => {
+				delete draft.questions[questionId]
+			}))
+		}
+		else
+		{
+			setPollState(prevState => produce(prevState, draft => {
+				draft.questions[questionId].text = "";
+			}))
+			isLastQuestionEmpty = true;
+		}
+        // Delete all choices that belong to the question
+        Object.entries(pollState.choices).forEach(([choiceId, choice]) => {
+            if (pollState.questions[questionId].choicesIds.includes(choiceId)) {
+                deleteChoice(choiceId)
             }
-        }))
+        })
+		return (isLastQuestionEmpty);
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {
