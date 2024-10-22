@@ -11,15 +11,20 @@ export const useFullscreen = () => useContext(FullscreenContext);
 
 export const FullscreenProvider = ({ children }: { children: React.ReactNode }) => {
 	const { room } = useRoom();
-	const idToFullscreen = room?.activity_snapshot ? "activityAnimationId" : "tldrawId" ;
+	const activityOn = room?.activity_snapshot;
+	const idToFullscreen = 'tldrawId'; // room?.activity_snapshot ? "activityAnimationId" : "tldrawId" ;
 	const elementToFullscreen = document !== undefined ? document.getElementById(idToFullscreen) : null;
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
 			if (e.key === 'Escape')
 			{
-				document.exitFullscreen();
-				setIsFullscreen(false);
+				if (document.fullscreenElement)
+				{	
+					document.exitFullscreen()
+					.then(() => setIsFullscreen(false))
+					.catch((error) => logger.error("react:hook", "ExitFullscreen escape", error))
+				}
 		  	}
 		};	
 		window.addEventListener('keydown', handleKeyPress);
@@ -30,23 +35,29 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	useEffect(() => {
-		// document.addEventListener("fullscreenchange", (event) => {
-		// 	if (document.fullscreen)
-		// })
-		if (isFullscreen)
-		{	
-			document.exitFullscreen();
-
+		if (activityOn)
+		{
+			if (document.fullscreenElement)
+			{	
+				document.exitFullscreen()
+				.then(() => setIsFullscreen(false))
+				.catch((error) => logger.error("react:hook", "ExitFullscreen", error))
+			}
 		}
-		if (elementToFullscreen?.requestFullscreen)
-			elementToFullscreen?.requestFullscreen();
-	}, [elementToFullscreen, isFullscreen])
+		else
+		{
+			if (elementToFullscreen)
+				elementToFullscreen.requestFullscreen().then(() => setIsFullscreen(true))
+				.catch((error) => logger.error("react:hook", "ExitFullscreen", error))
+		}
+	
+	}, [elementToFullscreen, activityOn]);
 
 	function setFullscreenOn () {
 		logger.log("react:hook", "setFullscreenOn", idToFullscreen);
-		setIsFullscreen(true);
-		if (elementToFullscreen?.requestFullscreen)
-			elementToFullscreen.requestFullscreen();
+		if (elementToFullscreen)
+			elementToFullscreen.requestFullscreen().then(() => setIsFullscreen(true))
+			.catch((error) => logger.error("react:hook", "ExitFullscreen", error))
 	}
     return (
         <FullscreenContext.Provider value={{ setFullscreenOn }}>
