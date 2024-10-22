@@ -26,17 +26,18 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
     } = usePoll()
     const [currentQuestionId, setCurrentQuestionId] = useState(Object.keys(poll.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(poll.questions).indexOf(currentQuestionId), [poll, currentQuestionId])
+	const numberOfQuestions = useMemo(() => Object.keys(poll.questions).length, [poll.questions]);
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(poll.questions)[index]), [poll])
     const [isSaving, setIsSaving] = useState(false)
     const [newAnswerText, setNewAnswerText] = useState('')
 
 	const deleteIsActive = useMemo(() => {
-		const questions = Object.entries(poll.questions);
-		if (questions.length < 2)
-			if (!questions[currentQuestionIndex][1].text.length && !questions[currentQuestionIndex][1].choicesIds.length)
+		if (numberOfQuestions < 2)
+			if (!poll.questions[currentQuestionId].text.length && !poll.questions[currentQuestionId].choicesIds.length)
 				return (false);
 		return (true);
-	 }, [poll.questions, currentQuestionIndex]);
+	 }, [poll.questions, currentQuestionId, numberOfQuestions]);
+
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
@@ -138,7 +139,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 							</IconButton>
 						</Tooltip>
 						<Tooltip content={'Supprimer'}>
-							<IconButton onClick={handleDelete} disabled={deleteIsActive} mt='1' variant='ghost'>
+							<IconButton onClick={handleDelete} disabled={!deleteIsActive} mt='1' variant='ghost'>
 								<Trash2 />
 							</IconButton>
 						</Tooltip>

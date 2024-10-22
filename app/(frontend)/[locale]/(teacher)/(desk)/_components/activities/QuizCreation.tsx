@@ -29,17 +29,17 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
     const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
+	const numberOfQuestions = useMemo(() => Object.keys(quiz.questions).length, [quiz.questions]);
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
     const [isSaving, setIsSaving] = useState(false);
     const [newAnswerText, setNewAnswerText] = useState('')
 
 	const deleteIsActive = useMemo(() => {
-		const questions = Object.entries(quiz.questions);
-		if (questions.length < 2)
-			if (!questions[currentQuestionIndex][1].text.length && !questions[currentQuestionIndex][1].choicesIds.length)
+		if (numberOfQuestions < 2)
+			if (!quiz.questions[currentQuestionId].text.length && !quiz.questions[currentQuestionId].choicesIds.length)
 				return (false);
 		return (true);
-	 }, [quiz.questions, currentQuestionIndex]);
+	 }, [quiz.questions, currentQuestionId, numberOfQuestions]);
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
