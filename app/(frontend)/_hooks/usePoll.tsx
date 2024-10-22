@@ -22,12 +22,25 @@ const PollContext = createContext<PollContextType | undefined>(undefined)
 export function PollProvider({ children, poll }: { children: React.ReactNode, poll: Poll }) {
     const [pollState, setPollState] = useState<Poll>(poll)
 
+	const generateNewId = () => {
+		const existingIds = new Set(Object.keys(pollState.questions));
+		let i = 1;
+		let questionId = `${existingIds.size + i}`;
+	
+		while (existingIds.has(questionId)) {
+			i++;
+			questionId = `${existingIds.size + i}`;
+		}
+		return (questionId);
+	};
+	
+
     const setTitle = (title: string) => {
         setPollState(produce(pollState, draft => {draft.title = title}))
     }
 
     const addEmptyQuestion = () => {
-        const questionId = `${Object.keys(pollState.questions).length + 1}`
+        const questionId = generateNewId();
         setPollState(produce(pollState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -100,7 +113,7 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {
-		const questionId = `${Object.keys(pollState.questions).length + 1}`;
+		const questionId = generateNewId();
 		const choicesLength = pollState.questions[copiedQuestionId].choicesIds.length;
 		const newChoicesIds = pollState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
 		

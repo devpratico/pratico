@@ -45,8 +45,11 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         const { questionId } = addEmptyQuestion()
         //const lastQuestionId = Object.keys(quiz.questions).pop()
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
-        setCurrentQuestionId(questionId);
-    }, [addEmptyQuestion, setCurrentQuestionId])
+		console.log(currentQuestionId, questionId);
+
+		if (currentQuestionId !== questionId)
+        	setCurrentQuestionId(questionId);
+    }, [addEmptyQuestion, setCurrentQuestionId, currentQuestionId])
 
 	const handleDuplicateQuestion = useCallback(() => {
 		const { questionId } = duplicateQuestion(currentQuestionId);

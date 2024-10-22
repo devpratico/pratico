@@ -30,8 +30,20 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
         setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
     }
 
+	const generateNewId = () => {
+		const existingIds = new Set(Object.keys(quizState.questions));
+		let i = 1;
+		let questionId = `${existingIds.size + i}`;
+	
+		while (existingIds.has(questionId)) {
+			i++;
+			questionId = `${existingIds.size + i}`;
+		}
+		return (questionId);
+	};
+	
     const addEmptyQuestion = () => {
-        const questionId = `${Object.keys(quizState.questions).length + 1}`
+		const questionId = generateNewId();
         setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -96,7 +108,7 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {
-		let questionId = `${Object.keys(quizState.questions).length + 1}`;
+		let questionId = generateNewId();
 		const choicesLength = quizState.questions[copiedQuestionId].choicesIds.length;
 		const newChoicesIds = quizState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
 		
