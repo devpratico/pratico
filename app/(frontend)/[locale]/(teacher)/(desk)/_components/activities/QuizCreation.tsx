@@ -66,14 +66,20 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
 	const handleDelete = useCallback(() => {
         const questionKeys = Object.keys(quiz.questions)
-        const index = questionKeys.indexOf(currentQuestionId)
-        const newCurrentQuestionId = questionKeys.length > 0
-            ? (index > 1 ? questionKeys[index - 1] : questionKeys[1])
-            : null 
+        let newCurrentQuestionId = null;
+		if (numberOfQuestions > 1)
+		{
+			if (currentQuestionIndex > 1)
+		        newCurrentQuestionId = questionKeys[currentQuestionIndex - 1];
+			else if (currentQuestionIndex === 1)
+				newCurrentQuestionId = questionKeys[0];
+			else
+				newCurrentQuestionId = questionKeys[1];
+		}
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
       	deleteQuestion(currentQuestionId);
-    }, [quiz.questions, currentQuestionId, deleteQuestion]);
+    }, [quiz.questions, currentQuestionIndex, currentQuestionId, deleteQuestion, numberOfQuestions]);
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
