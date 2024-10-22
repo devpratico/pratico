@@ -145,6 +145,7 @@ export default function QuizAnimation() {
     }, [quiz, currentQuestionIndex, setCurrentQuestionId])
     
     return (
+		<div id='activityAnimationId'>
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
@@ -206,6 +207,7 @@ export default function QuizAnimation() {
             </Flex>
 
         </Grid>
+		</div>
     )
 }
 

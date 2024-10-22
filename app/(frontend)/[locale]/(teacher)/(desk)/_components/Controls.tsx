@@ -16,8 +16,7 @@ const iconSize = '30'
 
 
 export default function Controls() {
-	const { setIsFullscreen, isFullscreen } = useFullscreen();
-	const tldrawId = typeof document !== 'undefined' ? document.getElementById('tldrawId') : null;
+	const { setFullscreenOn } = useFullscreen();
 
     const {
         pageIds,
@@ -34,21 +33,21 @@ export default function Controls() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-		  if (e.key === 'ArrowRight') {
-			logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT");
-			e.preventDefault();
-			goNextPage();
-		  } else if (e.key === 'ArrowLeft') {
-			logger.log("react:component", "CanvasSL", "TEST ARROW LEFT");
-			e.preventDefault();
-			goPrevPage();
-		  }
+			if (e.key === 'ArrowRight') {
+				logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT");
+				e.preventDefault();
+				goNextPage();
+			} else if (e.key === 'ArrowLeft') {
+				logger.log("react:component", "CanvasSL", "TEST ARROW LEFT");
+				e.preventDefault();
+				goPrevPage();
+			}
 		};
 		window.addEventListener('keydown', handleKeyDown);
 		return () => {
-		  window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('keydown', handleKeyDown);
 		};
-	  }, [goNextPage, goPrevPage]);
+	}, [goNextPage, goPrevPage]);
 
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
@@ -67,27 +66,10 @@ export default function Controls() {
     }, [numberOfPages])
 
 	const handleFullscreen = () => {
-		if (tldrawId?.requestFullscreen)
-		{
-			setIsFullscreen(!isFullscreen);
-			tldrawId?.requestFullscreen();
-		}	
-	  };
+		setFullscreenOn();
+	};
 
-	  useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if (e.key === 'Escape' && isFullscreen)
-			{
-				document.exitFullscreen();
-				setIsFullscreen(false);
-		  	}
-		};	
-		window.addEventListener('keydown', handleKeyPress);
-
-		return () => {
-		  window.removeEventListener('keydown', handleKeyPress);
-		};
-	  }, [isFullscreen, setIsFullscreen]);
+	
 
     return (
         <Flex gap='4' justify='between' align='center' height='100%'>
@@ -115,7 +97,7 @@ export default function Controls() {
             </IconButton>
 
             <IconButton mr='1' variant='ghost' size='3' onClick={handleFullscreen}>
-                {!isFullscreen ? <Maximize2 size={iconSize} /> : <></>}
+                 <Maximize2 size={iconSize} />
             </IconButton>
         </Flex>
     )

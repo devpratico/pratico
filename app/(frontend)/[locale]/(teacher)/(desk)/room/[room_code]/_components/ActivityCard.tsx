@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { useRoom } from '@/app/(frontend)/_hooks/useRoom'
 import QuizAnimation from '../../../_components/activities/QuizAnimation'
 import PollAnimation from '../../../_components/activities/PollAnimation'
+import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
 
 
 /**
@@ -14,11 +15,14 @@ export default function ActivityCard() {
     const [open, setOpen] = useState(false)
     const { room } = useRoom()
     const activityType = useMemo(() => room?.activity_snapshot?.type, [room])
-
     // Every time room changes, check if there is an activity snapshot and open the card if there is
     useEffect(() => {
         setOpen(!!room?.activity_snapshot)
-    }, [room])
+		// if (open)
+		// 	setActivityOn(true);
+		// else
+		// 	setActivityOn(false);
+    }, [room, open])
 
     return (
         <CardDialog open={open} onOpenChange={setOpen} preventClose>
