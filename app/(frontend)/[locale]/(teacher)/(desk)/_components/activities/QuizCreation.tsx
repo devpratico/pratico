@@ -36,7 +36,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
 	const deleteIsActive = useMemo(() => {
 		if (numberOfQuestions < 2)
-			if (!quiz.questions[currentQuestionId].text.length && !quiz.questions[currentQuestionId].choicesIds.length)
+			if (quiz.questions[currentQuestionId].text.length === 0 && !quiz.questions[currentQuestionId].choicesIds.length)
 				return (false);
 		return (true);
 	 }, [quiz.questions, currentQuestionId, numberOfQuestions]);

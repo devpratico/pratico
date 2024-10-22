@@ -33,7 +33,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 
 	const deleteIsActive = useMemo(() => {
 		if (numberOfQuestions < 2)
-			if (!poll.questions[currentQuestionId].text.length && !poll.questions[currentQuestionId].choicesIds.length)
+			if (poll.questions[currentQuestionId].text.length === 0 && !poll.questions[currentQuestionId].choicesIds.length)
 				return (false);
 		return (true);
 	 }, [poll.questions, currentQuestionId, numberOfQuestions]);
