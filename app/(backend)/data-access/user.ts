@@ -28,9 +28,25 @@ export async function getUserRole() {
     return { role: roleData.role, error: null }
 }
 
+
 export async function getProfile(userId: string) {
     const supabase = createClient()
     return await supabase.from('user_profiles').select().eq('id', userId).limit(1).single()
+}
+
+export async function getNames(userId: string) {
+    const supabase = createClient()
+
+    let firstName: string | undefined
+    let lastName: string | undefined
+
+    const { data: names, error: namesError } = await supabase.from('user_profiles').select('first_name, last_name').eq('id', userId).single()
+    if (!namesError) {
+        firstName = names?.first_name || undefined
+        lastName = names?.last_name || undefined
+    }
+
+    return { firstName, lastName }
 }
 
 
@@ -38,6 +54,7 @@ export async function getStripeId(userId: string) {
     const supabase = createClient()
     return await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
 }
+
 
 export async function getEmail(userId: string) {
     const supabase = createClient()

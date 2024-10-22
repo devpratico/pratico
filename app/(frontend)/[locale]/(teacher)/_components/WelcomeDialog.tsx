@@ -5,11 +5,11 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 import { signInAnonymously } from "@/app/(backend)/api/actions/auth"
 import { saveCapsule } from "@/app/(backend)/api/actions/capsule"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { useAuth } from "@/app/(frontend)/_hooks/useAuth"
+import { useUser } from "@/app/(frontend)/_hooks/useUser"
 
 
 export default function WelcomeDialog() {
-    const { user } = useAuth()
+    const { user } = useUser()
     const [show, setShow] = useState(!user)
     const router = useRouter()
 

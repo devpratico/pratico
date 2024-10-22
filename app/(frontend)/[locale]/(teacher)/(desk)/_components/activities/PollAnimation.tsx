@@ -8,12 +8,12 @@ import logger from "@/app/_utils/logger"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/actions/room"
 import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
 import { Poll } from "@/app/_types/poll"
-import { useAuth } from "@/app/(frontend)/_hooks/useAuth"
+import { useUser } from "@/app/(frontend)/_hooks/useUser"
 import createClient from "@/supabase/clients/client"
 
 
 export default function PollAnimation() {
-    const { userId } = useAuth()
+    const { userId } = useUser()
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = usePollSnapshot()
     const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
     const [poll, setPoll] = useState<Poll | undefined>(undefined)

@@ -44,7 +44,7 @@ export async function customerIsSubscribed(userId?: string) {
         // Retrieve subscriptions for the customer
         const subscriptions = await stripe.subscriptions.list({
             customer: customer.id,
-            status: 'all',  // Fetch all statuses to check if any are active
+            status: 'all', // Fetch all statuses to check if any are active
         });
 
         logger.log('next:api', 'customerIsSubscribed:', subscriptions);

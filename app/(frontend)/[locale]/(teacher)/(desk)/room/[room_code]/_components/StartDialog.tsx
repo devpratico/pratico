@@ -1,6 +1,6 @@
 'use client'
-import { Grid, Heading, Flex, Button, Text, Code, Box, Switch, IconButton, VisuallyHidden } from "@radix-ui/themes";
-import { Copy, QrCode } from "lucide-react";
+import { Grid, Heading, Flex, Button, Text, Code, Box, IconButton, VisuallyHidden, Callout, Strong } from "@radix-ui/themes";
+import { Copy, QrCode, Star } from "lucide-react";
 import QRCode from 'react-qr-code';
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -8,6 +8,8 @@ import TooltipL from "@/app/(frontend)/[locale]/_components/TooltipL";
 import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { useUser } from "@/app/(frontend)/_hooks/useUser";
+import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton";
 
 
 export default function StartDialog() {
@@ -16,8 +18,10 @@ export default function StartDialog() {
     const [showCopied, setShowCopied] = useState(false)
     const [copyMessage, setCopyMessage] = useState('Copier')
     const [open, setOpen] = useState(true)
+    const { isSubscribed } = useUser()
 
     const link = baseUrl + '/' + room_code
+    const linkWithoutProtocol = link.replace(/^https?:\/\//, '')
 
     useEffect(() => {
         setBaseUrl(window.location.origin)
@@ -49,7 +53,7 @@ export default function StartDialog() {
                     </Box>
 
                     <DialogPrimitive.Title asChild>
-                        <Heading size='8' align='center'>{`La session est en cours`}</Heading>
+                        <Heading size='8' align='center'>La session est en cours</Heading>
                     </DialogPrimitive.Title>
 
                     <VisuallyHidden>
@@ -58,11 +62,17 @@ export default function StartDialog() {
                         </DialogPrimitive.Description>
                     </VisuallyHidden>
 
+
+                    <Flex align='center' display={ isSubscribed ? 'none' : 'flex'}>
+                        <Text color='gray' size='2'>Le nombre de participants est limité à <Strong>10</Strong>.</Text>
+                        <LinkButton size='1' ml='4' href='http://apple.com' target='_blank'><Star color='var(--yellow)' size='15' strokeWidth='4'/>Passer à Pratico Pro</LinkButton>
+                    </Flex>
+
                     <Flex direction='column' align='center'>
                         <Text align='center'>{`Envoyez le lien suivant aux participants :`}</Text>
 
                         <Flex align='center' gap='3'>
-                            <Text align='center' ><Code size='5'>{link}</Code></Text>
+                            <Text align='center'><Code size='8'>{linkWithoutProtocol}</Code></Text>
                             <TooltipL content={copyMessage} side='right' open={showCopied} onOpenChange={setShowCopied}>
                                 <IconButton
                                     variant='ghost'

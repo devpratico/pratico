@@ -7,7 +7,7 @@ import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
 import useOptimisticSave from "./useOptimisticSave"
-import { useAuth } from "./useAuth"
+import { useUser } from "./useUser"
 
 
 interface QuizSnapshotHook {
@@ -20,7 +20,7 @@ interface QuizSnapshotHook {
 }
 
 export function useQuizSnapshot(): QuizSnapshotHook {
-    const { userId } = useAuth()
+    const { userId } = useUser()
     const { room } = useRoom()
     const [snapshot, setSnapshot] = useState<QuizSnapshot | undefined>(() => {
         if (room && isQuizSnapshot(room.activity_snapshot)) {
