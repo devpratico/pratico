@@ -13,7 +13,7 @@ type PollContextType = {
     addChoice: (questionId: string, choice: PollChoice) => void
     setChoiceText: (choiceId: string, text: string) => void
     deleteChoice: (choiceId: string) => void
-    deleteQuestion: (questionId: string) => boolean
+    deleteQuestion: (questionId: string) => void
 	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
@@ -78,7 +78,6 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
     }
 
     const deleteQuestion = (questionId: string) => {
-		let isLastQuestionEmpty = false;
 		if (Object.keys(pollState.questions).length > 1)
 		{
 			// Delete the question itself
@@ -91,7 +90,6 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
 			setPollState(prevState => produce(prevState, draft => {
 				draft.questions[questionId].text = "";
 			}))
-			isLastQuestionEmpty = true;
 		}
         // Delete all choices that belong to the question
         Object.entries(pollState.choices).forEach(([choiceId, choice]) => {
@@ -99,7 +97,6 @@ export function PollProvider({ children, poll }: { children: React.ReactNode, po
                 deleteChoice(choiceId)
             }
         })
-		return (isLastQuestionEmpty);
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {

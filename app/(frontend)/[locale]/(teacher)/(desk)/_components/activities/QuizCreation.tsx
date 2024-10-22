@@ -31,22 +31,29 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
     const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
     const [isSaving, setIsSaving] = useState(false);
-	const [ deleteActive, setDeleteActive ] = useState(false);
     const [newAnswerText, setNewAnswerText] = useState('')
+
+	const deleteIsActive = useMemo(() => {
+		const questions = Object.entries(quiz.questions);
+		const index = Object.keys(quiz.questions).indexOf(currentQuestionId);
+		if (questions.length < 2)
+			if (!questions[index][1].text.length && !questions[index][1].choicesIds.length)
+				return (false);
+		return (true);
+
+	 }, [quiz.questions, currentQuestionId]);
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
         //const lastQuestionId = Object.keys(quiz.questions).pop()
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
         setCurrentQuestionId(questionId);
-		setDeleteActive(true);
     }, [addEmptyQuestion, setCurrentQuestionId])
 
 	const handleDuplicateQuestion = useCallback(() => {
 		const { questionId } = duplicateQuestion(currentQuestionId);
 
 		setCurrentQuestionId(questionId);
-		setDeleteActive(true);
     }, [duplicateQuestion, currentQuestionId])
 
     const handleSave = useCallback(async () => {
@@ -67,8 +74,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
             : null 
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
-      	const isLastQuestionEmpty = deleteQuestion(currentQuestionId);
-		setDeleteActive(!isLastQuestionEmpty);
+      	deleteQuestion(currentQuestionId);
     }, [quiz.questions, currentQuestionId, deleteQuestion]);
 
     return (
@@ -97,10 +103,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 							mb='9'
                             placeholder="Question"
                             value={quiz.questions[currentQuestionId].text}
-                            onChange={(event) => {
-								setQuestionText(currentQuestionId, event.target.value);
-								setDeleteActive(true);
-							}}
+                            onChange={(event) => setQuestionText(currentQuestionId, event.target.value)}
                         />
 
                         {/* ANSWERS */}
@@ -115,10 +118,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                                 value={newAnswerText}
                                 placeholder="Ajouter une réponse"
                                 style={{ width: '100%' }}
-                                onChange={(event) => {
-									setNewAnswerText(event.target.value);
-									setDeleteActive(true);
-								 }}
+                                onChange={(event) => setNewAnswerText(event.target.value)}
                             />
                             <IconButton
                                 size='3'
@@ -145,8 +145,8 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 								<Copy />
 							</IconButton>
 						</Tooltip>
-						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton onClick={handleDelete} disabled={!deleteActive} mt='1' variant='ghost'>
+						<Tooltip content={'Supprimer'}>
+							<IconButton onClick={handleDelete} disabled={!deleteIsActive} mt='1' variant='ghost'>
 								<Trash2 />
 							</IconButton>
 						</Tooltip>
