@@ -32,13 +32,11 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
 
 	const deleteIsActive = useMemo(() => {
 		const questions = Object.entries(poll.questions);
-		const index = Object.keys(poll.questions).indexOf(currentQuestionId);
 		if (questions.length < 2)
-			if (!questions[index][1].text.length && !questions[index][1].choicesIds.length)
+			if (!questions[currentQuestionIndex][1].text.length && !questions[currentQuestionIndex][1].choicesIds.length)
 				return (false);
 		return (true);
-
-	 }, [poll.questions, currentQuestionId]);
+	 }, [poll.questions, currentQuestionIndex]);
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
