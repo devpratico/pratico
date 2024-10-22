@@ -29,23 +29,32 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 
     const [currentQuestionId, setCurrentQuestionId] = useState(() => Object.keys(quiz.questions)[0])
     const currentQuestionIndex = useMemo(() => Object.keys(quiz.questions).indexOf(currentQuestionId) || 0, [quiz, currentQuestionId])
+	const numberOfQuestions = useMemo(() => Object.keys(quiz.questions).length, [quiz.questions]);
     const setCurrentQuestionIndex = useCallback((index: number) => setCurrentQuestionId(Object.keys(quiz.questions)[index]), [quiz])
-    const [isSaving, setIsSaving] = useState(false)
-
+    const [isSaving, setIsSaving] = useState(false);
     const [newAnswerText, setNewAnswerText] = useState('')
+
+	const deleteIsActive = useMemo(() => {
+		if (numberOfQuestions < 2)
+			if (quiz.questions[currentQuestionId].text.length === 0 && !quiz.questions[currentQuestionId].choicesIds.length)
+				return (false);
+		return (true);
+	 }, [quiz.questions, currentQuestionId, numberOfQuestions]);
 
     const handleAddNewQuestion = useCallback(() => {
         const { questionId } = addEmptyQuestion()
         //const lastQuestionId = Object.keys(quiz.questions).pop()
         //if (lastQuestionId) setCurrentQuestionId(lastQuestionId)
-        setCurrentQuestionId(questionId)
-    }, [addEmptyQuestion, setCurrentQuestionId])
+		console.log(currentQuestionId, questionId);
+
+		if (currentQuestionId !== questionId)
+        	setCurrentQuestionId(questionId);
+    }, [addEmptyQuestion, setCurrentQuestionId, currentQuestionId])
 
 	const handleDuplicateQuestion = useCallback(() => {
 		const { questionId } = duplicateQuestion(currentQuestionId);
 
 		setCurrentQuestionId(questionId);
-
     }, [duplicateQuestion, currentQuestionId])
 
     const handleSave = useCallback(async () => {
@@ -58,6 +67,22 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         router.refresh()
     }, [quiz, closeDialog, idToSaveTo, router])
 
+	const handleDelete = useCallback(() => {
+        const questionKeys = Object.keys(quiz.questions)
+        let newCurrentQuestionId = null;
+		if (numberOfQuestions > 1)
+		{
+			if (currentQuestionIndex > 1)
+		        newCurrentQuestionId = questionKeys[currentQuestionIndex - 1];
+			else if (currentQuestionIndex === 1)
+				newCurrentQuestionId = questionKeys[0];
+			else
+				newCurrentQuestionId = questionKeys[1];
+		}
+        if (newCurrentQuestionId)
+            setCurrentQuestionId(newCurrentQuestionId);
+      	deleteQuestion(currentQuestionId);
+    }, [quiz.questions, currentQuestionIndex, currentQuestionId, deleteQuestion, numberOfQuestions]);
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -85,7 +110,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 							mb='9'
                             placeholder="Question"
                             value={quiz.questions[currentQuestionId].text}
-                            onChange={(event) => { setQuestionText(currentQuestionId, event.target.value) }}
+                            onChange={(event) => setQuestionText(currentQuestionId, event.target.value)}
                         />
 
                         {/* ANSWERS */}
@@ -100,7 +125,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
                                 value={newAnswerText}
                                 placeholder="Ajouter une réponse"
                                 style={{ width: '100%' }}
-                                onChange={(event) => { setNewAnswerText(event.target.value) }}
+                                onChange={(event) => setNewAnswerText(event.target.value)}
                             />
                             <IconButton
                                 size='3'
@@ -127,8 +152,8 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
 								<Copy />
 							</IconButton>
 						</Tooltip>
-						<Tooltip content={'Supprimer (bientôt disponible)'}>
-							<IconButton onClick={() => deleteQuestion(currentQuestionId)} disabled mt='1' variant='ghost'>
+						<Tooltip content={'Supprimer'}>
+							<IconButton onClick={handleDelete} disabled={!deleteIsActive} mt='1' variant='ghost'>
 								<Trash2 />
 							</IconButton>
 						</Tooltip>

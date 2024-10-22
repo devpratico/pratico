@@ -30,8 +30,20 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
         setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
     }
 
+	const generateNewId = () => {
+		const existingIds = new Set(Object.keys(quizState.questions));
+		let i = 1;
+		let questionId = `${existingIds.size + i}`;
+	
+		while (existingIds.has(questionId)) {
+			i++;
+			questionId = `${existingIds.size + i}`;
+		}
+		return (questionId);
+	};
+	
     const addEmptyQuestion = () => {
-        const questionId = `${Object.keys(quizState.questions).length + 1}`
+		const questionId = generateNewId();
         setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -74,11 +86,19 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const deleteQuestion = (questionId: string) => {
-        // Delete the question itself
-        setQuizState(prevState => produce(prevState, draft => {
-            delete draft.questions[questionId]
-        }))
-
+		if (Object.keys(quizState.questions).length > 1)
+		{
+			// Delete the question itself
+			setQuizState(prevState => produce(prevState, draft => {
+				delete draft.questions[questionId]
+			}))
+		}
+		else
+		{
+			setQuizState(prevState => produce(prevState, draft => {
+				draft.questions[questionId].text = "";
+			}))
+		}
         // Delete all choices that belong to the question
         Object.entries(quizState.choices).forEach(([choiceId, choice]) => {
             if (quizState.questions[questionId].choicesIds.includes(choiceId)) {
@@ -88,7 +108,7 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
 	const duplicateQuestion = (copiedQuestionId: string) => {
-		let questionId = `${Object.keys(quizState.questions).length + 1}`;
+		let questionId = generateNewId();
 		const choicesLength = quizState.questions[copiedQuestionId].choicesIds.length;
 		const newChoicesIds = quizState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
 		
