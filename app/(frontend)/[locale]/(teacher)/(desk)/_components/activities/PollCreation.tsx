@@ -63,7 +63,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         const questionKeys = Object.keys(poll.questions)
         const index = questionKeys.indexOf(currentQuestionId)
         const newCurrentQuestionId = questionKeys.length > 0
-            ? (index > 0 ? questionKeys[index - 1] : questionKeys[0])
+            ? (index > 1 ? questionKeys[index - 1] : questionKeys[1])
             : null 
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
