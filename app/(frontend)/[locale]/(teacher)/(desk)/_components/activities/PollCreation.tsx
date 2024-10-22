@@ -61,7 +61,7 @@ export default function PollCreation({ idToSaveTo, closeDialog }: { idToSaveTo?:
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
         deleteQuestion(currentQuestionId);
-    }, [poll.questions, currentQuestionId, deleteQuestion, handleAddNewQuestion]);
+    }, [poll.questions, currentQuestionId, deleteQuestion]);
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>

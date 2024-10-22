@@ -68,7 +68,7 @@ export default function QuizCreation({ idToSaveTo, closeDialog }: {  idToSaveTo?
         if (newCurrentQuestionId)
             setCurrentQuestionId(newCurrentQuestionId);
         deleteQuestion(currentQuestionId);
-    }, [quiz.questions, currentQuestionId, deleteQuestion, handleAddNewQuestion]);
+    }, [quiz.questions, currentQuestionId, deleteQuestion]);
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
