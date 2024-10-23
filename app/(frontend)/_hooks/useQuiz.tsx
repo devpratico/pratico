@@ -1,7 +1,9 @@
 'use client'
-import { useState, useContext, createContext } from "react"
+import { useState, useContext, createContext, useEffect } from "react"
 import { produce } from 'immer'
 import { Quiz, QuizChoice } from "@/app/_types/quiz"
+import { set } from "lodash"
+import logger from "@/app/_utils/logger"
 
 
 type QuizContextType = {
@@ -15,6 +17,7 @@ type QuizContextType = {
     setChoiceText: (choiceId: string, text: string) => void
     setChoiceIsCorrect: (choiceId: string, isCorrect: boolean) => void
     deleteChoice: (choiceId: string) => void
+	duplicateQuestion: (copiedQuestionId: string) => {questionId: string}
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
@@ -22,12 +25,25 @@ const QuizContext = createContext<QuizContextType | undefined>(undefined)
 export function QuizProvider({ children, quiz }: { children: React.ReactNode, quiz: Quiz }) {
     const [quizState, setQuizState] = useState<Quiz>(quiz)
 
+
     const setTitle = (title: string) => {
         setQuizState(prevState => produce(prevState, draft => {draft.title = title}))
     }
 
+	const generateNewId = () => {
+		const existingIds = new Set(Object.keys(quizState.questions));
+		let i = 1;
+		let questionId = `${existingIds.size + i}`;
+	
+		while (existingIds.has(questionId)) {
+			i++;
+			questionId = `${existingIds.size + i}`;
+		}
+		return (questionId);
+	};
+	
     const addEmptyQuestion = () => {
-        const questionId = `${Object.keys(quizState.questions).length + 1}`
+		const questionId = generateNewId();
         setQuizState(prevState => produce(prevState, draft => {
             draft.questions[questionId] = {text: '', choicesIds: []}
         }))
@@ -70,11 +86,19 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
     }
 
     const deleteQuestion = (questionId: string) => {
-        // Delete the question itself
-        setQuizState(prevState => produce(prevState, draft => {
-            delete draft.questions[questionId]
-        }))
-
+		if (Object.keys(quizState.questions).length > 1)
+		{
+			// Delete the question itself
+			setQuizState(prevState => produce(prevState, draft => {
+				delete draft.questions[questionId]
+			}))
+		}
+		else
+		{
+			setQuizState(prevState => produce(prevState, draft => {
+				draft.questions[questionId].text = "";
+			}))
+		}
         // Delete all choices that belong to the question
         Object.entries(quizState.choices).forEach(([choiceId, choice]) => {
             if (quizState.questions[questionId].choicesIds.includes(choiceId)) {
@@ -82,6 +106,30 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
             }
         })
     }
+
+	const duplicateQuestion = (copiedQuestionId: string) => {
+		let questionId = generateNewId();
+		const choicesLength = quizState.questions[copiedQuestionId].choicesIds.length;
+		const newChoicesIds = quizState.questions[copiedQuestionId].choicesIds.map((item, index) => `${choicesLength + index + 1}`);
+		
+		const copiedQuestion = {
+			text: structuredClone(quizState.questions[copiedQuestionId].text),
+			choicesIds: newChoicesIds
+		}
+		setQuizState(prevState => produce(prevState, draft => {
+			draft.questions[questionId] = copiedQuestion;
+			if (copiedQuestion.choicesIds.length)
+			{
+				copiedQuestion.choicesIds.forEach((newChoiceId, index) => {
+					if (quizState.questions[copiedQuestionId].choicesIds[index]) {
+						const originalChoiceId = quizState.questions[copiedQuestionId].choicesIds[index];
+						draft.choices[newChoiceId] = structuredClone(quizState.choices[originalChoiceId]);
+					}
+				});	
+			}
+		}));
+		return { questionId };
+	};
 
     const deleteChoice = (choiceId: string) => {
         setQuizState(prevState => produce(prevState, draft => {
@@ -108,7 +156,8 @@ export function QuizProvider({ children, quiz }: { children: React.ReactNode, qu
             setChoiceText,
             setChoiceIsCorrect,
             deleteQuestion,
-            deleteChoice
+            deleteChoice,
+			duplicateQuestion
         }}>
             {children}
         </QuizContext.Provider>
