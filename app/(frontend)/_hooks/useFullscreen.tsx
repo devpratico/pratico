@@ -15,8 +15,6 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	const activityOn = room?.activity_snapshot;
 	const idToFullscreen = 'tldrawId';
 	const elementToFullscreen = doc ? doc.getElementById(idToFullscreen) : null;
-	const activityElem = doc ? doc.getElementById('activityAnimationId') : null;
-	const [activity, setActivity] = useState(false);
 
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
@@ -39,32 +37,14 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	useEffect(() => {
 		if (activityOn)
 		{
-			setActivity(true);
 			if (doc?.fullscreenElement)
 			{	
-				console.log("0")
-
 				document.exitFullscreen()
-				.then(() => activityElem?.requestFullscreen().catch((error) => logger.error("react:hook", "requestFullscreen 1", error)))
 				.catch((error) => logger.error("react:hook", "ExitFullscreen", error));
 			}
 		}
-		else if (activity)
-		{
-			if (elementToFullscreen)
-			{
-				console.log("2")
-				if (document.fullscreenElement)
-					document.exitFullscreen()
-					.then(() => elementToFullscreen?.requestFullscreen().catch((error) => logger.error("react:hook", "requestFullscreen 2", error)))
-					.catch((error) => logger.error("react:hook", "exitFullscreen", error));
-				else
-					elementToFullscreen.requestFullscreen()
-					.catch((error) => logger.error("react:hook", "requestFullscreen", error));
-			}
-		}
 	
-	}, [elementToFullscreen, activityOn, activity, doc?.fullscreenElement, activityElem]);
+	}, [activityOn, doc?.fullscreenElement]);
 
 	function setFullscreenOn () {
 		logger.log("react:hook", "setFullscreenOn", idToFullscreen);
