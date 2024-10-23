@@ -32,7 +32,7 @@ export async function getCustomer(userId?: string) {
     }
 }
 
-// TODO: Really check if the existence of a customer means they are subscribed
+
 export async function customerIsSubscribed(userId?: string) {
     const customer = await getCustomer(userId);
 

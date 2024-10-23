@@ -60,7 +60,7 @@ function ProPlan({ active=false }: { active?: boolean }) {
 
             <Box display={active ? 'none' : 'block'}>
                 <Button asChild color='violet'>
-                    <Link href='/subscribe' target="_blank">S'abonner</Link>
+                    <Link href='/subscribe' target="_blank">S&apos;abonner</Link>
                 </Button>
             </Box>
 

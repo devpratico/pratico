@@ -27,7 +27,7 @@ function NoUserWarning() {
         <Callout.Root color='red' variant='outline'>
             <Callout.Icon><TriangleAlert size={15} /></Callout.Icon>
             <Callout.Text>
-                <span>Vous n'êtes pas connecté. Pour profiter pleinement de Pratico,&nbsp;
+                <span>Vous n&apos;êtes pas connecté. Pour profiter pleinement de Pratico,&nbsp;
                     <Link href='/auth?authTab=login'>connectez-vous</Link>
                     &nbsp;ou&nbsp;
                     <Link href='/auth?authTab=signup'>créez un compte</Link>.

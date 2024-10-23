@@ -27,7 +27,7 @@ export default async function SubScribePage() {
         <main style={{backgroundColor: 'var(--accent-2)', minHeight:'100dvh'}}>
             <Container size='2'  p='3'>
                 <Section>
-                    <Heading mb='3'>S'abonner à Pratico</Heading>
+                    <Heading mb='3'>S&apos;abonner à Pratico</Heading>
                     <Card variant='classic'>
                         <script async src="https://js.stripe.com/v3/pricing-table.js"/>
                         <stripe-pricing-table
