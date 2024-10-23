@@ -1,7 +1,7 @@
 import ActivityCard from "./_components/ActivityCard";
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { Flex, Box, Text } from "@radix-ui/themes"
-import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound, Maximize2, Minimize2 } from 'lucide-react';
+import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
 import Image from "next/image";
 import TopBarPortal from "../../_components/TopBarPortal";
 import StartDialog from "./_components/StartDialog";

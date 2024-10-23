@@ -19,6 +19,7 @@ import ChatMenu from "./_components/menus/ChatMenu"
 import MoreMenu from "./_components/menus/MoreMenu"
 import { CardDialogProvider } from "@/app/(frontend)/_hooks/useCardDialog"
 import GlobalCardDialog from "./_components/GlobalCardDialog"
+import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
 
 
 
@@ -28,6 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavProvider>
         <PresencesProvider>
         <RoomProvider>
+		<FullscreenProvider>
         <CardDialogProvider>
             {/**
              * Top bar, as defined in the parent layout
@@ -99,6 +101,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             </Grid>
         </CardDialogProvider>
+		</FullscreenProvider>
         </RoomProvider>
         </PresencesProvider>
         </NavProvider>
