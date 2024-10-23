@@ -2,6 +2,7 @@ import 'server-only'
 import Stripe from "stripe";
 import logger from "@/app/_utils/logger";
 import { getStripeId, getUser } from './user';
+import config from '../api/stripe/stripe.config';
 
 
 
@@ -38,6 +39,8 @@ export async function customerIsSubscribed(userId?: string) {
 
     if (!customer) return false;
 
+    const productId = config.productsIds.pratico_v2[process.env.NODE_ENV!];
+
     try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -51,7 +54,11 @@ export async function customerIsSubscribed(userId?: string) {
 
         // Check if any subscription is active or trialing
         const isSubscribed = subscriptions.data.some(sub =>
-            sub.status === 'active' || sub.status === 'trialing'
+            // Check if the subscription is active or trialing
+            (sub.status === 'active' || sub.status === 'trialing')
+            &&
+            // Check if the subscription contains the product (pratico_v2)
+            (sub.items.data.some(item => item.price.product === productId))
         );
 
         return isSubscribed;
