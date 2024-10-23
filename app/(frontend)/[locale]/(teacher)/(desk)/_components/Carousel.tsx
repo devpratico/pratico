@@ -19,18 +19,17 @@ const MemoizedMiniature = memo(Miniature)
 
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId } = useNav()
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
-		if (scrollAreaRef.current && currentThumbnail)
+		if (currentThumbnail)
 			currentThumbnail.scrollIntoView();
 	}, [currentPageId]);
 
     return (
         <SnapshotProvider>
             <Card variant='classic' style={{padding:'0'}} asChild>
-                <ScrollArea ref={scrollAreaRef}>
+                <ScrollArea>
                     <Flex gap='3' p='3' height='100%' align='center'>
                         {pageIds.map((id, i) => (
                             <MemoizedMiniature
