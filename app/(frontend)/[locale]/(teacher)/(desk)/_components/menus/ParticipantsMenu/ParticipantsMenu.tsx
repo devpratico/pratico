@@ -9,6 +9,7 @@ import { useParams } from "next/navigation"
 import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams'
 import { useState } from "react"
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
+import { uniqueId } from 'lodash';
 
 
 export default function ParticipantMenu() {
@@ -119,7 +120,8 @@ export default function ParticipantMenu() {
                         <Table.Body>
                             {presences.map((presence, index) => {
                                 return(
-                                    <Table.Row key={presence.id}>
+									// uniqueId fix the same key error in the topMenu
+                                    <Table.Row key={uniqueId()}>
                                         <Table.RowHeaderCell>
                                             <Flex align='center' gap='2'>
                                                 {Circle(presence.state == 'online' ? presence.color : 'lightgray')}
