@@ -43,17 +43,10 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 			if (doc?.fullscreenElement)
 			{	
 				doc.exitFullscreen()
-					.then(() => isFullscreen ? doc.getElementById('activityAnimationId')?.requestFullscreen().catch((error) =>  logger.error("react:hook", "useFullcreen", "requestFullscreen 1", error)) : null)
+					.then(() => _setIsFullscreen(false))
 					.catch((error) => logger.error("react:hook", "useFullcreen", "ExitFullscreen", error));
 			}
 		}
-		else if (isFullscreen && !doc?.fullscreenElement)
-		{
-			if (elementToFullscreen?.requestFullscreen)
-				elementToFullscreen?.requestFullscreen()
-					.catch((error) => logger.error("react:hook", "useFullcreen", "requestFullscreen 2", error));
-		}
-	
 	}, [activityOn, doc?.fullscreenElement, isFullscreen, elementToFullscreen, doc]);
 
 	const setFullscreenOn = useCallback(() => {
