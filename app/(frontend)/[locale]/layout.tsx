@@ -46,7 +46,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <Theme accentColor="violet" appearance='light' panelBackground='translucent'>
+                <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
                         <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
                             {children}

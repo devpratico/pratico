@@ -10,6 +10,7 @@ import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useUser } from "@/app/(frontend)/_hooks/useUser";
 import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton";
+import GoPremiumBtn from "../../../../_components/GoPremiumBtn";
 
 
 export default function StartDialog() {
@@ -65,7 +66,7 @@ export default function StartDialog() {
 
                     <Flex align='center' display={ isSubscribed ? 'none' : 'flex'}>
                         <Text color='gray' size='2'>Le nombre de participants est limité à <Strong>10</Strong>.</Text>
-                        <LinkButton size='1' ml='4' href='http://apple.com' target='_blank'><Star color='var(--yellow)' size='15' strokeWidth='4'/>Passer à Pratico Pro</LinkButton>
+                        <GoPremiumBtn size='1' ml='3'/>
                     </Flex>
 
                     <Flex direction='column' align='center'>

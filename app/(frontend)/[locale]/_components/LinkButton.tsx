@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from "@radix-ui/themes";
 import { Link } from "../../_intl/intlNavigation";
 
-interface LinkButtonProps extends ButtonProps {
+export interface LinkButtonProps extends ButtonProps {
     href?: string;
     target?: string;
 }
