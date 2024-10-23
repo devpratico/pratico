@@ -4,7 +4,7 @@ import { useNav } from '@/app/(frontend)/_hooks/useNav'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
-import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 
 
@@ -18,12 +18,19 @@ const MemoizedMiniature = memo(Miniature)
 
 
 export default function Carousel() {
-    const { pageIds, setCurrentPage } = useNav()
+    const { pageIds, setCurrentPage, currentPageId } = useNav()
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
+		if (scrollAreaRef.current && currentThumbnail)
+			currentThumbnail.scrollIntoView();
+	}, [currentPageId]);
 
     return (
         <SnapshotProvider>
             <Card variant='classic' style={{padding:'0'}} asChild>
-                <ScrollArea>
+                <ScrollArea ref={scrollAreaRef}>
                     <Flex gap='3' p='3' height='100%' align='center'>
                         {pageIds.map((id, i) => (
                             <MemoizedMiniature
@@ -70,6 +77,7 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
     return (
 
         <Box
+			id={`${pageId}-id`}
             position='relative'
             width='55px'
             height='36px'
@@ -89,9 +97,6 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
             >
                 <MemoizedThumbnail pageId={pageId}/>
             </Box>
-
-
-
 
             <DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
