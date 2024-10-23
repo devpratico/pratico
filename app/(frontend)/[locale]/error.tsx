@@ -8,7 +8,7 @@ import { Link } from '../_intl/intlNavigation'
 export default function Error({ error, reset}: { error: Error & { digest?: string }, reset: () => void }) {
 
     useEffect(() => {
-        logger.error('next:page', 'Error causing a fallback to the error page:', error.message, error.stack)
+        logger.error('next:page', 'Error causing a fallback to the error page:', error.message, error.digest, error.stack)
     }, [error])
 
         return (
@@ -26,7 +26,9 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
 									<TriangleAlert />
 								</Callout.Icon>
 								<Callout.Text>
-									{error.message}
+									{
+                                        process.env.NODE_ENV === 'development' ? error.message : error.digest
+                                    }
 								</Callout.Text>
 							</Callout.Root>
 

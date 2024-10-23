@@ -4,11 +4,19 @@
  * The first parameter is the category, the second should be the function name, and the third the message
  * To send an error to discord, add 'discord' as the last parameter (works only for errors)
  */
+let sendDiscordMessage: (message: string) => Promise<{ success: boolean; error: string | null; }>;
 
-
-
-
-import { sendDiscordError } from "../(backend)/api/discord/wrappers";
+// Check if running on the client-side
+if (typeof window !== 'undefined') {
+    // Import the client-side module
+    import('../(backend)/api/discord/send-message/client').then((module) => {
+        sendDiscordMessage = module.default;
+    });
+} else {
+    // Import the server-side module with `require` to ensure it's only loaded on the server
+    const module = require('../(backend)/api/discord/send-message/server');
+    sendDiscordMessage = module.default;
+}
 
 
 const logCategories = {
@@ -101,7 +109,8 @@ class Logger {
         // For errors, no matter the environment, if we opted-in discord, we send the message
         if (type === 'error' && [...optionalParams].pop() == 'discord') {
             optionalParams.pop(); // Effectively remove the last parameter
-            sendDiscordError(`${category} ${message} ${optionalParams}`);
+
+            sendDiscordMessage(`${category} ${message} ${optionalParams}`);
         }
 
         // Now, depending on the environment, we'll style the output differently
