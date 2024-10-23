@@ -7,10 +7,27 @@ import TopBarPortal from "../../_components/TopBarPortal";
 import StartDialog from "./_components/StartDialog";
 import StopBtn from "./_components/StopBtn";
 import MenuTabs from "../../_components/MenuTabs";
+import createClient from "@/supabase/clients/server";
+import logger from "@/app/_utils/logger";
+import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 
-export default function Page({ params: { room_code } }: { params: { room_code: string } }) {
+export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25;
+	const supabase = createClient();
 
+	const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (!user || userError) {
+        logger.log('next:page', 'User info missing or error fetchingUser', userError ? userError : null);
+		redirect(`/classroom/${room_code}`);
+        return (null);
+    }
+    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).single()
+    if (roomError) {
+        logger.log("next:page", "TeacherViewPage", "room error", roomError);
+        throw (roomError);
+    }
+    if (user?.id !== roomData?.created_by)
+        redirect(`/classroom/${room_code}`);
     return (
         <>
 			<TopBarPortal>
