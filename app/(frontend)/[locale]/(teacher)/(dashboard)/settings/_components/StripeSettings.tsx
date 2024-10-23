@@ -36,7 +36,7 @@ function CalloutList({items}: {items: string[]}) {
 function FreePlan({active=false}: {active?: boolean}) {
     return (
         <Callout.Root variant={active ? 'surface' : 'outline'} color={active ? undefined : 'gray'}>
-            <Callout.Icon><Gift/></Callout.Icon>
+            <Callout.Icon><Gift color='var(--pink-9)' /></Callout.Icon>
             <Heading size='3'>Pratico Free</Heading>
             <CalloutList items={[
                 'Toutes les fonctionnalités de Pratico',
@@ -53,13 +53,13 @@ function ProPlan({ active=false }: { active?: boolean }) {
     return (
         <Callout.Root variant={active ? 'surface' : 'outline'} color={active ? undefined : 'gray'}>
 
-            <Callout.Icon><Star color='var(--yellow)'/></Callout.Icon>
+            <Callout.Icon><Star color='var(--amber-10)'/></Callout.Icon>
             <Heading size='3'>Pratico Pro</Heading>
 
             <CalloutList items={['Toutes les fonctionnalités de Pratico sans restrictions']}/>
 
             <Box display={active ? 'none' : 'block'}>
-                <Button asChild color='violet'>
+                <Button asChild color='amber'>
                     <Link href='/subscribe' target="_blank">S&apos;abonner</Link>
                 </Button>
             </Box>
@@ -78,7 +78,7 @@ function ProPlan({ active=false }: { active?: boolean }) {
 function EntreprisePlan({ active=false }: { active?: boolean }) {
     return (
         <Callout.Root variant={active ? 'surface' : 'outline'} color={active ? undefined : 'gray'}>
-            <Callout.Icon><Gem color='var(--blue)' /></Callout.Icon>
+            <Callout.Icon><Gem color='var(--blue-9)' /></Callout.Icon>
             <Heading size='3'>Pratico Entreprise</Heading>
             <CalloutList items={[
                 'Toutes les fonctionnalités de Pratico Pro',
@@ -86,7 +86,7 @@ function EntreprisePlan({ active=false }: { active?: boolean }) {
                 'Accompagnement personnalisé'
             ]}/>
             <Box>
-                <Button asChild color='violet'>
+                <Button asChild color='blue'>
                     <Link href='https://www.pratico.live' target="_blank">Nous contacter</Link>
                 </Button>
             </Box>

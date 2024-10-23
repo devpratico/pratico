@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next'
-import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
+import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
 import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
 import { UserContextProvider } from '../_hooks/useUser';
