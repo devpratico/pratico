@@ -32,7 +32,11 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
     const { width: viewPortWidth } = useWindow()
     const topPosition = topMargin || (viewPortWidth && viewPortWidth > 520 ? 'var(--space-9)' : 'var(--space-5)')
 
-    const resetPointerEvents = useCallback(() => {document.body.style.pointerEvents = 'auto'}, [])
+    const resetPointerEvents = useCallback(() => {
+        if (typeof document !== 'undefined') {
+            document.body.style.pointerEvents = 'auto'
+        }
+    }, [])
 
     const _onOpenChange = useCallback((open: boolean) => {
         if (open === false) {

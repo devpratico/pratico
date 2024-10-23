@@ -16,7 +16,8 @@ import ClientMismatchMessage from './ClientMismatchMessage';
 
 export default function LogInForm() {
     const router = useRouter();
-    const { getPathnameWithSearchParam } = useSearchParams();
+    const { getPathnameWithSearchParam, searchParams } = useSearchParams();
+    const nextUrl = searchParams.get('nextUrl');
     const { disabled, setDisabled } = useDisable();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -42,7 +43,11 @@ export default function LogInForm() {
             
         } else {
             //sendDiscordMessage(`🔑 **Connexion** de __${email}__`);
-            router.push('/capsules');
+            if (nextUrl == '/capsule') {
+                router.push('/capsules');
+            } else {
+                router.push(nextUrl || '/capsules');
+            }
         }
     }
 

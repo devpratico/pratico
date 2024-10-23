@@ -1,5 +1,9 @@
 import logger from "@/app/_utils/logger";
 
+/**
+ * These wrappers only work client-side.
+ * If you need to call these functions server-side, use discordMessageSender (utils.ts) directly.
+ */
 
 export async function sendDiscordMessage(message: string): Promise<void> {
     try {

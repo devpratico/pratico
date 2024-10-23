@@ -16,6 +16,7 @@ export default function StudentForm() {
     const nextUrl = searchParams.get('nextUrl');
 	let roomCode: string | undefined; 
 	// QUESTION: is that ok ?
+    // TODO: Answer : no. Use useParams instead
 	Array.from(searchParams.entries()).find((elem) => {
 		if (elem[1].includes('classroom'))
 			roomCode = elem[1].split('/').pop();

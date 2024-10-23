@@ -1,8 +1,6 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import createClient from '@/supabase/clients/server'
-import { TablesInsert } from '@/supabase/types/database.types'
-import { cache } from 'react'
 import logger from '@/app/_utils/logger'
 import { fetchUser } from './user'
 
@@ -55,14 +53,6 @@ export const setNames = async ({ id, first_name, last_name }: { id: string, firs
     return { error: error?.message }
 }
 
-
-export const signOut = async () => {
-    const supabase = createClient()
-    const { error } = await supabase.auth.signOut()
-    if (error) logger.error('supabase:auth', 'Error signing out', error.message)
-    revalidatePath('/', 'layout')
-    return { error: error?.message }
-}
 
 
 export const isLoggedIn = async () => {

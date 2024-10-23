@@ -1,7 +1,7 @@
 'use client'
-import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout, VisuallyHidden } from '@radix-ui/themes'
+import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout, VisuallyHidden, Strong } from '@radix-ui/themes'
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { Pen, Coins, ChevronRight, Info } from "lucide-react"
+import { Pen, Coins, ChevronRight, Info, TriangleAlertIcon } from "lucide-react"
 import { usePresences } from "@/app/(frontend)/_hooks/usePresences"
 import CollabSwitch from "./CollabSwitch"
 import CollabSwitchGlobal from "./CollabSwitchGlobal"
@@ -9,6 +9,8 @@ import { useParams } from "next/navigation"
 import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams'
 import { useState } from "react"
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
+import { useUser } from '@/app/(frontend)/_hooks/useUser';
+import GoPremiumBtn from '../../../../_components/GoPremiumBtn';
 
 
 export default function ParticipantMenu() {
@@ -16,6 +18,7 @@ export default function ParticipantMenu() {
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
     const { getPathnameWithSearchParam } = useSearchParams()
+    const { isSubscribed } = useUser()
 
     return (
         <>
@@ -27,6 +30,16 @@ export default function ParticipantMenu() {
             <Section size='1'>
 
                 <Flex direction='column' gap='2'>
+
+                    <Box display={isSubscribed ? 'none' : 'block'}>
+                        <Callout.Root color='amber' size='1' mb='6' variant='surface'>
+                            <Callout.Icon><TriangleAlertIcon/></Callout.Icon>
+                            <Callout.Text>
+                                Le nombre de participants est limité à <Strong>10</Strong>.
+                            </Callout.Text>
+                            <GoPremiumBtn/>
+                        </Callout.Root>
+                    </Box>
 
                     <Button variant='soft' asChild>
                         <Link href={getPathnameWithSearchParam('menu', 'defilement')} shallow={true}>
