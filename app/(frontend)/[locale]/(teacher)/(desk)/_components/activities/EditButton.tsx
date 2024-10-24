@@ -9,7 +9,7 @@ import { QuizProvider } from '@/app/(frontend)/_hooks/useQuiz'
 import { PollProvider } from '@/app/(frontend)/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
 import PollCreation from './PollCreation'
-import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activities.client'
+import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 
 

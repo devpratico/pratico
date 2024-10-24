@@ -1,7 +1,7 @@
 'use client'
 import { track, TLEditorSnapshot, useEditor } from 'tldraw'
-import { saveCapsuleSnapshot } from '@/app/(backend)/api/actions/capsule'
-import { saveRoomSnapshot } from '@/app/(backend)/api/actions/room'
+import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
+import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
 import { useEffect, useCallback } from 'react';

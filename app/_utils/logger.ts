@@ -8,7 +8,7 @@
 
 
 
-import { sendDiscordError } from "../(backend)/api/discord/wrappers";
+import { sendDiscordError } from "../(backend)/api/discord/discord.client";
 
 
 const logCategories = {

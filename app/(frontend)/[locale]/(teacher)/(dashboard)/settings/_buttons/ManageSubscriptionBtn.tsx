@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from "next/navigation";
-import config from "@/app/(backend)/api/stripe/(receive-webhook-event)/stripe.config";
+import config from "@/app/(backend)/api/stripe/stripe.config";
 import { Button, ButtonProps } from "@radix-ui/themes";
 
 

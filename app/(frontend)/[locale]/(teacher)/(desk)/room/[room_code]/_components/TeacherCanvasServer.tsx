@@ -1,7 +1,8 @@
 import TeacherCanvasClient from "./TeacherCanvasClient";
-import { fetchUser, fetchNames } from '@/app/(backend)/api/actions/user'
+import { fetchUser, fetchNames } from "@/app/(backend)/api/user/user.server";
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
-import { fetchOpenRoomByCode, Room } from '@/app/(backend)/api/actions/room'
+import { fetchOpenRoomByCode } from "@/app/(backend)/api/room/room.server";
+import { Room } from "@/app/(backend)/api/room/types";
 import { Suspense } from "react";
 import logger from "@/app/_utils/logger";
 import { Callout, Flex, Spinner } from "@radix-ui/themes";

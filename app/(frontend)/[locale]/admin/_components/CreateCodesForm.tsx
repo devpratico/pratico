@@ -2,7 +2,7 @@
 import * as Form from "@radix-ui/react-form"
 import { Button, Card, TextField, Link } from "@radix-ui/themes"
 import Stripe from "stripe"
-import createPromotionCodes from "@/app/(backend)/api/stripe/create-promotion-codes/wrapper"
+import createPromotionCodes from "@/app/(backend)/api/stripe/(routes)/create-promotion-codes/wrapper"
 import { useState } from "react"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 

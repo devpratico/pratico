@@ -1,7 +1,7 @@
 'use client'
 import {Popover, TextField, IconButton, Text, Callout } from "@radix-ui/themes";
 import Tooltip from '@/app/(frontend)/[locale]/_components/TooltipL';
-import { saveCapsuleTitle } from '@/app/(backend)/api/actions/capsule';
+import { saveCapsuleTitle } from "@/app/(backend)/api/capsule/capsule.client";
 import { useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Check, TriangleAlert } from "lucide-react";
