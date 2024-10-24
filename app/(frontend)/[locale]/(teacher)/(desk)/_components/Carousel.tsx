@@ -23,7 +23,7 @@ export default function Carousel() {
 	useEffect(() => {
 		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
 		if (currentThumbnail)
-			currentThumbnail.scrollIntoView({inline:'center'});
+			currentThumbnail.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
 	}, [currentPageId]);
 
     return (
