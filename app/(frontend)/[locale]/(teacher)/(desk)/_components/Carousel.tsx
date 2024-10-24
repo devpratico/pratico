@@ -4,56 +4,83 @@ import { useNav } from '@/app/(frontend)/_hooks/useNav'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
-import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 
 
 interface MiniatureProps {
     pageId: TLPageId
     onClick: () => void
+    onDragStart: (event: React.DragEvent<HTMLDivElement>, pageId: TLPageId) => void
+    onDrop: (event: React.DragEvent<HTMLDivElement>, index: number) => void
+    onDragOver: (event: React.DragEvent<HTMLDivElement>) => void
 }
 
 const MemoizedThumbnail = memo(Thumbnail)
 const MemoizedMiniature = memo(Miniature)
 
-
 export default function Carousel() {
-    const { pageIds, setCurrentPage, currentPageId } = useNav()
+    const { pageIds, setCurrentPage, currentPageId, setPageIds } = useNav()
+    const [draggedId, setDraggedId] = useState<TLPageId | null>(null);
 
-	useEffect(() => {
-		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
-		const scrollContainer = currentThumbnail?.parentElement?.parentElement?.parentElement;
-	
-		if (currentThumbnail && scrollContainer) {
-			const thumbnailRect = currentThumbnail.getBoundingClientRect();
-			const containerRect = scrollContainer.getBoundingClientRect();
-			const margin = 20;
-			if (thumbnailRect.left < containerRect.left) {
-				scrollContainer.scrollBy({
-					left: thumbnailRect.left - containerRect.left - margin,
-					behavior: 'smooth',
-				});
-			}
-			else if (thumbnailRect.right > containerRect.right) {
-				scrollContainer.scrollBy({
-					left: thumbnailRect.right - containerRect.right + margin,
-					behavior: 'smooth',
-				});
-			}
-		}
-	}, [currentPageId, pageIds]);
-	
+    useEffect(() => {
+        const currentThumbnail = document.getElementById(`${currentPageId}-id`);
+        const scrollContainer = currentThumbnail?.parentElement?.parentElement?.parentElement;
+
+        if (currentThumbnail && scrollContainer) {
+            const thumbnailRect = currentThumbnail.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const margin = 20;
+            if (thumbnailRect.left < containerRect.left) {
+                scrollContainer.scrollBy({
+                    left: thumbnailRect.left - containerRect.left - margin,
+                    behavior: 'smooth',
+                });
+            }
+            else if (thumbnailRect.right > containerRect.right) {
+                scrollContainer.scrollBy({
+                    left: thumbnailRect.right - containerRect.right + margin,
+                    behavior: 'smooth',
+                });
+            }
+        }
+    }, [currentPageId, pageIds]);
+
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, pageId: TLPageId) => {
+        setDraggedId(pageId);
+    }
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+        e.preventDefault();
+
+        if (draggedId !== null) {
+            const draggedIndex = pageIds.indexOf(draggedId);
+            const updatedPageIds = [...pageIds];
+
+            updatedPageIds.splice(draggedIndex, 1);
+            updatedPageIds.splice(index, 0, draggedId);
+            setPageIds(updatedPageIds);
+            setDraggedId(null);
+        }
+    }
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    }
 
     return (
         <SnapshotProvider>
-            <Card variant='classic' style={{padding:'0'}} asChild>
+            <Card variant='classic' style={{ padding: '0' }} asChild>
                 <ScrollArea>
-                    <Flex gap='3' p='3' height='100%' align='center'>
-                        {pageIds.map((id, i) => (
+                    <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+                        {pageIds.map((id, index) => (
                             <MemoizedMiniature
                                 key={`${id}`}
                                 pageId={id}
                                 onClick={() => setCurrentPage(id)}
+                                onDragStart={(e) => handleDragStart(e, id)}
+                                onDrop={(e) => handleDrop(e, index)}
+                                onDragOver={handleDragOver}
                             />
                         ))}
                     </Flex>
@@ -64,7 +91,7 @@ export default function Carousel() {
 }
 
 
-function Miniature({ pageId, onClick }: MiniatureProps) {
+function Miniature({ pageId, onClick, onDragStart, onDrop, onDragOver }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
@@ -90,17 +117,19 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
         setShowEllipsis(showMenu)
     }, [showMenu])
 
-
     return (
-
         <Box
-			id={`${pageId}-id`}
+            id={`${pageId}-id`}
             position='relative'
             width='55px'
             height='36px'
             onClick={onClick}
             onMouseEnter={() => setShowEllipsis(true)}
             onMouseLeave={() => setShowEllipsis(showMenu)}
+            draggable
+            onDragStart={(e) => onDragStart(e, pageId)}
+            onDrop={(e) => onDrop(e, 0)}
+            onDragOver={onDragOver}
         >
 
             <Box
@@ -120,7 +149,7 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
                 <DropdownMenu.Trigger>
                     <IconButton
                         radius='full' size='1'
-                        style={{ position: 'absolute', top: '-10px', right: '-10px',boxShadow:'var(--shadow-3)', opacity: ellipsisOpacities }}
+                        style={{ position: 'absolute', top: '-10px', right: '-10px', boxShadow: 'var(--shadow-3)', opacity: ellipsisOpacities }}
                     >
                         <Ellipsis size='18' />
                     </IconButton>
