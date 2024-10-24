@@ -28,20 +28,20 @@ export default function Carousel() {
 			const thumbnailRect = currentThumbnail.getBoundingClientRect();
 			const containerRect = scrollContainer.getBoundingClientRect();
 			const margin = 20;
-			if (thumbnailRect.left < containerRect.left + margin) {
+			if (thumbnailRect.left < containerRect.left) {
 				scrollContainer.scrollBy({
 					left: thumbnailRect.left - containerRect.left - margin,
 					behavior: 'smooth',
 				});
 			}
-			else if (thumbnailRect.right > containerRect.right - margin) {
+			else if (thumbnailRect.right > containerRect.right) {
 				scrollContainer.scrollBy({
 					left: thumbnailRect.right - containerRect.right + margin,
 					behavior: 'smooth',
 				});
 			}
 		}
-	}, [currentPageId]);
+	}, [currentPageId, pageIds]);
 	
 
     return (
