@@ -34,11 +34,9 @@ export default function Controls() {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'ArrowRight') {
-				logger.log("react:component", "CanvasSL", "TEST ARROW RIGHT");
 				e.preventDefault();
 				goNextPage();
 			} else if (e.key === 'ArrowLeft') {
-				logger.log("react:component", "CanvasSL", "TEST ARROW LEFT");
 				e.preventDefault();
 				goPrevPage();
 			}
