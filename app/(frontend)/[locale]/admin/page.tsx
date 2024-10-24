@@ -1,9 +1,9 @@
 import { Heading, Container, Section, Link, DataList, Card, Flex, Table } from "@radix-ui/themes"
-import { listAllCoupons, listAllCodes } from "@/app/(backend)/data-access/stripe"
+import { listAllCoupons, listAllCodes } from "@/app/(backend)/api/stripe/stripe.server"
 import Stripe from "stripe"
 import { getFormatter } from "next-intl/server"
 import CreateCodeForm from "./_components/CreateCodesForm"
-import { getUserRole } from "@/app/(backend)/data-access/auth"
+import { getUserRole } from "@/app/(backend)/api/auth/auth.server"
 
 
 export default async function Page() {

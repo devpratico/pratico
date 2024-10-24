@@ -9,7 +9,7 @@ import { Quiz } from "@/app/_types/quiz"
 import { useAuth } from "@/app/(frontend)/_hooks/useAuth"
 import createClient from "@/supabase/clients/client"
 import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/actions/room"
+import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client";
 
 
 

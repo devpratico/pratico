@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@radix-ui/themes"
 import { Play } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { startActivity } from "@/app/(backend)/api/actions/room"
+import { startActivity } from "@/app/(backend)/api/room/room.client"
 import logger from "@/app/_utils/logger"
 
 

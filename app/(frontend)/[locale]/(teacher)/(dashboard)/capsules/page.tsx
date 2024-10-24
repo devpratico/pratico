@@ -1,7 +1,7 @@
 import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
 import { Plus, LayoutGrid, List, Search } from "lucide-react"
-import { fetchUser } from "@/app/(backend)/api/actions/user";
-import { fetchCapsulesData } from "@/app/(backend)/api/actions/capsule";
+import { fetchUser } from "@/app/(backend)/api/user/user.server";
+import { fetchCapsulesData } from "@/app/(backend)/api/capsule/capsule.server";
 import { TLEditorSnapshot } from "tldraw";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";

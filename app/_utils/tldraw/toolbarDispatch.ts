@@ -12,7 +12,7 @@ import {
     StyleProp,
 } from 'tldraw'
 import logger from '../logger'
-import { getPublicUrl } from '../../(backend)/api/actions/capsule'
+import { getPublicUrl } from '@/app/(backend)/api/capsule/capsule.client'
 import uploadCapsuleFile from '../uploadCapsuleFile'
 
 

@@ -3,7 +3,7 @@ import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea
 import { useCallback, useMemo, useState } from 'react'
 import { usePoll } from '@/app/(frontend)/_hooks/usePoll'
 import { PollChoice } from '@/app/_types/poll'
-import saveActivity from '@/app/(backend)/api/activity/save/wrapper'
+import { saveActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import Title from './Title'
 import CancelButton from './CancelButton'
 import { PollCreationChoiceRow } from './CreationChoiceRow'

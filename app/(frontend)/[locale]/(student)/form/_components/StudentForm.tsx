@@ -1,12 +1,12 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link, ScrollArea } from '@radix-ui/themes';
-import { signInAnonymously } from '@/app/(backend)/api/actions/auth';
-import { fetchUser } from '@/app/(backend)/api/actions/user';
+import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
+import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
+import { fetchUser } from '@/app/(backend)/api/user/user.client';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { createAttendance } from '@/app/(backend)/api/actions/attendance';
+import { createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
 
 

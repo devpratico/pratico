@@ -1,7 +1,7 @@
 'use client'
 import { useRoom } from "./useRoom"
 import { PollSnapshot, PollUserAnswer, isPollSnapshot } from "../../_types/poll"
-import { saveRoomActivitySnapshot } from "../../(backend)/api/actions/room"
+import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { produce } from "immer"
 import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"

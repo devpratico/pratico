@@ -1,11 +1,11 @@
 import StudentCanvas from './_components/StudentCanvas'
-import { fetchUser } from '@/app/(backend)/api/actions/user'
+import { fetchUser } from '@/app/(backend)/api/user/user.server'
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation'
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchOpenRoomByCode } from '@/app/(backend)/api/actions/room'
+import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/actions/attendance'
+import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     const { user, error: userError } = await fetchUser();

@@ -3,7 +3,7 @@ import { IconButton } from '@radix-ui/themes'
 import { Pen, PenOff } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import logger from '@/app/_utils/logger'
-import { toggleCollaborationFor } from '@/app/(backend)/api/actions/room'
+import { toggleCollaborationFor } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '@/app/(frontend)/_hooks/useRoom'
 import TooltipL from '@/app/(frontend)/[locale]/_components/TooltipL'
 

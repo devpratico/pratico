@@ -1,11 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { fetchUser } from '@/app/(backend)/api/actions/user'
+import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import { fetchProfile, fetchStripeId } from './actions';
-import { SignOutBtn } from './_buttons/SignOutBtn';
-import { ResetPasswordBtn } from './_buttons/ResetPasswordBtn';
 import { SubscribeBtn } from './_buttons/SubscribeBtn';
 import { ManageSubscriptionBtn } from './_buttons/ManageSubscriptionBtn';
-//import { doesCustomerExist } from '@/app/(backend)/api/actions/stripe';
 import { Container, Section, Heading, DataList, Separator, Flex, Badge, Code, Card, ScrollArea, TextField } from '@radix-ui/themes';
 import InfosSettings from './_components/InfosSettings';
 

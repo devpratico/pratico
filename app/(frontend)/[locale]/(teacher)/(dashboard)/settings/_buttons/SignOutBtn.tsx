@@ -1,5 +1,5 @@
 'use client'
-import { signOut } from '@/app/(backend)/api/actions/auth'
+import { signOut } from "@/app/(backend)/api/auth/auth.client";
 import { Button } from "@radix-ui/themes";
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
 

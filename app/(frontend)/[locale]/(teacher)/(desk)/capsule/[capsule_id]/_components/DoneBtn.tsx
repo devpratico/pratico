@@ -1,7 +1,7 @@
 'use client'
 import logger from "@/app/_utils/logger";
 import { useRouter } from "next/navigation";
-import { saveCapsuleSnapshot } from "@/app/(backend)/api/actions/capsule";
+import { saveCapsuleSnapshot } from "@/app/(backend)/api/capsule/capsule.client";
 import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
