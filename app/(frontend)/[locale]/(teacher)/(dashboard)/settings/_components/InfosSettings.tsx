@@ -63,7 +63,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				console.log(userProfileError.details === 'The result contains 0 rows');
 				if (userProfileError.details === 'The result contains 0 rows')
 				{
-					logger.error("supabase:database", "InfoSettings, an anonyme updates his infos", userProfileError, "discord");
+					logger.log("supabase:database", "InfoSettings, an anonyme updates his infos", userProfileError);
 					setAnonyme(true);
 				}
 				else
