@@ -9,7 +9,8 @@ import { QuizProvider } from '@/app/(frontend)/_hooks/useQuiz'
 import { PollProvider } from '@/app/(frontend)/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
 import PollCreation from './PollCreation'
-import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/actions/activities'
+import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activities.client'
+import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 
 
 interface EditButtonProps {
@@ -18,15 +19,18 @@ interface EditButtonProps {
 }
 
 export default function EditButton({ activityId, initialActivity }: EditButtonProps) {
+    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
 
     async function handleDelete() {
         await deleteActivity(activityId)
+        router.refresh()
     }
 
     async function handleDuplicate() {
-        await duplicateActivity(activityId)
+        await duplicateActivity({ id: activityId })
+        router.refresh()
     }
 
     return (

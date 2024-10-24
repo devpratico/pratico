@@ -1,4 +1,4 @@
-import { fetchActivitiesOfCurrentUser } from "@/app/(backend)/data-access/activities"
+import { fetchActivitiesOfCurrentUser } from "@/app/(backend)/api/activity/activities.server"
 import { Callout, Table, Text, Spinner, Flex } from "@radix-ui/themes"
 import { getFormatter } from "next-intl/server"
 import { Suspense } from "react"

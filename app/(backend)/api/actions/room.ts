@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache"
 import { generateRandomCode } from "@/app/_utils/codeGen"
 import { fetchCapsuleSnapshot } from "./capsule2"
 import { ActivitySnapshot } from "@/app/_types/activity"
-import { fetchActivity } from '../../data-access/activities'
+import { fetchActivity } from "@/app/(backend)/api/activity/activities.server"
 import { Poll } from "@/app/_types/poll"
 import { log } from "console"
 

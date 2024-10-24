@@ -4,10 +4,6 @@ import { Poll } from "@/app/_types/poll"
 import logger from "@/app/_utils/logger"
 
 
-
-
-
-
 // TODO: Remove the 'type' ('quiz' or 'poll') field from supabase and use the json content ('object' column) instead
 // Supabase allows to filter queries by the content of a JSON object field.
 
