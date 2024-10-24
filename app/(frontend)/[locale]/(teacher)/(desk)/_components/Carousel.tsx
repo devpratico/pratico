@@ -22,9 +22,27 @@ export default function Carousel() {
 
 	useEffect(() => {
 		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
-		if (currentThumbnail)
-			currentThumbnail.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
+		const scrollContainer = currentThumbnail?.parentElement?.parentElement?.parentElement;
+	
+		if (currentThumbnail && scrollContainer) {
+			const thumbnailRect = currentThumbnail.getBoundingClientRect();
+			const containerRect = scrollContainer.getBoundingClientRect();
+			const margin = 20;
+			if (thumbnailRect.left < containerRect.left + margin) {
+				scrollContainer.scrollBy({
+					left: thumbnailRect.left - containerRect.left - margin,
+					behavior: 'smooth',
+				});
+			}
+			else if (thumbnailRect.right > containerRect.right - margin) {
+				scrollContainer.scrollBy({
+					left: thumbnailRect.right - containerRect.right + margin,
+					behavior: 'smooth',
+				});
+			}
+		}
 	}, [currentPageId]);
+	
 
     return (
         <SnapshotProvider>
