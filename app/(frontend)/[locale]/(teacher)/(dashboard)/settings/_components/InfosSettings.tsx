@@ -1,12 +1,12 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, Card, DataList, Flex, Heading, Separator, TextField } from "@radix-ui/themes";
-import { useState } from "react";
+import { Button, Callout, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
 import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
 import { SignOutBtn } from "../_buttons/SignOutBtn";
 import { User } from "@supabase/supabase-js";
-import { Check } from "lucide-react";
+import { Check, TriangleAlert } from "lucide-react";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -38,8 +38,18 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	const [ modifying, setModifying ] = useState(false);
 	const [ loading, setLoading ] = useState(false);
 	let timeout: null | NodeJS.Timeout = null;
+	const [ anonyme, setAnonyme ] = useState(false);
 	const supabase = createClient();
 
+	useEffect(() => {
+		if (anonyme)
+		{
+			const anonymeTimeout = setTimeout(() => {
+				setAnonyme(false);
+			}, 30000);
+			return (() => clearTimeout(anonymeTimeout));
+		}
+	}, [anonyme]);
 
 	const updateData = async () => {
 		if (timeout)
@@ -47,19 +57,22 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 		setLoading(true);
 		if (teacher?.id && values)
 		{
-			if (values.email?.length && values.email !== teacher.email)
-			{
-				const { data: user, error: userError } = await supabase.auth.updateUser({email: values.email });
-				if (userError)
-					logger.error("supabase:database", "InfoSettings, error updating email", userError, "discord");
-				else
-					logger.log("supabase:database", "InfoSettings", "Email updated successfully", user);
-			}
 			const { data: userProfileData, error: userProfileError } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
 			if (userProfileError)
-				logger.error("supabase:database", "InfoSettings, error getting existing user_profiles", userProfileError, "discord");
+			{	
+				console.log(userProfileError.details === 'The result contains 0 rows');
+				if (userProfileError.details === 'The result contains 0 rows')
+				{
+					logger.error("supabase:database", "InfoSettings, an anonyme updates his infos", userProfileError, "discord");
+					setAnonyme(true);
+				}
+				else
+					logger.error("supabase:database", "InfoSettings, error getting user_profile", userProfileError, "discord");
+
+			}
 			else
 			{
+				setAnonyme(false);
 				const userProfileCopy = { ...userProfileData,
 					first_name: values.first_name,
 					last_name: values.last_name,
@@ -77,6 +90,15 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				else if (data)
 					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
 			}
+			if (values.email?.length && values.email !== teacher.email && !userProfileError)
+			{
+				const { data: user, error: userError } = await supabase.auth.updateUser({email: values.email });
+				if (userError)
+					logger.error("supabase:database", "InfoSettings, error updating email", userError, "discord");
+				else
+					logger.log("supabase:database", "InfoSettings", "Email updated successfully", user);
+			}
+			
 			setLoading(false);
 			setUpdated(true);
 			setModifying(false);
@@ -217,10 +239,23 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 				</DataList.Root>
 
-				<Flex mt='3' gap='4' wrap='wrap' style={{justifyContent: 'flex-end'}}>
-					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
+				<Flex mt='3' gap='4' wrap='wrap' style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+					{
+						anonyme && (
+						<div style={{ marginRight: '10px' }}>
+							<Callout.Root color='red' role='alert' size='1'>
+								<Callout.Text>
+									{"Vous n'êtes pas connecté, les informations ne seront pas sauvegardées"}	
+								</Callout.Text>
+							</Callout.Root>
+						</div>
+					)}
+					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>
+						{!modifying && updated ? <Check /> : 'Enregistrer'}
+					</Button>
 					<Button variant='soft' color='gray' onClick={handleCancelUpdate} disabled={!modifying}>Annuler</Button>
 				</Flex>
+
 
 				<Separator size='4' my='4'/>
 			
