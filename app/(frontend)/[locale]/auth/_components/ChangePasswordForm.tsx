@@ -8,7 +8,7 @@ import { updateUserPassword } from "@/app/(backend)/api/actions/auth"
 import { useDisable } from "@/app/(frontend)/_hooks/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { sendDiscordMessage } from "@/app/(backend)/api/discord/wrappers"
+import sendDiscordMessage from "@/app/(backend)/api/discord/send-message/client"
 import { useAuth } from "@/app/(frontend)/_hooks/useAuth"
 
 

@@ -11,7 +11,7 @@ import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
 import ClientMismatchMessage from './ClientMismatchMessage';
-import { sendDiscordMessage } from '@/app/(backend)/api/discord/wrappers';
+import sendDiscordMessage from '@/app/(backend)/api/discord/send-message/client';
 
 
 
