@@ -176,9 +176,13 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 		const startIndex = index < newIndex ? index : newIndex;
 		const endIndex = index < newIndex ? newIndex : index;
 		const pagesToRecreate = pages.slice(startIndex, endIndex);
-		
-		pagesToRecreate.forEach(page => editor.deletePage(page.id));
-		pagesToRecreate.forEach((page) => {
+
+		pagesToRecreate.forEach((page, ind) =>{
+			console.log("DELETE PAGE", page.index, page.id, ind);
+			editor.deletePage(page.id);
+		});
+		pagesToRecreate.forEach((page, ind) => {
+			console.log("RECREATE PAGE", page.index, page.id, ind);
 			editor.createPage({id: page.id});
 		});
 		console.log("current", currentPage.id, "page", pageId, index, newIndex);
