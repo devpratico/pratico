@@ -3,7 +3,6 @@ import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
-import { TldDrawState } from '@/app/_utils/tldraw/tldDrawState';
 
 
 type NavContextType = {
@@ -16,7 +15,7 @@ type NavContextType = {
     goPrevPage: () => void;
     newPage: (position?: 'next' | 'last') => void;
     deletePage: (id: TLPageId) => void;
-	setPageIds: (newPageIds: TLPageId[]) => void;
+	movePage: (pageId: TLPageId, newIndex: number) => void;
 };
 
 const emptyContext: NavContextType = {
@@ -29,7 +28,8 @@ const emptyContext: NavContextType = {
     goPrevPage: () => { },
     newPage: (position?: 'next' | 'last') => { },
     deletePage: (id: TLPageId) => { },
-	setPageIds: (newPageIds: TLPageId[]) => {}
+	movePage: (pageId: TLPageId, newIndex: number) => {}
+
 }
 
 const NavContext = createContext<NavContextType>(emptyContext);
@@ -42,18 +42,14 @@ const NavContext = createContext<NavContextType>(emptyContext);
  */
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
-	const [pageIds, setPageIdsState] = useState<TLPageId[]>([]);
-
-	const pageIds$ = useComputed('Page ids', () => {
+    const pageIds$ = useComputed('Page ids', () => {
         if (!editor) return []
-     	return editor.getPages().map((p) => p.id)
-		}, {
-			isEqual: (a: any[], b: any[]) => a.length === b.length && a.every((id, i) => id === b[i])
-		}, [editor])
-    const ids = useValue(pageIds$);
-    useEffect(() => {
-            setPageIdsState(ids);
-    }, [ids]);
+        return editor.getPages().map((p) => p.id)
+    }, {
+        isEqual: (a: any[], b: any[]) => a.length === b.length && a.every((id, i) => id === b[i])
+    }, [editor])
+
+    const pageIds = useValue(pageIds$)
 
     const currentPageId = useValue('Current page ID', () => {
         if (!editor) return undefined
@@ -172,41 +168,21 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         editor.deletePage(id)
     }, [editor])
 
-	const setPageIds = useCallback((newPageIds: TLPageId[]) => {
-		if (!editor) return;
-	
+	const movePage = useCallback((pageId: TLPageId, newIndex: number) => {
+		if (!editor) return ;
 		const pages = editor.getPages();
 		const currentPage = editor.getCurrentPage();
-	
-		pages.forEach((page) => {
-			if (!newPageIds.includes(page.id)) {
-				editor.deletePage(page.id);
-				logger.log('tldraw:editor', `Deleted page: ${page.id}`);
-			}
+		const index = pages.indexOf(currentPage);
+		const startIndex = index < newIndex ? index : newIndex;
+		const endIndex = index < newIndex ? newIndex : index;
+		const pagesToRecreate = pages.slice(startIndex, endIndex);
+		
+		pagesToRecreate.forEach(page => editor.deletePage(page.id));
+		pagesToRecreate.forEach((page) => {
+			editor.createPage({id: page.id});
 		});
-		newPageIds.forEach((id, i) => {
-			const existingPage = pages.find((page) => page.id === id);
-			if (!existingPage) {
-				const previousPage = newPageIds[i - 1] ? editor.getPage(newPageIds[i - 1]) : undefined;
-				const nextPage = newPageIds[i + 1] ? editor.getPage(newPageIds[i + 1]) : undefined;
-	
-				const index = getIndexBetween(
-					previousPage ? previousPage.index : undefined,
-					nextPage ? nextPage.index : undefined
-				);
-				editor.createPage({ id, index });
-				logger.log('tldraw:editor', `Created new page with id: ${id} at index: ${index}`);
-			}
-		});
-		if (!newPageIds.includes(currentPage.id)) {
-			setCurrentPage(newPageIds[0]);
-			logger.log('tldraw:editor', `Set current page to: ${newPageIds[0]}`);
-		}
-        setPageIdsState(newPageIds);
-	}, [editor, setCurrentPage]);
-	
-	
-	
+		console.log("current", currentPage.id, "page", pageId, index, newIndex);
+	}, [editor]);
 
     return (
         <NavContext.Provider value={{
@@ -219,7 +195,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             goPrevPage,
             newPage,
             deletePage,
-			setPageIds
+			movePage
         }}>
             {children}
         </NavContext.Provider>
