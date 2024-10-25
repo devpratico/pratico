@@ -1,7 +1,7 @@
 'use client'
 import { Button, ButtonProps } from '@radix-ui/themes';
 import { ArrowRight } from 'lucide-react';
-import { signInAnonymously, isUserAnonymous } from '@/app/(backend)/api/actions/auth';
+import { signInAnonymously, isUserAnonymous } from '@/app/(backend)/api/auth/auth.client';
 import logger from '@/app/_utils/logger';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';

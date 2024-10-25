@@ -5,7 +5,7 @@ import React, { useMemo, useCallback, Dispatch, SetStateAction, useState, useEff
 import Navigator from "./Navigator"
 import { usePollSnapshot } from "@/app/(frontend)/_hooks/usePollSnapshot"
 import logger from "@/app/_utils/logger"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/actions/room"
+import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
 import { Poll } from "@/app/_types/poll"
 import { useAuth } from "@/app/(frontend)/_hooks/useAuth"

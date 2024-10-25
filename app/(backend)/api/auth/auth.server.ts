@@ -1,6 +1,7 @@
 import 'server-only'
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
+import { fetchUser } from '../user/user.server'
 
 
 export async function getUser() {
@@ -26,4 +27,21 @@ export async function getUserRole() {
     }
 
     return { role: roleData.role, error: null }
+}
+
+
+export const isLoggedIn = async () => {
+    const supabase = createClient()
+
+    try {
+        const user = supabase.auth.getUser()
+        return { user, error: null }
+    } catch (error) {
+        return { user: null, error: (error as Error).message }
+    }
+}
+
+export const isUserAnonymous = async () => {
+    const { user, error } = await fetchUser()
+    return !!(user?.is_anonymous)
 }

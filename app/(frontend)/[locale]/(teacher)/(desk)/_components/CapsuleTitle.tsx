@@ -1,4 +1,4 @@
-import { fetchCapsuleTitle } from '@/app/(backend)/api/actions/capsule';
+import { fetchCapsuleTitle } from '@/app/(backend)/api/capsule/capsule.server';
 import { Text, TextProps, Skeleton, IconButton, Flex } from '@radix-ui/themes';
 import { Suspense } from 'react';
 import { SquarePen } from 'lucide-react';

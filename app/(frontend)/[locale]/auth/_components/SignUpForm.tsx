@@ -2,7 +2,7 @@
 import { Button, Flex, TextField } from '@radix-ui/themes';
 import * as Form from '@radix-ui/react-form';
 import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
-import { signup, setNames } from '@/app/(backend)/api/actions/auth';
+import { signup } from '@/app/(backend)/api/auth/auth.client';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
 import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
 import logger from '@/app/_utils/logger';
@@ -11,7 +11,8 @@ import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
 import ClientMismatchMessage from './ClientMismatchMessage';
-import sendDiscordMessage from '@/app/(backend)/api/discord/send-message/client';
+import { sendDiscordMessage } from '@/app/(backend)/api/discord/discord.client';
+import { setNames } from '@/app/(backend)/api/user/user.client';
 
 
 
