@@ -188,7 +188,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 			else
 				moveTo = getIndexBetween(pages[newIndex - 1].index, pages[newIndex].index);
 		}
-		editor.createPage({ id: currentPage.id, index: moveTo });
+
+		editor.updatePage({ id: currentPage.id, index: moveTo });
 		setCurrentPage(currentPage.id);
 	}, [editor, setCurrentPage]);
 	
