@@ -1,5 +1,5 @@
-import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
-import { Plus, LayoutGrid, List, Search } from "lucide-react"
+import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text, Callout } from "@radix-ui/themes"
+import { LayoutGrid, List, Search, Telescope } from "lucide-react"
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
 import { fetchCapsulesData } from "@/app/(backend)/api/capsule/capsule.server";
 import { TLEditorSnapshot } from "tldraw";
@@ -53,6 +53,14 @@ export default async function Page() {
 
                         </Flex>
                     </Flex>
+
+                    {
+                        capsules.length === 0 &&
+                        <Callout.Root color='gray'>
+                            <Callout.Icon><Telescope/></Callout.Icon>
+                            <Callout.Text>Aucune capsule</Callout.Text>
+                        </Callout.Root>
+                    }
 
                     <Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
                         {capsules.map((cap) => {
