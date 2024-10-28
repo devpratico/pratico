@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu } from 'tldraw';
+import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu, getIndexBelow, getIndexAbove } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
 
@@ -174,14 +174,21 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 		const pages = editor.getPages();
 		const currentPage = editor.getCurrentPage();
 		const currentIndex = pages.indexOf(currentPage);
-	
+		let moveTo;
 		if (currentIndex === -1 || newIndex === currentIndex)
 			return;
-		const updatedPages = [...pages];
-		updatedPages.splice(currentIndex, 1);
-		updatedPages.splice(newIndex, 0, currentPage);
-		pages.forEach(page => editor.deletePage(page.id));
-		updatedPages.forEach(page => editor.createPage({ id: page.id }));
+		if (newIndex === 0)
+			moveTo = getIndexBelow(pages[newIndex].index)
+		else if (newIndex === pages.length - 1)
+			moveTo = getIndexAbove(pages[newIndex].index)
+		else
+		{
+			if (currentIndex < newIndex)
+				moveTo = getIndexBetween(pages[newIndex].index, pages[newIndex + 1].index);
+			else
+				moveTo = getIndexBetween(pages[newIndex - 1].index, pages[newIndex].index);
+		}
+		editor.createPage({ id: currentPage.id, index: moveTo });
 		setCurrentPage(currentPage.id);
 	}, [editor, setCurrentPage]);
 	
