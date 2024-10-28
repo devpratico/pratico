@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
-import { ScrollArea, Container, VisuallyHidden } from "@radix-ui/themes";
+import { ScrollArea, Container } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 
@@ -40,19 +40,15 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
                 paddingRight: 'env(safe-area-inset-right)',
                 backgroundColor:'var(--accent-1)',
                 boxShadow:'var(--shadow-3)',
-                animation: 'slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                animation: 'appear 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 onInteractOutside={(event) => {
                     // If click is on the #menu-tabs element, don't close the dialog
                     if (event.target instanceof Element && event.target.closest('#menu-tabs')) {event.preventDefault()}
                 }}
             >
-				{/*<VisuallyHidden>
-					<Dialog.Title />
-					<Dialog.Description />
-				</VisuallyHidden>*/}
+                <style>{appearAnimation}</style>
 
-                <style>{slideLeftAnimation}</style>
                 <ScrollArea>
                     <Container px='5'>
                         {children}
@@ -64,8 +60,8 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
 }
 
 
-const slideLeftAnimation = `
-    @keyframes slideLeft {
+const appearAnimation = `
+    @keyframes appear {
         0% {
             transform: translateX(100%);
         }
