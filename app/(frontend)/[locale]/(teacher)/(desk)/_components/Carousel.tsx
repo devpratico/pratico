@@ -11,7 +11,6 @@ import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 interface MiniatureProps {
     pageId: TLPageId
     onClick: () => void
-    onDragStart: (event: React.DragEvent<HTMLDivElement>, pageId: TLPageId) => void
     onDrop: (event: React.DragEvent<HTMLDivElement>, index: number) => void
     onDragOver: (event: React.DragEvent<HTMLDivElement>) => void
 }
@@ -21,7 +20,6 @@ const MemoizedMiniature = memo(Miniature)
 
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
-    const [draggedId, setDraggedId] = useState<TLPageId | null>(null);
 
     useEffect(() => {
         const currentThumbnail = document.getElementById(`${currentPageId}-id`);
@@ -46,22 +44,9 @@ export default function Carousel() {
         }
     }, [currentPageId, pageIds]);
 
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, pageId: TLPageId) => {
-        setDraggedId(pageId);
-    }
-
     const handleDrop = (e: React.DragEvent<HTMLDivElement>, pageId: TLPageId, index: number) => {
         e.preventDefault();
-
-		if (draggedId !== null) {
-            const draggedIndex = pageIds.indexOf(draggedId);
-            const updatedPageIds = [...pageIds];
-
-            updatedPageIds.splice(draggedIndex, 1);
-            updatedPageIds.splice(index, 0, draggedId);
-			movePage(index);
-			setDraggedId(null);
-        }
+		movePage(index);
     }
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -79,7 +64,6 @@ export default function Carousel() {
                                 key={`${id}`}
                                 pageId={id}
                                 onClick={() => setCurrentPage(id)}
-                                onDragStart={(e) => handleDragStart(e, id)}
                                 onDrop={(e) => handleDrop(e, id, index)}
                                 onDragOver={handleDragOver}
                             />
@@ -92,7 +76,7 @@ export default function Carousel() {
 }
 
 
-function Miniature({ pageId, onClick, onDragStart, onDrop, onDragOver }: MiniatureProps) {
+function Miniature({ pageId, onClick, onDrop, onDragOver }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
@@ -128,7 +112,6 @@ function Miniature({ pageId, onClick, onDragStart, onDrop, onDragOver }: Miniatu
             onMouseEnter={() => setShowEllipsis(true)}
             onMouseLeave={() => setShowEllipsis(showMenu)}
             draggable
-            onDragStart={(e) => onDragStart(e, pageId)}
             onDrop={(e) => onDrop(e, 0)}
             onDragOver={onDragOver}
         >
