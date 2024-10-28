@@ -7,7 +7,7 @@ import { luciole } from '../Fonts'
 import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
 import { UserContextProvider } from '../_hooks/useUser';
 import createClient from '@/supabase/clients/server';
-import { customerIsSubscribed } from '@/app/(backend)/data-access/stripe';
+import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 
 
 export const metadata: Metadata = {

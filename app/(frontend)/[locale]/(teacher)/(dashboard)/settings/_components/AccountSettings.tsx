@@ -2,7 +2,7 @@ import { Button, Callout, Flex, Link, Separator } from '@radix-ui/themes';
 import { TriangleAlert } from 'lucide-react';
 import { SignOutBtn } from './SignOutBtn';
 import StripeSettings from './StripeSettings';
-import { getUser } from '@/app/(backend)/data-access/user';
+import { getUser } from '@/app/(backend)/api/auth/auth.server';
 
 
 /** The AccountSettings component's state consists of which components should be displayed */

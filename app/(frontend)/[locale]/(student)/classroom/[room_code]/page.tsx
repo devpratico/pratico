@@ -5,11 +5,10 @@ import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canva
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
-import { roomCreatorIsPaidCustomer, getRoomCreator } from '@/app/(backend)/data-access/room'
-import { countAttendances } from '@/app/(backend)/data-access/attendance'
-import { discordMessageSender } from '@/app/(backend)/api/discord/utils'
-import { getProfile } from '@/app/(backend)/data-access/user'
+import { fetchUserHasSignedAttendance, countAttendances } from '@/app/(backend)/api/attendance/attendance.server'
+import { fetchRoomCreator, roomCreatorIsPaidCustomer } from '@/app/(backend)/api/room/room.server'
+import { fetchProfile } from '@/app/(backend)/api/user/user.server'
+import { sendDiscordMessage } from '@/app/(backend)/api/discord/discord.server'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
@@ -50,14 +49,14 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         if (attendanceCount >= maxParticipants) {
             logger.log('next:page', 'StudentViewPage', 'attendance count is greater than 10. Blocking user.');
 
-            const { data: creatorData, error: creatorError } = await getRoomCreator(roomData!.id);
+            const { data: creatorData, error: creatorError } = await fetchRoomCreator(roomData!.code!)//roomData!.id);
             const creatorId = creatorData?.created_by;
             if (creatorId) {
                 //const creatorName = (await getProfile(creatorId)
-                const { data } = await getProfile(creatorId);
+                const { data } = await fetchProfile(creatorId);
                 let creatorName = (data?.first_name || '')  + ' ' + (data?.last_name || '');
                 if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
-                await discordMessageSender(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
+                await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
             }
 
             throw new Error('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');

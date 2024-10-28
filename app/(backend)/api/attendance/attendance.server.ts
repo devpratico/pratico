@@ -77,3 +77,13 @@ export const fetchUserHasSignedAttendance = async (roomId: number | undefined, u
     });
     return ({ data: participant ? { first_name: participant?.first_name, last_name: participant?.last_name } : null, error: error ? error : null });
 };
+
+export async function countAttendances(roomId: number) {
+    const supabase = createClient()
+    const response = await supabase.from('attendance').select('id').eq('room_id', roomId)
+    if (response.error) {
+        logger.error('supabase:database', 'countAttendances', 'error counting attendances', response.error.message, 'discord')
+        return 0
+    }
+    return response.data.length
+}

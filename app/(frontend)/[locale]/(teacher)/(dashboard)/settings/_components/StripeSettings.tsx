@@ -1,5 +1,5 @@
 import { Heading, Flex, Callout, Button, Box } from "@radix-ui/themes"
-import { customerIsSubscribed } from "@/app/(backend)/data-access/stripe"
+import { customerIsSubscribed } from "@/app/(backend)/api/stripe/stripe.server"
 import { Gift, Star, Gem } from "lucide-react"
 import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 import config from "@/app/(backend)/api/stripe/stripe.config"
