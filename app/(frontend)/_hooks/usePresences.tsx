@@ -54,6 +54,9 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
         const supabase = createClient()
         const room = supabase.channel(room_code + "_presence")
 
+        // Reset the presences
+        setPresences([])
+
         // React to presence changes
         room.on('presence', { event: 'sync' }, () => {
             logger.log('supabase:realtime', room_code + "_presence", 'Presence sync')
