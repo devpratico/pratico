@@ -1,4 +1,6 @@
-import { getUser } from '@/app/(backend)/data-access/user';
+import styles from './page.module.css'
+import { getTranslations } from 'next-intl/server';
+import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import config from '@/app/(backend)/api/stripe/stripe.config';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
 import { Container, Section, Card, Heading } from '@radix-ui/themes';
@@ -15,7 +17,7 @@ declare global {
 export default async function SubScribePage() {
     // On passe l'id de l'utilisateur à stripe afin de pouvoir facilement le retrouver parmis
     // les events émis par le webhook de stripe.
-    const { data: {user: user}, error } = await getUser()
+    const { user, error } = await fetchUser()
 
     // If no user or user is anonymous, redirect to the auth page
     if (error || !user || user.is_anonymous) {

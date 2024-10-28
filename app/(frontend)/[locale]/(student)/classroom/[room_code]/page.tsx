@@ -1,11 +1,11 @@
 import StudentCanvas from './_components/StudentCanvas'
+import { fetchUser } from '@/app/(backend)/api/user/user.server'
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation'
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchOpenRoomByCode } from '@/app/(backend)/api/actions/room'
+import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/actions/attendance'
-import { getUser } from '@/app/(backend)/data-access/user'
+import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
 import { roomCreatorIsPaidCustomer, getRoomCreator } from '@/app/(backend)/data-access/room'
 import { countAttendances } from '@/app/(backend)/data-access/attendance'
 import { discordMessageSender } from '@/app/(backend)/api/discord/utils'
@@ -15,7 +15,7 @@ import { getProfile } from '@/app/(backend)/data-access/user'
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
 
     // Check user is logged in (can be anonymous)
-    const { data:{user}, error: userError } = await getUser();
+    const { user, error: userError } = await fetchUser();
     if (!user || userError) {
         logger.log('next:page', 'User info missing or error fetchingUser, redirecting to form', userError ? userError : null);
         const nextUrl = `/classroom/${params.room_code}`;

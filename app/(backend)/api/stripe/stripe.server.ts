@@ -89,7 +89,7 @@ export async function listAllCoupons() {
 export async function listAllCodes() {
     try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-        const codes = await stripe.promotionCodes.list();
+        const codes = await stripe.promotionCodes.list({limit: 100});
 
         logger.log('next:api', 'listAllCodes:', codes.data.length, 'found');
 

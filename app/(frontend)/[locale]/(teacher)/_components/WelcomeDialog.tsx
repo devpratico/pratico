@@ -2,8 +2,8 @@
 import { AlertDialog, Button, Flex } from "@radix-ui/themes"
 import { useState } from "react"
 import { Link } from "@/app/(frontend)/_intl/intlNavigation"
-import { signInAnonymously } from "@/app/(backend)/api/actions/auth"
-import { saveCapsule } from "@/app/(backend)/api/actions/capsule"
+import { signInAnonymously } from "@/app/(backend)/api/auth/auth.client"
+import { saveCapsule } from "@/app/(backend)/api/capsule/capsule.client"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import { useUser } from "@/app/(frontend)/_hooks/useUser"
 

@@ -9,7 +9,7 @@ import { Quiz } from "@/app/_types/quiz"
 import { useUser } from "@/app/(frontend)/_hooks/useUser"
 import createClient from "@/supabase/clients/client"
 import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/actions/room"
+import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client";
 
 
 
@@ -145,6 +145,7 @@ export default function QuizAnimation() {
     }, [quiz, currentQuestionIndex, setCurrentQuestionId])
     
     return (
+		<div id='activityAnimationId'>
         <Grid rows='auto 1fr auto' height='100%'>
             
             <Flex justify='between' gap='3' align='center' p='4'>
@@ -206,6 +207,7 @@ export default function QuizAnimation() {
             </Flex>
 
         </Grid>
+		</div>
     )
 }
 

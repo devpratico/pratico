@@ -1,10 +1,10 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, DataList, Flex, Heading, TextField } from "@radix-ui/themes";
-import { useState } from "react";
+import { Button, Callout, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { Check } from "lucide-react";
+import { Check, TriangleAlert } from "lucide-react";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -36,8 +36,18 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	const [ modifying, setModifying ] = useState(false);
 	const [ loading, setLoading ] = useState(false);
 	let timeout: null | NodeJS.Timeout = null;
+	const [ anonyme, setAnonyme ] = useState(false);
 	const supabase = createClient();
 
+	useEffect(() => {
+		if (anonyme)
+		{
+			const anonymeTimeout = setTimeout(() => {
+				setAnonyme(false);
+			}, 30000);
+			return (() => clearTimeout(anonymeTimeout));
+		}
+	}, [anonyme]);
 
 	const updateData = async () => {
 		if (timeout)
@@ -45,7 +55,40 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 		setLoading(true);
 		if (teacher?.id && values)
 		{
-			if (values.email?.length && values.email !== teacher.email)
+			const { data: userProfileData, error: userProfileError } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
+			if (userProfileError)
+			{	
+				console.log(userProfileError.details === 'The result contains 0 rows');
+				if (userProfileError.details === 'The result contains 0 rows')
+				{
+					logger.log("supabase:database", "InfoSettings, an anonyme updates his infos", userProfileError);
+					setAnonyme(true);
+				}
+				else
+					logger.error("supabase:database", "InfoSettings, error getting user_profile", userProfileError, "discord");
+
+			}
+			else
+			{
+				setAnonyme(false);
+				const userProfileCopy = { ...userProfileData,
+					first_name: values.first_name,
+					last_name: values.last_name,
+					organization: {
+						name: values.organization?.name,
+						address: values.organization?.address,
+						zip_code: values.organization?.zip_code,
+						city: values.organization?.city
+					}
+				}
+
+				const { data, error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
+				if (error)
+					logger.error("supabase:database", "InfoSettings", error, "discord");
+				else if (data)
+					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
+			}
+			if (values.email?.length && values.email !== teacher.email && !userProfileError)
 			{
 				const { data: user, error: userError } = await supabase.auth.updateUser({email: values.email });
 				if (userError)
@@ -53,27 +96,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				else
 					logger.log("supabase:database", "InfoSettings", "Email updated successfully", user);
 			}
-			const { data: userProfileData, error: userProfileError } = await supabase.from('user_profiles').select('*').eq('id', teacher?.id).single();
 			
-            if (userProfileError) logger.log("supabase:database", "InfoSettings, no user_profile for current user", userProfileError);
-
-            const userProfileCopy = { ...userProfileData,
-                id: teacher?.id,
-                first_name: values.first_name,
-                last_name: values.last_name,
-                organization: {
-                    name: values.organization?.name,
-                    address: values.organization?.address,
-                    zip_code: values.organization?.zip_code,
-                    city: values.organization?.city
-                }
-            }
-
-            const { data, error } = await supabase.from('user_profiles').upsert(userProfileCopy)
-            
-            if (error) logger.error("supabase:database", "InfoSettings", error, "discord");
-            else if (data) logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
-
 			setLoading(false);
 			setUpdated(true);
 			setModifying(false);
@@ -211,8 +234,20 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 
 				</DataList.Root>
 
-				<Flex mt='3' gap='4' wrap='wrap' style={{justifyContent: 'flex-end'}}>
-					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>{!modifying && updated ? <Check /> : 'Enregistrer'}</Button>
+				<Flex mt='3' gap='4' wrap='wrap' style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+					{
+						anonyme && (
+						<div style={{ marginRight: '10px' }}>
+							<Callout.Root color='red' role='alert' size='1'>
+								<Callout.Text>
+									{"Vous n'êtes pas connecté, les informations ne seront pas sauvegardées"}	
+								</Callout.Text>
+							</Callout.Root>
+						</div>
+					)}
+					<Button style={{ width: '100px' }} onClick={updateData} loading={loading} disabled={!modifying && !updated}>
+						{!modifying && updated ? <Check /> : 'Enregistrer'}
+					</Button>
 					<Button variant='soft' color='gray' onClick={handleCancelUpdate} disabled={!modifying}>Annuler</Button>
 				</Flex>
         </>

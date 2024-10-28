@@ -1,6 +1,6 @@
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
-import { fetchRoomCreator } from "@/app/(backend)/api/actions/room";
-import { fetchUser } from "@/app/(backend)/api/actions/user";
+import { fetchRoomCreator } from "@/app/(backend)/api/room/room.server";
+import { fetchUser } from "@/app/(backend)/api/user/user.server";
 
 export async function GET(request: Request, { params }: { params: { room_code: string } }) {
     const { data, error: roomCreatorErr } = await fetchRoomCreator(params.room_code)

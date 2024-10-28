@@ -1,11 +1,12 @@
 import 'server-only'
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
-import { adapter } from '../api/activity/utils'
-import { getUser } from './user'
+import { adapter } from './utils'
+import { getUser } from '../auth/auth.server'
 import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
+
 
 
 export const fetchActivity = async (id: number) => {
@@ -54,11 +55,11 @@ interface ReturnedData extends Omit<Tables<'activities'>, 'object'> {
 
 
 export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ data: ReturnedData[], error: string | null }> => {
-    const { data: { user: user}, error: userError } = await getUser()
+    const { data: { user: user }, error: userError } = await getUser()
     const userId = user?.id
 
     if (!userId || userError) {
-        logger.error('supabase:database', 'Error fetching user', userError?.message)
+        logger.error('supabase:database', 'Error fetching user', userError)
         return { data: [], error: userError?.message || null }
     }
 
@@ -88,3 +89,6 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
 
     return { data: activities, error: null }
 }
+
+
+

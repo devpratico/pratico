@@ -1,4 +1,4 @@
-import { getProfile, getUser } from '@/app/(backend)/data-access/user';
+import { fetchUser, fetchProfile } from '@/app/(backend)/api/user/user.server';
 import { Container, Section, Heading, Card, ScrollArea, Callout } from '@radix-ui/themes';
 import InfosSettings from './_components/InfosSettings';
 import AccountSettings from './_components/AccountSettings';
@@ -8,8 +8,8 @@ import { Info } from 'lucide-react';
 
 
 export default async function AccountPage() {
-    const { data: {user: user} } = await getUser()
-    const { data: profileData } = user ? await getProfile(user.id) : {data: null}
+    const { user } = await fetchUser()
+    const { data: profileData } = user ? await fetchProfile(user.id) : {data: null}
 
 	return (
         <ScrollArea>

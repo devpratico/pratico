@@ -5,10 +5,8 @@
  * To send an error to discord, add 'discord' as the last parameter (works only for errors)
  */
 
-
-
-
-import { sendDiscordError } from "../(backend)/api/discord/wrappers";
+// Not ideal because it is a server action and it works when called from the server
+import { sendDiscordError } from "../(backend)/api/discord/discord.client";
 
 
 const logCategories = {

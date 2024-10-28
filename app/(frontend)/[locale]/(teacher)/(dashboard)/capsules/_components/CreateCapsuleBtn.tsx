@@ -1,6 +1,6 @@
 'use client'
-import { fetchUser } from "@/app/(backend)/api/actions/user";
-import { saveCapsule } from "@/app/(backend)/api/actions/capsule";
+import { fetchUser } from "@/app/(backend)/api/user/user.client";
+import { saveCapsule } from "@/app/(backend)/api/capsule/capsule.client";
 import { Button } from "@radix-ui/themes";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Plus } from "lucide-react";
