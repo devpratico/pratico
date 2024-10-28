@@ -1,8 +1,8 @@
 import 'server-only'
 import Stripe from "stripe";
 import logger from "@/app/_utils/logger";
-import { getStripeId, getUser } from './user';
-import config from '../api/stripe/stripe.config';
+import { fetchUser, fetchStripeId } from '../user/user.server';
+import config from './stripe.config';
 
 
 
@@ -11,12 +11,12 @@ export async function getCustomer(userId?: string) {
     let _userId = userId;
 
     if (!_userId) {
-        const { data: { user: user } } = await getUser();
+        const { user } = await fetchUser();
         if (!user) return null;
         _userId = user.id;
     }
 
-    const { data } = await getStripeId(_userId);
+    const { data } = await fetchStripeId(_userId);
     if (!data?.stripe_id) return null;
 
     const stripeId = data.stripe_id;
