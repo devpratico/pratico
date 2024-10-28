@@ -59,7 +59,7 @@ export default function Carousel() {
 
             updatedPageIds.splice(draggedIndex, 1);
             updatedPageIds.splice(index, 0, draggedId);
-			movePage(pageId, index)
+			movePage(index);
 			setDraggedId(null);
         }
     }

@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId } from 'tldraw';
+import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
 
@@ -15,7 +15,7 @@ type NavContextType = {
     goPrevPage: () => void;
     newPage: (position?: 'next' | 'last') => void;
     deletePage: (id: TLPageId) => void;
-	movePage: (pageId: TLPageId, newIndex: number) => void;
+	movePage: (newIndex: number) => void;
 };
 
 const emptyContext: NavContextType = {
@@ -28,7 +28,7 @@ const emptyContext: NavContextType = {
     goPrevPage: () => { },
     newPage: (position?: 'next' | 'last') => { },
     deletePage: (id: TLPageId) => { },
-	movePage: (pageId: TLPageId, newIndex: number) => {}
+	movePage: (newIndex: number) => {}
 
 }
 
@@ -168,25 +168,25 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         editor.deletePage(id)
     }, [editor])
 
-	const movePage = useCallback((pageId: TLPageId, newIndex: number) => {
-		if (!editor) return ;
+	const movePage = useCallback((newIndex: number) => {
+		if (!editor)
+			return;
+	
 		const pages = editor.getPages();
 		const currentPage = editor.getCurrentPage();
-		const index = pages.indexOf(currentPage);
-		const startIndex = index < newIndex ? index : newIndex;
-		const endIndex = index < newIndex ? newIndex : index;
-		const pagesToRecreate = pages.slice(startIndex, endIndex);
-
-		pagesToRecreate.forEach((page, ind) =>{
-			console.log("DELETE PAGE", page.index, page.id, ind);
-			editor.deletePage(page.id);
-		});
-		pagesToRecreate.forEach((page, ind) => {
-			console.log("RECREATE PAGE", page.index, page.id, ind);
-			editor.createPage({id: page.id});
-		});
-		console.log("current", currentPage.id, "page", pageId, index, newIndex);
+		const currentIndex = pages.indexOf(currentPage);
+	
+		if (currentIndex === -1 || newIndex === currentIndex)
+			return;
+	
+		const updatedPages = [...pages];
+		updatedPages.splice(currentIndex, 1);
+		updatedPages.splice(newIndex, 0, currentPage);
+		pages.forEach(page => editor.deletePage(page.id));
+		updatedPages.forEach(page => editor.createPage({ id: page.id }));
+		console.log("Moved page", currentPage.id, " new index", newIndex);
 	}, [editor]);
+	
 
     return (
         <NavContext.Provider value={{
