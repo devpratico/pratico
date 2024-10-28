@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect } from "react"
 import * as Dialog from '@radix-ui/react-dialog';
-import { ScrollArea, Container } from "@radix-ui/themes";
+import { ScrollArea, Container, Spinner } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Suspense } from "react";
 
 export default function MenuDialog({children}: {children: React.ReactNode}) {
     const router = useRouter()
@@ -51,7 +52,9 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
 
                 <ScrollArea>
                     <Container px='5'>
-                        {children}
+                        <Suspense fallback={<Spinner />}>
+                            {children}
+                        </Suspense>
                     </Container>
                 </ScrollArea>
             </Dialog.Content>
