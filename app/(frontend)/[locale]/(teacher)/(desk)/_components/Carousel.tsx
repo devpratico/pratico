@@ -6,7 +6,9 @@ import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
-
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { Draggable } from './Draggable'
+import { Droppable } from './Droppable'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -20,6 +22,16 @@ const MemoizedMiniature = memo(Miniature)
 
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
+	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
+
+	const handleDragStart = () => {
+		setActiveId(currentPageId);
+	}
+
+	const handleDragEnd = () => {
+		setActiveId(undefined);
+	}
+
 
     useEffect(() => {
         const currentThumbnail = document.getElementById(`${currentPageId}-id`);
@@ -46,31 +58,45 @@ export default function Carousel() {
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
         e.preventDefault();
+		console.log("DROP")
 		movePage(index);
-    }
+	}
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
     }
 
     return (
+		<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
                 <ScrollArea>
                     <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
                         {pageIds.map((id, index) => (
-                            <MemoizedMiniature
-                                key={`${id}`}
-                                pageId={id}
-                                onClick={() => setCurrentPage(id)}
-                                onDrop={(e) => handleDrop(e, index)}
-                                onDragOver={handleDragOver}
-                            />
+							<MemoizedMiniature
+								key={`${id}`}
+								pageId={id}
+								onClick={() => setCurrentPage(id)}
+								onDrop={(e) => handleDrop(e, index)}
+								onDragOver={handleDragOver}
+							/>
                         ))}
                     </Flex>
                 </ScrollArea>
             </Card>
         </SnapshotProvider>
+		<DragOverlay>
+			{activeId ? (
+				<MemoizedMiniature
+					pageId={activeId}
+					onClick={() => {}}
+					onDrop={() => {}}
+					onDragOver={() => {}}
+				/>
+			) : null}
+            </DragOverlay>
+		</DndContext>
     )
 }
 
@@ -79,7 +105,6 @@ function Miniature({ pageId, onClick, onDrop, onDragOver }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
-
 
     const shadow = useMemo(() => {
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
@@ -102,56 +127,65 @@ function Miniature({ pageId, onClick, onDrop, onDragOver }: MiniatureProps) {
     }, [showMenu])
 
     return (
-        <Box
-            id={`${pageId}-id`}
-            position='relative'
-            width='55px'
-            height='36px'
-            onClick={onClick}
-            onMouseEnter={() => setShowEllipsis(true)}
-            onMouseLeave={() => setShowEllipsis(showMenu)}
-            draggable
-            onDrop={(e) => onDrop(e, 0)}
-            onDragOver={onDragOver}
-        >
+		<DndContext>
 
-            <Box
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden',
-                    borderRadius: 'var(--radius-2)',
-                    boxShadow: shadow,
-                }} 
-            >
-                <MemoizedThumbnail pageId={pageId}/>
-            </Box>
+			<Draggable key={pageId} id={pageId}>
+				<Droppable key={pageId} id={pageId}>
+					<Box
+						id={`${pageId}-id`}
+						position='relative'
+						width='55px'
+						height='36px'
+						onClick={onClick}
+						onMouseEnter={() => setShowEllipsis(true)}
+						onMouseLeave={() => setShowEllipsis(showMenu)}
+						draggable
+						onDrop={(e) => onDrop(e, 0)}
+						onDragOver={onDragOver}
+					>
 
-            <DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
+						<Box
+							style={{
+								width: '100%',
+								height: '100%',
+								overflow: 'hidden',
+								borderRadius: 'var(--radius-2)',
+								boxShadow: shadow,
+							}} 
+						>
+							<MemoizedThumbnail pageId={pageId}/>
+						</Box>
 
-                <DropdownMenu.Trigger>
-                    <IconButton
-                        radius='full' size='1'
-                        style={{ position: 'absolute', top: '-10px', right: '-10px', boxShadow: 'var(--shadow-3)', opacity: ellipsisOpacities }}
-                    >
-                        <Ellipsis size='18' />
-                    </IconButton>
-                </DropdownMenu.Trigger>
+						<DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
-                <DropdownMenu.Content onClick={(e) => e.stopPropagation()}>
+							<DropdownMenu.Trigger>
+								<IconButton
+									radius='full' size='1'
+									style={{ position: 'absolute', top: '-10px', right: '-10px', boxShadow: 'var(--shadow-3)', opacity: ellipsisOpacities }}
+								>
+									<Ellipsis size='18' />
+								</IconButton>
+							</DropdownMenu.Trigger>
 
-                    <DropdownMenu.Item onSelect={() => console.log('Duplicate')} disabled={true}>
-                        <Copy size='15' /> Dupliquer
-                    </DropdownMenu.Item>
+							<DropdownMenu.Content onClick={(e) => e.stopPropagation()}>
 
-                    <DropdownMenu.Item color='red' onSelect={onSelect}>
-                        <Trash2 size='15' /> Supprimer
-                    </DropdownMenu.Item>
-                    
-                </DropdownMenu.Content>
-                    
-            </DropdownMenu.Root>
+								<DropdownMenu.Item onSelect={() => console.log('Duplicate')} disabled={true}>
+									<Copy size='15' /> Dupliquer
+								</DropdownMenu.Item>
 
-        </Box>
+								<DropdownMenu.Item color='red' onSelect={onSelect}>
+									<Trash2 size='15' /> Supprimer
+								</DropdownMenu.Item>
+								
+							</DropdownMenu.Content>
+								
+						</DropdownMenu.Root>	
+
+					</Box>
+				</Droppable>
+			</Draggable>
+
+		</DndContext>
+
     )
 }
