@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes'
 import '../colors.css'
 import '../globals.css'
+import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
 import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
-import { AuthContextProvider } from '../_hooks/useAuth';
+import { UserContextProvider } from '../_hooks/useUser';
 import createClient from '@/supabase/clients/server';
+import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 
 
 export const metadata: Metadata = {
@@ -39,15 +40,17 @@ export default async function RootLayout({children, params: { locale }}: RootLay
             lastName = names?.last_name || undefined
         }
     }
+
+    const isSubscribed = await customerIsSubscribed(data?.user?.id)
     
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
-                <Theme accentColor="violet" appearance='light' panelBackground='translucent'>
+                <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
-                        <AuthContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName}>
+                        <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
                             {children}
-                        </AuthContextProvider>
+                        </UserContextProvider>
                     </DisableProvider>
                 </Theme>
             </body>

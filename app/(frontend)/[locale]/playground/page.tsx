@@ -1,4 +1,5 @@
-'use client'
+'use client';
+import { Button } from "@radix-ui/themes";
 import { sendDiscordError } from "@/app/(backend)/api/discord/discord.client";
 
 
@@ -7,16 +8,13 @@ export default function PlayGround () {
 		return (null);
 	}
 
-    //const { error } = await sendDiscordError('Hello from the server');
     const handleClick = async () => {
-        const { error } = await sendDiscordError('Hello from the client');
-        console.log(error);
-    }
+        //const response = await sendDiscordMessage('Hello from the frontend');
+        //console.log(response);
+    };
 
 	return (<>
-
-    <p>Hello</p>
-    <button onClick={handleClick}>Send error</button>
-
+        <Button onClick={handleClick}>Send Message</Button>
+        
 	</>)
 };

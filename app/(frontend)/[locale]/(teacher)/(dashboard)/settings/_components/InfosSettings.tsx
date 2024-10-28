@@ -3,8 +3,6 @@ import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
 import { Button, Callout, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
-import { ResetPasswordBtn } from "../_buttons/ResetPasswordBtn";
-import { SignOutBtn } from "../_buttons/SignOutBtn";
 import { User } from "@supabase/supabase-js";
 import { Check, TriangleAlert } from "lucide-react";
 
@@ -146,11 +144,8 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 	};
 
 	return (
-		<>
-            <Heading as='h1' mb='2'>{'Informations'}</Heading>
 
-			<Card size='4'>
-
+            <>
 				<DataList.Root>
 
 					<Heading size='5'>Personnelles</Heading>
@@ -195,7 +190,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"id"}</DataList.Label>
 						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
 					</DataList.Item>*/}
-					<Heading size='5'>Organisation</Heading>
+					<Heading size='5' mt='5'>Organisation</Heading>
 
 					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Nom"}</DataList.Label>
@@ -255,19 +250,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					</Button>
 					<Button variant='soft' color='gray' onClick={handleCancelUpdate} disabled={!modifying}>Annuler</Button>
 				</Flex>
-
-
-				<Separator size='4' my='4'/>
-			
-				<Heading mb='3' size='5'>Compte Pratico</Heading>
-				<Flex mt='5' gap='4' wrap='wrap'>					
-					<ResetPasswordBtn message={"Changer le mot de passe"}/>
-					<SignOutBtn message={"Se déconnecter"}/>
-				</Flex>
+        </>
 		
-			</Card>
-
-		
-		</>
 	);
 };
