@@ -171,21 +171,19 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 	const movePage = useCallback((newIndex: number) => {
 		if (!editor)
 			return;
-	
 		const pages = editor.getPages();
 		const currentPage = editor.getCurrentPage();
 		const currentIndex = pages.indexOf(currentPage);
 	
 		if (currentIndex === -1 || newIndex === currentIndex)
 			return;
-	
 		const updatedPages = [...pages];
 		updatedPages.splice(currentIndex, 1);
 		updatedPages.splice(newIndex, 0, currentPage);
 		pages.forEach(page => editor.deletePage(page.id));
 		updatedPages.forEach(page => editor.createPage({ id: page.id }));
-		console.log("Moved page", currentPage.id, " new index", newIndex);
-	}, [editor]);
+		setCurrentPage(currentPage.id);
+	}, [editor, setCurrentPage]);
 	
 
     return (

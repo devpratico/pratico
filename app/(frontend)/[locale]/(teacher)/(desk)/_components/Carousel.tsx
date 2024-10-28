@@ -44,14 +44,13 @@ export default function Carousel() {
         }
     }, [currentPageId, pageIds]);
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, pageId: TLPageId, index: number) => {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
         e.preventDefault();
 		movePage(index);
     }
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-
     }
 
     return (
@@ -64,7 +63,7 @@ export default function Carousel() {
                                 key={`${id}`}
                                 pageId={id}
                                 onClick={() => setCurrentPage(id)}
-                                onDrop={(e) => handleDrop(e, id, index)}
+                                onDrop={(e) => handleDrop(e, index)}
                                 onDragOver={handleDragOver}
                             />
                         ))}
