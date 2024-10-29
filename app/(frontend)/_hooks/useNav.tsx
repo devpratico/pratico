@@ -15,7 +15,7 @@ type NavContextType = {
     goPrevPage: () => void;
     newPage: (position?: 'next' | 'last') => void;
     deletePage: (id: TLPageId) => void;
-	movePage: (newIndex: number) => void;
+	movePage: (destinationPageId: TLPageId) => void;
 };
 
 const emptyContext: NavContextType = {
@@ -28,7 +28,7 @@ const emptyContext: NavContextType = {
     goPrevPage: () => { },
     newPage: (position?: 'next' | 'last') => { },
     deletePage: (id: TLPageId) => { },
-	movePage: (newIndex: number) => {}
+	movePage: (destinationPageId: TLPageId) => {}
 
 }
 
@@ -168,15 +168,19 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         editor.deletePage(id)
     }, [editor])
 
-	const movePage = useCallback((newIndex: number) => {
+	const movePage = useCallback((destinationPageId: TLPageId) => {
 		if (!editor)
-			return;
+			return ;
 		const pages = editor.getPages();
 		const currentPage = editor.getCurrentPage();
+		const destinationPage = editor.getPage(destinationPageId);
+		if (!destinationPage)
+			return ;
 		const currentIndex = pages.indexOf(currentPage);
+		const newIndex = pages.indexOf(destinationPage);
 		let moveTo;
 		if (currentIndex === -1 || newIndex === currentIndex)
-			return;
+			return ;
 		if (newIndex === 0)
 			moveTo = getIndexBelow(pages[newIndex].index)
 		else if (newIndex === pages.length - 1)
