@@ -24,20 +24,11 @@ export default function Carousel() {
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
 
-	useEffect(() => {
-		console.log("IS GRABBING", isGrabbing);
-	}, [isGrabbing]);
-
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
 			setIsGrabbing(true);
 		setCurrentPage(e.active.id as TLPageId);
 		setActiveId(e.active.id as TLPageId);
-	};
-
-	const handleDragMove = () => {
-		if (!isGrabbing)
-			setIsGrabbing(true);
 	};
 
 	const handleDragEnd = (e: DragEndEvent) => {
@@ -72,7 +63,7 @@ export default function Carousel() {
 
 
     return (
-		<DndContext onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
+		<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
@@ -112,7 +103,7 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
-
+	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
     }, [currentPageId, pageId])
@@ -142,9 +133,9 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 			onClick={onClick}
 			onMouseEnter={() => setShowEllipsis(true)}
 			onMouseLeave={() => setShowEllipsis(showMenu)}
+			onMouseUp={() => setClicked(false)}
 			draggable
 		>
-
 			<Box
 				style={{
 					width: '100%',
@@ -152,7 +143,7 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 					overflow: 'hidden',
 					borderRadius: 'var(--radius-2)',
 					boxShadow: shadow,
-					cursor: isGrabbing ? 'grabbing' : 'grab'
+					cursor: clicked ? 'grabbing' : 'grab'
 				}} 
 			>
 				<MemoizedThumbnail pageId={pageId}/>
@@ -182,7 +173,6 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 				</DropdownMenu.Content>
 					
 			</DropdownMenu.Root>	
-
 		</Box>
     )
 }
