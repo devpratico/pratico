@@ -6,13 +6,14 @@ import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
-import { DndContext, DragEndEvent, DragMoveEvent, DragOverEvent, DragOverlay, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
 
 interface MiniatureProps {
     pageId: TLPageId
     onClick: () => void
+	isGrabbing: boolean
 }
 
 const MemoizedThumbnail = memo(Thumbnail)
@@ -21,27 +22,33 @@ const MemoizedMiniature = memo(Miniature)
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
+	const [ isGrabbing, setIsGrabbing ] = useState(false);
+
+	useEffect(() => {
+		console.log("IS GRABBING", isGrabbing);
+	}, [isGrabbing]);
 
 	const handleDragStart = (e: DragStartEvent) => {
-		setActiveId(currentPageId);
-		console.log("EVENT dragStart", e);
+		if (!isGrabbing)
+			setIsGrabbing(true);
+		setCurrentPage(e.active.id as TLPageId);
+		setActiveId(e.active.id as TLPageId);
+	};
 
-	}
-
-	const handleDragOver = (e: DragOverEvent) => {
-		console.log("EVENT dragOver", e);
-
+	const handleDragMove = () => {
+		if (!isGrabbing)
+			setIsGrabbing(true);
 	};
 
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
-		console.log("EVENT", e);
+		if (isGrabbing)
+			setIsGrabbing(false);
 		movePage(e.over?.id as TLPageId);
-	}
-
+	};
 
     useEffect(() => {
-        const currentThumbnail = document.getElementById(`${currentPageId}-id`);
+        const currentThumbnail = document.getElementById(`${currentPageId}`);
         const scrollContainer = currentThumbnail?.parentElement?.parentElement?.parentElement;
 
         if (currentThumbnail && scrollContainer) {
@@ -65,7 +72,7 @@ export default function Carousel() {
 
 
     return (
-		<DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+		<DndContext onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
@@ -75,9 +82,10 @@ export default function Carousel() {
 							<Draggable key={id} id={id}>
 							<Droppable key={id} id={id}>
 								<MemoizedMiniature
-									key={`${id}`}
+									key={id}
 									pageId={id}
 									onClick={() => setCurrentPage(id)}
+									isGrabbing={isGrabbing}
 								/>
 							</Droppable>
 							</Draggable>
@@ -91,6 +99,7 @@ export default function Carousel() {
 				<MemoizedMiniature
 					pageId={activeId}
 					onClick={() => {}}
+					isGrabbing={isGrabbing}
 				/>
 			) : null}
             </DragOverlay>
@@ -99,7 +108,7 @@ export default function Carousel() {
 }
 
 
-function Miniature({ pageId, onClick }: MiniatureProps) {
+function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
@@ -126,7 +135,7 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
 
     return (
 		<Box
-			id={`${pageId}-id`}
+			id={pageId}
 			position='relative'
 			width='55px'
 			height='36px'
@@ -143,6 +152,7 @@ function Miniature({ pageId, onClick }: MiniatureProps) {
 					overflow: 'hidden',
 					borderRadius: 'var(--radius-2)',
 					boxShadow: shadow,
+					cursor: isGrabbing ? 'grabbing' : 'grab'
 				}} 
 			>
 				<MemoizedThumbnail pageId={pageId}/>
