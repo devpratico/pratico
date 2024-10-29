@@ -1,5 +1,5 @@
-import { ScrollArea, Grid, Card, Container, Section, AspectRatio, Button, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
-import { Plus, LayoutGrid, List, Search } from "lucide-react"
+import { ScrollArea, Grid, Card, Container, Section, AspectRatio, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
+import { LayoutGrid, List, Search } from "lucide-react"
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
 import { fetchCapsulesData } from "@/app/(backend)/api/capsule/capsule.server";
 import { TLEditorSnapshot } from "tldraw";
@@ -17,7 +17,9 @@ export default async function Page() {
         const { data, error } = await fetchCapsulesData(user.id)
         if (data) capsules = data
     }
-
+	capsules = capsules.sort((a, b) => {
+		return (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+	})
 
     return (
         <ScrollArea>
