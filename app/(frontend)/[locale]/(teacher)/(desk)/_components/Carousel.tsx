@@ -4,7 +4,7 @@ import { useNav } from '@/app/(frontend)/_hooks/useNav'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
-import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator  } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
@@ -24,7 +24,7 @@ export default function Carousel() {
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
 	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
@@ -44,22 +44,20 @@ export default function Carousel() {
 
     useEffect(() => {
         const currentThumbnail = document.getElementById(`${currentPageId}-id`);
-    	const scrollContainer = currentThumbnail?.closest('.scroll-area');
+    	const scrollContainer = scrollContainerRef.current;
 
 		if (currentThumbnail && scrollContainer) {
             const thumbnailRect = currentThumbnail.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
-            const margin = 50;
+            const margin = 20;
     
 			if (thumbnailRect.left < containerRect.left) {
-				// currentThumbnail.scrollIntoView({behavior: 'smooth', inline: 'start', block: 'start'});
 				scrollContainer.scrollBy({
 					left: thumbnailRect.left - containerRect.left - margin,
 					behavior: 'smooth',
 				});
 			}
 			else if (thumbnailRect.right > containerRect.right) {
-				// currentThumbnail.scrollIntoView({behavior: 'smooth', inline: 'end', block: 'end'});
 				scrollContainer.scrollBy({
 					left: thumbnailRect.right - containerRect.right + margin,
 					behavior: 'smooth',
@@ -86,9 +84,9 @@ export default function Carousel() {
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
-                <ScrollArea className='scroll-area' style={{ overflowX: 'auto' }}>
+                <ScrollArea ref={scrollContainerRef}>
                     <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-                        {pageIds.map((id, index) => (
+                        {pageIds.map((id) => (
 							<Draggable key={`draggable-${id}`} id={id}>
 							<Droppable key={`droppable-${id}`} id={id}>
 								<MemoizedMiniature
