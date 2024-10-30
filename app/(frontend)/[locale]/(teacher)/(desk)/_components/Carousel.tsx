@@ -9,6 +9,7 @@ import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator  } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
+import { Coordinates, DragMoveEvent } from '@dnd-kit/core/dist/types'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -25,6 +26,7 @@ export default function Carousel() {
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
 	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+	const [ nearestPageId, setNearestPageId ] = useState<TLPageId>();
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
@@ -34,12 +36,22 @@ export default function Carousel() {
 		setActiveId(e.active.id as TLPageId);
 	};
 
+	const handleDragMove = (e: DragMoveEvent) => {
+		console.log("MOVE", e.over);
+		if (e.over?.id)
+			setNearestPageId(e.over?.id as TLPageId);
+	}
+
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
 		if (isGrabbing)
 			setIsGrabbing(false);
-		if (e.over?.id)
+		getThePagesAround(e.delta);
+		if (e.over?.id && e.over?.id !== e.active.id)
 			movePage(e.over?.id as TLPageId);
+		else if (nearestPageId)
+			movePage(nearestPageId);
+		console.log(nearestPageId);
 	};
 
     useEffect(() => {
@@ -66,21 +78,28 @@ export default function Carousel() {
         }
     }, [currentPageId, pageIds]);
 
+	const getThePagesAround = (coordinates: Coordinates) => {
+		console.log("The coordinates", coordinates);
+
+	};
 
     return (
 		<DndContext autoScroll={{
-			threshold: {
-			  x: 0.05,
-			  y: 0.05
-			},
-			layoutShiftCompensation: false,
-			activator: AutoScrollActivator.Pointer,
-			enabled: true,
-			acceleration: 25,
-			interval: 5
-		  }}
-		  sensors={sensors}
-		  collisionDetection={pointerWithin} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+				threshold: {
+				x: 0.05,
+				y: 0.05
+				},
+				layoutShiftCompensation: false,
+				activator: AutoScrollActivator.Pointer,
+				enabled: true,
+				acceleration: 25,
+				interval: 5
+			}}
+			sensors={sensors}
+			collisionDetection={pointerWithin}
+			onDragStart={handleDragStart}
+			onDragMove={handleDragMove}
+			onDragEnd={handleDragEnd}>
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
