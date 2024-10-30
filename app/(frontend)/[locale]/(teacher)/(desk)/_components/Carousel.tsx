@@ -49,19 +49,22 @@ export default function Carousel() {
 		if (currentThumbnail && scrollContainer) {
             const thumbnailRect = currentThumbnail.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
-            const margin = 10;
-            if (thumbnailRect.left < containerRect.left) {
-                scrollContainer.scrollBy({
-                    left: thumbnailRect.left - containerRect.left - margin,
-                    behavior: 'smooth',
-                });
-            }
-            else if (thumbnailRect.right > containerRect.right) {
-                scrollContainer.scrollBy({
-                    left: thumbnailRect.right - containerRect.right + margin,
-                    behavior: 'smooth',
-                });
-            }
+            const margin = 50;
+    
+			if (thumbnailRect.left < containerRect.left) {
+				// currentThumbnail.scrollIntoView({behavior: 'smooth', inline: 'start', block: 'start'});
+				scrollContainer.scrollBy({
+					left: thumbnailRect.left - containerRect.left - margin,
+					behavior: 'smooth',
+				});
+			}
+			else if (thumbnailRect.right > containerRect.right) {
+				// currentThumbnail.scrollIntoView({behavior: 'smooth', inline: 'end', block: 'end'});
+				scrollContainer.scrollBy({
+					left: thumbnailRect.right - containerRect.right + margin,
+					behavior: 'smooth',
+				});
+			}
         }
     }, [currentPageId, pageIds]);
 
@@ -83,7 +86,7 @@ export default function Carousel() {
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
-                <ScrollArea className='scroll-area'>
+                <ScrollArea className='scroll-area' style={{ overflowX: 'auto' }}>
                     <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
                         {pageIds.map((id, index) => (
 							<Draggable key={`draggable-${id}`} id={id}>
