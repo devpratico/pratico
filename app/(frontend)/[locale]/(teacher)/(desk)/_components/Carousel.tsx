@@ -6,7 +6,7 @@ import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator  } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
 
@@ -23,10 +23,13 @@ export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
+	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
 			setIsGrabbing(true);
+		
 		setCurrentPage(e.active.id as TLPageId);
 		setActiveId(e.active.id as TLPageId);
 	};
@@ -39,13 +42,13 @@ export default function Carousel() {
 	};
 
     useEffect(() => {
-        const currentThumbnail = document.getElementById(`${currentPageId}`);
-        const scrollContainer = currentThumbnail?.parentElement?.parentElement?.parentElement;
+        const currentThumbnail = document.getElementById(`${currentPageId}-id`);
+    	const scrollContainer = currentThumbnail?.closest('.scroll-area');
 
-        if (currentThumbnail && scrollContainer) {
+		if (currentThumbnail && scrollContainer) {
             const thumbnailRect = currentThumbnail.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
-            const margin = 20;
+            const margin = 10;
             if (thumbnailRect.left < containerRect.left) {
                 scrollContainer.scrollBy({
                     left: thumbnailRect.left - containerRect.left - margin,
@@ -63,15 +66,27 @@ export default function Carousel() {
 
 
     return (
-		<DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+		<DndContext autoScroll={{
+			threshold: {
+			  x: 0.05,
+			  y: 0.05
+			},
+			layoutShiftCompensation: false,
+			activator: AutoScrollActivator.Pointer,
+			enabled: true,
+			acceleration: 25,
+			interval: 5
+		  }}
+		  sensors={sensors}
+		  collisionDetection={pointerWithin} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 
         <SnapshotProvider>
             <Card variant='classic' style={{ padding: '0' }} asChild>
-                <ScrollArea>
+                <ScrollArea className='scroll-area'>
                     <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
                         {pageIds.map((id, index) => (
-							<Draggable key={id} id={id}>
-							<Droppable key={id} id={id}>
+							<Draggable key={`draggable-${id}`} id={id}>
+							<Droppable key={`droppable-${id}`} id={id}>
 								<MemoizedMiniature
 									key={id}
 									pageId={id}
@@ -126,7 +141,7 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 
     return (
 		<Box
-			id={pageId}
+			id={`${pageId}-id`}
 			position='relative'
 			width='55px'
 			height='36px'
