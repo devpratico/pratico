@@ -5,11 +5,12 @@
  * To send an error to discord, add 'discord' as the last parameter (works only for errors)
  */
 
-// Not ideal because it is a server action and it works when called from the server
+// Not ideal because it is a server action. It should be called only client-side. But it works when called server-side.
 import { sendDiscordError } from "../(backend)/api/discord/discord.client";
 
 
 const logCategories = {
+    typescript: ['type', 'interface', 'function', 'variable'] as const,
     react: ['layout', 'page', 'component', 'hook'] as const,
     supabase: ['auth', 'database', 'storage', 'realtime'] as const,
     tldraw: ['tools', 'editor', 'collab'] as const,
@@ -21,6 +22,7 @@ const logCategories = {
 const sharedStyles = 'padding: 1px 3px; border-radius: 3px; color: #fff;';
 
 const browserConsoleStyles: { [key in keyof typeof logCategories]: string } = {
+    typescript: 'background-color: royalblue;'      + sharedStyles,
     react:    'background-color: dodgerblue;'    + sharedStyles,
     supabase: 'background-color: forestgreen;'   + sharedStyles,
     tldraw:   'background-color: darkslategray;' + sharedStyles,
@@ -29,6 +31,7 @@ const browserConsoleStyles: { [key in keyof typeof logCategories]: string } = {
 };
 
 const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
+        typescript: '\x1b[34m', // Blue
         react:    '\x1b[34m', // Blue
         supabase: '\x1b[32m', // Green
         tldraw:   '\x1b[36m', // Cyan

@@ -11,3 +11,12 @@ export interface Activity {
 }
 
 export type ActivitySnapshot = QuizSnapshot | PollSnapshot
+
+
+
+export function setTitle<T extends Activity>(activity: T, newTitle: string): T {
+    return {
+        ...activity,
+        title: newTitle,
+    };
+}
