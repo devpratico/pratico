@@ -38,7 +38,8 @@ export default function Carousel() {
 		setActiveId(undefined);
 		if (isGrabbing)
 			setIsGrabbing(false);
-		movePage(e.over?.id as TLPageId);
+		if (e.over?.id)
+			movePage(e.over?.id as TLPageId);
 	};
 
     useEffect(() => {
