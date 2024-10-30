@@ -1,5 +1,6 @@
 import { PollSnapshot } from "./poll"
 import { QuizSnapshot } from "./quiz"
+import { produce } from "immer"
 
 
 export type ActivityType = 'quiz' | 'poll'
@@ -15,8 +16,7 @@ export type ActivitySnapshot = QuizSnapshot | PollSnapshot
 
 
 export function setTitle<T extends Activity>(activity: T, newTitle: string): T {
-    return {
-        ...activity,
-        title: newTitle,
-    };
+    return produce(activity, draft => {
+        draft.title = newTitle
+    })
 }
