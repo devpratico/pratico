@@ -6,7 +6,7 @@ import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator  } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator, Over  } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
 import { Coordinates, DragMoveEvent } from '@dnd-kit/core/dist/types'
@@ -20,13 +20,15 @@ interface MiniatureProps {
 const MemoizedThumbnail = memo(Thumbnail)
 const MemoizedMiniature = memo(Miniature)
 
+
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
 	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-	const [ nearestPageId, setNearestPageId ] = useState<TLPageId>();
+	const [ nearestPage, setNearestPage ] = useState<Over>();
+	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
@@ -37,9 +39,14 @@ export default function Carousel() {
 	};
 
 	const handleDragMove = (e: DragMoveEvent) => {
-		console.log("MOVE", e.over);
-		if (e.over?.id)
-			setNearestPageId(e.over?.id as TLPageId);
+		if (e.over)
+		{
+			setNearestPage(e.over);
+			if (nearestPage && nearestPage?.rect.left < e.over.rect.left)
+				setIndicatorPosition(e.over.rect.right);
+			else if (nearestPage && nearestPage?.rect.right > e.over.rect.right)
+				setIndicatorPosition(e.over.rect.left);
+		}
 	}
 
 	const handleDragEnd = (e: DragEndEvent) => {
@@ -49,9 +56,9 @@ export default function Carousel() {
 		getThePagesAround(e.delta);
 		if (e.over?.id && e.over?.id !== e.active.id)
 			movePage(e.over?.id as TLPageId);
-		else if (nearestPageId)
-			movePage(nearestPageId);
-		console.log(nearestPageId);
+		else if (nearestPage && nearestPage.id)
+			movePage(nearestPage.id as TLPageId);
+		setIndicatorPosition(null);
 	};
 
     useEffect(() => {
@@ -117,6 +124,7 @@ export default function Carousel() {
 							</Droppable>
 							</Draggable>
                         ))}
+						{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
                     </Flex>
                 </ScrollArea>
             </Card>
@@ -212,3 +220,17 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 		</Box>
     )
 }
+
+const Indicator = ({ position }: {position: number}) => {
+	return (
+		<div
+			style={{
+				position: 'absolute',
+				left: position,
+				height: '42px',
+				width: '5px',
+				backgroundColor: 'var(--violet-8)',
+			}}
+		/>
+	);
+};
