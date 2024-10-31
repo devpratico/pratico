@@ -48,6 +48,10 @@ export default function Carousel() {
 	const handleDragMove = useCallback((e: DragMoveEvent) => {
 		if (e.over)
 		{
+			let startIndex = movingPages.indexOf(e.active?.id as TLPageId);
+			let endIndex = movingPages.indexOf(e.over!.id as TLPageId);
+	
+			setMovingPages(arrayMove(movingPages, startIndex, endIndex));
 			setNearestPage(e.over);
 			if (nearestPage && nearestPage?.rect.left < e.over.rect.left)
 				setIndicatorPosition(e.over.rect.right);
@@ -61,19 +65,10 @@ export default function Carousel() {
 
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
-
 		if (e.over?.id && e.over?.id !== e.active.id)
-		{
-			let startIndex = movingPages.indexOf(e.active?.id as TLPageId);
-			let endIndex = movingPages.indexOf(e.over!.id as TLPageId);
-	
-			setMovingPages(arrayMove(movingPages, startIndex, endIndex));
 			movePage(e.over?.id as TLPageId);
-		}
 		else if (nearestPage && nearestPage.id)
-		{
 			movePage(nearestPage.id as TLPageId);
-		}
 		setIndicatorPosition(null);
 		if (isGrabbing)
 			setIsGrabbing(false);
@@ -166,10 +161,10 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
 		if (isGrabbing && currentPageId == pageId)
-			return ('0 0 0 2px var(--accent-5)');
+			return ('0 0 0 2px var(--accent-7)');
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
     }, [currentPageId, pageId, isGrabbing])
-
+;
     const onSelect = useCallback(() => {
         if (currentPageId === pageId) {
             if (nextPageId) { goNextPage() }
@@ -210,8 +205,10 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 			>
 				<MemoizedThumbnail pageId={pageId}/>
 			</Box>
-
-			<DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
+			{
+				isGrabbing
+				? <></>
+				: 	<DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
 				<DropdownMenu.Trigger>
 					<IconButton
@@ -235,6 +232,8 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 				</DropdownMenu.Content>
 					
 			</DropdownMenu.Root>	
+			}
+		
 		</Box>
     )
 }

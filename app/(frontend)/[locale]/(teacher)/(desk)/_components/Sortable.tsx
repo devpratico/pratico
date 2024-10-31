@@ -1,28 +1,43 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { forwardRef, HTMLAttributes, CSSProperties } from 'react';
 
-export function Sortable ({children, id}: {children: React.ReactNode, id: string}) {
+
+export function Sortable (props: {children: React.ReactNode, id: string}) {
     const {
-        isDragging,
         attributes,
         listeners,
         setNodeRef,
         transform,
         transition
-    } = useSortable({ id: id });
-
+    } = useSortable({ id: props.id });
     const style = {
-		transform: CSS.Transform.toString(transform),
-        cursor: isDragging ? 'grabbing' : 'grab',
-        // transition: transition || undefined,
-	};
+        transform: CSS.Transform.toString(transform),
+        transition: transition || undefined,
+    };
 
     return (
-        <div
+        <Item
             ref={setNodeRef}
             style={style}
+            {...props}
             {...attributes}
             {...listeners}
-        >{children}</div>
+        >{props.children}</Item>
     );
 };
+
+export type ItemProps = HTMLAttributes<HTMLDivElement> & {
+    id: string;
+    isDragging?: boolean;
+};
+
+const Item = forwardRef<HTMLDivElement, ItemProps>(({ id, isDragging, style, ...props }, ref) => {
+    const styles: CSSProperties = {
+        cursor: isDragging ? 'grabbing' : 'grab',
+        transform: isDragging ? 'scale(1.05)' : 'scale(1)',
+        ...style,
+    };
+
+    return <div ref={ref} style={styles} {...props}>{props.children}</div>;
+});
