@@ -8,7 +8,7 @@ import { Poll } from '@/app/_types/poll'
 import { QuizProvider } from '@/app/(frontend)/_hooks/useQuiz'
 import { PollProvider } from '@/app/(frontend)/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
-import PollCreation from './PollCreation'
+import PollCreation from './old_PollCreation'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 

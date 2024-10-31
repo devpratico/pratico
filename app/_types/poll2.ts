@@ -103,6 +103,10 @@ function getQuestionDraft({ poll, question }: GetQuestionDraftArgs): WritableDra
     }
 }
 
+export function getQuestionIndex({ poll, questionId }: { poll: Poll, questionId: string }): number {
+    return poll.questions.findIndex(q => q.id === questionId)
+}
+
 export function setQuestionText({ poll, question, text }: { poll: Poll, question: QuestionIdentifier, text: string }): Poll {
     return produce(poll, draft => {
         const questionDraft = getQuestionDraft({ poll: draft, question })
@@ -195,6 +199,16 @@ function getChoiceDraft({ poll, choice }: GetChoiceDraftArgs): WritableDraft<Pol
             return c
         }
     }
+}
+
+
+export function getChoiceIndex({ poll, choiceId }: { poll: Poll, choiceId: string }): number | undefined {
+    for (const question of poll.questions) {
+        const index = question.choices.findIndex(c => c.id === choiceId)
+        if (index >= 0) return index
+    }
+    logger.error('typescript:function', 'getChoiceIndex', `Choice not found for id: ${choiceId}`)
+    return undefined
 }
 
 export function setChoiceText({ poll, choice, text }: { poll: Poll, choice: ChoiceIdentifier, text: string }): Poll {

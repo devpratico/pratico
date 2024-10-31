@@ -5,7 +5,7 @@ import { QuizProvider, emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz";
 import { Button } from "@radix-ui/themes";
 import CardDialog from "../../CardDialog";
 import QuizCreation from "../../activities/QuizCreation";
-import PollCreation from "../../activities/PollCreation";
+import PollCreation from "../../activities/old_PollCreation";
 import { useState } from "react";
 import { ActivityType } from "@/app/_types/activity";
 
