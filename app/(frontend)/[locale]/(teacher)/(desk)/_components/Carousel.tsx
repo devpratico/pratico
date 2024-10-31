@@ -9,47 +9,11 @@ import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator, Over  } from '@dnd-kit/core';
 import { Draggable } from './Draggable'
 import { Droppable } from './Droppable'
-import { DragCancelEvent, DragMoveEvent } from '@dnd-kit/core/dist/types'
-import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { forwardRef, HTMLAttributes, CSSProperties } from 'react';
+import { DragMoveEvent } from '@dnd-kit/core/dist/types'
+import { arrayMove, horizontalListSortingStrategy, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
+import { Sortable } from './Sortable'
 
-export type ItemProps = HTMLAttributes<HTMLDivElement> & {
-	children: React.ReactNode;
-    withOpacity?: boolean;
-    isDragging?: boolean;
-};
 
-const SortableItem = ({children, id}: {children: React.ReactNode, id: string}) => {
-    const {
-        isDragging,
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition
-    } = useSortable({ id: id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition: transition || undefined,
-		opacity: isDragging ? '0.5' : '1',
-		cursor: isDragging ? 'grabbing' : 'grab',
-		boxShadow: isDragging  ? 'rgb(63 63 68 / 5%) 0px 2px 0px 2px, rgb(34 33 81 / 15%) 0px 2px 3px 2px' : 'rgb(63 63 68 / 5%) 0px 0px 0px 1px, rgb(34 33 81 / 15%) 0px 1px 3px 0px',
-	};
-
-    return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
-        >
-			{children}
-		</div>
-    );
-};
 interface MiniatureProps {
     pageId: TLPageId
     onClick: () => void
@@ -68,9 +32,11 @@ export default function Carousel() {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
-	const [ isDragging, setIsDragging ] = useState(true);
 	const [ movingPages, setMovingPages ] = useState(pageIds);
 
+	useEffect(() => {
+		setMovingPages(pageIds);
+	}, [pageIds]);
 	const handleDragStart = useCallback((e: DragStartEvent) => {
 		if (!isGrabbing)
 			setIsGrabbing(true);
@@ -86,8 +52,7 @@ export default function Carousel() {
 			if (nearestPage && nearestPage?.rect.left < e.over.rect.left)
 				setIndicatorPosition(e.over.rect.right);
 			else if (nearestPage && nearestPage?.rect.right > e.over.rect.right)
-				setIndicatorPosition(e.over.rect.left);
-		}
+				setIndicatorPosition(e.over.rect.left);		}
 	}, []);
 
 	const handleDragCancel = useCallback(() => {
@@ -96,19 +61,22 @@ export default function Carousel() {
 
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
-		if (isGrabbing)
-			setIsGrabbing(false);
+
 		if (e.over?.id && e.over?.id !== e.active.id)
 		{
-			const startIndex = movingPages.indexOf(e.active?.id as TLPageId);
-			const endIndex = movingPages.indexOf(e.over?.id as TLPageId);
-
+			let startIndex = movingPages.indexOf(e.active?.id as TLPageId);
+			let endIndex = movingPages.indexOf(e.over!.id as TLPageId);
+	
 			setMovingPages(arrayMove(movingPages, startIndex, endIndex));
 			movePage(e.over?.id as TLPageId);
 		}
 		else if (nearestPage && nearestPage.id)
+		{
 			movePage(nearestPage.id as TLPageId);
+		}
 		setIndicatorPosition(null);
+		if (isGrabbing)
+			setIsGrabbing(false);
 	};
 
     useEffect(() => {
@@ -154,44 +122,40 @@ export default function Carousel() {
 			onDragMove={handleDragMove}
 			onDragEnd={handleDragEnd}
 			onDragCancel={handleDragCancel}>
-							<SortableContext items={movingPages} strategy={rectSortingStrategy}>
-
-        <SnapshotProvider>
-            <Card variant='classic' style={{ padding: '0' }} asChild>
-                <ScrollArea ref={scrollContainerRef}>
-                    <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-                        {pageIds.map((id) => (
-		
-									<SortableItem id={id}>
-										<MemoizedMiniature
-											key={id}
-											pageId={id}
-											onClick={() => setCurrentPage(id)}
-											isGrabbing={isGrabbing}
-										/>
-									</SortableItem>
-
-							
-                        ))}
-						{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
-                    </Flex>
-                </ScrollArea>
-            </Card>
-        </SnapshotProvider>
-		<DragOverlay>
-			{activeId ? (
-		
-				<SortableItem id={activeId}>
-							<MemoizedMiniature
-					pageId={activeId}
-					onClick={() => {}}
-					isGrabbing={isGrabbing}
-				/>
-				</SortableItem>
-			) : null}
-            </DragOverlay>
-			</SortableContext>
-
+		<SortableContext items={movingPages} strategy={horizontalListSortingStrategy}>
+			<SnapshotProvider>
+				<Card variant='classic' style={{ padding: '0' }} asChild>
+					<ScrollArea ref={scrollContainerRef}>
+						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+							{movingPages.map((id) => (
+								<Sortable key={id} id={id}>
+								{/* // <Draggable key={id} id={id} isDragging={true}>
+								// <Droppable key={id} id={id}> */}
+									<MemoizedMiniature
+										key={id}
+										pageId={id}
+										onClick={() => setCurrentPage(id)}
+										isGrabbing={isGrabbing}
+									/>
+								{/* // </Droppable>
+								// </Draggable> */}
+								</Sortable>
+							))}
+							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+						</Flex>
+					</ScrollArea>
+				</Card>
+			</SnapshotProvider>
+			<DragOverlay>
+				{activeId ? (
+					<MemoizedMiniature
+						pageId={activeId}
+						onClick={() => {}}
+						isGrabbing={isGrabbing}
+					/>
+				) : null}
+			</DragOverlay>
+		</SortableContext>
 		</DndContext>
     )
 }
