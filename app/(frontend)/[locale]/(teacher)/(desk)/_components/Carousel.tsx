@@ -137,7 +137,7 @@ export default function Carousel() {
 									/>
 								</Sortable>
 							))}
-							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+							{/* {indicatorPosition !== null && <Indicator position={indicatorPosition} />} */}
 						</Flex>
 					</ScrollArea>
 				</Card>
@@ -163,8 +163,10 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
+		if (isGrabbing && currentPageId == pageId)
+			return ('0 0 0 2px var(--accent-5)');
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
-    }, [currentPageId, pageId])
+    }, [currentPageId, pageId, isGrabbing])
 
     const onSelect = useCallback(() => {
         if (currentPageId === pageId) {
