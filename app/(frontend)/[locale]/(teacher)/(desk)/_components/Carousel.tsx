@@ -129,16 +129,12 @@ export default function Carousel() {
 						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
 							{movingPages.map((id) => (
 								<Sortable key={id} id={id}>
-								{/* // <Draggable key={id} id={id} isDragging={true}>
-								// <Droppable key={id} id={id}> */}
 									<MemoizedMiniature
 										key={id}
 										pageId={id}
 										onClick={() => setCurrentPage(id)}
 										isGrabbing={isGrabbing}
 									/>
-								{/* // </Droppable>
-								// </Draggable> */}
 								</Sortable>
 							))}
 							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
