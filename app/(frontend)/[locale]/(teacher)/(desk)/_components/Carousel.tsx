@@ -28,7 +28,7 @@ export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
 	const [ activeId, setActiveId ] = useState<TLPageId | null>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
-	const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+	const sensors = useSensors(useSensor(MouseSensor, { activationConstraint: { distance: 10 }}), useSensor(TouchSensor));
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
@@ -122,8 +122,9 @@ export default function Carousel() {
 			onDragMove={handleDragMove}
 			onDragEnd={handleDragEnd}
 			onDragCancel={handleDragCancel}>
+							<SnapshotProvider>
+
 		<SortableContext items={movingPages} strategy={horizontalListSortingStrategy}>
-			<SnapshotProvider>
 				<Card variant='classic' style={{ padding: '0' }} asChild>
 					<ScrollArea ref={scrollContainerRef}>
 						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
@@ -141,7 +142,6 @@ export default function Carousel() {
 						</Flex>
 					</ScrollArea>
 				</Card>
-			</SnapshotProvider>
 			<DragOverlay>
 				{activeId ? (
 					<MemoizedMiniature
@@ -152,6 +152,8 @@ export default function Carousel() {
 				) : null}
 			</DragOverlay>
 		</SortableContext>
+		</SnapshotProvider>
+
 		</DndContext>
     )
 }
