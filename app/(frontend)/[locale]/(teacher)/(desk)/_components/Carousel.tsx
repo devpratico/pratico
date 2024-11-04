@@ -4,15 +4,12 @@ import { useNav } from '@/app/(frontend)/_hooks/useNav'
 import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui/themes'
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
-import React, { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator, Over  } from '@dnd-kit/core';
-import { Draggable } from './Draggable'
-import { Droppable } from './Droppable'
-import { DragMoveEvent } from '@dnd-kit/core/dist/types'
-import { arrayMove, horizontalListSortingStrategy, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
-import { Sortable } from './Sortable'
-
+import { Coordinates, DragMoveEvent } from '@dnd-kit/core/dist/types'
+import { Droppable } from './drag-n-drop/Droppable'
+import { Draggable } from './drag-n-drop/Draggable'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -26,52 +23,41 @@ const MemoizedMiniature = memo(Miniature)
 
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
-	const [ activeId, setActiveId ] = useState<TLPageId | null>();
+	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
-	const sensors = useSensors(useSensor(MouseSensor, { activationConstraint: { distance: 10 }}), useSensor(TouchSensor));
+	const sensors = useSensors(useSensor(MouseSensor, {activationConstraint: {distance: 10}}), useSensor(TouchSensor));
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
-	const [ movingPages, setMovingPages ] = useState(pageIds);
 
-	useEffect(() => {
-		setMovingPages(pageIds);
-	}, [pageIds]);
-	const handleDragStart = useCallback((e: DragStartEvent) => {
+	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
 			setIsGrabbing(true);
 		
 		setCurrentPage(e.active.id as TLPageId);
 		setActiveId(e.active.id as TLPageId);
-	}, []);
+	};
 
-	const handleDragMove = useCallback((e: DragMoveEvent) => {
+	const handleDragMove = (e: DragMoveEvent) => {
 		if (e.over)
 		{
-			let startIndex = movingPages.indexOf(e.active?.id as TLPageId);
-			let endIndex = movingPages.indexOf(e.over!.id as TLPageId);
-	
-			setMovingPages(arrayMove(movingPages, startIndex, endIndex));
 			setNearestPage(e.over);
 			if (nearestPage && nearestPage?.rect.left < e.over.rect.left)
 				setIndicatorPosition(e.over.rect.right);
 			else if (nearestPage && nearestPage?.rect.right > e.over.rect.right)
-				setIndicatorPosition(e.over.rect.left);		}
-	}, []);
-
-	const handleDragCancel = useCallback(() => {
-		setActiveId(null);
-	}, []);
+				setIndicatorPosition(e.over.rect.left);
+		}
+	}
 
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
+		if (isGrabbing)
+			setIsGrabbing(false);
 		if (e.over?.id && e.over?.id !== e.active.id)
 			movePage(e.over?.id as TLPageId);
 		else if (nearestPage && nearestPage.id)
 			movePage(nearestPage.id as TLPageId);
 		setIndicatorPosition(null);
-		if (isGrabbing)
-			setIsGrabbing(false);
 	};
 
     useEffect(() => {
@@ -99,8 +85,7 @@ export default function Carousel() {
     }, [currentPageId, pageIds]);
 
     return (
-		<DndContext
-			autoScroll={{
+		<DndContext autoScroll={{
 				threshold: {
 				x: 0.05,
 				y: 0.05
@@ -115,40 +100,38 @@ export default function Carousel() {
 			collisionDetection={pointerWithin}
 			onDragStart={handleDragStart}
 			onDragMove={handleDragMove}
-			onDragEnd={handleDragEnd}
-			onDragCancel={handleDragCancel}>
-							<SnapshotProvider>
+			onDragEnd={handleDragEnd}>
 
-		<SortableContext items={movingPages} strategy={horizontalListSortingStrategy}>
-				<Card variant='classic' style={{ padding: '0' }} asChild>
-					<ScrollArea ref={scrollContainerRef}>
-						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-							{movingPages.map((id) => (
-								<Sortable key={id} id={id}>
-									<MemoizedMiniature
-										key={id}
-										pageId={id}
-										onClick={() => setCurrentPage(id)}
-										isGrabbing={isGrabbing}
-									/>
-								</Sortable>
-							))}
-							{/* {indicatorPosition !== null && <Indicator position={indicatorPosition} />} */}
-						</Flex>
-					</ScrollArea>
-				</Card>
-			<DragOverlay>
-				{activeId ? (
-					<MemoizedMiniature
-						pageId={activeId}
-						onClick={() => {}}
-						isGrabbing={isGrabbing}
-					/>
-				) : null}
-			</DragOverlay>
-		</SortableContext>
-		</SnapshotProvider>
-
+        <SnapshotProvider>
+            <Card variant='classic' style={{ padding: '0' }} asChild>
+                <ScrollArea ref={scrollContainerRef}>
+                    <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+                        {pageIds.map((id) => (
+							<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
+							<Droppable key={`droppable-${id}`} id={id}>
+								<MemoizedMiniature
+									key={id}
+									pageId={id}
+									onClick={() => setCurrentPage(id)}
+									isGrabbing={isGrabbing}
+								/>
+							</Droppable>
+							</Draggable>
+                        ))}
+						{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+                    </Flex>
+                </ScrollArea>
+            </Card>
+        </SnapshotProvider>
+		<DragOverlay>
+			{activeId ? (
+				<MemoizedMiniature
+					pageId={activeId}
+					onClick={() => {}}
+					isGrabbing={isGrabbing}
+				/>
+			) : null}
+            </DragOverlay>
 		</DndContext>
     )
 }
@@ -160,11 +143,9 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
-		if (isGrabbing && currentPageId == pageId)
-			return ('0 0 0 2px var(--accent-7)');
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
-    }, [currentPageId, pageId, isGrabbing])
-;
+    }, [currentPageId, pageId])
+
     const onSelect = useCallback(() => {
         if (currentPageId === pageId) {
             if (nextPageId) { goNextPage() }
@@ -205,10 +186,8 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 			>
 				<MemoizedThumbnail pageId={pageId}/>
 			</Box>
-			{
-				isGrabbing
-				? <></>
-				: 	<DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
+
+			<DropdownMenu.Root open={showMenu} onOpenChange={setShowMenu}>
 
 				<DropdownMenu.Trigger>
 					<IconButton
@@ -232,8 +211,6 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 				</DropdownMenu.Content>
 					
 			</DropdownMenu.Root>	
-			}
-		
 		</Box>
     )
 }
