@@ -1,6 +1,6 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
-import { Theme } from '@radix-ui/themes';
+import { Theme, VisuallyHidden } from '@radix-ui/themes';
 import useWindow from '@/app/(frontend)/_hooks/useWindow';
 import { useCallback } from 'react';
 
@@ -88,6 +88,10 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
                             animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         }}
                     >
+						<VisuallyHidden>
+							<Dialog.Title />
+							<Dialog.Description />
+						</VisuallyHidden>
                         {children}
                     </Dialog.Content>
                 </Theme>
