@@ -34,7 +34,8 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
 
     const resetPointerEvents = useCallback(() => {
         if (typeof document !== 'undefined') {
-            document.body.style.pointerEvents = 'auto'
+            //document.body.style.pointerEvents = 'auto'
+            document.body.style.removeProperty('pointer-events')
         }
     }, [])
 
