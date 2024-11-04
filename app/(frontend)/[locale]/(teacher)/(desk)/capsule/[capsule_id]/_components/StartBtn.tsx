@@ -44,6 +44,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 		{
 			// Start the session and get the room that is created
 			const { room: createdRoom, error} = await createRoom(capsuleId)
+			logger.log("react:component", "startBtn no data", "create a room", createdRoom, error);
 
 			// Redirect to the room page
 			if (createdRoom) router.push(`/room/${createdRoom.code}`)
