@@ -51,6 +51,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 		}
 		else
 		{
+			logger.log("react:component", "startBtn no data", "get to an existing room", data);
 			router.push(`/room/${data[0].code}`);
 		}
   

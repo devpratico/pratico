@@ -5,6 +5,7 @@ import { useRoom } from '@/app/(frontend)/_hooks/useRoom'
 import QuizAnimation from '../../../_components/activities/QuizAnimation'
 import PollAnimation from '../../../_components/activities/PollAnimation'
 import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
+import logger from '@/app/_utils/logger'
 
 
 /**
@@ -22,6 +23,7 @@ export default function ActivityCard() {
 		// 	setActivityOn(true);
 		// else
 		// 	setActivityOn(false);
+		logger.log("react:component", "ActivityCard", "room changes ?", room, open);
     }, [room, open])
 
     return (
