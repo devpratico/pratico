@@ -40,11 +40,8 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 			logger.error("supabase:database", "StartBtn for session", "error while getting data", existedRoomError, "discord");
 		else
 			logger.log("supabase:database",  "StartBtn for session data", data);
-		
-		if (data?.length && data[0].activity_snapshot)
-			activitySnapshot = data[0].activity_snapshot as { type?: string | number | undefined };
 
-		if (!data?.length || (data.length && data[0].activity_snapshot && !activitySnapshot?.type ))
+		if (!data?.length)
 		{
 			// Start the session and get the room that is created
 			const { room: createdRoom, error} = await createRoom(capsuleId)
