@@ -25,8 +25,11 @@ export default async function Page({ params: { room_code } }: { params: { room_c
         logger.log("next:page", "TeacherViewPage", "room error", roomError);
         throw (roomError);
     }
-    if (roomData && user?.id !== roomData?.created_by)
-        redirect(`/classroom/${room_code}`);
+    if (roomData.created_by && user?.id !== roomData?.created_by)
+    {
+		console.log("CLASSROOM ?", roomData, user.id, roomData.created_by);
+		redirect(`/classroom/${room_code}`);
+	}
     return (
         <>
 			<TopBarPortal>
