@@ -27,12 +27,14 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
         if (!capsuleId) return logger.error('supabase:database', 'No capsule id provided for start button')
     
         setLoading(true)
-		const { data: existedRoomData, error: existedRoomError } = await supabase.from("rooms").select("*").eq("status", "open");
+		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("status", "open").order('created_at', { ascending: false }).limit(1);
+
 		if (existedRoomError)
 			logger.error("react:component", "StartBtn for session", "error while getting data", existedRoomError);
-		logger.log("react:component",  "StartBtn for session data", existedRoomData);
+		else
+			logger.log("react:component",  "StartBtn for session data", data);
 
-		if (!existedRoomData?.length)
+		if (!data?.length)
 		{
 			// Start the session and get the room that is created
 			const { room: createdRoom, error} = await createRoom(capsuleId)
@@ -42,12 +44,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 		}
 		else
 		{
-			const mostRecentItem = existedRoomData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
-
-			if (mostRecentItem)
-				router.push(`/room/${mostRecentItem.code}`);
-			else
-				logger.error("react:component", "StartBnt session", "Error while getting the most recent active session", "discord");
+			router.push(`/room/${data[0].code}`);
 		}
   
     }
