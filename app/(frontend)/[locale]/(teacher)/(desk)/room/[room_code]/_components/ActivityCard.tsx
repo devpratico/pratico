@@ -26,6 +26,14 @@ export default function ActivityCard() {
 		logger.log("react:component", "ActivityCard", "room changes ?", room, open);
     }, [room, open])
 
+	useEffect(() => {
+		if (!activityType)
+		{
+			logger.log("react:component", "ActivityCard", "activity undefined");
+			return ;
+		}
+	}, [activityType]);
+
     return (
         <CardDialog open={open} onOpenChange={setOpen} preventClose>
             {
@@ -33,7 +41,7 @@ export default function ActivityCard() {
                 :
                 activityType == 'poll' ? <PollAnimation />
                 :
-                <p>{activityType !== undefined ? 'Unknown activity type: ' + activityType : ""}</p>
+                <p>{'Unknown activity type: ' + activityType}</p>
             }
         </CardDialog>
     )
