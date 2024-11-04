@@ -46,18 +46,20 @@ export default function Carousel() {
 				setIndicatorPosition(e.over.rect.right);
 			else if (nearestPage && nearestPage?.rect.right > e.over.rect.right)
 				setIndicatorPosition(e.over.rect.left);
+
 		}
 	}
 
 	const handleDragEnd = (e: DragEndEvent) => {
 		setActiveId(undefined);
-		if (isGrabbing)
-			setIsGrabbing(false);
+
 		if (e.over?.id && e.over?.id !== e.active.id)
 			movePage(e.over?.id as TLPageId);
 		else if (nearestPage && nearestPage.id)
 			movePage(nearestPage.id as TLPageId);
 		setIndicatorPosition(null);
+		if (isGrabbing)
+			setIsGrabbing(false);
 	};
 
     useEffect(() => {
@@ -143,6 +145,8 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
+		if (isGrabbing && currentPageId === pageId)
+			return ('0 0 0 3px var(--accent-8)')
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
     }, [currentPageId, pageId])
 
