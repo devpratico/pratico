@@ -19,6 +19,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 	const supabase = createClient();
+	let activitySnapshot: any = null;
 
 
     const handleClick = async () => {
@@ -33,14 +34,17 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 			logger.error("supabase:database", "startBtn user not found", error ? error : "");
 			return ;
 		}
-		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
+		const { data, error: existedRoomError } = await supabase.from("rooms").select("*").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
 
 		if (existedRoomError)
 			logger.error("supabase:database", "StartBtn for session", "error while getting data", existedRoomError, "discord");
 		else
 			logger.log("supabase:database",  "StartBtn for session data", data);
+		
+		if (data?.length && data[0].activity_snapshot)
+			activitySnapshot = data[0].activity_snapshot as { type?: string | number | undefined };
 
-		if (!data?.length)
+		if (!data?.length || !activitySnapshot?.type )
 		{
 			// Start the session and get the room that is created
 			const { room: createdRoom, error} = await createRoom(capsuleId)

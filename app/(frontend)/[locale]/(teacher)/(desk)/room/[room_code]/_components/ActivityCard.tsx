@@ -33,8 +33,7 @@ export default function ActivityCard() {
                 :
                 activityType == 'poll' ? <PollAnimation />
                 :
-                activityType == undefined ? <></>
-				: <p>{'Unknown activity type: ' + activityType}</p>
+               	<p>{'Unknown activity type: ' + activityType}</p>
             }
         </CardDialog>
     )
