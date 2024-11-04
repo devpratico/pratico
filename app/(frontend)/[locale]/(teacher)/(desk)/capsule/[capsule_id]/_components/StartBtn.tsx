@@ -27,12 +27,18 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
         if (!capsuleId) return logger.error('supabase:database', 'No capsule id provided for start button')
     
         setLoading(true)
-		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("status", "open").order('created_at', { ascending: false }).limit(1);
+		const { data: { user }, error } = await supabase.auth.getUser();
+		if (!user || error)
+		{
+			logger.error("supabase:database", "startBtn user not found", error ? error : "");
+			return ;
+		}
+		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("status", "open").order('created_at', { ascending: false }).limit(1);
 
 		if (existedRoomError)
-			logger.error("react:component", "StartBtn for session", "error while getting data", existedRoomError);
+			logger.error("supabase:database", "StartBtn for session", "error while getting data", existedRoomError, "discord");
 		else
-			logger.log("react:component",  "StartBtn for session data", data);
+			logger.log("supabase:database",  "StartBtn for session data", data);
 
 		if (!data?.length)
 		{
