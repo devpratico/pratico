@@ -1,6 +1,5 @@
 import { Activity } from './activity'
-import { produce, WritableDraft } from 'immer'
-import { uniqueId } from 'lodash'
+import { produce } from 'immer'
 import logger from '../_utils/logger'
 
 
@@ -71,60 +70,48 @@ export function isPollSnapshot(snapshot: any): snapshot is PollSnapshot {
     return snapshot?.type === 'poll'
 }
 
+function uniqueId(prefix: string): string {
+    return prefix + Date.now().toString()
+}
 
 
 // FUNCTIONS
+// We use curryed functions to create updaters that can be used in a set state function,
+// thus modifying the 'prev' state provided by the useState hook.
 
-export function addEmptyQuestion(poll: Poll): Poll {
-    const questionId = uniqueId('question-')
-    const newQuestion: PollQuestion = { id: questionId, text: '', choices: [] }
-    return produce(poll, draft => { draft.questions.push(newQuestion)})
-}
+// All the function below will return an updater like this:
+type PollUpdater = (poll: Poll) => Poll // prevPoll => newPoll
+type SnapshotUpdater = (snapshot: PollSnapshot) => PollSnapshot // prevSnapshot => newSnapshot
 
-/** You can identify a question either by its id or its index in the array */
-type QuestionIdentifier = { id: string } | { index: number }
 
-interface GetQuestionDraftArgs {
-    poll: WritableDraft<Poll>
-    question: QuestionIdentifier
-}
-
-/** Utility function to find a question by its id or index, inside an immer produce block. */
-function getQuestionDraft({ poll, question }: GetQuestionDraftArgs): WritableDraft<PollQuestion> | undefined {
-    if ('id' in question) {
-        const q = poll.questions.find(q => q.id === question.id)
-        if (!q) logger.error('typescript:function', 'getQuestionDraft', `Question not found for id: ${question.id}`)
-        return q
-
-    } else { // 'index' in question
-        const q = poll.questions[question.index]
-        if (!q) logger.error('typescript:function', 'getQuestionDraft', `Question not found for index: ${question.index}`)
-        return q
+export function addEmptyQuestion(): PollUpdater {
+    return (poll: Poll) => {
+        const questionId = uniqueId('question-')
+        const newQuestion: PollQuestion = { id: questionId, text: '', choices: [] }
+        return produce(poll, draft => { draft.questions.push(newQuestion) })
     }
 }
 
-export function getQuestionIndex({ poll, questionId }: { poll: Poll, questionId: string }): number {
-    return poll.questions.findIndex(q => q.id === questionId)
-}
 
-export function setQuestionText({ poll, question, text }: { poll: Poll, question: QuestionIdentifier, text: string }): Poll {
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
-        if (questionDraft) questionDraft.text = text
+export function changeQuestionText({questionId, newText}: {questionId: string, newText: string}): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
+        if (questionDraft) questionDraft.text = newText
     })
 }
 
-export function deleteQuestion({ poll, question }: { poll: Poll, question: QuestionIdentifier }): Poll {
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
+
+export function deleteQuestion(questionId: string): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
         if (questionDraft) draft.questions = draft.questions.filter(q => q !== questionDraft)
     })
 }
 
 
-export function duplicateQuestion({ poll, question }: { poll: Poll, question: QuestionIdentifier }): Poll {
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
+export function duplicateQuestion(questionId: string): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
         if (questionDraft) {
             const newQuestion = { ...questionDraft, id: uniqueId('question-') }
             // Get the index of the original question
@@ -135,9 +122,10 @@ export function duplicateQuestion({ poll, question }: { poll: Poll, question: Qu
     })
 }
 
-export function changeQuestionIndex({ poll, question, newIndex }: { poll: Poll, question: QuestionIdentifier, newIndex: number }): Poll {
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
+
+export function changeQuestionIndex(questionId: string, newIndex: number): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
         if (questionDraft) {
             // Get the index of the original question
             const currentIndex = draft.questions.findIndex(q => q === questionDraft)
@@ -150,9 +138,9 @@ export function changeQuestionIndex({ poll, question, newIndex }: { poll: Poll, 
 }
 
 
-export function addEmptyChoice({ poll, question }: { poll: Poll, question: QuestionIdentifier }): Poll {
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
+export function addEmptyChoice(questionId: string): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
         if (questionDraft) {
             const choiceId = uniqueId('choice-')
             questionDraft.choices.push({ id: choiceId, text: '' })
@@ -160,79 +148,49 @@ export function addEmptyChoice({ poll, question }: { poll: Poll, question: Quest
     })
 }
 
-export function addChoice({ poll, question, choice }: { poll: Poll, question: QuestionIdentifier, choice: Partial<PollChoice> }): Poll {
+
+export function addChoice({questionId, choice}: {questionId: string, choice: Partial<PollChoice>}): PollUpdater {
     // As the choice argument is partial, we need to provide default values for the missing properties
     const defaultEmptyChoice: PollChoice = { id: uniqueId('choice-'), text: '' } // Default values
     const newChoice = { ...defaultEmptyChoice, ...choice } // Change the default values with the provided ones
 
-    return produce(poll, draft => {
-        const questionDraft = getQuestionDraft({ poll: draft, question })
+    return (poll: Poll) => produce(poll, draft => {
+        const questionDraft = draft.questions.find(q => q.id === questionId)
         if (questionDraft) questionDraft.choices.push(newChoice)
     })
 }
 
-/** You can identify a choice either by its index - providing the question, or directly by its id */
-type ChoiceIdentifier = {
-    question: QuestionIdentifier,
-    choiceIndex: number
-} | { choiceId: string }
 
-interface GetChoiceDraftArgs {
-    poll: WritableDraft<Poll>
-    choice: ChoiceIdentifier
-}
-
-/** Utility function to find a choice by its id, or its index inside a question. Used inside an immer produce block. */
-function getChoiceDraft({ poll, choice }: GetChoiceDraftArgs): WritableDraft<PollChoice> | undefined {
-    if ('choiceId' in choice) {
-        for (const question of poll.questions) {
-            const c = question.choices.find(c => c.id === choice.choiceId)
-            if (c) return c
+export function changeChoiceText({choiceId, newText}: {choiceId: string, newText: string}): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const choiceDraft = draft.questions.flatMap(q => q.choices).find(c => c.id === choiceId)
+        if (choiceDraft) {
+            choiceDraft.text = newText
+        } else {
+            logger.error('typescript:function', 'changeChoiceText', `Choice not found for id: ${choiceId}`)
         }
-        logger.error('typescript:function', 'getChoiceDraft', `Choice not found for id: ${choice.choiceId}`)
-
-    } else { // 'choiceIndex' in choice
-        const questionDraft = getQuestionDraft({ poll, question: choice.question })
-        if (questionDraft) {
-            const c = questionDraft.choices[choice.choiceIndex]
-            if (!c) logger.error('typescript:function', 'getChoiceDraft', `Choice not found for index: ${choice.choiceIndex}`)
-            return c
-        }
-    }
-}
-
-
-export function getChoiceIndex({ poll, choiceId }: { poll: Poll, choiceId: string }): number | undefined {
-    for (const question of poll.questions) {
-        const index = question.choices.findIndex(c => c.id === choiceId)
-        if (index >= 0) return index
-    }
-    logger.error('typescript:function', 'getChoiceIndex', `Choice not found for id: ${choiceId}`)
-    return undefined
-}
-
-export function setChoiceText({ poll, choice, text }: { poll: Poll, choice: ChoiceIdentifier, text: string }): Poll {
-    return produce(poll, draft => {
-        const choiceDraft = getChoiceDraft({ poll: draft, choice })
-        if (choiceDraft) choiceDraft.text = text
     })
 }
 
-export function deleteChoice({ poll, choice }: { poll: Poll, choice: ChoiceIdentifier }): Poll {
-    return produce(poll, draft => {
-        const choiceDraft = getChoiceDraft({ poll: draft, choice })
+
+export function deleteChoice(choiceId: string): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const choiceDraft = draft.questions.flatMap(q => q.choices).find(c => c.id === choiceId)
         if (choiceDraft) {
             // Find the question it belongs to
             const questionDraft = draft.questions.find(q => q.choices.includes(choiceDraft))
             // Delete the choice from the question
             if (questionDraft) questionDraft.choices = questionDraft.choices.filter(c => c !== choiceDraft)
+        } else {
+            logger.error('typescript:function', 'deleteChoice', `Choice not found for id: ${choiceId}`)
         }
     })
 }
 
-export function changeChoiceIndex({ poll, choice, newIndex }: { poll: Poll, choice: ChoiceIdentifier, newIndex: number }): Poll {
-    return produce(poll, draft => {
-        const choiceDraft = getChoiceDraft({ poll: draft, choice })
+
+export function changeChoiceIndex(choiceId: string, newIndex: number): PollUpdater {
+    return (poll: Poll) => produce(poll, draft => {
+        const choiceDraft = draft.questions.flatMap(q => q.choices).find(c => c.id === choiceId)
         if (choiceDraft) {
             // Find the question it belongs to
             const questionDraft = draft.questions.find(q => q.choices.includes(choiceDraft))
@@ -244,25 +202,30 @@ export function changeChoiceIndex({ poll, choice, newIndex }: { poll: Poll, choi
                 // Insert the choice at the new index
                 questionDraft.choices.splice(newIndex, 0, choiceDraft)
             }
+        } else {
+            logger.error('typescript:function', 'changeChoiceIndex', `Choice not found for id: ${choiceId}`)
         }
     })
 }
 
 
-export function setSnapshotCurrentQuestionId({ snapshot, questionId }: { snapshot: PollSnapshot, questionId: string }): PollSnapshot {
-    return produce(snapshot, draft => { draft.currentQuestionId = questionId })
+export function changeCurrentQuestionId(questionId: string): SnapshotUpdater {
+    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.currentQuestionId = questionId })
 }
 
-export function setSnapshotCurrentQuestionState({ snapshot, state }: { snapshot: PollSnapshot, state: PollSnapshot['currentQuestionState'] }): PollSnapshot {
-    return produce(snapshot, draft => { draft.currentQuestionState = state })
+
+export function changeCurrentQuestionState(state: PollSnapshot['currentQuestionState']): SnapshotUpdater {
+    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.currentQuestionState = state })
 }
 
-export function addAnswer({ snapshot, answer }: { snapshot: PollSnapshot, answer: PollUserAnswer }): PollSnapshot {
-    return produce(snapshot, draft => { draft.answers.push(answer) })
+
+export function addAnswer(answer: PollUserAnswer): SnapshotUpdater {
+    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.answers.push(answer) })
 }
 
-export function removeAnswer({ snapshot, answerId }: { snapshot: PollSnapshot, answerId: string }): PollSnapshot {
-    return produce(snapshot, draft => { draft.answers = draft.answers.filter(a => a.userId !== answerId) })
+
+export function removeAnswer(answerId: string): SnapshotUpdater {
+    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.answers = draft.answers.filter(a => a.userId !== answerId) })
 }
 
 
@@ -281,21 +244,21 @@ export const mockPoll: Poll = {
     title: 'Mock poll',
     questions: [
         {
-            id: 'question-1',
+            id: 'question-01',
             text: 'What is your favorite color?',
             choices: [
-                { id: 'choice-1', text: 'Red' },
-                { id: 'choice-2', text: 'Green' },
-                { id: 'choice-3', text: 'Blue' },
+                { id: 'choice-01', text: 'Red' },
+                { id: 'choice-02', text: 'Green' },
+                { id: 'choice-03', text: 'Blue' },
             ]
         },
         {
-            id: 'question-2',
+            id: 'question-02',
             text: 'What is your favorite animal?',
             choices: [
-                { id: 'choice-4', text: 'Dog' },
-                { id: 'choice-5', text: 'Cat' },
-                { id: 'choice-6', text: 'Bird' },
+                { id: 'choice-04', text: 'Dog' },
+                { id: 'choice-05', text: 'Cat' },
+                { id: 'choice-06', text: 'Bird' },
             ]
         }
     ]

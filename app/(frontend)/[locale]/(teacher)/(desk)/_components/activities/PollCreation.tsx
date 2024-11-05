@@ -1,84 +1,59 @@
 import { Poll } from "@/app/_types/poll2"
-import { emptyPoll, mockPoll, getQuestionIndex } from "@/app/_types/poll2"
-import { useState } from "react"
-import { Grid, Flex, Button, Tooltip,TooltipProps, Container, Section, TextArea, TextField, IconButton, Text, Box, Card } from "@radix-ui/themes"
+import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice } from "@/app/_types/poll2"
+import { useState, useRef, useEffect } from "react"
+import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator } from "@radix-ui/themes"
 import Title from "./Title"
-import { Cloud, CloudUpload, CloudOff, Plus, LucideProps, GripVertical, X } from "lucide-react"
+import {  LucideProps, GripVertical, X, Check } from "lucide-react"
+import { changeTitle } from "@/app/_types/activity"
 
 
-
-interface PollCreationViewProps {
-    poll: Poll
-    currentQuestionIndex: number
-    saving: boolean
-    savingError: boolean
-    onEditTitle?: (newTitle: string) => void
-    onTerminate?: () => void
-    onEditQuestionText?: (questionId: string, newText: string) => void
-    onEditChoiceText?: (choiceId: string, newText: string) => void
-    onDeleteChoice?: (choiceId: string) => void
-}
-
-
-
-
-/** A cloud icon indicating the status of the saving process */
-function SaveStatus({ isSaving, savingError }: { isSaving: boolean, savingError: boolean }) {
-    const tooltipProps: Omit<TooltipProps, 'content'> = { side: 'left' }
-    const iconProps: LucideProps = { size: 18, strokeWidth: 2, absoluteStrokeWidth: true }
-
-    if (isSaving) {
-        return (
-            <Tooltip content='Sauvegarde en cours...' {...tooltipProps}>
-                <CloudUpload color='var(--gray-9)' {...iconProps} />
-            </Tooltip>
-        )
-    }
-
-    if (savingError) {
-        return (
-            <Tooltip content='Erreur lors de la sauvegarde' {...tooltipProps}>
-                <CloudOff color='var(--red-9)' {...iconProps} />
-            </Tooltip>
-        )
-    }
-
-    return (
-        <Tooltip content='Sauvegardé' {...tooltipProps}>
-            <Cloud color='var(--gray-9)' {...iconProps} />
-        </Tooltip>
-    )
-}
 
 
 
 interface ChoiceRowProps {
-    text: string
-    /** When the user presses Enter */
-    onEditEnded?: (newText: string) => void
-    onDelete?: () => void
+    state: {
+        text: string
+        style?: 'normal' | 'active' | 'overlay'
+    },
+    actions: {
+        onTextChange: (newText: string) => void
+        onDelete: () => void
+    }
 }
 
-function ChoiceRow({ text, onEditEnded, onDelete }: ChoiceRowProps) {
+function ChoiceRow({ state, actions }: ChoiceRowProps) {
     const iconProps: LucideProps = { size: 18, strokeWidth: 2, absoluteStrokeWidth: true }
+    const opacity = state.style === 'active' ? 0 : 1
+    const shadow = state.style === 'overlay' ? 'var(--shadow-2), var(--shadow-4)' : undefined
+    const flexStyle = { opacity }
+    const inputStyle = { flexGrow:1, boxShadow: shadow }
+    const gripStyle = { cursor: state.style === 'overlay' ? 'grabbing' : 'grab' }
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        actions.onTextChange(event.target.value)
+    }
 
     return (
-        <Flex align='center' gap='3' width='100%'>
+        <Flex align='center' gap='3' width='100%' style={flexStyle}>
 
             <TextField.Root
-                style={{flexGrow: 1}}
-                value={text}
+                style={inputStyle}
+                value={state.text}
+                onChange={onChange}
                 placeholder="Ajouter une réponse"
-                onKeyDown={(event) => { if (event.key === 'Enter') onEditEnded?.(event.currentTarget.value) }}
             />
 
-            <IconButton size='2' variant="ghost" color='gray' onClick={onDelete}>
-                <X {...iconProps} />
-            </IconButton>
+            <Flex align='center' justify='between' gap='3' width='50px'>
 
-            <IconButton size='2' variant="ghost" color='gray' disabled>
-                <GripVertical {...iconProps} />
-            </IconButton>
+                <IconButton size='2' variant="ghost" color='gray' onClick={actions.onDelete}>
+                    <X {...iconProps} />
+                </IconButton>
+
+                <IconButton size='2' variant="ghost" color='gray' style={gripStyle}>
+                    <GripVertical {...iconProps} />
+                </IconButton>
+
+            </Flex>
 
         </Flex>
     )
@@ -86,64 +61,143 @@ function ChoiceRow({ text, onEditEnded, onDelete }: ChoiceRowProps) {
 
 
 
-function PollCreationView({ poll, currentQuestionIndex, saving, savingError, onEditTitle, onTerminate, onEditQuestionText, onEditChoiceText, onDeleteChoice }: PollCreationViewProps) {
-    
+
+const getStyledChoiceRow = (props: ChoiceRowProps) => {
+    return (style: 'normal' | 'active' | 'overlay') => {
+        return ChoiceRow({ ...props, state: { ...props.state, style } })
+    }
+}
+
+
+
+
+
+interface NewChoiceProps {
+    actions: {
+        onConfirm: (newChoiceText: string) => void
+    }
+}
+
+function NewChoice({ actions }: NewChoiceProps) {
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const confirmAndClear = (value: string) => {
+        if (value.trim() === '') return
+        actions.onConfirm(value)
+        if (inputRef.current) inputRef.current.value = ''
+    }
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') confirmAndClear(event.currentTarget.value)
+    }
+
+    const onClick = () => {
+        if (inputRef.current) {
+            confirmAndClear(inputRef.current.value)
+            inputRef.current.focus()
+        }
+    }
+
+    return (
+        <Flex align='center' gap='3' width='100%'>
+            <TextField.Root
+                ref={inputRef}
+                size='3'
+                placeholder="Ajouter une réponse"
+                style={{ flexGrow: 1 }}
+                onKeyDown={onKeyDown}
+            />
+
+            <Flex align='center' justify='between' gap='3' width='50px'>
+                <IconButton size='2' variant="ghost" onClick={onClick}>
+                    <Check size={18} strokeWidth={2} absoluteStrokeWidth />
+                </IconButton>
+            </Flex>
+
+        </Flex>
+
+    )
+}
+
+
+interface PollCreationViewProps {
+    state: {
+        poll: Poll
+        currentQuestionIndex: number
+    },
+    actions: {
+        onEditTitle: (newTitle: string) => void
+        onTerminate: () => void
+        onEditQuestionText: (questionId: string, newText: string) => void
+        onEditChoiceText: (choiceId: string, newText: string) => void
+        onAddChoice: (questionId: string, choice: { text: string }) => void
+        onDeleteChoice: (choiceId: string) => void
+    }
+}
+
+function PollCreationView({ state, actions }: PollCreationViewProps) {
+
+    const currentQuestion = state.poll.questions[state.currentQuestionIndex]
+
+    const choicesIds = currentQuestion.choices.map(choice => choice.id)
+
+    const getItem = (id: string) => {
+        const choice = currentQuestion.choices.find(choice => choice.id === id)
+
+        if (!choice) return {
+            normal: <p>Error</p>,
+            active: <p>Error</p>,
+            overlay: <p>Error</p>
+        }
+
+        const styledChoiceRow = getStyledChoiceRow({
+            state: { text: choice.text },
+            actions: {
+                onTextChange: (newText) => actions.onEditChoiceText(choice.id, newText),
+                onDelete: () => actions.onDeleteChoice(choice.id),
+            }
+        })
+
+        return {
+            normal: styledChoiceRow('normal'),
+            active: styledChoiceRow('active'),
+            overlay: styledChoiceRow('overlay')
+        }
+    }
+
+
+
     return (
         <Grid rows='auto 1fr auto' height='100%'>
 
-            {/* Top bar */}
             <Flex justify='between' gap='3' align='center' p='4'>
-
-                <Title type='poll' title={poll.title} onEdit={(newTitle) => onEditTitle?.(newTitle)} />
-                
-                <Flex gap='3' align='center'>
-                    <SaveStatus isSaving={saving} savingError={savingError} />
-                    <Button variant='soft' color='gray' onClick={() => onTerminate?.()}>Terminer</Button>
-                </Flex>
-
+                <Title type='poll' title={state.poll.title} onEdit={(newTitle) => actions.onEditTitle(newTitle)} />
+                <Button variant='soft' color='gray' onClick={() => actions.onTerminate()}>Terminer</Button>
             </Flex>
 
-            {/* Question and answers */}
+
             <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
                 <Section size='1'>
 
                     <Flex direction='column' gap='3' mt='7' align='stretch'>
 
-                        {/* QUESTION TEXT AREA */}
                         <TextArea
                             size='3'
                             mb='9'
                             placeholder="Question"
-                            value={poll.questions[currentQuestionIndex].text}
-                            onChange={(event) => onEditQuestionText?.(poll.questions[currentQuestionIndex].id, event.target.value)}
+                            value={currentQuestion.text}
+                            onChange={(event) => actions.onEditQuestionText(currentQuestion.id, event.target.value)}
                         />
 
-                        {/* ANSWERS */}
-                        {poll.questions[currentQuestionIndex].choices.map((choice, index) => (
-                            <ChoiceRow
-                                key={index}
-                                text={choice.text}
-                                onEditEnded={(newText) => onEditChoiceText?.(choice.id, newText)}
-                                onDelete={() => onDeleteChoice?.(choice.id)}
-                            />
-                        ))}
 
+                        {/*<DndSortable ids={choicesIds} itemFactory={getItem} direction='column' gap='3' />*/}
 
+                        <Separator size='4' />
 
-                        {/* ADD NEW ANSWER AREA*/}
-                        <Flex align='center' gap='2' width='100%' mt='7'>
-                            <TextField.Root
-                                size='3'
-                                //value={newAnswerText}
-                                placeholder="Ajouter une réponse"
-                                style={{ width: '100%' }}
-                                //onChange={(event) => setNewAnswerText(event.target.value)}
-                            />
-
-                        </Flex>
-
-
+                        <NewChoice actions={{
+                            onConfirm: (newChoiceText) => {actions.onAddChoice(currentQuestion.id, { text: newChoiceText })}
+                        }} />
 
                     </Flex>
 
@@ -165,18 +219,49 @@ function PollCreationView({ poll, currentQuestionIndex, saving, savingError, onE
 
 
 
-interface PollCreation2Props {
+interface PollCreationProps {
     initialPoll?: Poll
     idToSaveTo?: number
 }
 
 
-export default function PollCreation({ initialPoll, idToSaveTo }: PollCreation2Props) {
+export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationProps) {
     const [poll, setPoll] = useState(initialPoll || mockPoll)
     const currentQuestionIndex = 0
 
+    const state: PollCreationViewProps['state'] = {
+        poll,
+        currentQuestionIndex
+    }
+
+    const actions: PollCreationViewProps['actions'] = {
+        onEditTitle: (newTitle) => {
+            setPoll(changeTitle(newTitle))
+        },
+
+        onTerminate: () => {
+            console.log('Terminating')
+        },
+
+        onEditQuestionText: (questionId, newText) => {
+            setPoll(changeQuestionText({ questionId, newText }))
+        },
+
+        onEditChoiceText: (choiceId, newText) => {
+            setPoll(changeChoiceText({ choiceId, newText }))
+        },
+
+        onAddChoice: (questionId, choice) => {
+            setPoll(addChoice({ questionId, choice }))
+        },
+
+        onDeleteChoice: (choiceId) => {
+            setPoll(deleteChoice(choiceId))
+        }
+    }
+
 
     return (
-        <PollCreationView poll={poll} saving={false} savingError={false} currentQuestionIndex={currentQuestionIndex} />
+        <PollCreationView state={state} actions={actions} />
     )
 }

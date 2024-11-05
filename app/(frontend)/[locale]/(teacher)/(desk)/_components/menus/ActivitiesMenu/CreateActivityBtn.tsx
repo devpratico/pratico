@@ -3,7 +3,7 @@ import { DropdownMenu, Button } from "@radix-ui/themes"
 import { useState } from "react"
 import CardDialog from "../../CardDialog"
 import QuizCreation from "../../activities/QuizCreation"
-import PollCreation2 from "../../activities/PollCreation"
+import PollCreation from "../../activities/PollCreation"
 import { QuizProvider } from "@/app/(frontend)/_hooks/useQuiz"
 import { PollProvider } from "@/app/(frontend)/_hooks/usePoll"
 import { emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz"
@@ -35,7 +35,7 @@ export default function CreateActivityBtn() {
             </CardDialog>
 
             <CardDialog preventClose open={openPollCreation} onOpenChange={setOpenPollCreation}>
-                <PollCreation2 />
+                <PollCreation />
             </CardDialog>
         </>
     )

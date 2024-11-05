@@ -14,9 +14,9 @@ export interface Activity {
 export type ActivitySnapshot = QuizSnapshot | PollSnapshot
 
 
+type ActivityUpdater<T extends Activity> = (activity: T) => T
 
-export function setTitle<T extends Activity>(activity: T, newTitle: string): T {
-    return produce(activity, draft => {
-        draft.title = newTitle
-    })
+
+export function changeTitle<T extends Activity>(newTitle: string): ActivityUpdater<T> {
+    return (activity: T) => produce(activity, draft => { draft.title = newTitle })
 }
