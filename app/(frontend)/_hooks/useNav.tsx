@@ -1,7 +1,7 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId } from 'tldraw';
+import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu, getIndexBelow, getIndexAbove } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
 
 
@@ -15,6 +15,7 @@ type NavContextType = {
     goPrevPage: () => void;
     newPage: (position?: 'next' | 'last') => void;
     deletePage: (id: TLPageId) => void;
+	movePage: (destinationPageId: TLPageId) => void;
 };
 
 const emptyContext: NavContextType = {
@@ -26,7 +27,9 @@ const emptyContext: NavContextType = {
     goNextPage: () => { },
     goPrevPage: () => { },
     newPage: (position?: 'next' | 'last') => { },
-    deletePage: (id: TLPageId) => { }
+    deletePage: (id: TLPageId) => { },
+	movePage: (destinationPageId: TLPageId) => {}
+
 }
 
 const NavContext = createContext<NavContextType>(emptyContext);
@@ -39,7 +42,6 @@ const NavContext = createContext<NavContextType>(emptyContext);
  */
 export function NavProvider({ children }: { children: React.ReactNode }) {
     const { editor } = useTLEditor()
-
     const pageIds$ = useComputed('Page ids', () => {
         if (!editor) return []
         return editor.getPages().map((p) => p.id)
@@ -166,6 +168,36 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
         editor.deletePage(id)
     }, [editor])
 
+	const movePage = useCallback((destinationPageId: TLPageId) => {
+		if (!editor)
+			return ;
+		const pages = editor.getPages();
+		const currentPage = editor.getCurrentPage();
+		const destinationPage = editor.getPage(destinationPageId);
+		if (!destinationPage)
+			return ;
+		const currentIndex = pages.indexOf(currentPage);
+		const newIndex = pages.indexOf(destinationPage);
+		let moveTo;
+		if (currentIndex === -1 || newIndex === currentIndex)
+			return ;
+		if (newIndex === 0)
+			moveTo = getIndexBelow(pages[newIndex].index)
+		else if (newIndex === pages.length - 1)
+			moveTo = getIndexAbove(pages[newIndex].index)
+		else
+		{
+			if (currentIndex < newIndex)
+				moveTo = getIndexBetween(pages[newIndex].index, pages[newIndex + 1].index);
+			else
+				moveTo = getIndexBetween(pages[newIndex - 1].index, pages[newIndex].index);
+		}
+
+		editor.updatePage({ id: currentPage.id, index: moveTo });
+		setCurrentPage(currentPage.id);
+	}, [editor, setCurrentPage]);
+	
+
     return (
         <NavContext.Provider value={{
             pageIds,
@@ -176,7 +208,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             goNextPage,
             goPrevPage,
             newPage,
-            deletePage
+            deletePage,
+			movePage
         }}>
             {children}
         </NavContext.Provider>
