@@ -88,10 +88,6 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
                             animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                         }}
                     >
-						<VisuallyHidden>
-							<Dialog.Title />
-							<Dialog.Description />
-						</VisuallyHidden>
                         {children}
                     </Dialog.Content>
                 </Theme>

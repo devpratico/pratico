@@ -7,6 +7,7 @@ import { Button } from "@radix-ui/themes";
 import { useState } from "react";
 import { Play } from "lucide-react";
 import createClient from "@/supabase/clients/client";
+import { useUser } from "@/app/(frontend)/_hooks/useUser";
 
 
 interface StartBtnProps {
@@ -19,7 +20,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 	const supabase = createClient();
-	let activitySnapshot: any = null;
+	const { user } = useUser();
 
 
     const handleClick = async () => {
@@ -28,10 +29,9 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
         if (!capsuleId) return logger.error('supabase:database', 'No capsule id provided for start button')
     
         setLoading(true)
-		const { data: { user }, error } = await supabase.auth.getUser();
-		if (!user || error)
+		if (!user)
 		{
-			logger.error("supabase:database", "startBtn user not found", error ? error : "");
+			logger.error("supabase:database", "startBtn user not found");
 			return ;
 		}
 		const { data, error: existedRoomError } = await supabase.from("rooms").select("*").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
