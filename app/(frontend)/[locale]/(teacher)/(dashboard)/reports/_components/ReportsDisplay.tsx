@@ -1,7 +1,7 @@
 "use client";
 
 import { Flex, Heading, Text } from "@radix-ui/themes";
-import { OptionsMenu } from "./OptionsMenu";
+import { OptionsMenu } from "../../_components/OptionsMenu";
 import { useEffect, useState } from "react";
 import { Chronological } from "./Chronological";
 import { SessionInfoType } from "../[room_id]/page";
