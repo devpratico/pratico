@@ -7,7 +7,7 @@ import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
 import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator, Over  } from '@dnd-kit/core';
-import { Coordinates, DragMoveEvent } from '@dnd-kit/core/dist/types'
+import { DragMoveEvent } from '@dnd-kit/core/dist/types'
 import { Droppable } from './drag-n-drop/Droppable'
 import { Draggable } from './drag-n-drop/Draggable'
 
@@ -148,7 +148,7 @@ function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
 		if (isGrabbing && currentPageId === pageId)
 			return ('0 0 0 3px var(--accent-8)')
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
-    }, [currentPageId, pageId])
+    }, [currentPageId, pageId, isGrabbing]);
 
     const onSelect = useCallback(() => {
         if (currentPageId === pageId) {
