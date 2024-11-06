@@ -60,9 +60,6 @@ export default function PlayGround () {
                 <DnDItemNormal>
                     <Flex>
                         <Text>Normal 2</Text>
-                        <DnDGrabHandle>
-                            <Text>Grab</Text>
-                        </DnDGrabHandle>
                     </Flex>
                 </DnDItemNormal>
 
