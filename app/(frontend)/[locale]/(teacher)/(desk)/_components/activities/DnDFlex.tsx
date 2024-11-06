@@ -5,16 +5,66 @@ import { DndContext, DragEndEvent, DragStartEvent, closestCenter, rectIntersecti
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Flex, FlexProps } from '@radix-ui/themes';
+import { Flex as RadixFlex, FlexProps } from '@radix-ui/themes';
 import React, { useState, createContext, useContext, useMemo, useCallback, useEffect } from 'react';
 import { useId } from 'react';
 
 
-/** Provide the children of DnDItem the item id */
+/*
+ These are utility components to help you build a sortable list with drag and drop.
+ Example usage:
+ ```
+ <DnDFlex direction="column" gap="3">
+    <DnDItem id="item-1">
+        //... your content
+    </DnDItem>
+    <DnDItem id="item-2">
+        //... your content
+    </DnDItem>
+ </DnDFlex>
+ ```
+ 
+ If you want to have a grab handle, instead of the whole item being draggable, you can use the `DnDGrabHandle` component.
+ It must be within a `DnDItemNormal` component.
+ ```
+<DnDItem id="item-1">
+    <DnDItemNormal>
+        <Flex>
+            <Text>Normal 1</Text>
+            <DnDGrabHandle>
+                <Text>Grab me</Text>
+            </DnDGrabHandle>
+        </Flex>
+    </DnDItemNormal>
+</DnDItem>
+```
+
+If you want to use different components for the active and overlay states, you can use `DnDItemActive` and `DnDItemOverlay` components
+to wrap the content you want to show in those states.
+
+```
+<DnDItem id="item-1">
+    <DnDItemNormal>
+        // Normal look
+    </DnDItemNormal>
+    <DnDItemActive>
+        // Active look
+    </DnDItemActive>
+    <DnDItemOverlay>
+        // Overlay look
+    </DnDItemOverlay>
+</DnDItem>
+```
+ */
+
+
+
+/** Provide the children of DnDItem some useful stuff */
 interface ItemContextType {
     id: string
     setActivatorNodeRef: (node: HTMLElement | null) => void
     listeners: SyntheticListenerMap | undefined
+    isDragging: boolean
 }
 
 const ItemContext = createContext<ItemContextType | null>(null);
@@ -26,8 +76,8 @@ const GrabHandleContext = createContext<(grabHandlePresence: boolean) => void>((
 const DnDItemNormalContext = createContext<boolean>(false);
 
 
-export function DnDItem({id, children}: {id: string, children: React.ReactNode}) {
-    const { active, attributes, setNodeRef, setActivatorNodeRef, listeners, transform, transition } = useSortable({ id });
+function Item({id, children}: {id: string, children: React.ReactNode}) {
+    const { active, attributes, setNodeRef, setActivatorNodeRef, listeners, transform, transition, isDragging } = useSortable({ id });
 
     const dndStyle = {
         transform: CSS.Transform.toString(transform),
@@ -38,14 +88,14 @@ export function DnDItem({id, children}: {id: string, children: React.ReactNode})
         (child): child is React.ReactElement<{ id: string }> => React.isValidElement(child)
     );
 
-    const NormalItem  = validChildren.find(child => child.type === DnDItemNormal);
-    const ActiveItem  = validChildren.find(child => child.type === DnDItemActive);
+    const NormalItem  = validChildren.find(child => child.type === Normal) || validChildren[0];
+    const ActiveItem  = validChildren.find(child => child.type === Active) || NormalItem;
 
     const isActive = active?.id == id;
 
     return (
         <div id={id} ref={setNodeRef} style={dndStyle} {...attributes}>
-            <ItemContext.Provider value={{id, setActivatorNodeRef, listeners}}>
+            <ItemContext.Provider value={{id, setActivatorNodeRef, listeners, isDragging}}>
                 { isActive ? ActiveItem : NormalItem }
             </ItemContext.Provider>
         </div>
@@ -53,7 +103,7 @@ export function DnDItem({id, children}: {id: string, children: React.ReactNode})
 }
 
 
-export function DnDItemNormal({children}: {children: JSX.Element}) {
+function Normal({children}: {children: JSX.Element}) {
     const [hasGrabHandle, setHasGrabHandle] = useState(false);
     const itemContext = useContext(ItemContext);
 
@@ -78,46 +128,36 @@ export function DnDItemNormal({children}: {children: JSX.Element}) {
 }
 
 
-export function DnDItemActive({children}: {children: JSX.Element}) {
-    //const existingStyle: React.CSSProperties = children.props.style || {};
-    //const style: React.CSSProperties = { ...existingStyle, cursor: 'grabbing !important' };
+function Active({children}: {children: JSX.Element}) {
+    const child = React.Children.only(children);
+    const existingStyle: React.CSSProperties = child.props.style || {};
     const dndStyle = { cursor: 'grabbing' };
+    const mergedStyle = { ...existingStyle, ...dndStyle };
 
-    return (
-        <div style={dndStyle}>
-            {children}
-        </div>
-    )
+    return React.cloneElement(child, { style: mergedStyle });
 }
 
 
-export function DnDItemOverlay({children}: {children: JSX.Element}) {
-    //const existingStyle: React.CSSProperties = children.props.style || {};
-    //const style: React.CSSProperties = { ...existingStyle, cursor: 'grabbing !important', color:'red' };
-    const dndStyle = { cursor: 'grabbing', color: 'red' };
-    return (
-        <div style={dndStyle}>
-            {children}
-        </div>
-    );
+function Overlay({children}: {children: JSX.Element}) {
+    const child = React.Children.only(children);
+    const existingStyle: React.CSSProperties = child.props.style || {};
+    const dndStyle = { cursor: 'grabbing' };
+    const mergedStyle = { ...existingStyle, ...dndStyle };
+
+    return React.cloneElement(child, { style: mergedStyle });
 }
 
 
-function DnDGrabHandleNormal({children}: {children: JSX.Element}) {
+function GrabHandleNormal({children}: {children: JSX.Element}) {
     const itemContext = useContext(ItemContext);
     const setHasGrabHandle = useContext(GrabHandleContext);
 
     // Notify its parent DnDItemNormal that it does have a grab handle
     useEffect(() => {
         setHasGrabHandle(true);
-        return () => setHasGrabHandle(false);
     }, [setHasGrabHandle]);
 
-
-    //const existingStyle: React.CSSProperties = child.props.style || {};
-    //const style: React.CSSProperties = { ...existingStyle, cursor: isDragging ? 'grabbing' : 'grab' };
-    const dndStyle = { cursor: 'grab' };
-
+    const dndStyle = { cursor: itemContext?.isDragging ? 'grabbing' : 'grab' };
 
     return (
         <div ref={itemContext?.setActivatorNodeRef} {...itemContext?.listeners} style={dndStyle}>
@@ -127,31 +167,26 @@ function DnDGrabHandleNormal({children}: {children: JSX.Element}) {
 }
 
 
-export function DnDGrabHandle({children}: {children: JSX.Element}) {
+function GrabHandle({children}: {children: JSX.Element}) {
     const isInDnDItemNormal = useContext(DnDItemNormalContext);
 
-    if (isInDnDItemNormal) return <DnDGrabHandleNormal>{children}</DnDGrabHandleNormal>;
+    if (isInDnDItemNormal) return <GrabHandleNormal>{children}</GrabHandleNormal>;
 
     // If not in a normal item, just render the element as is. No need for listeners etc.
     return children;
 }
 
 
+type DnDFlexProps = FlexProps & {
+    children: React.ReactNode
+    onReorder?: (newOrder: string[]) => void
+}
 
 
-export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & FlexProps) {
+function Flex({children, onReorder, ...flexProps}: DnDFlexProps) {
     // Normalize children to an array and filter to only include <DnDItem> elements
-    /*const validChildren = useMemo(() => {
-
-        const array = React.Children.toArray(children)
-        const validChildren = array.filter((child): child is React.ReactElement<{ id: string }> =>
-            React.isValidElement(child) && child.type === DnDItem
-        )
-
-        return validChildren
-    },[children]);*/
     const validChildren = React.Children.toArray(children).filter(
-        (child): child is React.ReactElement<{ id: string }> => React.isValidElement(child) && child.type === DnDItem
+        (child): child is React.ReactElement<{ id: string }> => React.isValidElement(child) && child.type === Item
     );
 
     const initialIds = useMemo(() => validChildren.map(child => child.props.id), [validChildren]);
@@ -162,7 +197,6 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
     const sortableId = useId();
 
     const handleDragStart = useCallback((event: DragStartEvent) => {
-        console.log('Drag start', event.active.id);
         setActiveId(event.active.id.toString());
     }, []);
 
@@ -171,7 +205,6 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
         setActiveId(null);
         const { active, over } = event;
 
-        console.log('Drag end over:', over?.id);
         if (!over) {
             setItemsIds((itemsIds) => [...itemsIds]);
             return;
@@ -181,14 +214,15 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
             setItemsIds((itemsIds) => {
                 const oldIndex = itemsIds.indexOf(active.id.toString());
                 const newIndex = itemsIds.indexOf(over.id.toString());
-                return arrayMove(itemsIds, oldIndex, newIndex);
+                const newArray = arrayMove(itemsIds, oldIndex, newIndex);
+                onReorder?.([...newArray]);
+                return newArray;
             });
         }
-    }, [setItemsIds]);
+    }, [setItemsIds, onReorder]);
 
     const handleDragCancel = useCallback(() => {
-        console.log('Drag cancel');
-        setActiveId(null); // Reset active ID on cancel
+        setActiveId(null);
     }, []);
 
 
@@ -197,10 +231,16 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
         if (!activeElt) return null;
 
         const overlayElt = React.Children.toArray(activeElt.props.children).find((child): child is React.ReactElement => 
-            React.isValidElement(child) && child.type === DnDItemOverlay
+            React.isValidElement(child) && child.type === Overlay
         ) || null;
 
-        return overlayElt;
+        if (!overlayElt) return null;
+
+        return (
+            <DragOverlay>
+                {overlayElt}
+            </DragOverlay>
+        )
     }
 
     const strategy = flexProps.direction === 'column' ? verticalListSortingStrategy : horizontalListSortingStrategy;
@@ -219,7 +259,7 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
                 id={sortableId}
                 strategy={strategy}
             >
-                <Flex {...flexProps}>
+                <RadixFlex {...flexProps}>
                     {
                         itemsIds.map((id, index) => {
                             const elt = validChildren.find((child) => child.props.id == id) || <p>{`No ${id}`}</p>;
@@ -227,13 +267,24 @@ export function DnDFlex({children, ...flexProps}: {children: React.ReactNode} & 
                             return clonedElt
                         })
                     }
-                </Flex>
+                </RadixFlex>
             </SortableContext>
 
-            {/*<DragOverlay>
-                <OverlayElt />
-                <p>Overlay</p>
-            </DragOverlay>*/}
+
+            <OverlayElt />
+
         </DndContext>
     );
 }
+
+
+const DnD = {
+    Flex,
+    Item,
+    Normal,
+    Active,
+    Overlay,
+    GrabHandle
+}
+
+export default DnD;
