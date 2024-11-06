@@ -5,6 +5,7 @@ import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton
 import Title from "./Title"
 import {  LucideProps, GripVertical, X, Check } from "lucide-react"
 import { changeTitle } from "@/app/_types/activity"
+import DnD from "./DnDFlex"
 
 
 
@@ -27,7 +28,6 @@ function ChoiceRow({ state, actions }: ChoiceRowProps) {
     const shadow = state.style === 'overlay' ? 'var(--shadow-2), var(--shadow-4)' : undefined
     const flexStyle = { opacity }
     const inputStyle = { flexGrow:1, boxShadow: shadow }
-    const gripStyle = { cursor: state.style === 'overlay' ? 'grabbing' : 'grab' }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         actions.onTextChange(event.target.value)
@@ -45,30 +45,21 @@ function ChoiceRow({ state, actions }: ChoiceRowProps) {
 
             <Flex align='center' justify='between' gap='3' width='50px'>
 
-                <IconButton size='2' variant="ghost" color='gray' onClick={actions.onDelete}>
+                <IconButton size='2' variant="ghost" color='gray'>
                     <X {...iconProps} />
                 </IconButton>
 
-                <IconButton size='2' variant="ghost" color='gray' style={gripStyle}>
-                    <GripVertical {...iconProps} />
-                </IconButton>
+                <DnD.GrabHandle>
+                    <IconButton size='2' variant="ghost" color='gray' style={{cursor: state.style === 'normal' ? 'grab' : 'grabbing'}}>
+                        <GripVertical {...iconProps} />
+                    </IconButton>
+                </DnD.GrabHandle>
 
             </Flex>
 
         </Flex>
     )
 }
-
-
-
-
-const getStyledChoiceRow = (props: ChoiceRowProps) => {
-    return (style: 'normal' | 'active' | 'overlay') => {
-        return ChoiceRow({ ...props, state: { ...props.state, style } })
-    }
-}
-
-
 
 
 
@@ -141,31 +132,6 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
 
     const choicesIds = currentQuestion.choices.map(choice => choice.id)
 
-    const getItem = (id: string) => {
-        const choice = currentQuestion.choices.find(choice => choice.id === id)
-
-        if (!choice) return {
-            normal: <p>Error</p>,
-            active: <p>Error</p>,
-            overlay: <p>Error</p>
-        }
-
-        const styledChoiceRow = getStyledChoiceRow({
-            state: { text: choice.text },
-            actions: {
-                onTextChange: (newText) => actions.onEditChoiceText(choice.id, newText),
-                onDelete: () => actions.onDeleteChoice(choice.id),
-            }
-        })
-
-        return {
-            normal: styledChoiceRow('normal'),
-            active: styledChoiceRow('active'),
-            overlay: styledChoiceRow('overlay')
-        }
-    }
-
-
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -191,7 +157,41 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                         />
 
 
-                        {/*<DndSortable ids={choicesIds} itemFactory={getItem} direction='column' gap='3' />*/}
+                        <DnD.Flex direction='column' gap='3'>
+                            {choicesIds.map((choiceId, index) => (
+                                <DnD.Item id={choiceId} key={choiceId}>
+
+                                    <DnD.Normal>
+                                        <ChoiceRow
+                                            key={index}
+                                            state={{ 
+                                                text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
+                                                style: 'normal'
+                                            }}
+                                            actions={{
+                                                onTextChange: (newText) => { actions.onEditChoiceText(choiceId, newText) },
+                                                onDelete: () => { actions.onDeleteChoice(choiceId) }
+                                            }}
+                                        />
+                                    </DnD.Normal>
+
+                                    <DnD.Overlay>
+                                        <ChoiceRow
+                                            key={index}
+                                            state={{ 
+                                                //text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
+                                                text: 'Overlay',
+                                                style: 'overlay'
+                                            }}
+                                            actions={{
+                                                onTextChange: (newText) => {},
+                                                onDelete: () => {}
+                                            }}
+                                        />
+                                    </DnD.Overlay>
+                                </DnD.Item>
+                            ))}
+                        </DnD.Flex>
 
                         <Separator size='4' />
 
