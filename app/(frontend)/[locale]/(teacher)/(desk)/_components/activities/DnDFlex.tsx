@@ -64,7 +64,7 @@ interface ItemContextType {
     id: string
     setActivatorNodeRef: (node: HTMLElement | null) => void
     listeners: SyntheticListenerMap | undefined
-    isDragging: boolean
+    isActive: boolean
 }
 
 const ItemContext = createContext<ItemContextType | null>(null);
@@ -77,7 +77,7 @@ const DnDItemNormalContext = createContext<boolean>(false);
 
 
 function Item({id, children}: {id: string, children: React.ReactNode}) {
-    const { active, attributes, setNodeRef, setActivatorNodeRef, listeners, transform, transition, isDragging } = useSortable({ id });
+    const { active, attributes, setNodeRef, setActivatorNodeRef, listeners, transform, transition } = useSortable({ id });
 
     const dndStyle = {
         transform: CSS.Transform.toString(transform),
@@ -88,15 +88,15 @@ function Item({id, children}: {id: string, children: React.ReactNode}) {
         (child): child is React.ReactElement<{ id: string }> => React.isValidElement(child)
     );
 
-    const NormalItem  = validChildren.find(child => child.type === Normal) || validChildren[0];
-    const ActiveItem  = validChildren.find(child => child.type === Active) || NormalItem;
+    const NormalItem  = () => validChildren.find(child => child.type === Normal) || validChildren[0];
+    const ActiveItem  = () => validChildren.find(child => child.type === Active) || <div style={{opacity: 0}}><NormalItem /></div>;
 
     const isActive = active?.id == id;
 
     return (
         <div id={id} ref={setNodeRef} style={dndStyle} {...attributes}>
-            <ItemContext.Provider value={{id, setActivatorNodeRef, listeners, isDragging}}>
-                { isActive ? ActiveItem : NormalItem }
+            <ItemContext.Provider value={{id, setActivatorNodeRef, listeners, isActive}}>
+                { isActive ? <ActiveItem/> : <NormalItem/> }
             </ItemContext.Provider>
         </div>
     )
@@ -114,12 +114,10 @@ function Normal({children}: {children: JSX.Element}) {
     const _listeners        = hasGrabHandle ? {} : itemContext.listeners;
     const _activatorNodeRef = hasGrabHandle ? undefined : itemContext.setActivatorNodeRef;
 
-    const dndStyle = hasGrabHandle ? {} : { cursor: 'grab' }
-
     return (
         <GrabHandleContext.Provider value={setHasGrabHandle}>
             <DnDItemNormalContext.Provider value={true}>                
-                <div {..._listeners} ref={_activatorNodeRef} style={dndStyle}>
+                <div ref={_activatorNodeRef} {..._listeners}>
                     {children}
                 </div>
             </DnDItemNormalContext.Provider>
@@ -129,26 +127,16 @@ function Normal({children}: {children: JSX.Element}) {
 
 
 function Active({children}: {children: JSX.Element}) {
-    const child = React.Children.only(children);
-    const existingStyle: React.CSSProperties = child.props.style || {};
-    const dndStyle = { cursor: 'grabbing' };
-    const mergedStyle = { ...existingStyle, ...dndStyle };
-
-    return React.cloneElement(child, { style: mergedStyle });
+    return children
 }
 
 
 function Overlay({children}: {children: JSX.Element}) {
-    const child = React.Children.only(children);
-    const existingStyle: React.CSSProperties = child.props.style || {};
-    const dndStyle = { cursor: 'grabbing' };
-    const mergedStyle = { ...existingStyle, ...dndStyle };
-
-    return React.cloneElement(child, { style: mergedStyle });
+    return children
 }
 
-
-function GrabHandleNormal({children}: {children: JSX.Element}) {
+/** Adds the grabbing interactive behavior to the child */
+function InteractiveGrabHandle({children}: {children: JSX.Element}) {
     const itemContext = useContext(ItemContext);
     const setHasGrabHandle = useContext(GrabHandleContext);
 
@@ -157,23 +145,23 @@ function GrabHandleNormal({children}: {children: JSX.Element}) {
         setHasGrabHandle(true);
     }, [setHasGrabHandle]);
 
-    const dndStyle = { cursor: itemContext?.isDragging ? 'grabbing' : 'grab' };
-
     return (
-        <div ref={itemContext?.setActivatorNodeRef} {...itemContext?.listeners} style={dndStyle}>
+        <RadixFlex
+            align='center'
+            justify='center'
+            ref={itemContext?.setActivatorNodeRef}
+            {...itemContext?.listeners}
+        >
             {children}
-        </div>
+        </RadixFlex>
     )
 }
 
 
 function GrabHandle({children}: {children: JSX.Element}) {
     const isInDnDItemNormal = useContext(DnDItemNormalContext);
-
-    if (isInDnDItemNormal) return <GrabHandleNormal>{children}</GrabHandleNormal>;
-
-    // If not in a normal item, just render the element as is. No need for listeners etc.
-    return children;
+    // No need for interactive behavior elsewhere than in a DnDItemNormal
+    return isInDnDItemNormal ? <InteractiveGrabHandle>{children}</InteractiveGrabHandle> : children
 }
 
 
