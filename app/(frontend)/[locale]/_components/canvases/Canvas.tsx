@@ -41,8 +41,14 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
-    const { setEditor } = useTLEditor();
+    const { editor, setEditor } = useTLEditor();
+	const [ canvasWidth, setCanvasWidth ] = useState<number | undefined>();
 
+	useEffect(() => {
+		console.log("PAGEBOUND", editor?.getCurrentPageBounds());
+		if (!canvasWidth)
+			setCanvasWidth(editor?.getCurrentPageBounds()?.w);
+	}, [editor, canvasWidth]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.
@@ -56,10 +62,23 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
-
-        
+        const {x, y, w, h} = editor.getViewportPageBounds();
         editor.setCameraOptions({
-            wheelBehavior: 'none'
+            wheelBehavior: 'none',
+				// isLocked: true,
+				constraints: {
+					initialZoom: 'fit-max',
+					baseZoom: 'fit-max',
+					bounds: {
+						x: x,
+						y: y,
+						w: w,
+						h: h,
+					},
+					behavior:  'contain',
+					padding: { x: 50, y: 50 },
+					origin: { x: 0.5, y: 0.5 },
+				},
         })
 
         
@@ -85,15 +104,15 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     }, [setEditor, onMount])
 
-    const options = useMemo(() => ({ maxPages: 300 }), [])
+    const options = useMemo(() => ({ maxPages: 300, infinite: false }), [])
 
     return (
-		<div id='tldrawId' style={{ width: '100%'}}>
+		<div id='tldrawId' style={{ alignContent: 'center', width: canvasWidth || '100%'}}>
 			<Tldraw
 				className='tldraw-canvas'
 				hideUi={true}
 				onMount={handleMount}
-				components={{Background: Background, OnTheCanvas: CanvasArea}}
+				components={{ Background: Background, OnTheCanvas: CanvasArea }}
 				store={store}
 				snapshot={ store ? undefined : initialSnapshot }
 				persistenceKey={persistenceKey}
