@@ -62,7 +62,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
-        const {x, y, w, h} = editor.getViewportPageBounds();
+        const {x, y, w, h} = editor.getViewportScreenBounds();
         editor.setCameraOptions({
             wheelBehavior: 'none',
 				// isLocked: true,
@@ -75,7 +75,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 						w: w,
 						h: h,
 					},
-					behavior:  'contain',
+					behavior:  'inside',
 					padding: { x: 50, y: 50 },
 					origin: { x: 0.5, y: 0.5 },
 				},
