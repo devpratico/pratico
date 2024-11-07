@@ -11,6 +11,7 @@ import {
     StoreSnapshot,
     TLRecord,
     useKeyboardShortcuts,
+	TLFrameShape,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -76,23 +77,19 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
-        const {x, y, w, h} = editor.getViewportScreenBounds();
+        const {x, y, w, h} = editor.getViewportPageBounds();
+		editor.createShape<TLFrameShape>({
+            type: 'frame',
+			x: x,
+			y: y,
+			isLocked: true,
+			props: {
+				w: w,
+				h: h,
+			},
+        })
         editor.setCameraOptions({
             wheelBehavior: 'none',
-			// isLocked: true,
-			constraints: {
-				initialZoom: 'fit-x-100',
-				baseZoom: 'fit-x-100',
-				bounds: {
-					x: x,
-                    y: y ,
-					w: w,
-					h: h,
-				},
-				behavior:  'inside',
-				padding: { x: 0, y: 0 },
-				origin: { x: 0, y: 0 },
-			},
         })
 
         /**

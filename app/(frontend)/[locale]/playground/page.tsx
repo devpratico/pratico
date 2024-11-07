@@ -23,14 +23,14 @@ export default function PlayGround () {
 
         editor.createShape<TLFrameShape>({
             type: 'frame',
-            x: 200,
-            y: 200,
+            x: 0,
+            y: 0,
             props:{
                 name:'frame',
                 //geo:'rectangle',
                 //color:'red',
-                w: 200,
-                h: 200,
+                w: 1000,
+                h: 700,
             }
         })
     }
