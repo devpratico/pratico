@@ -1,8 +1,9 @@
 'use client'
 import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu, getIndexBelow, getIndexAbove } from 'tldraw';
+import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu, getIndexBelow, getIndexAbove, TLFrameShape } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
+import { useRouter } from '../_intl/intlNavigation';
 
 
 type NavContextType = {
@@ -154,7 +155,6 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             }
 
             editor.createPage({ id: newPageId, index: newPageIndex.inFract })
-
             logger.log('tldraw:editor', `Created page at ${newPageIndex.inFract} in between ${currentPageIndex.inFract} and ${nextPageIndex.inFract}`, editor.getPages().map(p => p.index))
         }
         

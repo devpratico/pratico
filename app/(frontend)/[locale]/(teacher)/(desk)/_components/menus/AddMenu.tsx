@@ -3,7 +3,7 @@ import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
 import { CircleCheck, FolderUp, StickyNote } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/(frontend)/_hooks/useNav"
 import { useDisable } from "@/app/(frontend)/_hooks/useDisable"
@@ -12,6 +12,7 @@ import { getPublicUrl } from "@/app/(backend)/api/capsule/capsule.client"
 import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 
 interface ImageData {
     bitmap: string
@@ -34,8 +35,12 @@ export default function AddMenu() {
 
 
 function NewPageBtn() {
-    const { newPage } = useNav()
+    const { newPage, currentPageId } = useNav()
     const { disabled } = useDisable()
+
+	useEffect(() => {
+		// window.location.reload();
+	}, [currentPageId]);
 
     async function handleClick() {
         /*

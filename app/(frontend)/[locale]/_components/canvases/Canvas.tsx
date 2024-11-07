@@ -21,6 +21,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import { useNav } from '@/app/(frontend)/_hooks/useNav'
 
 export interface CanvasUser {
     id: string
@@ -43,33 +44,31 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { editor, setEditor } = useTLEditor();
-	const [ canvasWidth, setCanvasWidth ] = useState<number | undefined>();
+	const { currentPageId } = useNav();
 
 	useEffect(() => {
-		console.log("PAGEBOUND", editor?.getCurrentPageBounds());
-		if (!canvasWidth)
-			setCanvasWidth(editor?.getCurrentPageBounds()?.w);
-	}, [editor, canvasWidth]);
+		if (editor)
+		{
+			const {x, y, w, h} = editor.getViewportPageBounds();
+			editor.createShape<TLFrameShape>({
+				type: 'frame',
+				x: x,
+				y: y,
+				isLocked: true,
+				props: {
+					name: '\u200B', // zero-width space not to have a text above the frame
+					w: w,
+					h: h,
+				},
+			})
+		}
+
+	}, [editor, currentPageId]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.
      */
     const handleMount = useCallback((editor: Editor) => {
-		const image = new Image();
-		const imageWidth  = image.width
-		const imageHeight = image.height
-		const aspectRatio = imageWidth / imageHeight
-		let imageWidthInEditor = imageWidth
-		let imageHeightInEditor = imageHeight
-		if (imageWidth > 1920) {
-			imageWidthInEditor = window.innerWidth
-			imageHeightInEditor = imageWidthInEditor / aspectRatio
-		}
-		if (imageHeight > 1080) {
-			imageHeightInEditor = window.innerHeight
-			imageWidthInEditor = imageHeightInEditor * aspectRatio
-		}
-
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
 
@@ -77,18 +76,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
-        const {x, y, w, h} = editor.getViewportPageBounds();
-		editor.createShape<TLFrameShape>({
-            type: 'frame',
-			x: x,
-			y: y,
-			isLocked: true,
-			props: {
-				name: "\u200B", // zero-width space not to have a text above the frame
-				w: w,
-				h: h,
-			},
-        })
+
         editor.setCameraOptions({
             wheelBehavior: 'none',
         })
@@ -115,10 +103,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     }, [setEditor, onMount])
 
-    const options = useMemo(() => ({ maxPages: 300, infinite: false }), [])
+    const options = useMemo(() => ({ maxPages: 300 }), [])
 
     return (
-		<div id='tldrawId' style={{ alignContent: 'center', width: canvasWidth || '100%'}}>
+		<div id='tldrawId' style={{ alignContent: 'center', width: '100%'}}>
 			<Tldraw
 				className='tldraw-canvas'
 				hideUi={true}
