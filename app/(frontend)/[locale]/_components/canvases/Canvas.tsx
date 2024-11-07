@@ -41,13 +41,33 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
-    const { setEditor } = useTLEditor();
+    const { editor, setEditor } = useTLEditor();
+	const [ canvasWidth, setCanvasWidth ] = useState<number | undefined>();
 
+	useEffect(() => {
+		console.log("PAGEBOUND", editor?.getCurrentPageBounds());
+		if (!canvasWidth)
+			setCanvasWidth(editor?.getCurrentPageBounds()?.w);
+	}, [editor, canvasWidth]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.
      */
     const handleMount = useCallback((editor: Editor) => {
+		const image = new Image();
+		const imageWidth  = image.width
+		const imageHeight = image.height
+		const aspectRatio = imageWidth / imageHeight
+		let imageWidthInEditor = imageWidth
+		let imageHeightInEditor = imageHeight
+		if (imageWidth > 1920) {
+			imageWidthInEditor = window.innerWidth
+			imageHeightInEditor = imageWidthInEditor / aspectRatio
+		}
+		if (imageHeight > 1080) {
+			imageHeightInEditor = window.innerHeight
+			imageWidthInEditor = imageHeightInEditor * aspectRatio
+		}
 
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
@@ -56,13 +76,25 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         if (onMount) {
             onMount(editor)
         }
-
-        
+        const {x, y, w, h} = editor.getViewportScreenBounds();
         editor.setCameraOptions({
-            wheelBehavior: 'none'
+            wheelBehavior: 'none',
+			// isLocked: true,
+			constraints: {
+				initialZoom: 'fit-x-100',
+				baseZoom: 'fit-x-100',
+				bounds: {
+					x: x,
+                    y: y ,
+					w: w,
+					h: h,
+				},
+				behavior:  'inside',
+				padding: { x: 0, y: 0 },
+				origin: { x: 0, y: 0 },
+			},
         })
 
-        
         /**
          * Set the user preferences
          * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
@@ -85,15 +117,15 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     }, [setEditor, onMount])
 
-    const options = useMemo(() => ({ maxPages: 300 }), [])
+    const options = useMemo(() => ({ maxPages: 300, infinite: false }), [])
 
     return (
-		<div id='tldrawId' style={{ width: '100%'}}>
+		<div id='tldrawId' style={{ alignContent: 'center', width: canvasWidth || '100%'}}>
 			<Tldraw
 				className='tldraw-canvas'
 				hideUi={true}
 				onMount={handleMount}
-				components={{Background: Background, OnTheCanvas: CanvasArea}}
+				components={{ Background: Background, OnTheCanvas: CanvasArea }}
 				store={store}
 				snapshot={ store ? undefined : initialSnapshot }
 				persistenceKey={persistenceKey}
