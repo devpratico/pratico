@@ -54,6 +54,20 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
      * It's used to set some initial preferences.
      */
     const handleMount = useCallback((editor: Editor) => {
+		const image = new Image();
+		const imageWidth  = image.width
+		const imageHeight = image.height
+		const aspectRatio = imageWidth / imageHeight
+		let imageWidthInEditor = imageWidth
+		let imageHeightInEditor = imageHeight
+		if (imageWidth > 1920) {
+			imageWidthInEditor = window.innerWidth
+			imageHeightInEditor = imageWidthInEditor / aspectRatio
+		}
+		if (imageHeight > 1080) {
+			imageHeightInEditor = window.innerHeight
+			imageWidthInEditor = imageHeightInEditor * aspectRatio
+		}
 
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
@@ -65,23 +79,22 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         const {x, y, w, h} = editor.getViewportScreenBounds();
         editor.setCameraOptions({
             wheelBehavior: 'none',
-				// isLocked: true,
-				constraints: {
-					initialZoom: 'fit-max',
-					baseZoom: 'fit-max',
-					bounds: {
-						x: x,
-						y: y,
-						w: w,
-						h: h,
-					},
-					behavior:  'inside',
-					padding: { x: 50, y: 50 },
-					origin: { x: 0.5, y: 0.5 },
+			// isLocked: true,
+			constraints: {
+				initialZoom: 'fit-x-100',
+				baseZoom: 'fit-x-100',
+				bounds: {
+					x: x,
+                    y: y ,
+					w: w,
+					h: h,
 				},
+				behavior:  'inside',
+				padding: { x: 0, y: 0 },
+				origin: { x: 0, y: 0 },
+			},
         })
 
-        
         /**
          * Set the user preferences
          * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
