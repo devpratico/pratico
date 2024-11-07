@@ -84,6 +84,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			y: y,
 			isLocked: true,
 			props: {
+				name: "\u200B", // zero-width space not to have a text above the frame
 				w: w,
 				h: h,
 			},
