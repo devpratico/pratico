@@ -1,6 +1,6 @@
 'use client';
-import { Button } from "@radix-ui/themes";
-import { sendDiscordError } from "@/app/(backend)/api/discord/discord.client";
+import { Editor, Tldraw, TLFrameShape } from "tldraw";
+import 'tldraw/tldraw.css'
 
 
 export default function PlayGround () {
@@ -8,13 +8,42 @@ export default function PlayGround () {
 		return (null);
 	}
 
-    const handleClick = async () => {
-        //const response = await sendDiscordMessage('Hello from the frontend');
-        //console.log(response);
-    };
+    function onMount(editor: Editor) {
+        editor.createShape({
+            type: 'geo',
+            x: 100,
+            y: 100,
+            props:{
+                geo:'rectangle',
+                color:'blue',
+                w: 100,
+                h: 100,
+            }
+        })
 
-	return (<>
-        <Button onClick={handleClick}>Send Message</Button>
-        
-	</>)
+        editor.createShape<TLFrameShape>({
+            type: 'frame',
+            x: 200,
+            y: 200,
+            props:{
+                name:'frame',
+                //geo:'rectangle',
+                //color:'red',
+                w: 200,
+                h: 200,
+            }
+        })
+    }
+
+
+
+	return (
+        <div style={{height: '100vh', width: '100vw'}}>
+            <Tldraw
+                onMount={onMount}
+            >
+
+            </Tldraw>
+        </div>
+    )
 };
