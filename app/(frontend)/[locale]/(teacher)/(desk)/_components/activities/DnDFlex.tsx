@@ -1,7 +1,7 @@
 // https://docs.dndkit.com/presets/sortable
 
 'use client';
-import { DndContext, DragEndEvent, DragStartEvent, closestCenter, rectIntersection, DragOverlay, DragOverEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragStartEvent, closestCenter, rectIntersection, DragOverlay, DragOverEvent, PointerSensor, useSensors, useSensor } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -213,6 +213,9 @@ function Flex({children, onReorder, ...flexProps}: DnDFlexProps) {
         setActiveId(null);
     }, []);
 
+    const sensors = useSensors(useSensor(PointerSensor));
+
+
 
     const OverlayElt = () => {
         const activeElt = validChildren.find(child => child.props.id == activeId) as React.ReactElement<{ id: string, children: React.ReactNode }> | null;
@@ -238,6 +241,7 @@ function Flex({children, onReorder, ...flexProps}: DnDFlexProps) {
         <DndContext
             id={flexId}
             collisionDetection={rectIntersection} // {closestCenter}
+            sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragCancel}

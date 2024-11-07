@@ -33,6 +33,10 @@ function ChoiceRow({ state, actions }: ChoiceRowProps) {
         actions.onTextChange(event.target.value)
     }
 
+    const handleClickDelete = () => {
+        actions.onDelete()
+    }
+
     return (
         <Flex align='center' gap='3' width='100%' style={flexStyle}>
 
@@ -45,13 +49,13 @@ function ChoiceRow({ state, actions }: ChoiceRowProps) {
 
             <Flex align='center' justify='between' gap='3' width='50px'>
 
-                <IconButton size='2' variant="ghost" color='gray'>
+                <IconButton size='2' variant="ghost" color='gray' onClick={handleClickDelete}>
                     <X {...iconProps} />
                 </IconButton>
 
                 <DnD.GrabHandle>
                     <IconButton size='2' variant="ghost" color='gray' style={{cursor: state.style === 'normal' ? 'grab' : 'grabbing'}}>
-                        <GripVertical {...iconProps} />
+                        <GripVertical {...iconProps} opacity={0.5}/>
                     </IconButton>
                 </DnD.GrabHandle>
 
@@ -157,7 +161,7 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                         />
 
 
-                        <DnD.Flex direction='column' gap='3'>
+                        <DnD.Flex direction='column' gap='3' key={choicesIds.join('')}>
                             {choicesIds.map((choiceId, index) => (
                                 <DnD.Item id={choiceId} key={choiceId}>
 
@@ -179,8 +183,7 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                                         <ChoiceRow
                                             key={index}
                                             state={{ 
-                                                //text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
-                                                text: 'Overlay',
+                                                text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
                                                 style: 'overlay'
                                             }}
                                             actions={{
@@ -192,6 +195,22 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                                 </DnD.Item>
                             ))}
                         </DnD.Flex>
+
+                        {/*<Flex direction='column' gap='3'>
+                            {choicesIds.map((choiceId, index) => (
+                                <ChoiceRow
+                                    key={index}
+                                    state={{ 
+                                        text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
+                                        style: 'normal'
+                                    }}
+                                    actions={{
+                                        onTextChange: (newText) => { actions.onEditChoiceText(choiceId, newText) },
+                                        onDelete: () => { actions.onDeleteChoice(choiceId) }
+                                    }}
+                                />
+                            ))}
+                        </Flex>*/}
 
                         <Separator size='4' />
 
