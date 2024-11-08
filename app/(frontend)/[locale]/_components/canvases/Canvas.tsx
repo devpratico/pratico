@@ -44,26 +44,7 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { editor, setEditor } = useTLEditor();
-	const { currentPageId } = useNav();
 
-	useEffect(() => {
-		if (editor)
-		{
-			const {x, y, w, h} = editor.getViewportPageBounds();
-			editor.createShape<TLFrameShape>({
-				type: 'frame',
-				x: x,
-				y: y,
-				isLocked: true,
-				props: {
-					name: '\u200B', // zero-width space not to have a text above the frame
-					w: w,
-					h: h,
-				},
-			})
-		}
-
-	}, [editor, currentPageId]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.
@@ -80,6 +61,19 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.setCameraOptions({
             wheelBehavior: 'none',
         })
+		const {x, y, w, h} = editor.getViewportPageBounds();
+		console.log("HERE")
+		editor.createShape<TLFrameShape>({
+			type: 'frame',
+			x: x * 2,
+			y: y * 2,
+			isLocked: true,
+			props: {
+				name: '\u200B', // zero-width space not to have a text above the frame
+				w: w * 2,
+				h: h * 2,
+			},
+		})
 
         /**
          * Set the user preferences

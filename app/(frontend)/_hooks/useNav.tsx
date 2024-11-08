@@ -155,6 +155,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
             }
 
             editor.createPage({ id: newPageId, index: newPageIndex.inFract })
+			
             logger.log('tldraw:editor', `Created page at ${newPageIndex.inFract} in between ${currentPageIndex.inFract} and ${nextPageIndex.inFract}`, editor.getPages().map(p => p.index))
         }
         

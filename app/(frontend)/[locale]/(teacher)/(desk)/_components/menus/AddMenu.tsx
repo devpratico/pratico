@@ -35,12 +35,8 @@ export default function AddMenu() {
 
 
 function NewPageBtn() {
-    const { newPage, currentPageId } = useNav()
+    const { newPage } = useNav()
     const { disabled } = useDisable()
-
-	useEffect(() => {
-		// window.location.reload();
-	}, [currentPageId]);
 
     async function handleClick() {
         /*

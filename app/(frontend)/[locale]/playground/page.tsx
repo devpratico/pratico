@@ -1,46 +1,67 @@
 'use client';
-import { Editor, Tldraw, TLFrameShape } from "tldraw";
+import { useCallback } from "react";
+import { createShapeId, Editor, Tldraw, TLFrameShape, TLPageId, TLShapeId, uniqueId, useEditor } from "tldraw";
 import 'tldraw/tldraw.css'
+import { useTLEditor } from "../../_hooks/useTLEditor";
 
 
 export default function PlayGround () {
-	if (process.env.NODE_ENV === 'production') {
-		return (null);
-	}
+	// if (process.env.NODE_ENV === 'production') {
+	// 	return (null);
+	// }
+	const { editor, setEditor } = useTLEditor();
 
-    function onMount(editor: Editor) {
-        editor.createShape({
-            type: 'geo',
-            x: 100,
-            y: 100,
-            props:{
-                geo:'rectangle',
-                color:'blue',
-                w: 100,
-                h: 100,
-            }
+    const handleOnMount = useCallback((editor: Editor) => {
+		setEditor(editor);
+		
+        editor?.createPage({
+			id: `page:${uniqueId()}` as TLPageId
+
         })
 
-        editor.createShape<TLFrameShape>({
-            type: 'frame',
-            x: 0,
-            y: 0,
-            props:{
-                name:'frame',
-                //geo:'rectangle',
-                //color:'red',
-                w: 1000,
-                h: 700,
-            }
-        })
-    }
+		editor.sideEffects.registerAfterCreateHandler('page', (newpage) => {
+			if (newpage.typeName === 'page') {
+				console.log('A new page was created', newpage)
+			}
+			const { x,y,w,h } = editor.getViewportPageBounds();
+			editor?.createShape<TLFrameShape>({
+				 id: createShapeId(),
+				 type: 'frame',
+				 x: x,
+				 y: y,
+				 // isLocked: true,
+				 props:{
+					 name:'frame',
+					 //geo:'rectangle',
+					 //color:'red',
+					 w: w,
+					 h: h,
+				 }
+			 })
+		})
+		// editor.createShape({
+		// 	type: 'text',
+		// 	x: 200,
+		// 	y: 200,
+		// 	props: {
+		// 		text: 'Hello world!',
+		// 	},
+		// })
+
+		// editor.selectAll()
+
+		// editor.zoomToSelection({
+		// 	animation: { duration: 5000 },
+		// })
+    }, [setEditor]);
 
 
 
 	return (
-        <div style={{height: '100vh', width: '100vw'}}>
+        <div style={{position: 'fixed', inset: 0 }}>
             <Tldraw
-                onMount={onMount}
+                onMount={handleOnMount}
+				persistenceKey="example"
             >
 
             </Tldraw>
