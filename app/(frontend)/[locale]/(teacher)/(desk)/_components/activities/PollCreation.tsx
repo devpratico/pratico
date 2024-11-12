@@ -1,11 +1,12 @@
 import { Poll } from "@/app/_types/poll2"
 import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice } from "@/app/_types/poll2"
 import { useState, useRef, useEffect, useMemo, useCallback } from "react"
-import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator } from "@radix-ui/themes"
+import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
-import {  LucideProps, GripVertical, X, Check } from "lucide-react"
+import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus } from "lucide-react"
 import { changeTitle } from "@/app/_types/activity"
 //import DnD from "./DnDFlex"
+import Navigator from "./Navigator"
 
 
 interface ChoiceRowProps {
@@ -139,6 +140,7 @@ interface PollCreationViewProps {
         onEditChoiceText: (choiceId: string, newText: string) => void
         onAddChoice: (questionId: string, choice: { text: string }) => void
         onDeleteChoice: (choiceId: string) => void
+        onSetCurrentQuestionIndex: (index: number) => void
     }
 }
 
@@ -233,11 +235,28 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                 </Section>
             </Container>
 
-            <Box p='4'>
-                <Card variant="classic">
-                    Hello
+            <Flex p='3' justify='center'>
+                <Card variant='classic'>
+                    <Flex justify='center' gap='3'>
+                        <Navigator
+                            total={state.poll.questions.length}
+                            currentQuestionIndex={state.currentQuestionIndex}
+                            setCurrentQuestionIndex={(index) => {actions.onSetCurrentQuestionIndex(index)}}
+                        />
+                        <Button><Plus/>Nouvelle question</Button>
+                        <Tooltip content={'Dupliquer la question'}>
+                            <IconButton mt='1' variant='ghost'>
+                                <Copy />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip content={'Supprimer la question'}>
+                            <IconButton mt='1' mr='1' variant='ghost'>
+                                <Trash2 />
+                            </IconButton>
+                        </Tooltip>
+                    </Flex>
                 </Card>
-            </Box>
+            </Flex>
 
         </Grid>
     )
@@ -256,7 +275,7 @@ interface PollCreationProps {
 
 export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationProps) {
     const [poll, setPoll] = useState(initialPoll || mockPoll)
-    const currentQuestionIndex = 0
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 
     const state: PollCreationViewProps['state'] = {
         poll,
@@ -286,6 +305,10 @@ export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationPr
 
         onDeleteChoice: (choiceId) => {
             setPoll(deleteChoice(choiceId))
+        },
+
+        onSetCurrentQuestionIndex: (index) => {
+            setCurrentQuestionIndex(index)
         }
     }
 
