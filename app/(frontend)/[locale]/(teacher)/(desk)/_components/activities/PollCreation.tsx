@@ -1,5 +1,5 @@
 import { Poll } from "@/app/_types/poll2"
-import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice } from "@/app/_types/poll2"
+import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice, addEmptyQuestion, duplicateQuestion, deleteQuestion } from "@/app/_types/poll2"
 import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
@@ -141,6 +141,9 @@ interface PollCreationViewProps {
         onAddChoice: (questionId: string, choice: { text: string }) => void
         onDeleteChoice: (choiceId: string) => void
         onSetCurrentQuestionIndex: (index: number) => void
+        onAddEmptyQuestion: () => void
+        onDuplicateQuestion: (questionId: string) => void
+        onDeleteQuestion: (questionId: string) => void
     }
 }
 
@@ -243,14 +246,14 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                             currentQuestionIndex={state.currentQuestionIndex}
                             setCurrentQuestionIndex={(index) => {actions.onSetCurrentQuestionIndex(index)}}
                         />
-                        <Button><Plus/>Nouvelle question</Button>
+                        <Button onClick={actions.onAddEmptyQuestion}><Plus/>Nouvelle question</Button>
                         <Tooltip content={'Dupliquer la question'}>
-                            <IconButton mt='1' variant='ghost'>
+                            <IconButton onClick={() => actions.onDuplicateQuestion(currentQuestion.id)}mt='1' variant='ghost'>
                                 <Copy />
                             </IconButton>
                         </Tooltip>
                         <Tooltip content={'Supprimer la question'}>
-                            <IconButton mt='1' mr='1' variant='ghost'>
+                            <IconButton  onClick={() => actions.onDeleteQuestion(currentQuestion.id)} mt='1' mr='1' variant='ghost'>
                                 <Trash2 />
                             </IconButton>
                         </Tooltip>
@@ -309,6 +312,23 @@ export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationPr
 
         onSetCurrentQuestionIndex: (index) => {
             setCurrentQuestionIndex(index)
+        },
+
+        onAddEmptyQuestion: () => {
+            setPoll(addEmptyQuestion())
+            setCurrentQuestionIndex(poll.questions.length)
+        },
+
+        onDuplicateQuestion: (questionId) => {
+            setPoll(duplicateQuestion(questionId))
+            // Find the index of the duplicated question (just after the original one)
+            const index = poll.questions.findIndex(q => q.id === questionId) + 1
+            setCurrentQuestionIndex(index)
+        },
+
+        onDeleteQuestion: (questionId) => {
+            setPoll(deleteQuestion(questionId))
+            setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))
         }
     }
 
