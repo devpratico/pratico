@@ -1,14 +1,11 @@
 import { Poll } from "@/app/_types/poll2"
 import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice } from "@/app/_types/poll2"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator } from "@radix-ui/themes"
 import Title from "./Title"
 import {  LucideProps, GripVertical, X, Check } from "lucide-react"
 import { changeTitle } from "@/app/_types/activity"
-import DnD from "./DnDFlex"
-
-
-
+//import DnD from "./DnDFlex"
 
 
 interface ChoiceRowProps {
@@ -23,15 +20,28 @@ interface ChoiceRowProps {
 }
 
 function ChoiceRow({ state, actions }: ChoiceRowProps) {
+    //const text = useMemo(() => state.text, [state.text])
+    //const [value, setValue] = useState(text)
     const iconProps: LucideProps = { size: 18, strokeWidth: 2, absoluteStrokeWidth: true }
     const opacity = state.style === 'active' ? 0 : 1
     const shadow = state.style === 'overlay' ? 'var(--shadow-2), var(--shadow-4)' : undefined
     const flexStyle = { opacity }
-    const inputStyle = { flexGrow:1, boxShadow: shadow }
+    //const inputStyle = { flexGrow:1, boxShadow: shadow, backgroundColor:'var(--color-background)' }
+    const inputStyle = useMemo(() => ({ flexGrow:1, boxShadow: shadow, backgroundColor:'var(--color-background)' }), [shadow])
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    /*const onBlur = useCallback(()=>(event: React.ChangeEvent<HTMLInputElement>) => {
+        //actions.onTextChange(event.target.value)
+        requestAnimationFrame(() => {actions.onTextChange(event.target.value)})
+    }, [actions])*/
+
+    /*const onChange = useCallback(()=>(event: React.ChangeEvent<HTMLInputElement>) => {
+        //actions.onTextChange(event.target.value)
+        setValue(event.target.value)
+    }, [setValue])*/
+
+    const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         actions.onTextChange(event.target.value)
-    }
+    }, [actions])
 
     const handleClickDelete = () => {
         actions.onDelete()
@@ -43,21 +53,23 @@ function ChoiceRow({ state, actions }: ChoiceRowProps) {
             <TextField.Root
                 style={inputStyle}
                 value={state.text}
+                //value={value}
                 onChange={onChange}
+                //onBlur={onBlur}
                 placeholder="Ajouter une réponse"
             />
 
-            <Flex align='center' justify='between' gap='3' width='50px'>
+            <Flex align='center' justify='between' gap='3'>
 
-                <IconButton size='2' variant="ghost" color='gray' onClick={handleClickDelete}>
+                <IconButton size='2' variant="ghost" color='gray' radius='full' onClick={handleClickDelete}>
                     <X {...iconProps} />
                 </IconButton>
 
-                <DnD.GrabHandle>
+                {/*<DnD.GrabHandle>
                     <IconButton size='2' variant="ghost" color='gray' style={{cursor: state.style === 'normal' ? 'grab' : 'grabbing'}}>
                         <GripVertical {...iconProps} opacity={0.5}/>
                     </IconButton>
-                </DnD.GrabHandle>
+                </DnD.GrabHandle>*/}
 
             </Flex>
 
@@ -103,8 +115,8 @@ function NewChoice({ actions }: NewChoiceProps) {
                 onKeyDown={onKeyDown}
             />
 
-            <Flex align='center' justify='between' gap='3' width='50px'>
-                <IconButton size='2' variant="ghost" onClick={onClick}>
+            <Flex align='center' justify='between' gap='3'>
+                <IconButton size='2' radius='full' onClick={onClick}>
                     <Check size={18} strokeWidth={2} absoluteStrokeWidth />
                 </IconButton>
             </Flex>
@@ -131,11 +143,8 @@ interface PollCreationViewProps {
 }
 
 function PollCreationView({ state, actions }: PollCreationViewProps) {
-
     const currentQuestion = state.poll.questions[state.currentQuestionIndex]
-
     const choicesIds = currentQuestion.choices.map(choice => choice.id)
-
 
     return (
         <Grid rows='auto 1fr auto' height='100%'>
@@ -161,19 +170,20 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                         />
 
 
-                        <DnD.Flex direction='column' gap='3' key={choicesIds.join('')}>
+                        {/*<DnD.Flex direction='column' gap='3'>/ key={choicesIds.join('')}>/
                             {choicesIds.map((choiceId, index) => (
                                 <DnD.Item id={choiceId} key={choiceId}>
 
                                     <DnD.Normal>
                                         <ChoiceRow
-                                            key={index}
+                                            //key={'n-'+index}
+                                            key={choiceId}
                                             state={{ 
                                                 text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
                                                 style: 'normal'
                                             }}
                                             actions={{
-                                                onTextChange: (newText) => { actions.onEditChoiceText(choiceId, newText) },
+                                                onTextChange: (newText) => {actions.onEditChoiceText(choiceId, newText)},
                                                 onDelete: () => { actions.onDeleteChoice(choiceId) }
                                             }}
                                         />
@@ -181,7 +191,7 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
 
                                     <DnD.Overlay>
                                         <ChoiceRow
-                                            key={index}
+                                            //key={'o-'+index}
                                             state={{ 
                                                 text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
                                                 style: 'overlay'
@@ -194,12 +204,12 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                                     </DnD.Overlay>
                                 </DnD.Item>
                             ))}
-                        </DnD.Flex>
+                        </DnD.Flex>*/}
 
-                        {/*<Flex direction='column' gap='3'>
+                        <Flex direction='column' gap='3'>
                             {choicesIds.map((choiceId, index) => (
                                 <ChoiceRow
-                                    key={index}
+                                    key={choiceId}
                                     state={{ 
                                         text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
                                         style: 'normal'
@@ -210,7 +220,7 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
                                     }}
                                 />
                             ))}
-                        </Flex>*/}
+                        </Flex>
 
                         <Separator size='4' />
 

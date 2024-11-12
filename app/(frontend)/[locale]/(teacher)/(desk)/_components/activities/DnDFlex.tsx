@@ -1,62 +1,13 @@
 // https://docs.dndkit.com/presets/sortable
 
 'use client';
-import { DndContext, DragEndEvent, DragStartEvent, closestCenter, rectIntersection, DragOverlay, DragOverEvent, PointerSensor, useSensors, useSensor } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragStartEvent, rectIntersection, DragOverlay } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Flex as RadixFlex, FlexProps } from '@radix-ui/themes';
 import React, { useState, createContext, useContext, useMemo, useCallback, useEffect } from 'react';
 import { useId } from 'react';
-
-
-/*
- These are utility components to help you build a sortable list with drag and drop.
- Example usage:
- ```
- <DnDFlex direction="column" gap="3">
-    <DnDItem id="item-1">
-        //... your content
-    </DnDItem>
-    <DnDItem id="item-2">
-        //... your content
-    </DnDItem>
- </DnDFlex>
- ```
- 
- If you want to have a grab handle, instead of the whole item being draggable, you can use the `DnDGrabHandle` component.
- It must be within a `DnDItemNormal` component.
- ```
-<DnDItem id="item-1">
-    <DnDItemNormal>
-        <Flex>
-            <Text>Normal 1</Text>
-            <DnDGrabHandle>
-                <Text>Grab me</Text>
-            </DnDGrabHandle>
-        </Flex>
-    </DnDItemNormal>
-</DnDItem>
-```
-
-If you want to use different components for the active and overlay states, you can use `DnDItemActive` and `DnDItemOverlay` components
-to wrap the content you want to show in those states.
-
-```
-<DnDItem id="item-1">
-    <DnDItemNormal>
-        // Normal look
-    </DnDItemNormal>
-    <DnDItemActive>
-        // Active look
-    </DnDItemActive>
-    <DnDItemOverlay>
-        // Overlay look
-    </DnDItemOverlay>
-</DnDItem>
-```
- */
-
 
 
 /** Provide the children of DnDItem some useful stuff */
@@ -160,7 +111,7 @@ function InteractiveGrabHandle({children}: {children: JSX.Element}) {
 
 function GrabHandle({children}: {children: JSX.Element}) {
     const isInDnDItemNormal = useContext(DnDItemNormalContext);
-    // No need for interactive behavior elsewhere than in a DnDItemNormal
+    // No need for interactivity if outside DnDItemNormal
     return isInDnDItemNormal ? <InteractiveGrabHandle>{children}</InteractiveGrabHandle> : children
 }
 
@@ -213,9 +164,6 @@ function Flex({children, onReorder, ...flexProps}: DnDFlexProps) {
         setActiveId(null);
     }, []);
 
-    const sensors = useSensors(useSensor(PointerSensor));
-
-
 
     const OverlayElt = () => {
         const activeElt = validChildren.find(child => child.props.id == activeId) as React.ReactElement<{ id: string, children: React.ReactNode }> | null;
@@ -241,7 +189,6 @@ function Flex({children, onReorder, ...flexProps}: DnDFlexProps) {
         <DndContext
             id={flexId}
             collisionDetection={rectIntersection} // {closestCenter}
-            sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onDragCancel={handleDragCancel}
