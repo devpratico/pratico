@@ -87,6 +87,8 @@ export default function PlayGround () {
     )
 };
 
+
+// https://tldraw.dev/examples/data/assets/export-canvas-as-image
 function ExportCanvasButton() {
 	const editor = useEditor()
 	return (
