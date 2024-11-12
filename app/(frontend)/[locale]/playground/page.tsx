@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useState } from "react";
-import { createShapeId, Editor, exportToBlob, IndexKey, Tldraw, TLFrameShape, TLPageId, TLParentId, TLShapeId, TLUiComponents, uniqueId, useEditor } from "tldraw";
+import { createShapeId, Editor, exportToBlob, IndexKey, Tldraw, TLFrameShape, TLPageId, TLParentId, TLShape, TLShapeId, TLUiComponents, uniqueId, useEditor } from "tldraw";
 import 'tldraw/tldraw.css'
 import { useTLEditor } from "../../_hooks/useTLEditor";
 import { CardShapeUtil } from "./_components/ShapeUtilClass";
@@ -15,7 +15,7 @@ export default function PlayGround () {
 	const [ editor, setEditor ] = useState<Editor>();
 	const [ currentPageId, setCurrentPageId ] = useState<TLPageId>();
 	const [ pageIds, setPageIds ] = useState<TLPageId[] | undefined>([]); 
-
+	
 	useEffect(() => {
 		if (!editor)
 			return ;
@@ -31,6 +31,7 @@ export default function PlayGround () {
 				x: x,
 				y: y,
 				isLocked: true,
+
 				props: {
 					w: w,
 					h: h,
@@ -61,7 +62,6 @@ export default function PlayGround () {
 			setCurrentPageId(newpage.id);
 			
 		});
-		
 	
 			// editor?.createShape<TLFrameShape>({
 			// 		"parentId": "page:somePage" as TLParentId,
