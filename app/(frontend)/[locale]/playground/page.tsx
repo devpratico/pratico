@@ -5,6 +5,7 @@ import 'tldraw/tldraw.css'
 import { useTLEditor } from "../../_hooks/useTLEditor";
 import { CardShapeUtil } from "./_components/ShapeUtilClass";
 import { useNav } from "../../_hooks/useNav";
+import { Card } from "@radix-ui/themes";
 
 const MyCustomShapes = [CardShapeUtil]
 
@@ -52,8 +53,8 @@ export default function PlayGround () {
 			y: y,
 			isLocked: true,
 			props: {
-				w: w,
-				h: h,
+				w: 1920,
+				h: 1080,
 				// color: 'var(--violet-8)'
 			}
 		});
@@ -99,17 +100,19 @@ export default function PlayGround () {
 
 
 
-	// const components: TLUiComponents = {
-	// 	SharePanel: ExportCanvasButton,
-	// }
+	const components = {
+		SharePanel: ExportCanvasButton,
+		Background: Background,
+		OnTheCanvas: CanvasArea
+	}
 
 	return (
         <div style={{position: 'fixed', inset: 0 }}>
             <Tldraw
                 onMount={handleOnMount}
 				// persistenceKey="example4"
-				shapeUtils={MyCustomShapes}
-				// components={components}
+				// shapeUtils={MyCustomShapes}
+				components={components}
             >
 
             </Tldraw>
@@ -118,29 +121,38 @@ export default function PlayGround () {
 };
 
 
-// // https://tldraw.dev/examples/data/assets/export-canvas-as-image
-// function ExportCanvasButton() {
-// 	const editor = useEditor()
-// 	return (
-// 		<button
-// 			style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'thistle' }}
-// 			onClick={async () => {
-// 				const shapeIds = editor.getCurrentPageShapeIds()
-// 				if (shapeIds.size === 0) return alert('No shapes on the canvas')
-// 				const blob = await exportToBlob({
-// 					editor,
-// 					ids: [...shapeIds], // downlevelIteration: true dans tsconfig permet des constructions ES6 même lors de la transpilation vers des versions plus anciennes (comme es5).
-// 					format: 'png',
-// 					opts: { background: false },
-// 				})
+// https://tldraw.dev/examples/data/assets/export-canvas-as-image
+function ExportCanvasButton() {
+	const editor = useEditor()
+	return (
+		<button
+			style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'thistle' }}
+			onClick={async () => {
+				const shapeIds = editor.getCurrentPageShapeIds()
+				if (shapeIds.size === 0) return alert('No shapes on the canvas')
+				const blob = await exportToBlob({
+					editor,
+					ids: [...shapeIds], // downlevelIteration: true dans tsconfig permet des constructions ES6 même lors de la transpilation vers des versions plus anciennes (comme es5).
+					format: 'png',
+					opts: { background: false },
+				})
 
-// 				const link = document.createElement('a')
-// 				link.href = window.URL.createObjectURL(blob)
-// 				link.download = 'every-shape-on-the-canvas.jpg'
-// 				link.click()
-// 			}}
-// 		>
-// 			Export canvas as image
-// 		</button>
-// 	)
-// }
+				const link = document.createElement('a')
+				link.href = window.URL.createObjectURL(blob)
+				link.download = 'every-shape-on-the-canvas.jpg'
+				link.click()
+			}}
+		>
+			Export canvas as image
+		</button>
+	)
+}
+
+
+function CanvasArea() {
+    return <Card variant='classic' style={{width:'1920px', height:'1080px', position:'absolute'}}/>
+}
+
+function Background() {
+    return <div style={{position:'absolute', backgroundColor:'green', width:'100%', height:'100%'}}></div>
+}
