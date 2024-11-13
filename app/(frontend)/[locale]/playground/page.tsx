@@ -227,35 +227,49 @@ function ExportCanvasButton() {
 	)
 }
 
+import jspdf from "jspdf";
 
 const ExportAllPagesButton = () => {
- 	const editor = useEditor();
-	const [ svgPages, setSvgPages ] = useState<any[]>();
-	const handleExportAllPages = async () => {
-		const allSVGs = [];
-		const allPages = editor.getPages();
-		if (allPages.length === 0)
-			return ;
+  const editor = useEditor();
+  const [svgPages, setSvgPages] = useState<any[]>([]);
 
-		for (const page of allPages) {
-			const shapeIds = editor.getPageShapeIds(page);
-			
-			if (shapeIds.size === 0)
-				continue ;
+  const handleExportAllPages = async () => {
+    const allSVGs: any[] = [];
+    const allPages = editor.getPages();
+    const pdf = new jspdf();
 
-				try {
-					const svg = await editor.getSvgElement(Array.from(shapeIds));
-					allSVGs.push(svg);
-				} catch (error) {
-					console.error(`Failed to get svgElement in page ${page.id}:`, error);
-				}
-				finally {
-					setSvgPages(allSVGs);
-					console.log(allSVGs);
-				}
-			};
-		}
+    if (allPages.length === 0) return;
 
+    for (const page of allPages) {
+      const shapeIds = editor.getPageShapeIds(page);
+
+      if (shapeIds.size === 0) continue;
+
+      try {
+        const svg = await editor.getSvgElement(Array.from(shapeIds));
+        const svgString = await editor.getSvgString(Array.from(shapeIds));
+
+        allSVGs.push(svg);
+
+        if (pdf.internal.pages.length > 1) {
+          pdf.addPage();
+        }
+
+        if (svgString) {
+			console.log(svgString);
+          const imgData = `data:image/svg+xml;base64,${btoa(svgString.svg)}`;
+          pdf.addImage(imgData, "SVG", 0, 0, 210, 297);
+        }
+      } catch (error) {
+        console.error(`Failed to get svgElement in page ${page.id}`, error);
+      }
+    }
+
+    setSvgPages(allSVGs);
+    console.log(allSVGs);
+
+    pdf.save("exported_pages.pdf");
+  };
 
   return (
     <button
