@@ -232,7 +232,7 @@ const ExportAllPagesButton = () => {
  	const editor = useEditor();
 	const [ svgPages, setSvgPages ] = useState<any[]>();
 	const handleExportAllPages = async () => {
-		const allBlobs = [];
+		const allSVGs = [];
 		const allPages = editor.getPages();
 		if (allPages.length === 0)
 			return ;
@@ -244,18 +244,18 @@ const ExportAllPagesButton = () => {
 				continue ;
 
 				try {
-					const blob = await editor.getSvgElement(Array.from(shapeIds));
-					allBlobs.push(blob);
+					const svg = await editor.getSvgElement(Array.from(shapeIds));
+					allSVGs.push(svg);
 				} catch (error) {
-					console.error(`Failed to export page ${page.id}:`, error);
+					console.error(`Failed to get svgElement in page ${page.id}:`, error);
 				}
 				finally {
-					setSvgPages(allBlobs);
-					console.log(allBlobs);
+					setSvgPages(allSVGs);
+					console.log(allSVGs);
 				}
 			};
 		}
-		
+
 
   return (
     <button
@@ -266,52 +266,6 @@ const ExportAllPagesButton = () => {
     </button>
   );
 };
-
-
-// function ExportAllCanvasButton() {
-
-
-// 	const editor = useEditor()
-// 	return (
-// 		<button
-// 			style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'thistle' }}
-// 			onClick={async () => {
-// 				const shapeIds = editor.getCurrentPageShapeIds()
-// 				const pages = editor.getPages();
-// 				const blobs: Blob[] = [];
-// 				if (pages.length === 0) return alert('No pages to export');
-// 				pages.map(async (item) => {
-// 					const ids = editor.getPageShapeIds(item);
-// 					const blob = await exportToBlob({
-// 						editor,
-// 						ids: [...ids], // downlevelIteration: true dans tsconfig permet des constructions ES6 même lors de la transpilation vers des versions plus anciennes (comme es5).
-// 						format: 'png',
-// 						opts: { background: false },
-// 					});
-// 					blobs.push(blob);
-// 				})
-				
-// 				// blobs.forEach((item) => {
-// 				// 	const link = document.createElement('a')
-// 				// 		link.href = window.URL.createObjectURL(item)
-// 				// 		link.download = 'every-shape-on-the-canvas.jpg'
-// 				// 		link.click()
-// 				// });
-// 				const mergedBlob = new Blob(blobs, { type: 'image/png' });
-
-// 				const link = document.createElement('a');
-// 				link.href = window.URL.createObjectURL(mergedBlob);
-// 				link.download = 'every-pages.jpg';
-
-// 				link.click();
-	
-// 			}}
-// 		>
-// 			Export all canvas as images
-// 		</button>
-// 	)
-// }
-
 
 
 function CanvasArea() {
