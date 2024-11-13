@@ -229,34 +229,33 @@ function ExportCanvasButton() {
 
 
 const ExportAllPagesButton = () => {
-  const editor = useEditor();
+ 	const editor = useEditor();
+	const [ svgPages, setSvgPages ] = useState<any[]>();
+	const handleExportAllPages = async () => {
+		const allBlobs = [];
+		const allPages = editor.getPages();
+		if (allPages.length === 0)
+			return ;
 
-  const handleExportAllPages = async () => {
-    const allPages = editor.getPages();
-    if (allPages.length === 0) return alert('No pages found');
+		for (const page of allPages) {
+			const shapeIds = editor.getPageShapeIds(page);
+			
+			if (shapeIds.size === 0)
+				continue ;
 
-    for (const page of allPages) {
-
-      const shapeIds = editor.getPageShapeIds(page);
-      if (shapeIds.size === 0) continue;
-
-      try {
-        const blob = await exportToBlob({
-          editor,
-          ids: [...shapeIds],
-          format: 'png',
-          opts: { background: false },
-        });
-
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = `page-${page.id}.png`;
-        link.click();
-      } catch (error) {
-        console.error(`Failed to export page ${page.id}:`, error);
-      }
-    }
-  };
+				try {
+					const blob = await editor.getSvgElement(Array.from(shapeIds));
+					allBlobs.push(blob);
+				} catch (error) {
+					console.error(`Failed to export page ${page.id}:`, error);
+				}
+				finally {
+					setSvgPages(allBlobs);
+					console.log(allBlobs);
+				}
+			};
+		}
+		
 
   return (
     <button
