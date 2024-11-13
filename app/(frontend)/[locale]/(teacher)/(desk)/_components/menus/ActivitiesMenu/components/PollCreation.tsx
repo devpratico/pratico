@@ -1,3 +1,4 @@
+'use client'
 import { Poll } from "@/app/_types/poll2"
 import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice, addEmptyQuestion, duplicateQuestion, deleteQuestion } from "@/app/_types/poll2"
 import { useState, useRef, useEffect, useMemo, useCallback } from "react"
@@ -7,6 +8,9 @@ import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus } from "lucide
 import { changeTitle } from "@/app/_types/activity"
 //import DnD from "./DnDFlex"
 import Navigator from "./Navigator"
+import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
+import CancelButton from "./CancelButton"
 
 
 interface ChoiceRowProps {
@@ -20,7 +24,7 @@ interface ChoiceRowProps {
     }
 }
 
-function ChoiceRow({ state, actions }: ChoiceRowProps) {
+function ChoiceRow({state, actions}: ChoiceRowProps) {
     //const text = useMemo(() => state.text, [state.text])
     //const [value, setValue] = useState(text)
     const iconProps: LucideProps = { size: 18, strokeWidth: 2, absoluteStrokeWidth: true }
@@ -156,7 +160,10 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
 
             <Flex justify='between' gap='3' align='center' p='4'>
                 <Title type='poll' title={state.poll.title} onEdit={(newTitle) => actions.onEditTitle(newTitle)} />
-                <Button variant='soft' color='gray' onClick={() => actions.onTerminate()}>Terminer</Button>
+                <Flex gap='3' align='center'>
+                    <CancelButton onCancel={()=>{}} />
+                    <Button variant='soft' color='gray' onClick={() => actions.onTerminate()}>Terminer</Button>
+                </Flex>
             </Flex>
 
 
@@ -273,10 +280,13 @@ function PollCreationView({ state, actions }: PollCreationViewProps) {
 interface PollCreationProps {
     initialPoll?: Poll
     idToSaveTo?: number
+    onClickTerminate?: () => void
+    onSaveOver?: (error: string | null) => void
 }
 
 
-export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationProps) {
+export default function PollCreation({ initialPoll, idToSaveTo, onClickTerminate, onSaveOver }: PollCreationProps) {
+    const router = useRouter()
     const [poll, setPoll] = useState(initialPoll || mockPoll)
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 
@@ -290,8 +300,11 @@ export default function PollCreation({ initialPoll, idToSaveTo }: PollCreationPr
             setPoll(changeTitle(newTitle))
         },
 
-        onTerminate: () => {
-            console.log('Terminating')
+        onTerminate: async () => {
+            onClickTerminate?.()
+            const {error} = await saveActivity({ id: idToSaveTo, activity: poll })
+            router.refresh()
+            onSaveOver?.(error)
         },
 
         onEditQuestionText: (questionId, newText) => {

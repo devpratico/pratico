@@ -1,7 +1,6 @@
 'use client';
 import { Flex, Text } from "@radix-ui/themes";
-
-import DnD from "../(teacher)/(desk)/_components/activities/DnDFlex";
+import DnD from "../(teacher)/(desk)/_components/menus/ActivitiesMenu/components/DnDFlex";
 
 
 export default function PlayGround () {

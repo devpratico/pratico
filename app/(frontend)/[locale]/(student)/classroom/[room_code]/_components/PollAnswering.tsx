@@ -1,7 +1,7 @@
 'use client'
 import { Container, Section, Dialog, Flex, Heading } from "@radix-ui/themes"
 import { Poll } from "@/app/_types/poll"
-import { PollAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/activities/PollAnimation"
+import { PollAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/menus/ActivitiesMenu/components/PollAnimation"
 import { useUser } from "@/app/(frontend)/_hooks/useUser"
 import { useEffect, useMemo, useState, useCallback } from "react"
 import { usePollSnapshot } from "@/app/(frontend)/_hooks/usePollSnapshot"

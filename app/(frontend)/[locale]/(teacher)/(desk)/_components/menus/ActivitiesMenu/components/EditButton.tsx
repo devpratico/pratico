@@ -2,9 +2,10 @@
 import { IconButton, DropdownMenu, AlertDialog, Button, Flex } from '@radix-ui/themes'
 import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
-import CardDialog from '../CardDialog'
+import CardDialog from '../../../CardDialog'
 import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
+import { Poll as Poll2 } from '@/app/_types/poll2'
 import { QuizProvider } from '@/app/(frontend)/_hooks/useQuiz'
 import { PollProvider } from '@/app/(frontend)/_hooks/usePoll'
 import QuizCreation from './QuizCreation'
@@ -15,7 +16,7 @@ import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 
 interface EditButtonProps {
     activityId: number
-    initialActivity: Quiz | Poll
+    initialActivity: Quiz | Poll | Poll2
 }
 
 export default function EditButton({ activityId, initialActivity }: EditButtonProps) {

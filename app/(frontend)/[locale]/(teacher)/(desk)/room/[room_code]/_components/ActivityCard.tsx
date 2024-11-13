@@ -2,8 +2,8 @@
 import CardDialog from '@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog'
 import { useState, useEffect, useMemo } from "react"
 import { useRoom } from '@/app/(frontend)/_hooks/useRoom'
-import QuizAnimation from '../../../_components/activities/QuizAnimation'
-import PollAnimation from '../../../_components/activities/PollAnimation'
+import QuizAnimation from '../../../_components/menus/ActivitiesMenu/components/QuizAnimation'
+import PollAnimation from '../../../_components/menus/ActivitiesMenu/components/PollAnimation'
 import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
 
 
