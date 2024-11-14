@@ -7,63 +7,78 @@ export function CapsuleToPDF () {
 	const [svgPages, setSvgPages] = useState<any[]>([]);
 	const pdf = new jsPDF('p', 'mm', 'a4');
 
- 	const addSvgToPdf = async (svgString: string, blob: Blob) => {
-	// const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-	const url = URL.createObjectURL(blob);
-  
-	const img = new Image();
-	img.src = url;
-  
-	img.onload = () => {
-  
-	  pdf.addSvgAsImage(url, 0, 0, 210, 297);
-  
-  
-	  URL.revokeObjectURL(url);
-	};
-  
-	img.onerror = (error) => {
-	  console.error('Failed to load the SVG image:', error);
-	};
-  };
+	const addSvgToPdf = (blob: Blob): Promise<void> => {
+		return new Promise((resolve, reject) => {
+			const url = URL.createObjectURL(blob);
+			window.open(url, '_blank');
+			const img = new Image();
+			img.src = url;
+		
+			img.onload = () => {
+				pdf.addImage(img, 'PNG', 0, 0, 210, 297);
+				URL.revokeObjectURL(img.src);
+				resolve();
+				console.log("OK");
+			};
+		
+			img.onerror = (error) => {
+				console.error('Failed to load the SVG image:', error);
+				URL.revokeObjectURL(img.src);
+				reject(error);
+				console.log(" NOT OK");
+			};
+		});
+	
+	  };
+	  
 
-  const handleExportAllPages = async () => {
-    const allSVGs: any[] = [];
-    const allPages = editor.getPages();
-
-    if (allPages.length === 0) return;
-
-    for (const page of allPages) {
-      const shapeIds = editor.getPageShapeIds(page);
-
-      if (shapeIds.size === 0) continue;
-
-      try {
-        const svg = await editor.getSvgElement(Array.from(shapeIds));
-        const svgString = await editor.getSvgString(Array.from(shapeIds));
-		const blob = await exportToBlob({
-			editor,
-			ids: Array.from(shapeIds),
-			format: 'svg',
-			opts: { background: false },
-		})
-
-        allSVGs.push(svg);
-
-        if (svgString) {
-			console.log(svgString);
-          addSvgToPdf(svgString.svg, blob);
-        }
-      } catch (error) {
-        console.error(`Failed to get svgElement in page ${page.id}`, error);
-      }
-    }
-	pdf.save('output.pdf');
-
-    setSvgPages(allSVGs);
-    console.log(allSVGs);
-
-  };
+	const handleExportAllPages = async () => {
+		const allBlobs: any[] = [];
+		const allPages = editor.getPages();
+	  
+		if (allPages.length === 0) return;
+	  
+		const promises = allPages.map(async (page) => {
+		  const shapeIds = editor.getPageShapeIds(page);
+	  
+		  if (shapeIds.size === 0) return;
+	  
+		  try {
+			const blob = await exportToBlob({
+			  editor,
+			  ids: Array.from(shapeIds),
+			  format: 'svg',
+			  opts: { background: false },
+			});
+			if (blob) {
+				console.log('Blob created successfully:', blob);
+			} else {
+				console.error('Blob is null or undefined');
+			}
+			allBlobs.push(blob);
+	
+			try {
+				await addSvgToPdf(blob);
+			  } catch (error) {
+				console.error(`Error adding page to PDF:`, error);
+			  }
+			// const testSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"> <rect width="100%" height="100%" fill="red" /> </svg>`;
+			// const testBlob = new Blob([testSvg], { type: 'image/svg+xml' });
+			// console.log("TEST", testBlob);
+			// await addSvgToPdf(testBlob);
+		  } catch (error) {
+			console.error(`Failed to get svgElement in page ${page.id}`, error);
+		  }
+		});
+	  
+		await Promise.all(promises);
+		
+		pdf.save('output.pdf');
+	  
+		setSvgPages(allBlobs);
+		console.log(allBlobs);
+	  };
+	  
 
   return (
     <button
