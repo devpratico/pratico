@@ -24,6 +24,7 @@ import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+    // TODO : Make a global store and hook
     return (
         <TLEditorProvider>
         <NavProvider>
