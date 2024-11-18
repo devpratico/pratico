@@ -10,7 +10,7 @@ export function CapsuleToPDF () {
 	const addSvgToPdf = (blob: Blob): Promise<void> => {
 		return new Promise((resolve, reject) => {
 			const url = URL.createObjectURL(blob);
-			window.open(url, '_blank');
+			// window.open(url, '_blank');
 			const img = new Image();
 			img.src = url;
 		
