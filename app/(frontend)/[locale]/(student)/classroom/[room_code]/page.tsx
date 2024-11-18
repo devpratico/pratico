@@ -39,7 +39,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 		const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
 		if (!isPaidCustomer) {
 		// Only 10 participants are allowed for free customers.
-			const maxParticipants = 1;
+			const maxParticipants = 10;
 			const attendanceCount = await countAttendances(roomData.id);
 			logger.log('next:page', 'StudentViewPage', 'attendance count', attendanceCount);
 			if (attendanceCount >= maxParticipants) {
