@@ -10,6 +10,7 @@ import { fetchRoomCreator, roomCreatorIsPaidCustomer } from '@/app/(backend)/api
 import { fetchProfile } from '@/app/(backend)/api/user/user.server'
 import { sendDiscordMessage } from '@/app/(backend)/api/discord/discord.server'
 
+const MAX_PARTICIPANTS = 1;
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
     // Check room exists
@@ -22,13 +23,11 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 	// Check teacher is a paid customer
 	const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
 	let limitReached = false;
-	const maxParticipants = 10;
 	const attendanceCount = await countAttendances(roomData.id);
 	if (!isPaidCustomer) {
-	// Only 10 participants are allowed for free customers.
-
+		// Only 10 participants are allowed for free customers.
 		logger.log('next:page', 'StudentViewPage', 'attendance count', attendanceCount);
-		if (attendanceCount >= maxParticipants) {
+		if (attendanceCount >= MAX_PARTICIPANTS) {
 			limitReached = true;
 		}
 	} else {
@@ -48,7 +47,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 				const { data } = await fetchProfile(creatorId);
 				let creatorName = (data?.first_name || '')  + ' ' + (data?.last_name || '');
 				if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
-				await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
+				await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${MAX_PARTICIPANTS} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
 			}
 			throw new Error('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
 		}
@@ -75,7 +74,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 				const { data } = await fetchProfile(creatorId);
 				let creatorName = (data?.first_name || '')  + ' ' + (data?.last_name || '');
 				if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
-				await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
+				await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${MAX_PARTICIPANTS} participants) pour ${creatorName} dans la salle ${params.room_code} !`);
 			}
 			throw new Error('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
 		}
