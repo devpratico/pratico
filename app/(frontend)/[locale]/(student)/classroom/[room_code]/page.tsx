@@ -22,11 +22,12 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 	}
 
     // Check user is logged in (can be anonymous)
-	// Fetch user or sign in anonymously
-	const user = (await fetchUser()).user|| (await signInAnonymously()).data.user;
+	const { user } = await fetchUser();
 	if (!user) {
-		logger.error('next:page', 'IMPOSSSIBLE Impossible to fetch user or sign in anonymously');
-		return;
+		logger.error('next:page', 'User not found');
+		const nextUrl = `/classroom/${params.room_code}`;
+        redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        return (null);
 	}
 
     // Check user has signed attendance

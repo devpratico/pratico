@@ -50,10 +50,10 @@ export default function StudentForm() {
 			// setChecked({...checked, submit: true});
 			const formData = new FormData(event.currentTarget);
 
-			// Fetch user
+			// Fetch user or sign in anonymously
 			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
 			if (!user) {
-				logger.error('next:page', 'Impossible to fetch user');
+				logger.error('next:page', 'Impossible to fetch user or singing in anonymously');
 				return;
 			}
 
