@@ -36,9 +36,10 @@ export default function StudentForm() {
 	useEffect(() => {
 		if (error.length > 0)
 		{	
-			logger.error('next:page', error);
+			logger.error('next:page', error)
+			const msg = error;
 			setError("");
-			throw new Error(error);
+			throw new Error(msg);
 		}
 	}, [error]);
 
