@@ -50,7 +50,7 @@ export default function PlayGround () {
 		if (editor)
 			setEditor(editor);
       
-		const { x,y,w,h } = editor.getViewportPageBounds();
+		const { x,y } = editor.getViewportPageBounds();
 		const newFrameId = createShapeId();
 		editor.createShape<TLFrameShape>({type: 'frame',
 			id: newFrameId,
@@ -59,7 +59,6 @@ export default function PlayGround () {
 			props: {
 				w: 1920,
 				h: 1080,
-				// color: 'var(--violet-8)'
 			}
 		});
 		const tmp = { index: frameIds ? frameIds.length + 1 : 0, id: newFrameId};
@@ -69,39 +68,6 @@ export default function PlayGround () {
 			setCurrentPageId(newpage.id);
 			
 		});
-	
-			// editor?.createShape<TLFrameShape>({
-			// 		"parentId": "page:somePage" as TLParentId,
-			// 		"id": "shape:someId" as TLShapeId,
-			// 		"typeName": "shape",
-			// 		"type": "frame",
-			// 		"x": x,
-			// 		"y": y,
-			// 		"rotation": 0,
-			// 		"index": "a28" as IndexKey,
-			// 		"opacity": 1,
-			// 		"isLocked": false,
-			// 		"props": {
-			// 			"w": w,
-			// 			"h": h,
-			// 		},
-			// 		"meta": {},
-			//  })
-		// })
-		// editor.createShape({
-		// 	type: 'text',
-		// 	x: 200,
-		// 	y: 200,
-		// 	props: {
-		// 		text: 'Hello world!',
-		// 	},
-		// })
-
-		// editor.selectAll()
-
-		// editor.zoomToSelection({
-		// 	animation: { duration: 5000 },
-		// })
     }, [setEditor, frameIds]);
 
 	useEffect(() => {
