@@ -6,8 +6,9 @@ import { fetchUser } from '@/app/(backend)/api/user/user.client';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
+import { checkLimitAttendance, createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
+import { log } from 'console';
 
 
 export default function StudentForm() {
@@ -39,15 +40,18 @@ export default function StudentForm() {
 			// setChecked({...checked, submit: true});
 			const formData = new FormData(event.currentTarget);
 
-			// Fetch user or sign in anonymously
+			// Fetch user
 			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
 			if (!user) {
-				logger.error('next:page', 'Impossible to fetch user or sign in anonymously');
+				logger.error('next:page', 'Impossible to fetch user');
 				return;
 			}
 
 			const firstName = formData.get('first-name') as string;
 			const lastName  = formData.get('last-name')  as string;
+			const { error } = await checkLimitAttendance(roomCode);
+			if (error)
+				throw new Error(error);
 			await createAttendance(firstName, lastName, roomCode);
 			if (nextUrl) {
 				router.push(nextUrl);
