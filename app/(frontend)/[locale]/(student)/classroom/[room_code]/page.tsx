@@ -5,11 +5,7 @@ import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canva
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance, countAttendances } from '@/app/(backend)/api/attendance/attendance.server'
-import { fetchRoomCreator, roomCreatorIsPaidCustomer } from '@/app/(backend)/api/room/room.server'
-import { fetchProfile } from '@/app/(backend)/api/user/user.server'
-import { sendDiscordMessage } from '@/app/(backend)/api/discord/discord.server'
-import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client'
+import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
 
 const MAX_PARTICIPANTS = 1;
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {

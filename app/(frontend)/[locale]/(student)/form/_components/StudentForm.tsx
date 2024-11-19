@@ -8,7 +8,6 @@ import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { checkLimitAttendance, createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
-import { log } from 'console';
 
 
 export default function StudentForm() {

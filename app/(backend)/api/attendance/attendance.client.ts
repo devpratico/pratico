@@ -55,7 +55,7 @@ export const checkLimitAttendance = async (roomCode: string | undefined) => {
 	const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
 	if (!isPaidCustomer)
 	{
-		const maxParticipants = 1;
+		const maxParticipants = 10;
 		const attendanceCount = await countAttendances(roomData.id);
 		if (attendanceCount >= maxParticipants) {
 			logger.log('next:page', 'StudentViewPage', 'attendance count is greater than 10. Blocking user.');
