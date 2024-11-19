@@ -24,7 +24,7 @@ export default function StudentForm() {
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
-	const [ error, setError ] = useState("");
+	const [ error, setError ] = useState<string | null>(null);
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -32,15 +32,8 @@ export default function StudentForm() {
 		return (true);
 	};
 
-	useEffect(() => {
-		if (error.length > 0)
-		{	
-			logger.error('next:page', error)
-			const msg = error;
-			setError("");
-			throw new Error(msg);
-		}
-	}, [error]);
+	if (error)
+		throw new Error(error);
 
     return (
         <Form.Root onSubmit={async (event) => {
@@ -59,6 +52,7 @@ export default function StudentForm() {
 
 			const firstName = formData.get('first-name') as string;
 			const lastName  = formData.get('last-name')  as string;
+
 			const { error } = await checkLimitAttendance(roomCode);
 			if (error)
 				setError(error);
@@ -72,8 +66,6 @@ export default function StudentForm() {
 					router.push('/classroom');
 				}
 			}
-
-
         }}>
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>

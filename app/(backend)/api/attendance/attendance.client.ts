@@ -44,7 +44,6 @@ export const checkLimitAttendance = async (roomCode: string | undefined) => {
             logger.log('next:page', !user ? 'User not found' : 'or room info is missing');
             return ({ error: 'checkLimitAttendance: User not found or roomCode missing' })
         }
-
         return ({ error: userError });
     }
     const { data: roomData } = await fetchOpenRoomByCode(roomCode);
@@ -52,9 +51,12 @@ export const checkLimitAttendance = async (roomCode: string | undefined) => {
 		logger.error('next:page', 'Room not found');
 		return ({ error: 'Room not found' });
 	}
+
+	// check if the customer is a paid customer
 	const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
 	if (!isPaidCustomer)
 	{
+		// check if the attendance count is less than 10
 		const maxParticipants = 10;
 		const attendanceCount = await countAttendances(roomData.id);
 		if (attendanceCount >= maxParticipants) {
@@ -70,5 +72,6 @@ export const checkLimitAttendance = async (roomCode: string | undefined) => {
 			return ({ error: 'Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.' });
 		}
 	}
+	// if the customer is a paid customer, we don't need to check the attendance count
 	return ({ error: null });
 };
