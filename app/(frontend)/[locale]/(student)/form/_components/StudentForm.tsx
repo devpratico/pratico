@@ -6,7 +6,7 @@ import { fetchUser } from '@/app/(backend)/api/user/user.client';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
+import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
 
 
@@ -24,12 +24,16 @@ export default function StudentForm() {
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
+	const [ error, setError ] = useState<string | null>(null);
 
 	const acceptCGU = () => {
 		if (checked.submit)
 			return (checked.accept);
 		return (true);
 	};
+
+	if (error)
+		throw new Error(error);
 
     return (
         <Form.Root onSubmit={async (event) => {
@@ -42,20 +46,26 @@ export default function StudentForm() {
 			// Fetch user or sign in anonymously
 			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
 			if (!user) {
-				logger.error('next:page', 'Impossible to fetch user or sign in anonymously');
+				logger.error('next:page', 'Impossible to fetch user or singing in anonymously');
 				return;
 			}
 
 			const firstName = formData.get('first-name') as string;
 			const lastName  = formData.get('last-name')  as string;
-			await createAttendance(firstName, lastName, roomCode);
-			if (nextUrl) {
-				router.push(nextUrl);
-			} else {
-				logger.error('next:page', 'No nextUrl found in query params');
-				router.push('/classroom');
-			}
 
+			const { isReached } = await isAttendancesLimitReached(roomCode);
+			if (isReached)
+				setError('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
+			else
+			{
+				await createAttendance(firstName, lastName, roomCode);
+				if (nextUrl) {
+					router.push(nextUrl);
+				} else {
+					logger.error('next:page', 'No nextUrl found in query params');
+					router.push('/classroom');
+				}
+			}
         }}>
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>
