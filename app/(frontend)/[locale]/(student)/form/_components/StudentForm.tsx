@@ -3,7 +3,7 @@ import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
 import { fetchUser } from '@/app/(backend)/api/user/user.client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { checkLimitAttendance, createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
@@ -25,12 +25,22 @@ export default function StudentForm() {
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
+	const [ error, setError ] = useState("");
 
 	const acceptCGU = () => {
 		if (checked.submit)
 			return (checked.accept);
 		return (true);
 	};
+
+	useEffect(() => {
+		if (error.length > 0)
+		{	
+			logger.error('next:page', error);
+			setError("");
+			throw new Error(error);
+		}
+	}, [error]);
 
     return (
         <Form.Root onSubmit={async (event) => {
@@ -51,14 +61,18 @@ export default function StudentForm() {
 			const lastName  = formData.get('last-name')  as string;
 			const { error } = await checkLimitAttendance(roomCode);
 			if (error)
-				throw new Error(error);
-			await createAttendance(firstName, lastName, roomCode);
-			if (nextUrl) {
-				router.push(nextUrl);
-			} else {
-				logger.error('next:page', 'No nextUrl found in query params');
-				router.push('/classroom');
+				setError(error);
+			else
+			{
+				await createAttendance(firstName, lastName, roomCode);
+				if (nextUrl) {
+					router.push(nextUrl);
+				} else {
+					logger.error('next:page', 'No nextUrl found in query params');
+					router.push('/classroom');
+				}
 			}
+
 
         }}>
             <Flex direction='column' gap='3'>
