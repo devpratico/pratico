@@ -16,6 +16,7 @@ const logCategories = {
     tldraw: ['tools', 'editor', 'collab'] as const,
     system: ['file', 'network', 'memory'] as const,
     next: ['middleware', 'api', 'page', 'layout'] as const,
+    zustand: ['store', 'action', 'selector'] as const,
 }
 
 
@@ -28,6 +29,7 @@ const browserConsoleStyles: { [key in keyof typeof logCategories]: string } = {
     tldraw:   'background-color: darkslategray;' + sharedStyles,
     system:   'background-color: darkorange;'    + sharedStyles,
     next:     'background-color: darkorchid;'    + sharedStyles,
+    zustand:  'background-color: darkviolet;'    + sharedStyles,
 };
 
 const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
@@ -37,6 +39,7 @@ const serverConsoleStyles: { [key in keyof typeof logCategories]: string } = {
         tldraw:   '\x1b[36m', // Cyan
         system:   '\x1b[33m', // Yellow
         next:     '\x1b[35m', // Magenta
+        zustand:  '\x1b[95m', // Bright magenta
 };
 
 
