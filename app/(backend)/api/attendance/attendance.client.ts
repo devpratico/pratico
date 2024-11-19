@@ -39,11 +39,9 @@ export const createAttendance = async (firstName: string, lastName: string, room
 
 /**
  * Check if the maximum number of people in the room is reached
- * @param {string} roomCode - The room code
- * @returns If the limit is/nt reached or an error
  */
 
-export const isAttendancesLimitReached = async (roomCode: string | undefined) => {
+export const isAttendancesLimitReached = async (roomCode: string | undefined): Promise<{ isReached: boolean | null, error: string | null}> => {
 	const { user, error: userError } = await fetchUser();
     if (!user || !roomCode || userError) {
         if (!userError) {
