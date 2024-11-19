@@ -3,10 +3,10 @@ import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
 import { fetchUser } from '@/app/(backend)/api/user/user.client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { checkLimitAttendance, createAttendance } from '@/app/(backend)/api/attendance/attendance.client';
+import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
 
 
@@ -53,9 +53,9 @@ export default function StudentForm() {
 			const firstName = formData.get('first-name') as string;
 			const lastName  = formData.get('last-name')  as string;
 
-			const { error } = await checkLimitAttendance(roomCode);
-			if (error)
-				setError(error);
+			const { isReached } = await isAttendancesLimitReached(roomCode);
+			if (isReached)
+				setError('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
 			else
 			{
 				await createAttendance(firstName, lastName, roomCode);

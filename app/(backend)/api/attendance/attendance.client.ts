@@ -37,19 +37,25 @@ export const createAttendance = async (firstName: string, lastName: string, room
     return ({ error: error?.message });
 };
 
-export const checkLimitAttendance = async (roomCode: string | undefined) => {
+/**
+ * Check if the maximum number of people in the room is reached
+ * @param {string} roomCode - The room code
+ * @returns If the limit is/nt reached or an error
+ */
+
+export const isAttendancesLimitReached = async (roomCode: string | undefined) => {
 	const { user, error: userError } = await fetchUser();
     if (!user || !roomCode || userError) {
         if (!userError) {
             logger.log('next:page', !user ? 'User not found' : 'or room info is missing');
-            return ({ error: 'checkLimitAttendance: User not found or roomCode missing' })
+            return ({ isReached: null, error: 'checkLimitAttendance: User not found or roomCode missing' })
         }
-        return ({ error: userError });
+        return ({ isReached: null, error: userError });
     }
     const { data: roomData } = await fetchOpenRoomByCode(roomCode);
 	if (!roomData) {
 		logger.error('next:page', 'Room not found');
-		return ({ error: 'Room not found' });
+		return ({ isReached: null, error: 'Room not found' });
 	}
 
 	// check if the customer is a paid customer
@@ -69,9 +75,9 @@ export const checkLimitAttendance = async (roomCode: string | undefined) => {
 					if (creatorName === ' ') creatorName = 'un utilisateur anonyme';
 					await sendDiscordMessage(`🚪 **Limite de Pratico Free** atteinte (${maxParticipants} participants) pour ${creatorName} dans la salle ${roomCode} !`);
 				}
-			return ({ error: 'Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.' });
+			return ({ isReached: true, error: null });
 		}
 	}
 	// if the customer is a paid customer, we don't need to check the attendance count
-	return ({ error: null });
+	return ({ isReached: false, error: null });
 };
