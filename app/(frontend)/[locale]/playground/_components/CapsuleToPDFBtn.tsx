@@ -1,3 +1,4 @@
+import logger from "@/app/_utils/logger";
 import {jsPDF} from "jspdf";
 import { useState } from "react";
 import { exportToBlob, useEditor } from "tldraw";
@@ -5,7 +6,7 @@ import { exportToBlob, useEditor } from "tldraw";
 export function CapsuleToPDF () {
 	const editor = useEditor();
 	const [svgPages, setSvgPages] = useState<any[]>([]);
-	const pdf = new jsPDF('p', 'mm', 'a4');
+	const pdf = new jsPDF('l', 'px', 'a4');
 
 	const addSvgToPdf = (blob: Blob): Promise<void> => {
 		return new Promise((resolve, reject) => {
@@ -73,7 +74,8 @@ export function CapsuleToPDF () {
 	  
 		await Promise.all(promises);
 		
-		pdf.save('output.pdf');
+		// pdf.save('output.pdf');
+		// window.print();
 	  
 		setSvgPages(allBlobs);
 		console.log(allBlobs);
@@ -81,12 +83,26 @@ export function CapsuleToPDF () {
 	  
 
   return (
-    <button
-      style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'lightgreen' }}
-      onClick={handleExportAllPages}
-    >
-      Export All Pages as Images
-    </button>
+    // <button
+    //   style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'lightgreen' }}
+    // //   onClick={handleExportAllPages}
+    // >
+	<>
+	{
+		editor.getPages()?.map((page, index) => {
+			const frames = Array.from(editor.getPageShapeIds(page)).filter((id) => {
+				const shape = editor.getShape(id)
+				return (shape?.type === 'frame')
+			})
+			logger.debug("tldraw:editor", "frames", frames);
+			return (frames.map((shape) => 
+				<div key={index}>{editor.getShape(shape)?.id}</div>
+			));
+		})
+	}
+      {/* Export All Pages as Images */}
+	</>
+    // </button>
   );
 };
 

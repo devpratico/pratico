@@ -7,6 +7,7 @@ import { CardShapeUtil } from "./_components/ShapeUtilClass";
 import { useNav } from "../../_hooks/useNav";
 import { Card } from "@radix-ui/themes";
 import { CapsuleToPDF } from "./_components/CapsuleToPDFBtn";
+import logger from "@/app/_utils/logger";
 
 const MyCustomShapes = [CardShapeUtil]
 
@@ -103,20 +104,8 @@ export default function PlayGround () {
 								name,
 							},
 						});
-					} else {
-						editor.createShape<TLFrameShape>({
-							id: shapeId,
-							parentId: editor.getCurrentPageId(),
-							type: 'frame',
-							x: x,
-							y: y,
-							props: {
-								name: `Slide ${slide.index + 1}`,
-								w: 1920,
-								h: 1080,
-							},
-						});
-					}
+					} 
+					logger.debug("tldraw:editor", "frameId", shapeId);
 				}
 			});
 
@@ -153,7 +142,7 @@ export default function PlayGround () {
 	}
 
 	return (
-        <div style={{position: 'fixed', inset: 0 }}>
+        <div style={{position: 'absolute', inset: 0 }}>
             <Tldraw
                 onMount={handleOnMount}
 				// persistenceKey="example4"
