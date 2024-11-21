@@ -1,37 +1,71 @@
 import logger from "@/app/_utils/logger";
 import {jsPDF} from "jspdf";
+import { create } from "lodash";
 import { useState } from "react";
 import { exportToBlob, useEditor } from "tldraw";
 
 export function CapsuleToPDF () {
 	const editor = useEditor();
 	const [svgPages, setSvgPages] = useState<any[]>([]);
-	const pdf = new jsPDF('l', 'px', 'a4');
+	const pdf = new jsPDF();
 
-	const addSvgToPdf = (blob: Blob): Promise<void> => {
+	const svgToPng = async (svg: string, width: number, height: number): Promise<string> => {
 		return new Promise((resolve, reject) => {
-			const url = URL.createObjectURL(blob);
-			// window.open(url, '_blank');
 			const img = new Image();
-			img.src = url;
-		
-			img.onload = () => {
-				pdf.addImage(img, 'PNG', 0, 0, 210, 297);
-				URL.revokeObjectURL(img.src);
-				resolve();
-				console.log("OK");
-			};
-		
-			img.onerror = (error) => {
-				console.error('Failed to load the SVG image:', error);
-				URL.revokeObjectURL(img.src);
-				reject(error);
-				console.log(" NOT OK");
-			};
-		});
+			const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+			const url = URL.createObjectURL(svgBlob);
 	
-	  };
-	  
+			img.onload = () => {
+				const canvas = document.createElement('canvas');
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext('2d');
+				if (ctx) {
+					ctx.drawImage(img, 0, 0, width, height);
+					const pngDataUrl = canvas.toDataURL('image/png');
+					URL.revokeObjectURL(url);
+					resolve(pngDataUrl);
+				} else {
+					URL.revokeObjectURL(url);
+					reject(new Error('Failed to get canvas context'));
+				}
+			};
+	
+			img.onerror = (err) => {
+				URL.revokeObjectURL(url);
+				reject(err);
+			};
+	
+			img.src = url;
+		});
+	};
+	
+	
+	const createPdf = async (blobs: Blob[]) => {
+		for (let i = 0; i < blobs.length; i++) {
+			const blob = blobs[i];
+			const url = URL.createObjectURL(blob);
+			const svgElement = await fetch(url).then((res) => res.text());
+	
+			try {
+				const pngDataUrl = await svgToPng(
+					svgElement,
+					pdf.internal.pageSize.getWidth(),
+					pdf.internal.pageSize.getHeight()
+				);
+				pdf.addImage(pngDataUrl, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+			} catch (error) {
+				console.error(`Failed to convert SVG to PNG for page ${i}`, error);
+			}
+	
+			if (i < blobs.length - 1) {
+				pdf.addPage();
+			}
+			URL.revokeObjectURL(url);
+			// window.open(pdf.output('bloburl'), '_blank');
+		}
+	};
+	
 
 	const handleExportAllPages = async () => {
 		const allBlobs: any[] = [];
@@ -58,53 +92,30 @@ export function CapsuleToPDF () {
 			}
 			allBlobs.push(blob);
 	
-			try {
-				await addSvgToPdf(blob);
-			  } catch (error) {
-				console.error(`Error adding page to PDF:`, error);
-			  }
-			// const testSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"> <rect width="100%" height="100%" fill="red" /> </svg>`;
-			// const testBlob = new Blob([testSvg], { type: 'image/svg+xml' });
-			// console.log("TEST", testBlob);
-			// await addSvgToPdf(testBlob);
 		  } catch (error) {
 			console.error(`Failed to get svgElement in page ${page.id}`, error);
 		  }
 		});
-	  
 		await Promise.all(promises);
+		// setSvgPages(allBlobs);
+		await createPdf(allBlobs);
+
 		
-		// pdf.save('output.pdf');
-		// window.print();
-	  
-		setSvgPages(allBlobs);
-		console.log(allBlobs);
+		pdf.save('output.pdf');
+
+		console.log("ALL BLOBS", allBlobs);
 	  };
 	  
 
   return (
-    // <button
-    //   style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'lightgreen' }}
-    // //   onClick={handleExportAllPages}
-    // >
+    <button
+      style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'lightgreen' }}
+      onClick={handleExportAllPages}
+    >
 	<>
-	{
-		editor.getPages()?.map((page, index) => {
-			const frames = Array.from(editor.getPageShapeIds(page)).filter((id) => {
-				const shape = editor.getShape(id)
-				return (shape?.type === 'frame')
-			})
-			logger.debug("tldraw:editor", "frames", frames);
-			return (frames.map((shape) => {
-					console.log("SHAPE", shape, "INDEX", index);
-					return (<div key={index}>{editor.getShape(shape)?.id}</div>);
-				}
-			));
-		})
-	}
-      {/* Export All Pages as Images */}
+      Export All Pages as Images
 	</>
-    // </button>
+    </button>
   );
 };
 
