@@ -1,8 +1,9 @@
 import logger from "@/app/_utils/logger";
 import {jsPDF} from "jspdf";
-import { create } from "lodash";
 import { useState } from "react";
 import { exportToBlob, useEditor } from "tldraw";
+import "svg2pdf.js";
+import { svg2pdf } from "svg2pdf.js";
 
 export function CapsuleToPDF () {
 	const editor = useEditor();
@@ -42,28 +43,66 @@ export function CapsuleToPDF () {
 	
 	
 	const createPdf = async (blobs: Blob[]) => {
-		for (let i = 0; i < blobs.length; i++) {
-			const blob = blobs[i];
-			const url = URL.createObjectURL(blob);
-			const svgElement = await fetch(url).then((res) => res.text());
-	
-			try {
-				const pngDataUrl = await svgToPng(
-					svgElement,
-					pdf.internal.pageSize.getWidth(),
-					pdf.internal.pageSize.getHeight()
-				);
-				pdf.addImage(pngDataUrl, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-			} catch (error) {
-				console.error(`Failed to convert SVG to PNG for page ${i}`, error);
+		// for (let i = 0; i < blobs.length; i++) {
+		// 	const blob = blobs[i];
+		// 	const url = URL.createObjectURL(blob);
+		// 	const svgElement = await fetch(url).then((res) => res.text());
+		// 	fetch(svgElement)
+		// 	.then((response) => {
+		// 		if (!response.ok) {
+		// 		throw new Error('Failed to fetch SVG file');
+		// 		}
+		// 		return response.text();
+		// 	})
+		// 	.then((svgText) => {
+		// 		const parser = new DOMParser();
+		// 		const svgDocument = parser.parseFromString(svgText, 'image/svg+xml');
+		// 		const svgElement = svgDocument.documentElement;
+		// 		pdf.svg(svgElement);
+
+		// 		const svgAsText = new XMLSerializer().serializeToString(svgElement);
+
+		// 		// pdf.addSvgAsImage(svgAsText, 20, 20, pdf.internal.pageSize.width - 20 * 2, pdf.internal.pageSize.height - 20 * 2, "capsule", false, 0);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error('Error loading SVG:', error);
+		// });
+
+		// 	// try {
+		// 	// 	const pngDataUrl = await svgToPng(
+		// 	// 		svgElement,
+		// 	// 		pdf.internal.pageSize.getWidth(),
+		// 	// 		pdf.internal.pageSize.getHeight()
+		// 	// 	);
+
+		// 	// 	// pdf.addImage(pngDataUrl, 'SVG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+		// 	// } catch (error) {
+		// 	// 	console.error(`Failed to convert SVG to PNG for page ${i}`, error);
+		// 	// }
+		// 	console.log("SVG ELEMENT", svgElement);
+		// 	// pdf.svg(svgElement);
+		// 	// pdf.addSvgAsImage(svgElement, 0, 0, pdf.internal.pageSize.width * 2, pdf.internal.pageSize.height * 2, "capsule", true, 0);
+
+		// 	if (i < blobs.length - 1) {
+		// 		pdf.addPage();
+		// 	}
+		// 	URL.revokeObjectURL(url);
+		for (const [index, svgBlob] of blobs.entries()) {
+			const svgText = await svgBlob.text();
+			const parser = new DOMParser();
+			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+			const svgElement = svgDoc.documentElement;
+		
+			await svg2pdf(svgElement, pdf);
+		
+			if (index < blobs.length - 1) {
+			  pdf.addPage();
 			}
-	
-			if (i < blobs.length - 1) {
-				pdf.addPage();
-			}
-			URL.revokeObjectURL(url);
-			// window.open(pdf.output('bloburl'), '_blank');
-		}
+		  }
+		
+		//   return pdf.output("blob");
+			window.open(pdf.output('bloburl'), '_blank');
+		// }
 	};
 	
 
@@ -101,7 +140,7 @@ export function CapsuleToPDF () {
 		await createPdf(allBlobs);
 
 		
-		pdf.save('output.pdf');
+		// pdf.save('output.pdf');
 
 		console.log("ALL BLOBS", allBlobs);
 	  };
