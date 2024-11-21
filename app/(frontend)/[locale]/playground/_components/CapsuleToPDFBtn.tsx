@@ -95,8 +95,10 @@ export function CapsuleToPDF () {
 				return (shape?.type === 'frame')
 			})
 			logger.debug("tldraw:editor", "frames", frames);
-			return (frames.map((shape) => 
-				<div key={index}>{editor.getShape(shape)?.id}</div>
+			return (frames.map((shape) => {
+					console.log("SHAPE", shape, "INDEX", index);
+					return (<div key={index}>{editor.getShape(shape)?.id}</div>);
+				}
 			));
 		})
 	}

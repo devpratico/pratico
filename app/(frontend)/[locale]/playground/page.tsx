@@ -1,13 +1,15 @@
 'use client';
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createShapeId, Editor, exportToBlob, IndexKey, Tldraw, TLFrameShape, TLPage, TLPageId, TLParentId, TLShape, TLShapeId, TLUiComponents, transact, uniqueId, useEditor, useValue } from "tldraw";
 import 'tldraw/tldraw.css'
 import { useTLEditor } from "../../_hooks/useTLEditor";
 import { CardShapeUtil } from "./_components/ShapeUtilClass";
 import { useNav } from "../../_hooks/useNav";
-import { Card } from "@radix-ui/themes";
+import { Button, Card } from "@radix-ui/themes";
 import { CapsuleToPDF } from "./_components/CapsuleToPDFBtn";
 import logger from "@/app/_utils/logger";
+import { FramesPreview } from "./_components/FramesPreview";
+import { useReactToPrint } from "react-to-print";
 
 const MyCustomShapes = [CardShapeUtil]
 
@@ -19,7 +21,10 @@ export default function PlayGround () {
 	const [ currentPageId, setCurrentPageId ] = useState<TLPageId>();
 	const [ pageIds, setPageIds ] = useState<TLPageId[] | undefined>([]);
 	const [ frameIds, setFrameIds ] = useState<{index: number, id: TLShapeId}[]>();
-	
+	const [ frames, setFrames ] = useState<TLFrameShape[]>([]);
+	const contentRef = useRef<HTMLDivElement>(null);
+	const reactToPrint = useReactToPrint({contentRef})
+
 	useEffect(() => {
 		if (!editor)
 			return ;
@@ -46,8 +51,20 @@ export default function PlayGround () {
 		}
 		
 	}, [editor, currentPageId, pageIds, frameIds]);
-	
-    const handleOnMount = useCallback((editor: Editor) => {
+
+
+	useEffect(() => {
+		editor?.getPages().filter((page) => {
+				const framesTmp = editor
+					? Object.values(editor.getPageShapeIds(page)).filter((id) => {
+						const shape = editor.getShape(id)
+						return (shape?.type === 'frame')
+					})
+					: [];
+				setFrames(framesTmp);			
+			})
+	}, [editor]);		
+	const handleOnMount = useCallback((editor: Editor) => {
 		if (editor)
 			setEditor(editor);
       
@@ -145,12 +162,17 @@ export default function PlayGround () {
         <div style={{position: 'absolute', inset: 0 }}>
             <Tldraw
                 onMount={handleOnMount}
-				// persistenceKey="example4"
+				persistenceKey="example5"
 				// shapeUtils={MyCustomShapes}
 				components={components}
             >
 
             </Tldraw>
+			<Button onClick={() => reactToPrint()}>Print</Button>
+			<div ref={contentRef}>
+					<FramesPreview frames={frames}/>
+			</div>
+		
         </div>
     )
 };
