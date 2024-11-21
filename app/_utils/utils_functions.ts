@@ -23,3 +23,7 @@ export const sanitizeUuid = (uuid: string | null | undefined) => {
 	const sanitizedUuid = uuid.replace(/[^a-fA-F0-9-]/g, '')
 	return (sanitizedUuid);
 }
+
+export function uniqueTimestampId(prefix: string): string {
+    return prefix + Date.now().toString()
+}
