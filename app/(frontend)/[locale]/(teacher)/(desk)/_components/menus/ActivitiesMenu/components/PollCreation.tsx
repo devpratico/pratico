@@ -11,6 +11,7 @@ import Navigator from "./Navigator"
 import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import CancelButton from "./CancelButton"
+import { useActivityCreationStore } from "../../../../capsule/[capsule_id]/store"
 
 
 interface ChoiceRowProps {

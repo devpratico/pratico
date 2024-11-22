@@ -15,7 +15,7 @@ type Id = number | string
 type CurrentActivity = {
     id: Id
     activity: Poll
-    currentQuestionId: string
+    currentQuestionId: Id
 }
 
 type ActivityCreationState = {
