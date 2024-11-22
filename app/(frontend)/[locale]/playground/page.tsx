@@ -4,7 +4,6 @@ import { createShapeId, Editor, Tldraw, TLFrameShape, TLPageId, TLShapeId, trans
 import 'tldraw/tldraw.css'
 import { CardShapeUtil } from "./_components/ShapeUtilClass";
 import { Card } from "@radix-ui/themes";
-import { CapsuleToPDF } from "./_components/CapsuleToPDFBtn";
 import logger from "@/app/_utils/logger";
 
 const MyCustomShapes = [CardShapeUtil]
@@ -162,7 +161,6 @@ export default function PlayGround () {
 	}, [editor, frameIds, pageIds])
 
 	const components = {
-		SharePanel: CapsuleToPDF,
 		Background: Background,
 		OnTheCanvas: CanvasArea
 	}
@@ -171,7 +169,7 @@ export default function PlayGround () {
         <div style={{position: 'absolute', inset: 0 }}>
             <Tldraw
                 onMount={handleOnMount}
-				// persistenceKey="exa÷mple5"
+				// persistenceKey="exaÃ·mple5"
 				// shapeUtils={MyCustomShapes}
 				components={components}
             >

@@ -12,6 +12,7 @@ import {
     TLRecord,
     useKeyboardShortcuts,
 	TLFrameShape,
+	createShapeId,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -44,7 +45,35 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { editor, setEditor } = useTLEditor();
+	const { currentPageId, pageIds } = useNav();
 
+	useEffect(() => {
+		if (!editor)
+			return ;
+
+		const searchId = pageIds?.find((item) => {
+			return (item === currentPageId);
+		});
+
+		if ((!searchId || !searchId.length) && currentPageId)
+		{
+			const { x,y,w,h } = editor.getViewportPageBounds();
+			const newFrameId = createShapeId();
+			editor.createShape<TLFrameShape>({
+				id: newFrameId,
+				type: 'frame',
+				x: x * 2,
+				y: y * 2,
+				isLocked: true,
+				props: {
+					name: '\u200B', // zero-width space not to have a text above the frame
+					w: w * 2,
+					h: h * 2,
+				},
+			});
+		}
+		
+	}, [editor, currentPageId, pageIds]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.

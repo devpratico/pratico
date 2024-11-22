@@ -2,7 +2,7 @@
 import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
-import { CircleCheck, FolderUp, StickyNote } from "lucide-react"
+import { CircleCheck, FolderDown, FolderUp, StickyNote } from "lucide-react"
 import { useEffect, useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/(frontend)/_hooks/useNav"
@@ -13,6 +13,7 @@ import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
+import { CapsuleToPDF } from "../../capsule/[capsule_id]/_components/CapsuleToPDF"
 
 interface ImageData {
     bitmap: string
@@ -26,13 +27,13 @@ export default function AddMenu() {
 
     return (
         <Flex gap='3' direction='column'>
+            <CapsuleToPDF />
             <ImportDocumentBtn />
             <NewPageBtn />
         </Flex>
         
     )
 }
-
 
 function NewPageBtn() {
     const { newPage } = useNav()

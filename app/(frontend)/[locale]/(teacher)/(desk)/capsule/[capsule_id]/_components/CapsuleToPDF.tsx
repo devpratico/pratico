@@ -1,12 +1,16 @@
-import {jsPDF} from "jspdf";
-import { exportToBlob, useEditor } from "tldraw";
+import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { Button } from "@radix-ui/themes";
+import jsPDF from "jspdf";
+import { FolderDown } from "lucide-react";
+import { exportToBlob } from "tldraw";
 import "svg2pdf.js";
 
-export function CapsuleToPDF () {
-	const editor = useEditor();
+export function CapsuleToPDF() {
+	const editor = useTLEditor().editor;
 	const pdf = new jsPDF('landscape', 'px', 'a4');	
 	
 	const createPdf = async (blobs: Blob[]) => {
+
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
 
@@ -41,6 +45,8 @@ export function CapsuleToPDF () {
 	
 
 	const handleExportAllPages = async () => {
+		if (!editor)
+			return ;
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
 	  
@@ -80,41 +86,8 @@ export function CapsuleToPDF () {
 	  
 
   return (
-    <button
-      style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'lightgreen' }}
-      onClick={handleExportAllPages}
-    >
-	<>
-      Export All Pages as Images
-	</>
-    </button>
+    <Button variant='outline' style={{ justifyContent: 'start' }} onClick={handleExportAllPages}>
+        <FolderDown size='15' /> Exporter
+    </Button>
   );
-};
-
-	
-// https://tldraw.dev/examples/data/assets/export-canvas-as-image
-export function ExportCanvasButton() {
-	const editor = useEditor()
-	return (
-		<button
-			style={{ pointerEvents: 'all', fontSize: 18, backgroundColor: 'thistle' }}
-			onClick={async () => {
-				const shapeIds = editor.getCurrentPageShapeIds()
-				if (shapeIds.size === 0) return alert('No shapes on the canvas')
-				const blob = await exportToBlob({
-					editor,
-					ids: [...shapeIds], // downlevelIteration: true dans tsconfig permet des constructions ES6 mÃªme lors de la transpilation vers des versions plus anciennes (comme es5).
-					format: 'png',
-					opts: { background: false },
-				})
-
-				const link = document.createElement('a')
-				link.href = window.URL.createObjectURL(blob)
-				link.download = 'every-shape-on-the-canvas.jpg'
-				link.click()
-			}}
-		>
-			Export canvas as image
-		</button>
-	)
 }
