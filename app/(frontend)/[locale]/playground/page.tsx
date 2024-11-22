@@ -48,6 +48,7 @@ export default function PlayGround () {
 				x: x,
 				y: y,
 				props: {
+					name: '\u200B',
 					w: 1920,
 					h: 1080,
 				}
@@ -82,6 +83,7 @@ export default function PlayGround () {
 			x: x,
 			y: y,
 			props: {
+				name: '\u200B',
 				w: 1920,
 				h: 1080,
 			}

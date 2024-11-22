@@ -8,101 +8,29 @@ import { svg2pdf } from "svg2pdf.js";
 export function CapsuleToPDF () {
 	const editor = useEditor();
 	const [svgPages, setSvgPages] = useState<any[]>([]);
-	const pdf = new jsPDF();
-
-	const svgToPng = async (svg: string, width: number, height: number): Promise<string> => {
-		return new Promise((resolve, reject) => {
-			const img = new Image();
-			const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
-			const url = URL.createObjectURL(svgBlob);
-	
-			img.onload = () => {
-				const canvas = document.createElement('canvas');
-				canvas.width = width;
-				canvas.height = height;
-				const ctx = canvas.getContext('2d');
-				if (ctx) {
-					ctx.drawImage(img, 0, 0, width, height);
-					const pngDataUrl = canvas.toDataURL('image/png');
-					URL.revokeObjectURL(url);
-					resolve(pngDataUrl);
-				} else {
-					URL.revokeObjectURL(url);
-					reject(new Error('Failed to get canvas context'));
-				}
-			};
-	
-			img.onerror = (err) => {
-				URL.revokeObjectURL(url);
-				reject(err);
-			};
-	
-			img.src = url;
-		});
-	};
-	
+	const pdf = new jsPDF("landscape", "px", "a4");	
 	
 	const createPdf = async (blobs: Blob[]) => {
-		// for (let i = 0; i < blobs.length; i++) {
-		// 	const blob = blobs[i];
-		// 	const url = URL.createObjectURL(blob);
-		// 	const svgElement = await fetch(url).then((res) => res.text());
-		// 	fetch(svgElement)
-		// 	.then((response) => {
-		// 		if (!response.ok) {
-		// 		throw new Error('Failed to fetch SVG file');
-		// 		}
-		// 		return response.text();
-		// 	})
-		// 	.then((svgText) => {
-		// 		const parser = new DOMParser();
-		// 		const svgDocument = parser.parseFromString(svgText, 'image/svg+xml');
-		// 		const svgElement = svgDocument.documentElement;
-		// 		pdf.svg(svgElement);
-
-		// 		const svgAsText = new XMLSerializer().serializeToString(svgElement);
-
-		// 		// pdf.addSvgAsImage(svgAsText, 20, 20, pdf.internal.pageSize.width - 20 * 2, pdf.internal.pageSize.height - 20 * 2, "capsule", false, 0);
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('Error loading SVG:', error);
-		// });
-
-		// 	// try {
-		// 	// 	const pngDataUrl = await svgToPng(
-		// 	// 		svgElement,
-		// 	// 		pdf.internal.pageSize.getWidth(),
-		// 	// 		pdf.internal.pageSize.getHeight()
-		// 	// 	);
-
-		// 	// 	// pdf.addImage(pngDataUrl, 'SVG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-		// 	// } catch (error) {
-		// 	// 	console.error(`Failed to convert SVG to PNG for page ${i}`, error);
-		// 	// }
-		// 	console.log("SVG ELEMENT", svgElement);
-		// 	// pdf.svg(svgElement);
-		// 	// pdf.addSvgAsImage(svgElement, 0, 0, pdf.internal.pageSize.width * 2, pdf.internal.pageSize.height * 2, "capsule", true, 0);
-
-		// 	if (i < blobs.length - 1) {
-		// 		pdf.addPage();
-		// 	}
-		// 	URL.revokeObjectURL(url);
-		for (const [index, svgBlob] of blobs.entries()) {
-			const svgText = await svgBlob.text();
+		const promises = blobs.map(async (blob, index) => {
+			const svgText = await blob.text();
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-		
-			await svg2pdf(svgElement, pdf);
+			const scale = 72 / 96; // pixels to points
+			// await svg2pdf(svgElement, pdf);
+			// await svg2pdf(svgElement, pdf, {x: svgElement.getBoundingClientRect().x, y: svgElement.getBoundingClientRect().y, width: svgElement.clientWidth, height: svgElement.clientHeight});
+			console.log("SVG ELEMENT", svgElement.clientHeight, svgElement.clientWidth, svgElement.getBoundingClientRect().x, svgElement.getBoundingClientRect().y);
+			
+			await pdf.svg(svgElement, {width: 630, height: 500});
 		
 			if (index < blobs.length - 1) {
 			  pdf.addPage();
 			}
-		  }
+		  });
+		  await Promise.all(promises);
 		
 		//   return pdf.output("blob");
-			window.open(pdf.output('bloburl'), '_blank');
-		// }
+		window.open(pdf.output('bloburl'), '_blank');
 	};
 	
 
