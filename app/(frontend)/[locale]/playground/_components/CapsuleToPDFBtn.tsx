@@ -1,27 +1,33 @@
-import logger from "@/app/_utils/logger";
 import {jsPDF} from "jspdf";
-import { useState } from "react";
 import { exportToBlob, useEditor } from "tldraw";
 import "svg2pdf.js";
-import { svg2pdf } from "svg2pdf.js";
 
 export function CapsuleToPDF () {
 	const editor = useEditor();
-	const [svgPages, setSvgPages] = useState<any[]>([]);
-	const pdf = new jsPDF("landscape", "px", "a4");	
+	const pdf = new jsPDF('landscape', 'px', 'a4');	
 	
 	const createPdf = async (blobs: Blob[]) => {
+		const screenWidth = window.innerWidth;
+		const screenHeight = window.innerHeight;
+
+		const pageWidth =  793.706; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
+		const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
+
 		const promises = blobs.map(async (blob, index) => {
 			const svgText = await blob.text();
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-			const scale = 72 / 96; // pixels to points
-			// await svg2pdf(svgElement, pdf);
-			// await svg2pdf(svgElement, pdf, {x: svgElement.getBoundingClientRect().x, y: svgElement.getBoundingClientRect().y, width: svgElement.clientWidth, height: svgElement.clientHeight});
-			console.log("SVG ELEMENT", svgElement.clientHeight, svgElement.clientWidth, svgElement.getBoundingClientRect().x, svgElement.getBoundingClientRect().y);
-			
-			await pdf.svg(svgElement, {width: 630, height: 500});
+	
+			const scale = Math.min(pageWidth / screenWidth, pageHeight / screenHeight);
+	
+			await pdf.svg(svgElement, {
+				x: svgElement.getBoundingClientRect().x,
+				y: svgElement.getBoundingClientRect().y,
+				width: pageWidth * scale,
+				height: pageHeight * scale, 
+			});
+	
 		
 			if (index < blobs.length - 1) {
 			  pdf.addPage();
@@ -42,7 +48,7 @@ export function CapsuleToPDF () {
 	  
 		const promises = allPages.map(async (page) => {
 		  const shapeIds = editor.getPageShapeIds(page);
-	  
+			console.log("PAGE", page);
 		  if (shapeIds.size === 0) return;
 	  
 		  try {
@@ -64,7 +70,6 @@ export function CapsuleToPDF () {
 		  }
 		});
 		await Promise.all(promises);
-		// setSvgPages(allBlobs);
 		await createPdf(allBlobs);
 
 		
