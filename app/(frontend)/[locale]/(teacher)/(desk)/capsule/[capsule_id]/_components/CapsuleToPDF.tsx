@@ -14,7 +14,7 @@ export function CapsuleToPDF() {
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
 
-		const pageWidth =  793.706; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
+		const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
 		const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
 
 		const promises = blobs.map(async (blob, index) => {
@@ -22,14 +22,14 @@ export function CapsuleToPDF() {
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-	
-			const scale = Math.min(pageWidth / screenWidth, pageHeight / screenHeight);
-	
+			const widthScale = pageWidth < screenWidth ? pageWidth / screenWidth : screenWidth / pageWidth;
+			const heightScale = pageHeight < screenHeight ? pageHeight / screenHeight : screenHeight / pageHeight;
+
 			await pdf.svg(svgElement, {
-				x: svgElement.getBoundingClientRect().x,
-				y: svgElement.getBoundingClientRect().y,
-				width: pageWidth * scale,
-				height: pageHeight * scale, 
+				x: 0,
+				y: 0,
+				width: pageWidth * widthScale,
+				height: pageHeight * heightScale, 
 			});
 	
 		
@@ -77,12 +77,7 @@ export function CapsuleToPDF() {
 		});
 		await Promise.all(promises);
 		await createPdf(allBlobs);
-
-		
-		// pdf.save('output.pdf');
-
-		console.log("ALL BLOBS", allBlobs);
-	  };
+	};
 	  
 
   return (

@@ -62,13 +62,13 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			editor.createShape<TLFrameShape>({
 				id: newFrameId,
 				type: 'frame',
-				x: x * 2,
-				y: y * 2,
+				x: x,
+				y: y,
 				isLocked: true,
 				props: {
 					name: '\u200B', // zero-width space not to have a text above the frame
-					w: w * 2,
-					h: h * 2,
+					w: w,
+					h: h,
 				},
 			});
 		}
@@ -94,13 +94,13 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		console.log("HERE")
 		editor.createShape<TLFrameShape>({
 			type: 'frame',
-			x: x * 2,
-			y: y * 2,
+			x: x ,
+			y: y ,
 			isLocked: true,
 			props: {
 				name: '\u200B', // zero-width space not to have a text above the frame
-				w: w * 2,
-				h: h * 2,
+				w: w ,
+				h: h ,
 			},
 		})
 
