@@ -13,7 +13,7 @@ import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { CapsuleToPDF } from "../../capsule/[capsule_id]/_components/CapsuleToPDF"
+import { CapsuleToPDF } from "../../capsule/[capsule_id]/_components/CapsuleToPDFBtn"
 
 interface ImageData {
     bitmap: string
@@ -27,7 +27,6 @@ export default function AddMenu() {
 
     return (
         <Flex gap='3' direction='column'>
-            <CapsuleToPDF />
             <ImportDocumentBtn />
             <NewPageBtn />
         </Flex>

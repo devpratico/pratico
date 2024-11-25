@@ -4,15 +4,11 @@ import {
     Editor,
     getUserPreferences,
     setUserPreferences, 
-    DefaultColorStyle, 
-    DefaultSizeStyle,
     TLStoreWithStatus,
     TLStore,
     StoreSnapshot,
     TLRecord,
     useKeyboardShortcuts,
-	TLFrameShape,
-	createShapeId,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -47,33 +43,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const { editor, setEditor } = useTLEditor();
 	const { currentPageId, pageIds } = useNav();
 
-	useEffect(() => {
-		if (!editor)
-			return ;
-
-		const searchId = pageIds?.find((item) => {
-			return (item === currentPageId);
-		});
-
-		if ((!searchId || !searchId.length) && currentPageId)
-		{
-			const { x,y,w,h } = editor.getViewportPageBounds();
-			const newFrameId = createShapeId();
-			/*editor.createShape<TLFrameShape>({
-				id: newFrameId,
-				type: 'frame',
-				x: x,
-				y: y,
-				isLocked: true,
-				props: {
-					name: '\u200B', // zero-width space not to have a text above the frame
-					w: w,
-					h: h,
-				},
-			});*/
-		}
-		
-	}, [editor, currentPageId, pageIds]);
     /**
      * This function is called when the tldraw editor is mounted.
      * It's used to set some initial preferences.
@@ -90,18 +59,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.setCameraOptions({
             wheelBehavior: 'none',
         })
-		console.log("HERE")
-		/*editor.createShape<TLFrameShape>({
-			type: 'frame',
-			x: 0,
-			y: 0,
-			isLocked: true,
-			props: {
-				name: '\u200B', // zero-width space not to have a text above the frame
-				w: w ,
-				h: h ,
-			},
-		})*/
 
         /**
          * Set the user preferences

@@ -5,16 +5,19 @@ import { FolderDown } from "lucide-react";
 import { exportToBlob } from "tldraw";
 import "svg2pdf.js";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
+import { useNav } from "@/app/(frontend)/_hooks/useNav";
 
 
-export function CapsuleToPDF() {
+export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
 	const editor = useTLEditor().editor;
-	const pdf = new jsPDF('landscape', 'px', 'a4');	
+	const pdf = new jsPDF('landscape', 'px', 'a4');
+	const { pageIds } = useNav();
+
+	const getCapsuleData = async () => {
+		
+	};
 	
 	const createPdf = async (blobs: Blob[]) => {
-
-		//const screenWidth = window.innerWidth;
-		//const screenHeight = window.innerHeight;
 
 		//const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
 		//const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
@@ -29,8 +32,6 @@ export function CapsuleToPDF() {
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-			//const widthScale = pageWidth < screenWidth ? pageWidth / screenWidth : screenWidth / pageWidth;
-			//const heightScale = pageHeight < screenHeight ? pageHeight / screenHeight : screenHeight / pageHeight;
 
 			await pdf.svg(svgElement, {
 				x: 0,
@@ -45,9 +46,6 @@ export function CapsuleToPDF() {
 			}
 		  });
 		  await Promise.all(promises);
-		
-		//   return pdf.output("blob");
-		window.open(pdf.output('bloburl'), '_blank');
 	};
 	
 
@@ -61,7 +59,6 @@ export function CapsuleToPDF() {
 	  
 		const promises = allPages.map(async (page) => {
 		  const shapeIds = editor.getPageShapeIds(page);
-			console.log("PAGE", page);
 		  if (shapeIds.size === 0) return;
 	  
 		  try {
@@ -88,12 +85,13 @@ export function CapsuleToPDF() {
 		});
 		await Promise.all(promises);
 		await createPdf(allBlobs);
+		pdf.save('capsule.pdf');
 	};
 	  
 
   return (
-    <Button variant='outline' style={{ justifyContent: 'start' }} onClick={handleExportAllPages}>
-        <FolderDown size='15' /> Exporter
+    <Button style={{ width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages}>
+        <FolderDown size='15' /> Exporter la capsule en PDF
     </Button>
   );
 }
