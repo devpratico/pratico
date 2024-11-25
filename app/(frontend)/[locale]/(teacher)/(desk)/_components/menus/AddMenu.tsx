@@ -3,7 +3,7 @@ import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
 import { CircleCheck, FolderDown, FolderUp, StickyNote } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/(frontend)/_hooks/useNav"
 import { useDisable } from "@/app/(frontend)/_hooks/useDisable"
@@ -12,8 +12,6 @@ import { getPublicUrl } from "@/app/(backend)/api/capsule/capsule.client"
 import uploadCapsuleFile from "@/app/_utils/uploadCapsuleFile"
 import importPdfBackground from "@/app/_utils/tldraw/importPdfBackground"
 import { AssetData } from "@/app/_utils/tldraw/importPdfBackground"
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { CapsuleToPDF } from "../../capsule/[capsule_id]/_components/CapsuleToPDFBtn"
 
 interface ImageData {
     bitmap: string
