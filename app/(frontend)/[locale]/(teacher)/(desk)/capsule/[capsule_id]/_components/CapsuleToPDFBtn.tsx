@@ -14,7 +14,8 @@ import { formatDate } from "@/app/_utils/utils_functions";
 export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
 	const editor = useTLEditor().editor;
 	const supabase = createClient();
-	const pdf = new jsPDF('landscape', 'px', 'a4');
+	// const pdf = new jsPDF('landscape', 'px', 'a4');
+	const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
@@ -43,8 +44,8 @@ export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
 			await pdf.svg(svgElement, {
 				x: 0,
 				y: 0,
-				width: defaultBox.w * ratio,
-				height: defaultBox.h * ratio,
+				width: defaultBox.w, //* ratio,
+				height: defaultBox.h// * ratio,
 			});
 	
 		
@@ -96,7 +97,6 @@ export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
 		const data = await getCapsuleData();
 		if (data)
 		{
-			console.log(data);
 			const title = data?.title === "Sans titre" ? "capsule" : data?.title;
 			pdfName = `${title}-${formatDate(data.created_at)}.pdf`
 		}
