@@ -59,7 +59,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		{
 			const { x,y,w,h } = editor.getViewportPageBounds();
 			const newFrameId = createShapeId();
-			editor.createShape<TLFrameShape>({
+			/*editor.createShape<TLFrameShape>({
 				id: newFrameId,
 				type: 'frame',
 				x: x,
@@ -70,7 +70,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 					w: w,
 					h: h,
 				},
-			});
+			});*/
 		}
 		
 	}, [editor, currentPageId, pageIds]);
@@ -90,19 +90,18 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         editor.setCameraOptions({
             wheelBehavior: 'none',
         })
-		const {x, y, w, h} = editor.getViewportPageBounds();
 		console.log("HERE")
-		editor.createShape<TLFrameShape>({
+		/*editor.createShape<TLFrameShape>({
 			type: 'frame',
-			x: x ,
-			y: y ,
+			x: 0,
+			y: 0,
 			isLocked: true,
 			props: {
 				name: '\u200B', // zero-width space not to have a text above the frame
 				w: w ,
 				h: h ,
 			},
-		})
+		})*/
 
         /**
          * Set the user preferences

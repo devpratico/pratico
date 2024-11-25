@@ -31,6 +31,8 @@ export default function PlayGround () {
 		}, [editor]);		
 	   
 		useEffect(() => {}, [frames]);
+
+        
 	useEffect(() => {
 		if (!editor)
 			return ;
@@ -41,11 +43,11 @@ export default function PlayGround () {
 
 		if ((!searchId || !searchId.length) && currentPageId)
 		{
-			const { x,y,w,h } = editor.getViewportPageBounds();
+
 			const newFrameId = createShapeId();
 			editor.createShape<TLFrameShape>({type: 'frame',
-				x: x,
-				y: y,
+				x: 0,
+				y: 0,
 				props: {
 					name: '\u200B',
 					w: 1920,
@@ -71,6 +73,7 @@ export default function PlayGround () {
 				setFrames(framesTmp);			
 			})
 	}, [editor]);		
+    
 	const handleOnMount = useCallback((editor: Editor) => {
 		if (editor)
 			setEditor(editor);

@@ -4,6 +4,8 @@ import jsPDF from "jspdf";
 import { FolderDown } from "lucide-react";
 import { exportToBlob } from "tldraw";
 import "svg2pdf.js";
+import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
+
 
 export function CapsuleToPDF() {
 	const editor = useTLEditor().editor;
@@ -11,25 +13,30 @@ export function CapsuleToPDF() {
 	
 	const createPdf = async (blobs: Blob[]) => {
 
-		const screenWidth = window.innerWidth;
-		const screenHeight = window.innerHeight;
+		//const screenWidth = window.innerWidth;
+		//const screenHeight = window.innerHeight;
 
-		const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
-		const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
+		//const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
+		//const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
+
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const elementWidth = defaultBox.w;
+        const ratio = pageWidth / elementWidth;
 
 		const promises = blobs.map(async (blob, index) => {
 			const svgText = await blob.text();
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
 			const svgElement = svgDoc.documentElement;
-			const widthScale = pageWidth < screenWidth ? pageWidth / screenWidth : screenWidth / pageWidth;
-			const heightScale = pageHeight < screenHeight ? pageHeight / screenHeight : screenHeight / pageHeight;
+			//const widthScale = pageWidth < screenWidth ? pageWidth / screenWidth : screenWidth / pageWidth;
+			//const heightScale = pageHeight < screenHeight ? pageHeight / screenHeight : screenHeight / pageHeight;
 
 			await pdf.svg(svgElement, {
 				x: 0,
 				y: 0,
-				width: pageWidth * widthScale,
-				height: pageHeight * heightScale, 
+				width: defaultBox.w * ratio,
+				height: defaultBox.h * ratio,
 			});
 	
 		
@@ -62,8 +69,12 @@ export function CapsuleToPDF() {
 			  editor,
 			  ids: Array.from(shapeIds),
 			  format: 'svg',
-			  opts: { background: false },
-			});
+			  opts: {
+                background: false,
+                bounds: defaultBox,
+                padding: 0,
+            }});
+
 			if (blob) {
 				console.log('Blob created successfully:', blob);
 			} else {
