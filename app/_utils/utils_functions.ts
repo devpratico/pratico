@@ -2,17 +2,14 @@ export const formatDate = (date: string | undefined, language?: string, specify?
 	if (!date)
 		return ;
 	let formatedDate = null;
-	switch (specify)
-	{
-		case "hour":
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false });
-			break ;
-		case "date":
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { day: '2-digit', month: '2-digit', year: "numeric" });
-			break ;
-		default:
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR');
-	}
+	const formatter = new Intl.DateTimeFormat('fr-FR', {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+	  });
+	formatedDate = formatter.format(new Date(date)).split(" ").join("-");
 	return (formatedDate);
   }
 
