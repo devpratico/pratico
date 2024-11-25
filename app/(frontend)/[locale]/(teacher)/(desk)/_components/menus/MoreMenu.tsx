@@ -50,7 +50,7 @@ export default function MoreMenu() {
 
 				{
 					pageIds && pageIds.length > 0
-				 	? <CapsuleToPDFBtn capsuleId={capsule_id} />
+				 	? <CapsuleToPDFBtn capsuleId={capsule_id} isRoom={isRoom} />
 					: <></>
 				}
                 <Box mt="9" display={{ initial: 'none', xs: 'block' }}>

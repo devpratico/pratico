@@ -5,13 +5,12 @@ import { FolderDown } from "lucide-react";
 import { exportToBlob } from "tldraw";
 import "svg2pdf.js";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
-import { useNav } from "@/app/(frontend)/_hooks/useNav";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
 
 
-export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
+export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
 	const editor = useTLEditor().editor;
 	const supabase = createClient();
 	// const pdf = new jsPDF('landscape', 'px', 'a4');
@@ -80,26 +79,25 @@ export function CapsuleToPDFBtn({capsuleId}: {capsuleId: string | string[]}) {
                 bounds: defaultBox,
                 padding: 0,
             }});
-
-			if (blob) {
-				console.log('Blob created successfully:', blob);
-			} else {
-				console.error('Blob is null or undefined');
-			}
 			allBlobs.push(blob);
 	
 		  } catch (error) {
-			console.error(`Failed to get svgElement in page ${page.id}`, error);
+			logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${page.id}`, error);
 		  }
 		});
 		await Promise.all(promises);
 		await createPdf(allBlobs);
-		const data = await getCapsuleData();
-		if (data)
+
+		if (!isRoom)
 		{
-			const title = data?.title === "Sans titre" ? "capsule" : data?.title;
-			pdfName = `${title}-${formatDate(data.created_at)}.pdf`
+			const data = await getCapsuleData();
+			if (data)
+			{
+				const title = data?.title === "Sans titre" ? "capsule" : data?.title;
+				pdfName = `${title}-${formatDate(data.created_at)}.pdf`
+			}
 		}
+		
 		pdf.save(pdfName);
 	};
 	  
