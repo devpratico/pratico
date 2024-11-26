@@ -65,7 +65,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 
 		if (allPages.length === 0) return;
 	  
-		const promises = allPages.map(async (page) => {
+		allPages.map(async (page) => {
 		  const shapeIds = editor.getPageShapeIds(page);
 		  if (shapeIds.size === 0) return;
 	  
@@ -85,7 +85,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${page.id}`, error);
 		  }
 		});
-		await Promise.all(promises);
+	
 		await createPdf(allBlobs);
 
 		if (!isRoom)
