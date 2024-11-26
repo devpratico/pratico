@@ -13,8 +13,8 @@ import { formatDate } from "@/app/_utils/utils_functions";
 export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
 	const editor = useTLEditor().editor;
 	const supabase = createClient();
-	// const pdf = new jsPDF('landscape', 'px', 'a4');
-	const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
+	const pdf = new jsPDF('landscape', 'px', 'a4');
+	// const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
@@ -26,8 +26,8 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 	
 	const createPdf = async (blobs: Blob[]) => {
 
-		//const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
-		//const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
+		// const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
+		// const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
 
 
         const pageWidth = pdf.internal.pageSize.getWidth();
@@ -43,8 +43,8 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			await pdf.svg(svgElement, {
 				x: 0,
 				y: 0,
-				width: defaultBox.w, //* ratio,
-				height: defaultBox.h// * ratio,
+				width: defaultBox.w * ratio,
+				height: defaultBox.h * ratio,
 			});
 	
 		
