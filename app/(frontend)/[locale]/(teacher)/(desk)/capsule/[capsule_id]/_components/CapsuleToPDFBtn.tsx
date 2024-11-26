@@ -13,8 +13,6 @@ import { formatDate } from "@/app/_utils/utils_functions";
 export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
 	const editor = useTLEditor().editor;
 	const supabase = createClient();
-	const pdf = new jsPDF('landscape', 'px', 'a4');
-	// const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
@@ -29,12 +27,13 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 		// const pageWidth =  793.7066666666666; // A4 (landscape) dans jsPDF px: 793.7066666666666 pt: 595.28
 		// const pageHeight = 1122.52; // A4 (landscape) dans jsPDF px: 1122.52 pt: 841.89
 
-
+		let pdfName = "capsule.pdf";
+		const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
         const pageWidth = pdf.internal.pageSize.getWidth();
         const elementWidth = defaultBox.w;
         const ratio = pageWidth / elementWidth;
 
-		const promises = blobs.map(async (blob, index) => {
+		for (const [index, blob] of blobs.entries()) {
 			const svgText = await blob.text();
 			const parser = new DOMParser();
 			const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
@@ -51,8 +50,16 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			if (index < blobs.length - 1) {
 			  pdf.addPage();
 			}
-		  });
-		  await Promise.all(promises);
+		  };
+		  if (!isRoom) {
+			const data = await getCapsuleData();
+			if (data) {
+			  const title = data?.title === "Sans titre" ? "capsule" : data?.title;
+			  pdfName = `${title}-${formatDate(data.created_at)}.pdf`
+			}
+		  }
+		  
+		  pdf.save(pdfName);
 	};
 	
 
@@ -61,44 +68,34 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			return ;
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
-	  	let pdfName = "capsule.pdf";
-
+		
 		if (allPages.length === 0) return;
-	  
-		allPages.map(async (page) => {
+		
+		for (const page of allPages) {
 		  const shapeIds = editor.getPageShapeIds(page);
-		  if (shapeIds.size === 0) return;
-	  
+		  if (shapeIds.size === 0) continue;
+		
 		  try {
 			const blob = await exportToBlob({
 			  editor,
 			  ids: Array.from(shapeIds),
 			  format: 'svg',
 			  opts: {
-                background: false,
-                bounds: defaultBox,
-                padding: 0,
-            }});
+				background: false,
+				bounds: defaultBox,
+				padding: 0,
+			  }
+			});
 			allBlobs.push(blob);
-	
+		
 		  } catch (error) {
 			logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${page.id}`, error);
 		  }
-		});
-	
-		await createPdf(allBlobs);
-
-		if (!isRoom)
-		{
-			const data = await getCapsuleData();
-			if (data)
-			{
-				const title = data?.title === "Sans titre" ? "capsule" : data?.title;
-				pdfName = `${title}-${formatDate(data.created_at)}.pdf`
-			}
 		}
 		
-		pdf.save(pdfName);
+		await createPdf(allBlobs);
+		
+	
 	};
 	  
 
