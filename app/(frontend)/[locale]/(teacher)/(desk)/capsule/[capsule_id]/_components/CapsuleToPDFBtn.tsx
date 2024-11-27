@@ -8,8 +8,7 @@ import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custo
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { useState } from "react";
-import { set } from "lodash";
+import { useEffect, useState } from "react";
 
 export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
 	const editor = useTLEditor().editor;
@@ -40,6 +39,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			pdf.save(pdfName);
 			console.log("HERE AT THE END")
 			setDisabled(false);
+			setProgress(0);
 			return ;
 		  }
 		  const blob = blobs[index];
@@ -52,15 +52,15 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			  pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
 			} catch (error) {
 			  logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
-			  setDisabled(false);
 			}
 	  
 			if (index < blobs.length - 1) {
 			  pdf.addPage();
 			}
-			console.log("index", index, disabled);
-			setProgress(((index + 1) / blobs.length) * 100);
-			processBlob(index + 1);
+			setProgress((index / blobs.length) * 100);
+
+			const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
+			return (() => clearTimeout(timeout));
 		  };
 		  reader.onerror = (error) => {
 			logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);
@@ -90,8 +90,8 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			return;
 		}
 		try {
-			for (const page of allPages) {
-			  const shapeIds = editor.getPageShapeIds(page);
+			for (let i = 0; i < allPages.length; i++) {
+			  const shapeIds = editor.getPageShapeIds(allPages[i]);
 			  if (shapeIds.size === 0)
 				continue;
 			  try {
@@ -100,25 +100,26 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 				  ids: Array.from(shapeIds),
 				  format: 'webp',
 				  opts: {
-					// background: false,
 					bounds: defaultBox,
 					padding: 0,
-					darkMode: false
+					darkMode: false,
 				  }
 				});
 				allBlobs.push(blob);
+			
+				setProgress((i / allPages.length) * 100);
+
 			  } catch (error) {
-				logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${page.id}`, error);
+				logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
 				setDisabled(false);
 			  }
-			  console.log("page", page);
 			}
-			console.log("allBlobs", allBlobs, allPages);
 		} catch (error) {
 			logger.error("react:component", "CapsuleToPDFBtn", "handleExportAllPages", error);
 			setDisabled(false);
 		}
-		await createPdf(allBlobs, pdf);
+		const validBlobs = allBlobs.filter(blob => blob.size > 0);
+		await createPdf(validBlobs, pdf);
 	};
 	  
 
@@ -128,7 +129,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			<FolderDown size='15' /> Exporter la capsule en PDF
 		</Button>
 		{
-			disabled && <Progress data-state="loading" data-value={progress} />
+			disabled && <Progress size="2" value={progress} />
 		}
 	</>    
   );
