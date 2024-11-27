@@ -8,8 +8,7 @@ import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custo
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { useEffect, useState } from "react";
-import { set } from "lodash";
+import { useState } from "react";
 
 export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
 	const editor = useTLEditor().editor;
@@ -28,55 +27,81 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 	  
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
 		let pdfName = "capsule.pdf";
-	  
 		const processBlob = async (index: number) => {
-		  if (index >= blobs.length) {
-			if (!isRoom) {
-			  const data = await getCapsuleData();
-			  if (data) {
-				const title = data?.title === "Sans titre" ? "capsule" : data?.title;
-				pdfName = `${title}-${formatDate(data.created_at)}.pdf`;
-			  }
+			if (index >= blobs.length) {
+				if (!isRoom) {
+					const data = await getCapsuleData();
+					if (data) {
+						const title = data?.title === "Sans titre" ? "capsule" : data?.title;
+						pdfName = `${title}-${formatDate(data.created_at)}.pdf`;
+					}
+				}
+				pdf.save(pdfName);
+				setDisabled(false);
+				setProgress(0);
+				setHalfwayProgress(true);
+				return ;
 			}
-			pdf.save(pdfName);
-			console.log("HERE AT THE END")
-			setDisabled(false);
-			setProgress(0);
-			setHalfwayProgress(true);
-			return ;
-		  }
-		  const blob = blobs[index];
-		  console.log("blob ", index, blob);
-		  const reader = new FileReader();
-		  setHalfwayProgress(false);
-		  reader.onload = async () => {
-			const base64data = reader.result as string;
-			try {
-			  pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-			} catch (error) {
-			  logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
-			}
-	  
-			if (index < blobs.length - 1) {
-			  pdf.addPage();
-			}
-			setProgress((prev) => (prev || 0) + 100 / (blobs.length || 1));
+			const blob = blobs[index];
+			// const url = URL.createObjectURL(blob);
+			// const image = new Image();
+			// image.src = url;
 
-			const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
-			return (() => clearTimeout(timeout));
-		  };
-		  reader.onerror = (error) => {
-			logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);
-			setDisabled(false);
-		  };
-		  reader.readAsDataURL(blob);
+			// image.onload = async () => {
+			// 	try {
+			// 		pdf.addImage(image, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+			// 	} catch (error) {
+			// 		logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
+			// 	}
+
+			// 	if (index < blobs.length - 1) {
+			// 		pdf.addPage();
+			// 	}
+
+			// 	URL.revokeObjectURL(url);
+			// 	setProgress((prev) => (prev || 0) + 100 / (blobs.length || 1));
+			// 	const timeout = setTimeout(() => processBlob(index + 1), 100);
+			// 	return (() => clearTimeout(timeout));
+			// };
+
+			// image.onerror = (error) => {
+			// 	logger.error("react:component", "CapsuleToPDFBtn", "Image Load", index, error);
+			// 	setDisabled(false);
+			// };
+			// } catch (error) {
+			// 	logger.error("react:component", "CapsuleToPDFBtn", "Blob Processing", index, error);
+			// 	setDisabled(false);
+			// }
+			const reader = new FileReader();
+			setHalfwayProgress(false);
+			reader.onload = async () => {
+				const base64data = reader.result as string;
+				try {
+					pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+				} catch (error) {
+					logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
+				}
+
+				if (index < blobs.length - 1) {
+					pdf.addPage();
+				}
+				setProgress((prev) => (prev || 0) + 100 / (blobs.length || 1));
+
+				const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
+				return (() => clearTimeout(timeout));
+			};
+			reader.onerror = (error) => {
+				logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);
+				setDisabled(false);
+			};
+			reader.readAsDataURL(blob);
 		};
-	  
+
 		try {
-		  processBlob(0);
+			processBlob(0);
 		} catch (error) {
-		  logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
-		  setDisabled(false);
+			logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
+			setDisabled(false);
 		};
 	}
 
@@ -133,11 +158,10 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			<FolderDown size='15' /> Exporter la capsule en PDF
 		</Button>
 		{
-			!disabled
+			disabled
 			? <>
 				<Progress size="2" value={progress} />
 				{
-					
 					halfwayProgress
 					? <Text style={{ color: "var(--violet-9)", display: "flex", justifyContent: "end" }}>{"1/2"}</Text>
 					: <Text style={{ color: "var(--violet-9)", display: "flex", justifyContent: "end" }}>{"2/2"}</Text>
