@@ -100,7 +100,7 @@ function ImportDocumentBtn() {
                     return prev
                 })
                 logger.log('system:file', `Loaded page ${index}`)
-                setProgress(index / (numPages || 1) * 100)
+                setProgress((prev) => (prev || 0) + 100 / (numPages || 1))
                 setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
             })
         }).map(async (promise) => {
@@ -109,6 +109,7 @@ function ImportDocumentBtn() {
         })).then(() => {
             logger.log('system:file', 'Images received', images.length)
             setState('success')
+			setProgress(0);
         })
     }
 
@@ -140,7 +141,7 @@ function ImportDocumentBtn() {
             logger.log('supabase:storage', `Uploaded page ${index}`)
             assets[index] = { width: image.width, height: image.height, publicUrl: url, name: pageFileName }
 
-            setProgress((index / images.length) * 100)
+            setProgress((prev) => (prev || 0) + 100 / images.length)
             setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }))
 
         })).then(async () => {
