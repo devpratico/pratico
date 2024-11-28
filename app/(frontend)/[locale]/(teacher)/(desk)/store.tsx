@@ -13,7 +13,7 @@ import { createContext, useContext, useRef } from "react"
 type Id = number | string
 
 type CurrentActivity = {
-    id: Id
+    id?: Id
     activity: Poll
     currentQuestionId: Id
 }
@@ -24,10 +24,11 @@ type ActivityCreationState = {
 }
 
 type ActivityCreationActions = {
-    openActivity: ({id, activity}: {id: Id, activity: Poll}) => void
+    openActivity: ({id, activity}: {id?: Id, activity: Poll}) => void
     closeActivity: () => void
     editTitle: (title: string) => void
     changeCurrentQuestionId: (id: Id) => void
+    changeCurrentQuestionIndex: (index: number) => void
     addEmptyQuestion: () => { newId: Id | undefined }
     changeQuestionText: (id: Id, text: string) => void
     deleteQuestion: (id: Id) => void
@@ -81,8 +82,32 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
         set(state => {
             const currentActivity = state.currentActivity!
             const index = currentActivity.activity.questions.findIndex(q => q.id === id)
-            return { currentActivity: { ...currentActivity, currentQuestion: { id: id, index } } }
+            if (index === -1) {
+                logger.error('zustand:action', 'Cannot change the current question to a non-existing question')
+                return state
+            }
+
+            return { currentActivity: { ...currentActivity, currentQuestionId: id } }
         })
+    },
+
+    /** Rather than providing the id of the question, change the current question by its index */
+    changeCurrentQuestionIndex: (index: number) => {
+        const currentActivity = get().currentActivity
+
+        if (!currentActivity) {
+            logger.error('zustand:action', 'Cannot change the current question of a non-existing activity')
+            return
+        }
+
+        if (index < 0 || index >= currentActivity.activity.questions.length) {
+            logger.error('zustand:action', 'Cannot change the current question to an index out of range')
+            return
+        }
+
+        console.log('Changing current question to index:', index)
+
+        get().changeCurrentQuestionId(currentActivity.activity.questions[index].id)
     },
 
     addEmptyQuestion: () => {

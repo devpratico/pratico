@@ -8,11 +8,15 @@ import { QuizProvider } from "@/app/(frontend)/_hooks/useQuiz"
 import { PollProvider } from "@/app/(frontend)/_hooks/usePoll"
 import { emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz"
 import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
+import { useActivityCreationStore } from "../../../../store"
+import { mockPoll   } from "@/app/_types/poll2"
 
 
 export default function CreateActivityBtn() {
     const [openQuizCreation, setOpenQuizCreation] = useState(false)
-    const [openPollCreation, setOpenPollCreation] = useState(false)
+    //const [openPollCreation, setOpenPollCreation] = useState(false)
+    const openActivityCreation = useActivityCreationStore(state => state.openActivity)
+    const currentActivity = useActivityCreationStore(state => state.currentActivity)
 
     return (
         <>
@@ -23,7 +27,7 @@ export default function CreateActivityBtn() {
 
                 <DropdownMenu.Content align='end'>
                     <DropdownMenu.Item onSelect={() => setOpenQuizCreation(true)}>Quiz</DropdownMenu.Item>
-                    <DropdownMenu.Item onSelect={() => setOpenPollCreation(true)}>Sondage</DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={() => openActivityCreation({activity: mockPoll})}>Sondage</DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
 
@@ -34,8 +38,8 @@ export default function CreateActivityBtn() {
                 </QuizProvider>
             </CardDialog>
 
-            <CardDialog preventClose open={openPollCreation} onOpenChange={setOpenPollCreation}>
-                <PollCreation onClickTerminate={() => setOpenPollCreation(false)} />
+            <CardDialog preventClose open={!!currentActivity}>
+                <PollCreation />
             </CardDialog>
         </>
     )
