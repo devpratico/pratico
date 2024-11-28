@@ -24,9 +24,9 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatDate(sessionDate.date, undefined, "date");
-	const start = formatDate(sessionDate.date, undefined, "hour");
+	const start = formatDate(sessionDate.date, undefined, "time");
 	const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
-	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "hour") : undefined; 
+	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "time") : undefined; 
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef})
 

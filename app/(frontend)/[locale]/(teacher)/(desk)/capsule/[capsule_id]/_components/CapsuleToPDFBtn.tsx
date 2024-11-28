@@ -31,13 +31,6 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
 		const processBlob = async (index: number) => {
 			if (index >= blobs.length) {
-				if (!isRoom) {
-					const data = await getCapsuleData();
-					if (data) {
-						const title = data?.title === "Sans titre" ? "capsule" : data?.title;
-						setPdfName(`${title}-${formatDate(data.created_at)}.pdf`);
-					}
-				}
 				pdf.save(pdfName);
 				setDisabled(false);
 				setProgress(0);
@@ -115,6 +108,14 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 		const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
+
+		if (!isRoom) {
+			const data = await getCapsuleData();
+			if (data) {
+				const title = data?.title === "Sans titre" ? "capsule" : data?.title;
+				setPdfName(`${title}-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
+			}
+		}
 		setPagesInfo({loading: 0, total: allPages.length});
 		if (allPages.length === 0)
 		{	
