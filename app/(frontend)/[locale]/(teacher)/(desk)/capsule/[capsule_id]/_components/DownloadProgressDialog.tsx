@@ -1,8 +1,6 @@
 "use client";
 
-import logger from "@/app/_utils/logger";
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
-import jsPDF from "jspdf";
 import { CircleCheck, FolderDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -31,6 +29,7 @@ export function DownloadProgressDialog({pagesInfos, progress, disabled, halfwayP
 		{
 			setState("idle");
 			setSuccess(false);
+			setOpenDialog(false);
 		}
 	}, [disabled, halfwayProgress, openDialog]);
 

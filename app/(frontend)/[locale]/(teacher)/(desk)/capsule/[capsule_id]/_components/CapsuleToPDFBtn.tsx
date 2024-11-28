@@ -1,9 +1,9 @@
 "use client";
 import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
-import { Button, Progress, Text } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import jsPDF from "jspdf";
 import { FolderDown } from "lucide-react";
-import { exportToBlob, TLPage } from "tldraw";
+import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
@@ -38,7 +38,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 						setPdfName(`${title}-${formatDate(data.created_at)}.pdf`);
 					}
 				}
-				// pdf.save(pdfName);
+				pdf.save(pdfName);
 				setDisabled(false);
 				setProgress(0);
 				setHalfwayProgress(true);
