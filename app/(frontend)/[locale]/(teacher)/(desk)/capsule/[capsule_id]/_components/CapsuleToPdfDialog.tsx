@@ -10,6 +10,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FolderDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { set } from "lodash";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
 {
@@ -20,7 +21,8 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ filename, setFilename ] = useState("capsule.pdf");
 	const [ pagesProgress, setPagesProgress  ] = useState<{loading: number, total: number}>({loading: 0, total: 0});
 	const [ openDialog, setOpenDialog ] = useState(false);
-	const [ state, setState ] = useState<'loading' | 'downloading' | 'idle' | 'error'>('idle');
+	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
+	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
 	useEffect(() => {
 		const getCapsuleData = async () => {
@@ -54,7 +56,6 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			if (index >= blobs.length) {
 				setDisabled(false);
 				setOpenDialog(false);
-				setState('idle');
 				setProgress(0);
 				pdf.save(filename);
 				return ;
@@ -108,10 +109,14 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 		if (allPages.length === 0)
 		{	
 			setDisabled(false);
-			setOpenDialog(false);
+			setErrorMsg("Aucune page à exporter ou page vide...");
 			setProgress(0);
-			setState('idle');
-			return;
+			setState('error');
+			const timeout = setTimeout(() => {
+				setErrorMsg(null);
+				setOpenDialog(false);
+			}, 2000);
+			return (() => clearTimeout(timeout));
 		}
 		try {
 			for (let i = 0; i < allPages.length; i++) {
@@ -143,6 +148,18 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			logger.error("react:component", "CapsuleToPDFBtn", "handleExportAllPages", error);
 			setState('error');
 		}
+		if (allBlobs.length === 0)
+		{
+			setDisabled(false);
+			setErrorMsg("Aucune page à exporter ou page vide...");
+			setProgress(0);
+			setState('error');
+			const timeout = setTimeout(() => {
+				setErrorMsg(null);
+				setOpenDialog(false);
+			}, 2000);
+			return (() => clearTimeout(timeout));
+		}
 		const validBlobs = allBlobs.filter(blob => blob.size > 0);
 		setProgress(0);
 		await createPdf(validBlobs, pdf);
@@ -167,9 +184,9 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 
 						{/* ERROR */}
 						<Flex direction='column' align='center' gap='3' display={state=='error' ? 'flex' : 'none'}>
-							<Flex mb="5" align='center' gap='1' style={{ color: 'var(--red)' }}>
+							<Flex align='center' gap='1' style={{ color: 'var(--red)' }}>
 								<CircleAlert size='15' style={{ color: 'var(--red)' }} />
-								<Text trim='both'>{"Une erreur s'est produite"}</Text>
+								<Text trim='both'>{`${errorMsg ? errorMsg : "Une erreur s'est produite"}`}</Text>
 							</Flex>
 						</Flex>
 
