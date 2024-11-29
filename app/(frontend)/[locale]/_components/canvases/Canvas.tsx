@@ -14,11 +14,10 @@ import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/useTLEditor'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
-import { useNav } from '@/app/(frontend)/_hooks/useNav'
 
 export interface CanvasUser {
     id: string
@@ -40,8 +39,7 @@ export interface CanvasProps {
  * It is a client component. We use [Desk](../Desk/Desk.tsx) to load server components (i.e. the ToolBar) inside.
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
-    const { editor, setEditor } = useTLEditor();
-	const { currentPageId, pageIds } = useNav();
+    const { setEditor } = useTLEditor();
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -85,23 +83,21 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
     return (
-		<div id='tldrawId' style={{ alignContent: 'center', width: '100%'}}>
-			<Tldraw
-				className='tldraw-canvas'
-				hideUi={true}
-				onMount={handleMount}
-				components={{ Background: Background, OnTheCanvas: CanvasArea }}
-				store={store}
-				snapshot={ store ? undefined : initialSnapshot }
-				persistenceKey={persistenceKey}
-				options={options}
-			>
-				{children}
-				{/* <Resizer/> */}
-				<EmbedHint/>
-				<KeyboardShortcuts/>
-			</Tldraw>
-		</div>
+		<Tldraw
+			className='tldraw-canvas'
+			hideUi={true}
+			onMount={handleMount}
+			components={{ Background: Background, OnTheCanvas: CanvasArea }}
+			store={store}
+			snapshot={ store ? undefined : initialSnapshot }
+			persistenceKey={persistenceKey}
+			options={options}
+		>
+			{children}
+			{/* <Resizer/> */}
+			<EmbedHint/>
+			<KeyboardShortcuts/>
+		</Tldraw>
     )
 }
 

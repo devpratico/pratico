@@ -14,8 +14,8 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	const { room } = useRoom();
 	const doc = typeof document !== 'undefined' ? document : null;
 	const activityOn = room?.activity_snapshot;
-	const idToFullscreen = 'tldrawId';
-	const elementToFullscreen = doc ? doc.getElementById(idToFullscreen) : null;
+	const classNameToFullscreen = 'tldraw-canvas';
+	const elementToFullscreen = doc ? doc.getElementsByClassName(classNameToFullscreen)[0] : null;
 	const [isFullscreen, _setIsFullscreen] = useState(false);
 
 	useEffect(() => {
@@ -50,7 +50,7 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	}, [activityOn, doc?.fullscreenElement, isFullscreen, elementToFullscreen, doc]);
 
 	const setFullscreenOn = useCallback(() => {
-		logger.log("react:hook", "useFullcreen", "setFullscreenOn", idToFullscreen);
+		logger.log("react:hook", "useFullcreen", "setFullscreenOn", classNameToFullscreen);
 		if (elementToFullscreen)
 			elementToFullscreen.requestFullscreen()
 			.then(() => _setIsFullscreen(true))

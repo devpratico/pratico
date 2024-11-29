@@ -40,12 +40,6 @@ export function DownloadProgressDialog({pagesInfos, progress, disabled, halfwayP
 	return (
 			<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
-				<AlertDialog.Trigger>
-					<Button disabled={disabled} style={{ width: "100%", justifyContent: 'center' }}>
-						<FolderDown size='15' /> Télécharger
-					</Button>
-				</AlertDialog.Trigger>
-
 				<AlertDialog.Content>
 					<AlertDialog.Title>Génération de votre capsule en PDF</AlertDialog.Title>
 					
