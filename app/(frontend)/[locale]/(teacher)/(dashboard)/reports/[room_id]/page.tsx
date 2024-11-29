@@ -73,7 +73,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatDate(attendance.created_at, undefined, "hour")
+							connexion: formatDate(attendance.created_at, undefined, "time")
 						};
 						attendances.push(infos);
 					})

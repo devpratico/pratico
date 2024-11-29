@@ -25,14 +25,16 @@ export const formatDate = (date: string | undefined, language?: string, specify?
 	const hour = parts.find(part => part.type === 'hour')?.value;
 	const minute = parts.find(part => part.type === 'minute')?.value;
 	const second = parts.find(part => part.type === 'second')?.value;
-	formattedDate = `${day}-${month}-${year} ${hour}:${minute}:${second}`;
+	formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
 
 	switch (specify)
 	{
 		case "date":
-			formattedDate = (`${day}-${month}-${year}`);
+			formattedDate = (`${day}/${month}/${year}`);
+			break ;
 		case "time":
 			formattedDate = (`${hour}:${minute}:${second}`);
+			break ;
 	}
 	if (file)
 		formattedDate = `${day}-${month}-${year}_${hour}-${minute}`;

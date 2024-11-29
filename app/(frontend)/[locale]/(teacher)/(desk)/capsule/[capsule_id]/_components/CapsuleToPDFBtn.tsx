@@ -8,7 +8,7 @@ import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custo
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DownloadProgressDialog } from "./DownloadProgressDialog";
 
 export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean}) {
@@ -20,14 +20,26 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 	const [ pdfName, setPdfName ] = useState("capsule.pdf");
 	const [ pagesInfo, setPagesInfo  ] = useState<{loading: number, total: number}>({loading: 0, total: 0});
 
-	const getCapsuleData = async () => {
-		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
-		if (error)
-			logger.error("react:component", "CapsuleToPDFBtn", "getCapsuleData", error);
-		else
-			return (data);
-	};
-	  
+	useEffect(() => {
+		const getCapsuleData = async () => {
+			const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
+			if (error)
+				logger.error("react:component", "CapsuleToPDFBtn", "getCapsuleData", error);
+			else
+				return (data);
+		};
+		(async () => {
+			if (!isRoom) {
+				const data = await getCapsuleData();
+				if (data) {
+					const title = data?.title === "Sans titre" ? "capsule" : data?.title;
+					setPdfName(`${title}-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
+				}
+			}
+		})();
+	}, [isRoom, capsuleId, supabase]);
+
+
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
 		const processBlob = async (index: number) => {
 			if (index >= blobs.length) {
@@ -39,35 +51,6 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 			}
 			const blob = blobs[index];
 			setPagesInfo((prev) => ({loading: index + 1, total: prev?.total}));
-			// const url = URL.createObjectURL(blob);
-			// const image = new Image();
-			// image.src = url;
-
-			// image.onload = async () => {
-			// 	try {
-			// 		pdf.addImage(image, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-			// 	} catch (error) {
-			// 		logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
-			// 	}
-
-			// 	if (index < blobs.length - 1) {
-			// 		pdf.addPage();
-			// 	}
-
-			// 	URL.revokeObjectURL(url);
-			// 	setProgress((prev) => (prev || 0) + 100 / (blobs.length || 1));
-			// 	const timeout = setTimeout(() => processBlob(index + 1), 100);
-			// 	return (() => clearTimeout(timeout));
-			// };
-
-			// image.onerror = (error) => {
-			// 	logger.error("react:component", "CapsuleToPDFBtn", "Image Load", index, error);
-			// 	setDisabled(false);
-			// };
-			// } catch (error) {
-			// 	logger.error("react:component", "CapsuleToPDFBtn", "Blob Processing", index, error);
-			// 	setDisabled(false);
-			// }
 			const reader = new FileReader();
 			setHalfwayProgress(false);
 			reader.onload = async () => {
@@ -109,13 +92,7 @@ export function CapsuleToPDFBtn({capsuleId, isRoom}: {capsuleId: string | string
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
 
-		if (!isRoom) {
-			const data = await getCapsuleData();
-			if (data) {
-				const title = data?.title === "Sans titre" ? "capsule" : data?.title;
-				setPdfName(`${title}-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
-			}
-		}
+		
 		setPagesInfo({loading: 0, total: allPages.length});
 		if (allPages.length === 0)
 		{	
