@@ -37,7 +37,7 @@ export const formatDate = (date: string | undefined, language?: string, specify?
 			break ;
 	}
 	if (file)
-		formattedDate = `${day}-${month}-${year}_${hour}-${minute}`;
+		formattedDate = `${day}${month}${year}_${hour}-${minute}`;
 	return (formattedDate);
   }
 

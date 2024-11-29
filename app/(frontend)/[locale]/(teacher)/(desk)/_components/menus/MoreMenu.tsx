@@ -4,8 +4,8 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
-import { CapsuleToPDFBtn } from '../../capsule/[capsule_id]/_components/CapsuleToPDFBtn';
 import { useNav } from '@/app/(frontend)/_hooks/useNav';
+import { CapsuleToPdfDialog } from '../../capsule/[capsule_id]/_components/CapsuleToPdfDialog';
 
 /**
  * Content of the 'More' menu that only shows on 'creation' phase (not during session)
@@ -50,7 +50,7 @@ export default function MoreMenu() {
 
 				{
 					pageIds && pageIds.length > 0
-				 	? <CapsuleToPDFBtn capsuleId={capsule_id} isRoom={isRoom} />
+				 	? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
 					: <></>
 				}
                 <Box mt="9" display={{ initial: 'none', xs: 'block' }}>
