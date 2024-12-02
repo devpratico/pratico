@@ -1,14 +1,11 @@
 'use client'
 import {  useRef, useMemo, useCallback } from "react"
-import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator, Tooltip } from "@radix-ui/themes"
+import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
-import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus, Car } from "lucide-react"
-import { changeTitle } from "@/app/_types/activity"
-//import DnD from "./DnDFlex"
+import {  LucideProps, X, Check, Copy, Trash2, Plus } from "lucide-react"
 import Navigator from "./Navigator"
 import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import CancelButton from "./CancelButton"
-//import { useActivityCreationStore } from "../../../../store"
 import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
 import CardDialog from "../../../CardDialog"
 
@@ -170,43 +167,6 @@ export default function PollCreation() {
                                 onChange={(event) => changeQuestionText(currentQuestionId, event.target.value)}
                             />
 
-
-                            {/*<DnD.Flex direction='column' gap='3'>/ key={choicesIds.join('')}>/
-                                {choicesIds.map((choiceId, index) => (
-                                    <DnD.Item id={choiceId} key={choiceId}>
-
-                                        <DnD.Normal>
-                                            <ChoiceRow
-                                                //key={'n-'+index}
-                                                key={choiceId}
-                                                state={{ 
-                                                    text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
-                                                    style: 'normal'
-                                                }}
-                                                actions={{
-                                                    onTextChange: (newText) => {actions.onEditChoiceText(choiceId, newText)},
-                                                    onDelete: () => { actions.onDeleteChoice(choiceId) }
-                                                }}
-                                            />
-                                        </DnD.Normal>
-
-                                        <DnD.Overlay>
-                                            <ChoiceRow
-                                                //key={'o-'+index}
-                                                state={{ 
-                                                    text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
-                                                    style: 'overlay'
-                                                }}
-                                                actions={{
-                                                    onTextChange: (newText) => {},
-                                                    onDelete: () => {}
-                                                }}
-                                            />
-                                        </DnD.Overlay>
-                                    </DnD.Item>
-                                ))}
-                            </DnD.Flex>*/}
-
                             <Flex direction='column' gap='3'>
                                 {choices && choices.map((choice, index) => (
                                     <ChoiceRow
@@ -263,11 +223,14 @@ async function closeAndSave() {
 
     if (!currentActivity) return
     const poll = currentActivity.activity
+    const id = currentActivity.id?.toString()
+    // Id should be a number for supabase saveActvivity. Try parsing it as a number
+    const parsedId = id ? parseInt(id) : undefined
 
     setIsSaving(true)
     closeActivity()
 
-    await saveActivity({ activity: poll })
+    await saveActivity({ id: parsedId, activity: poll })
 
     setIsSaving(false)
 }
