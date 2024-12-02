@@ -43,7 +43,7 @@ async function ActivitiesTableServer({ type = 'all', showMax, noneMessage }: Act
         <Table.Root variant='surface' size='1'>
             <Table.Body>
 
-                <SkeletonRow />
+                {/*<SkeletonRow />*/}
 
                 {data.map((activity) => (
                     <Row
