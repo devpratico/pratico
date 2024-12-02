@@ -4,9 +4,6 @@ import { getFormatter } from "next-intl/server"
 import React, { Suspense } from "react"
 import StartButton from "./StartButton"
 import EditButton from "./EditButton"
-import { Quiz } from "@/app/_types/quiz"
-import { Poll } from "@/app/_types/poll"
-import { Poll as Poll2 } from "@/app/_types/poll2"
 
 
 
@@ -21,9 +18,7 @@ interface ActivitiesTableProps {
 async function ActivitiesTableServer({ type = 'all', showMax, noneMessage }: ActivitiesTableProps) {
     const formatter = await getFormatter()
 
-    // It's ok to fetch all the activities even if we only need one type,
-    // because we already fetched all the activities in the previous page,
-    // and the result is cached. Might need more consider
+    // TODO: no need to fetch all the activities full objects
     let { data, error } = await fetchActivitiesOfCurrentUser(showMax)
 
     // Filter the activities by type
@@ -51,7 +46,7 @@ async function ActivitiesTableServer({ type = 'all', showMax, noneMessage }: Act
                         title={<Text trim='normal'>{activity.object.title !== '' ? activity.object.title : 'Sans titre'}</Text>}
                         date={<Text size='1' color='gray'>{activity.created_at && formatter.dateTime(new Date(activity.created_at))}</Text>}
                         button1={<StartButton activity_id={activity.id} />}
-                        button2={<EditButton activityId={activity.id} initialActivity={activity.object} />}
+                        button2={<EditButton activityId={activity.id} />}
                     />
                 ))}
             </Table.Body>
