@@ -7,7 +7,7 @@ import { Poll as Poll2 } from "@/app/_types/poll2"
 import { adapter } from "./utils"
 import { TablesInsert } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"
-import { fetchActivity } from "./activity.server"
+import { fetchActivity as fetchActivityServer } from "./activity.server"
 
 
 export async function deleteActivity(id: number) {
@@ -88,3 +88,6 @@ export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<
 }
 
 
+export async function fetchActivity(id: number) {
+    return await fetchActivityServer(id)
+}
