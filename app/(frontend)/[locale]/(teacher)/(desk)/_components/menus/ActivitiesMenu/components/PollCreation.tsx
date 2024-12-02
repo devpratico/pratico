@@ -1,7 +1,5 @@
 'use client'
-import { Poll } from "@/app/_types/poll2"
-//import { emptyPoll, mockPoll, changeQuestionText, changeChoiceText, deleteChoice, addChoice, addEmptyQuestion, duplicateQuestion, deleteQuestion } from "@/app/_types/poll2"
-import { useState, useRef, useEffect, useMemo, useCallback } from "react"
+import {  useRef, useMemo, useCallback } from "react"
 import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
 import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus } from "lucide-react"
@@ -9,7 +7,6 @@ import { changeTitle } from "@/app/_types/activity"
 //import DnD from "./DnDFlex"
 import Navigator from "./Navigator"
 import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import CancelButton from "./CancelButton"
 //import { useActivityCreationStore } from "../../../../store"
 import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
@@ -124,16 +121,9 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
 }
 
 
-function saveActivityAndClose(activity: Poll) {
-    //const closeActivity = useActivityCreationStore
-
-}
-
-
 export default function PollCreation() {
     const poll = useActivityCreationStore(state => state.currentActivity?.activity)
     const onEditTitle = useActivityCreationStore(state => state.editTitle)
-    const closeActivity = useActivityCreationStore(state => state.closeActivity)
     const currentQuestionId = useActivityCreationStore(state => state.currentActivity?.currentQuestionId)
     const changeQuestionText = useActivityCreationStore(state => state.changeQuestionText)
     const addChoice = useActivityCreationStore(state => state.addChoice)
@@ -158,7 +148,7 @@ export default function PollCreation() {
                     poll.title} onEdit={onEditTitle} />
                 <Flex gap='3' align='center'>
                     <CancelButton onCancel={()=>{}} />
-                    <Button variant='soft' color='gray' onClick={closeActivity}>Terminer</Button>
+                    <Button variant='soft' color='gray' onClick={closeAndSave}>Terminer</Button>
                 </Flex>
             </Flex>
 
@@ -260,4 +250,20 @@ export default function PollCreation() {
 
         </Grid>
     )
+}
+
+
+
+async function closeAndSave() {
+    const { currentActivity, closeActivity, setIsSaving } = useActivityCreationStore.getState()
+
+    if (!currentActivity) return
+    const poll = currentActivity.activity
+
+    setIsSaving(true)
+    closeActivity()
+
+    await saveActivity({ activity: poll })
+
+    setIsSaving(false)
 }
