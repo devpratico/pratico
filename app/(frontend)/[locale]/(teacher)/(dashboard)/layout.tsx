@@ -1,6 +1,6 @@
 import TopBarBox from "../_components/TopBarBox";
-import { Box, BoxProps, Flex, Grid, Text, Card } from "@radix-ui/themes"
-import { Puzzle, NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
+import { Box, BoxProps, Flex, Grid, Card } from "@radix-ui/themes"
+import { NotepadText, Cog, BookOpen, FlaskRound } from 'lucide-react';
 import { SideBarBtn } from "./_components/SideBarBtn";
 import DashboardTabs from "./_components/DashboardTabs";
 import UserInfo from "./_components/UserInfo";
@@ -58,7 +58,7 @@ function DesktopSideBar() {
 
                 <Box height='100%' display={{ initial: 'none', xs: 'block' }}></Box>
 
-                <SideBarBtn href='/resources' message='Ressources'>
+                <SideBarBtn href='https://www.pratico.live/resources' message='Ressources' iconSize={iconSize}>
                     <BookOpen size={iconSize} />
                 </SideBarBtn>
 

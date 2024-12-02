@@ -10,7 +10,6 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FolderDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { set } from "lodash";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
 {
