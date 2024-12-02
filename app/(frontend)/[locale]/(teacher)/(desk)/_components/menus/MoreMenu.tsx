@@ -53,13 +53,13 @@ export default function MoreMenu() {
 				 	? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
 					: <></>
 				}
-                <Box mt="9" display={{ initial: 'none', xs: 'block' }}>
+                {/* <Box mt="9" display={{ initial: 'none', xs: 'block' }}>
                     <Callout.Root variant='outline'>
                         <Callout.Text>
 							{`Ici, bientôt, vous retrouverez plus d'options !`}
                         </Callout.Text>
                     </Callout.Root>
-                </Box>
+                </Box> */}
 
             </Section>
         </>

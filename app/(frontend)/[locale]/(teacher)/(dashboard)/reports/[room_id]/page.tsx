@@ -3,7 +3,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import AttendanceToPDF, { TeacherInfo } from "../_components/AttendanceToPDF";
+import AttendanceToPDF from "../_components/AttendanceToPDF";
 
 // TYPE
 export type AttendanceInfoType = {

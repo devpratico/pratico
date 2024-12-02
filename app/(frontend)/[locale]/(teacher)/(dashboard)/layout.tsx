@@ -48,9 +48,9 @@ function DesktopSideBar() {
                     <FlaskRound size={iconSize} />
                 </SideBarBtn>
 
-                <SideBarBtn href='/activities' message='Activités'>
+                {/* <SideBarBtn href='/activities' message='Activités'>
                     <Puzzle size={iconSize} />
-                </SideBarBtn>
+                </SideBarBtn> */}
 
                 <SideBarBtn href='/reports' message='Rapports'>
                     <NotepadText size={iconSize} />
