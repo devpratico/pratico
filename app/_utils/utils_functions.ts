@@ -1,19 +1,44 @@
-export const formatDate = (date: string | undefined, language?: string, specify?: string) => {
+/**
+ * 
+ * @param date the date to format
+ * @param language "fr-FR" or "en-US" or any other language or undefined
+ * @param specify "date" or "time" or undefined
+ * @param file if true, the date will be formatted for a filename
+ * @returns 
+ */
+export const formatDate = (date: string | undefined, language?: string, specify?: string, file?: boolean) => {
 	if (!date)
 		return ;
-	let formatedDate = null;
+	let formattedDate = null;
+	const formatter = new Intl.DateTimeFormat(language, {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	  });
+	const parts = formatter.formatToParts(new Date(date));
+	const day = parts.find(part => part.type === 'day')?.value;
+	const month = parts.find(part => part.type === 'month')?.value;
+	const year = parts.find(part => part.type === 'year')?.value;
+	const hour = parts.find(part => part.type === 'hour')?.value;
+	const minute = parts.find(part => part.type === 'minute')?.value;
+	const second = parts.find(part => part.type === 'second')?.value;
+	formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+
 	switch (specify)
 	{
-		case "hour":
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false });
-			break ;
 		case "date":
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR', { day: '2-digit', month: '2-digit', year: "numeric" });
+			formattedDate = (`${day}/${month}/${year}`);
 			break ;
-		default:
-			formatedDate = new Date(date).toLocaleString(language ? language : 'fr-FR');
+		case "time":
+			formattedDate = (`${hour}:${minute}:${second}`);
+			break ;
 	}
-	return (formatedDate);
+	if (file)
+		formattedDate = `${day}${month}${year}_${hour}-${minute}`;
+	return (formattedDate);
   }
 
 

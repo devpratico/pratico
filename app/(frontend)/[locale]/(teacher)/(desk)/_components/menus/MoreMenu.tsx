@@ -4,6 +4,8 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
+import { useNav } from '@/app/(frontend)/_hooks/useNav';
+import { CapsuleToPdfDialog } from '../../capsule/[capsule_id]/_components/CapsuleToPdfDialog';
 
 /**
  * Content of the 'More' menu that only shows on 'creation' phase (not during session)
@@ -32,6 +34,8 @@ function AnimationMenu() {
 export default function MoreMenu() {
     const params = useParams()
     const isRoom = params.room_code !== undefined
+	const { capsule_id } = useParams();
+	const { pageIds } = useNav();
 
     return (
         <>
@@ -44,10 +48,15 @@ export default function MoreMenu() {
 
                 {isRoom ? <AnimationMenu /> : <CreationMenu />}
 
-                <Box display={{ initial: 'none', xs: 'block' }}>
+				{
+					pageIds && pageIds.length > 0
+				 	? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
+					: <></>
+				}
+                <Box mt="9" display={{ initial: 'none', xs: 'block' }}>
                     <Callout.Root variant='outline'>
                         <Callout.Text>
-                            {`Ici, bientôt, vous retrouverez plus d'options !`}
+							{`Ici, bientôt, vous retrouverez plus d'options !`}
                         </Callout.Text>
                     </Callout.Root>
                 </Box>

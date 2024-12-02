@@ -2,7 +2,7 @@
 import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
 import { useParams } from "next/navigation"
 import { Flex, Button, Progress, AlertDialog, RadioGroup, Heading, Card, Text, Box } from "@radix-ui/themes"
-import { CircleCheck, FolderUp, StickyNote } from "lucide-react"
+import { CircleCheck, FolderDown, FolderUp, StickyNote } from "lucide-react"
 import { useState } from "react"
 import logger from "@/app/_utils/logger"
 import { useNav } from "@/app/(frontend)/_hooks/useNav"
@@ -31,7 +31,6 @@ export default function AddMenu() {
         
     )
 }
-
 
 function NewPageBtn() {
     const { newPage } = useNav()
@@ -110,6 +109,7 @@ function ImportDocumentBtn() {
         })).then(() => {
             logger.log('system:file', 'Images received', images.length)
             setState('success')
+			setProgress(0);
         })
     }
 

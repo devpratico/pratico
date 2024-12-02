@@ -7,6 +7,8 @@ import { useNav } from "@/app/(frontend)/_hooks/useNav"
 
 
 
+export const defaultBox = new Box(0, 0, 1920, 1080)
+
 interface ResizerProps {
     insets?: {top: number, right: number, bottom: number, left: number}
     margin?: number
@@ -24,7 +26,7 @@ export default function Resizer({ insets, margin }: ResizerProps) {
 
 
     const updateSize = useCallback(() => {
-        const box = new Box(0, 0, 1920, 1080)
+        const box = defaultBox
         zoomToBounds({ editor, box, margin,  insets })
         logger.log('tldraw:editor', 'Resized')
     }, [editor, insets, margin])
