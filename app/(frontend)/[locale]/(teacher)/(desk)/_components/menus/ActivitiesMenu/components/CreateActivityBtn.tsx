@@ -14,9 +14,7 @@ import { mockPoll, emptyPoll  } from "@/app/_types/poll2"
 
 export default function CreateActivityBtn() {
     const [openQuizCreation, setOpenQuizCreation] = useState(false)
-    //const [openPollCreation, setOpenPollCreation] = useState(false)
     const openActivityCreation = useActivityCreationStore(state => state.openActivity)
-    const showActivityCreation = useActivityCreationStore(state => state.showActivityCreation)
 
     return (
         <>
@@ -36,10 +34,6 @@ export default function CreateActivityBtn() {
                 <QuizProvider quiz={emptyQuiz}>
                     <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
                 </QuizProvider>
-            </CardDialog>
-
-            <CardDialog preventClose open={showActivityCreation}>
-                <PollCreation />
             </CardDialog>
         </>
     )

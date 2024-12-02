@@ -2,7 +2,7 @@
 import {  useRef, useMemo, useCallback } from "react"
 import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Box, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
-import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus } from "lucide-react"
+import {  LucideProps, GripVertical, X, Check, Copy, Trash2, Plus, Car } from "lucide-react"
 import { changeTitle } from "@/app/_types/activity"
 //import DnD from "./DnDFlex"
 import Navigator from "./Navigator"
@@ -10,6 +10,7 @@ import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import CancelButton from "./CancelButton"
 //import { useActivityCreationStore } from "../../../../store"
 import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
+import CardDialog from "../../../CardDialog"
 
 
 interface ChoiceRowProps {
@@ -122,6 +123,7 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
 
 
 export default function PollCreation() {
+    const showActivityCreation = useActivityCreationStore(state => state.showActivityCreation)
     const poll = useActivityCreationStore(state => state.currentActivity?.activity)
     const onEditTitle = useActivityCreationStore(state => state.editTitle)
     const currentQuestionId = useActivityCreationStore(state => state.currentActivity?.currentQuestionId)
@@ -140,115 +142,117 @@ export default function PollCreation() {
     if (!poll || !currentQuestionId) return null
 
     return (
-        <Grid rows='auto 1fr auto' height='100%'>
+        <CardDialog open={showActivityCreation} preventClose>
+            <Grid rows='auto 1fr auto' height='100%'>
 
-            <Flex justify='between' gap='3' align='center' p='4'>
-                <Title type='poll' title={
-                    
-                    poll.title} onEdit={onEditTitle} />
-                <Flex gap='3' align='center'>
-                    <CancelButton onCancel={()=>{}} />
-                    <Button variant='soft' color='gray' onClick={closeAndSave}>Terminer</Button>
+                <Flex justify='between' gap='3' align='center' p='4'>
+                    <Title type='poll' title={
+                        
+                        poll.title} onEdit={onEditTitle} />
+                    <Flex gap='3' align='center'>
+                        <CancelButton onCancel={()=>{}} />
+                        <Button variant='soft' color='gray' onClick={closeAndSave}>Terminer</Button>
+                    </Flex>
                 </Flex>
-            </Flex>
 
 
-            <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
+                <Container size='2' px='3' maxHeight='100%' overflow='scroll'>
 
-                <Section size='1'>
+                    <Section size='1'>
 
-                    <Flex direction='column' gap='3' mt='7' align='stretch'>
+                        <Flex direction='column' gap='3' mt='7' align='stretch'>
 
-                        <TextArea
-                            size='3'
-                            mb='9'
-                            placeholder="Question"
-                            value={poll.questions.find(q => q.id === currentQuestionId)?.text || ''}
-                            onChange={(event) => changeQuestionText(currentQuestionId, event.target.value)}
-                        />
+                            <TextArea
+                                size='3'
+                                mb='9'
+                                placeholder="Question"
+                                value={poll.questions.find(q => q.id === currentQuestionId)?.text || ''}
+                                onChange={(event) => changeQuestionText(currentQuestionId, event.target.value)}
+                            />
 
 
-                        {/*<DnD.Flex direction='column' gap='3'>/ key={choicesIds.join('')}>/
-                            {choicesIds.map((choiceId, index) => (
-                                <DnD.Item id={choiceId} key={choiceId}>
+                            {/*<DnD.Flex direction='column' gap='3'>/ key={choicesIds.join('')}>/
+                                {choicesIds.map((choiceId, index) => (
+                                    <DnD.Item id={choiceId} key={choiceId}>
 
-                                    <DnD.Normal>
-                                        <ChoiceRow
-                                            //key={'n-'+index}
-                                            key={choiceId}
-                                            state={{ 
-                                                text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
-                                                style: 'normal'
-                                            }}
-                                            actions={{
-                                                onTextChange: (newText) => {actions.onEditChoiceText(choiceId, newText)},
-                                                onDelete: () => { actions.onDeleteChoice(choiceId) }
-                                            }}
-                                        />
-                                    </DnD.Normal>
+                                        <DnD.Normal>
+                                            <ChoiceRow
+                                                //key={'n-'+index}
+                                                key={choiceId}
+                                                state={{ 
+                                                    text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
+                                                    style: 'normal'
+                                                }}
+                                                actions={{
+                                                    onTextChange: (newText) => {actions.onEditChoiceText(choiceId, newText)},
+                                                    onDelete: () => { actions.onDeleteChoice(choiceId) }
+                                                }}
+                                            />
+                                        </DnD.Normal>
 
-                                    <DnD.Overlay>
-                                        <ChoiceRow
-                                            //key={'o-'+index}
-                                            state={{ 
-                                                text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
-                                                style: 'overlay'
-                                            }}
-                                            actions={{
-                                                onTextChange: (newText) => {},
-                                                onDelete: () => {}
-                                            }}
-                                        />
-                                    </DnD.Overlay>
-                                </DnD.Item>
-                            ))}
-                        </DnD.Flex>*/}
+                                        <DnD.Overlay>
+                                            <ChoiceRow
+                                                //key={'o-'+index}
+                                                state={{ 
+                                                    text: currentQuestion.choices.find(c => c.id === choiceId)?.text || '',
+                                                    style: 'overlay'
+                                                }}
+                                                actions={{
+                                                    onTextChange: (newText) => {},
+                                                    onDelete: () => {}
+                                                }}
+                                            />
+                                        </DnD.Overlay>
+                                    </DnD.Item>
+                                ))}
+                            </DnD.Flex>*/}
 
-                        <Flex direction='column' gap='3'>
-                            {choices && choices.map((choice, index) => (
-                                <ChoiceRow
-                                    key={choice.id}
-                                    text={choice.text}
-                                    style='normal'
-                                    onTextChange={(newText) => changeChoiceText(choice.id, newText)}
-                                    onDelete={() => deleteChoice(choice.id)}
-                                />
-                            ))}
+                            <Flex direction='column' gap='3'>
+                                {choices && choices.map((choice, index) => (
+                                    <ChoiceRow
+                                        key={choice.id}
+                                        text={choice.text}
+                                        style='normal'
+                                        onTextChange={(newText) => changeChoiceText(choice.id, newText)}
+                                        onDelete={() => deleteChoice(choice.id)}
+                                    />
+                                ))}
+                            </Flex>
+
+                            <Separator size='4' />
+
+                            <NewChoice onConfirm={(newChoiceText) => addChoice(currentQuestionId, { text: newChoiceText })}/>
+
                         </Flex>
 
-                        <Separator size='4' />
+                    </Section>
+                </Container>
 
-                        <NewChoice onConfirm={(newChoiceText) => addChoice(currentQuestionId, { text: newChoiceText })}/>
+                <Flex p='3' justify='center'>
+                    <Card variant='classic'>  
+                        <Flex justify='center' gap='3'>
+                            <Navigator
+                                total={poll.questions.length}
+                                currentQuestionIndex={currentQuestionIndex}
+                                setCurrentQuestionIndex={changeCurrentQuestionIndex}
+                            />
+                            <Button onClick={addEmptyQuestion}><Plus/>Nouvelle question</Button>
+                            <Tooltip content={'Dupliquer la question'}>
+                                <IconButton mt='1' variant='ghost' onClick={() => duplicateQuestion(currentQuestionId)}>
+                                    <Copy />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip content={'Supprimer la question'}>
+                                <IconButton mt='1' mr='1' variant='ghost' onClick={() => deleteQuestion(currentQuestionId)}>
+                                    <Trash2 />
+                                </IconButton>
+                            </Tooltip>
+                        </Flex>
+                    </Card>
+                </Flex>
 
-                    </Flex>
-
-                </Section>
-            </Container>
-
-            <Flex p='3' justify='center'>
-                <Card variant='classic'>  
-                    <Flex justify='center' gap='3'>
-                        <Navigator
-                            total={poll.questions.length}
-                            currentQuestionIndex={currentQuestionIndex}
-                            setCurrentQuestionIndex={changeCurrentQuestionIndex}
-                        />
-                        <Button onClick={addEmptyQuestion}><Plus/>Nouvelle question</Button>
-                        <Tooltip content={'Dupliquer la question'}>
-                            <IconButton mt='1' variant='ghost' onClick={() => duplicateQuestion(currentQuestionId)}>
-                                <Copy />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip content={'Supprimer la question'}>
-                            <IconButton mt='1' mr='1' variant='ghost' onClick={() => deleteQuestion(currentQuestionId)}>
-                                <Trash2 />
-                            </IconButton>
-                        </Tooltip>
-                    </Flex>
-                </Card>
-            </Flex>
-
-        </Grid>
+            </Grid>
+        </CardDialog>
     )
 }
 

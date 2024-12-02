@@ -20,6 +20,7 @@ import MoreMenu from "./_components/menus/MoreMenu"
 import { CardDialogProvider } from "@/app/(frontend)/_hooks/useCardDialog"
 import GlobalCardDialog from "./_components/GlobalCardDialog"
 import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
+import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
 
 
 
@@ -97,6 +98,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Box position='absolute'>
                     <GlobalCardDialog/>
                 </Box>
+
+                {/* Poll creation dialog */}
+                <PollCreation/>
 
                 
 
