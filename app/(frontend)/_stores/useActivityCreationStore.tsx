@@ -14,7 +14,7 @@ import { create } from 'zustand'
 type Id = number | string
 
 type CurrentActivity = {
-    id?: Id
+    id?: Id // id used in Supabase to save. If no provided, will be saved as a new entry
     activity: Poll
     currentQuestionId: Id
 }
