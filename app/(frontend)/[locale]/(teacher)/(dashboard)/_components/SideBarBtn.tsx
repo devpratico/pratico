@@ -2,16 +2,18 @@
 import { Flex, Text, Box } from "@radix-ui/themes"
 import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 import { usePathname } from "@/app/(frontend)/_intl/intlNavigation";
+import { ExternalLink } from "lucide-react";
 
 
 interface SideBarBtnProps {
     href: string;
     message: string;
     children: React.ReactNode;
+	iconSize?: string;
 }
 
 
-export function SideBarBtn({ href, message, children }: SideBarBtnProps) {
+export function SideBarBtn({ href, message, children, iconSize }: SideBarBtnProps) {
     const pathName = usePathname();
     const active = pathName === href;
 
@@ -27,10 +29,15 @@ export function SideBarBtn({ href, message, children }: SideBarBtnProps) {
 
     return (
         <Box style={style} asChild>
-            <Link href={href}>
+            <Link href={href} target={message === "Ressources" ? "_blank" : "none"} rel={message === "Ressources" ? "noopener noreferrer" : "none"}>
                 <Flex align='center' gap='2'>
                     {children}
                     <Text size='3' truncate>{message}</Text>
+					{
+						message === "Ressources"
+						? <ExternalLink style={{ opacity: "50%" }} size={iconSize || "21"} />
+						: <></>
+					}
                 </Flex>
             </Link>
         </Box>
