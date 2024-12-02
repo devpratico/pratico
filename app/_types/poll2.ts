@@ -70,10 +70,6 @@ export function isPollSnapshot(snapshot: any): snapshot is PollSnapshot {
     return snapshot?.type === 'poll'
 }
 
-function uniqueId(prefix: string): string {
-    return prefix + Date.now().toString()
-}
-
 
 type SnapshotUpdater = (snapshot: PollSnapshot) => PollSnapshot // prevSnapshot => newSnapshot
 
