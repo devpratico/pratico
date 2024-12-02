@@ -7,16 +7,16 @@ import PollCreation from "./PollCreation"
 import { QuizProvider } from "@/app/(frontend)/_hooks/useQuiz"
 import { PollProvider } from "@/app/(frontend)/_hooks/usePoll"
 import { emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz"
-import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
-import { useActivityCreationStore } from "../../../../store"
-import { mockPoll   } from "@/app/_types/poll2"
+//import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
+import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
+import { mockPoll, emptyPoll  } from "@/app/_types/poll2"
 
 
 export default function CreateActivityBtn() {
     const [openQuizCreation, setOpenQuizCreation] = useState(false)
     //const [openPollCreation, setOpenPollCreation] = useState(false)
     const openActivityCreation = useActivityCreationStore(state => state.openActivity)
-    const currentActivity = useActivityCreationStore(state => state.currentActivity)
+    const showActivityCreation = useActivityCreationStore(state => state.showActivityCreation)
 
     return (
         <>
@@ -27,7 +27,7 @@ export default function CreateActivityBtn() {
 
                 <DropdownMenu.Content align='end'>
                     <DropdownMenu.Item onSelect={() => setOpenQuizCreation(true)}>Quiz</DropdownMenu.Item>
-                    <DropdownMenu.Item onSelect={() => openActivityCreation({activity: mockPoll})}>Sondage</DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={() => openActivityCreation({activity: emptyPoll})}>Sondage</DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
 
@@ -38,7 +38,7 @@ export default function CreateActivityBtn() {
                 </QuizProvider>
             </CardDialog>
 
-            <CardDialog preventClose open={!!currentActivity}>
+            <CardDialog preventClose open={showActivityCreation}>
                 <PollCreation />
             </CardDialog>
         </>

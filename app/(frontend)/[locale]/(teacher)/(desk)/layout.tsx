@@ -20,14 +20,12 @@ import MoreMenu from "./_components/menus/MoreMenu"
 import { CardDialogProvider } from "@/app/(frontend)/_hooks/useCardDialog"
 import GlobalCardDialog from "./_components/GlobalCardDialog"
 import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
-import { ActivityCreationStoreProvider } from "./store"
 
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
-        <ActivityCreationStoreProvider>
         <TLEditorProvider>
         <NavProvider>
         <PresencesProvider>
@@ -109,6 +107,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </PresencesProvider>
         </NavProvider>
         </TLEditorProvider>
-        </ActivityCreationStoreProvider>
     )
 }

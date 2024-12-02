@@ -2,12 +2,13 @@
 import { Poll, PollQuestion, PollChoice } from "@/app/_types/poll2"
 //import { changeTitle } from "@/app/_types/activity"
 //import { create } from 'zustand'
-import { createStore } from 'zustand/vanilla'
-import { useStore } from 'zustand'
+//import { createStore } from 'zustand/vanilla'
+//import { useStore } from 'zustand'
 import logger from "@/app/_utils/logger"
 import { produce } from "immer"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"
-import { createContext, useContext, useRef } from "react"
+//import { createContext, useContext, useRef } from "react"
+import { create } from 'zustand'
 
 
 type Id = number | string
@@ -21,11 +22,15 @@ type CurrentActivity = {
 type ActivityCreationState = {
     showActivityCreation: boolean
     currentActivity: CurrentActivity | null
+
+    /** Being saved on Supabase */
+    isSaving: boolean
 }
 
 type ActivityCreationActions = {
     openActivity: ({id, activity}: {id?: Id, activity: Poll}) => void
     closeActivity: () => void
+    setIsSaving: (isSaving: boolean) => void
     editTitle: (title: string) => void
     changeCurrentQuestionId: (id: Id) => void
     changeCurrentQuestionIndex: (index: number) => void
@@ -43,11 +48,13 @@ type ActivityCreationActions = {
 type ActivityCreationStore = ActivityCreationState & ActivityCreationActions
 
 
-const createActivityCreationStore = () => createStore<ActivityCreationStore>((set, get) => ({
-
+//const createActivityCreationStore = () => createStore<ActivityCreationStore>((set, get) => ({
+const useActivityCreationStore = create<ActivityCreationStore>((set, get) => ({
     showActivityCreation: false,
 
     currentActivity: null,
+
+    isSaving: false,
 
     openActivity: ({id, activity}) => {
         if (activity.questions.length === 0) {
@@ -62,6 +69,10 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
 
     closeActivity: () => {
         set({ showActivityCreation: false, currentActivity: null })
+    },
+
+    setIsSaving: (isSaving) => {
+        set({ isSaving })
     },
 
     editTitle: (title: string) => {
@@ -105,8 +116,6 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
             return
         }
 
-        console.log('Changing current question to index:', index)
-
         get().changeCurrentQuestionId(currentActivity.activity.questions[index].id)
     },
 
@@ -121,6 +130,9 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
 
         set(produce<ActivityCreationStore>(state => {
             state.currentActivity!.activity.questions.push(newQuestion)
+
+            // Move to the new question
+            state.currentActivity!.currentQuestionId = newQuestionId
         }))
 
         return { newId: newQuestionId }
@@ -170,6 +182,9 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
                 const newQuestion = { ...question, id: newQuestionId }
                 const index = currentActivity.activity.questions.findIndex(q => q.id === id)
                 currentActivity.activity.questions.splice(index + 1, 0, newQuestion)
+
+                // Move to the new question
+                currentActivity.currentQuestionId = newQuestionId
             } else {
                 logger.error('zustand:action', 'Cannot duplicate a question. Question not found. Id:', id)
             }
@@ -239,6 +254,7 @@ const createActivityCreationStore = () => createStore<ActivityCreationStore>((se
 }))
 
 
+/*
 type ActivityCreationStoreApi = ReturnType<typeof createActivityCreationStore>
 const ActivityCreationContext = createContext<ActivityCreationStoreApi | undefined>(undefined)
 
@@ -267,3 +283,6 @@ const useActivityCreationStore = <T,>(selector: (store: ActivityCreationStore) =
 
 
 export { ActivityCreationStoreProvider, useActivityCreationStore }
+*/
+
+export default useActivityCreationStore

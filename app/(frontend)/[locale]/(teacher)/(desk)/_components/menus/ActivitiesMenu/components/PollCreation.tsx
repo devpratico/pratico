@@ -11,7 +11,8 @@ import Navigator from "./Navigator"
 import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import CancelButton from "./CancelButton"
-import { useActivityCreationStore } from "../../../../store"
+//import { useActivityCreationStore } from "../../../../store"
+import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
 
 
 interface ChoiceRowProps {
@@ -123,6 +124,10 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
 }
 
 
+function saveActivityAndClose(activity: Poll) {
+    //const closeActivity = useActivityCreationStore
+
+}
 
 
 export default function PollCreation() {

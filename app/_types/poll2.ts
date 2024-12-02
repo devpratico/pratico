@@ -235,7 +235,13 @@ export const emptyPoll: Poll = {
     type: 'poll',
     schemaVersion: '3',
     title: 'Untitled',
-    questions: [],
+    questions: [
+        {
+            id: 'question-01',
+            text: '',
+            choices: []
+        },
+    ],
 }
 
 export const mockPoll: Poll = {
