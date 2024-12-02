@@ -2,7 +2,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useRoom } from './useRoom';
 import logger from '@/app/_utils/logger';
-import { useRouter } from '../_intl/intlNavigation';
 
 const FullscreenContext = createContext({
     setFullscreenOn: () => {},
@@ -18,7 +17,6 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	const classNameToFullscreen = 'tldraw-canvas';
 	const elementToFullscreen = doc ? doc.getElementsByClassName(classNameToFullscreen)[0] : null;
 	const [isFullscreen, _setIsFullscreen] = useState(false);
-	const router = useRouter();
 
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
@@ -27,9 +25,7 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 				if (document.fullscreenElement)
 				{	
 					document.exitFullscreen()
-						.then(() => {
-							_setIsFullscreen(false);
-						})
+						.then(() => _setIsFullscreen(false))
 						.catch((error) => logger.error("react:hook", "useFullcreen", "ExitFullscreen escape", error))
 				}
 		  	}
@@ -53,17 +49,13 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 		}
 	}, [activityOn, doc?.fullscreenElement, isFullscreen, elementToFullscreen, doc]);
 
-	const setFullscreenOn = (() => {
-		logger.log("react:hook", "useFullcreen", "setFullscreenOn", classNameToFullscreen, isFullscreen);
-		router.refresh();
-		// if (elementToFullscreen)
-			elementToFullscreen?.requestFullscreen()
+	const setFullscreenOn = useCallback(() => {
+		logger.log("react:hook", "useFullcreen", "setFullscreenOn", classNameToFullscreen);
+		if (elementToFullscreen)
+			elementToFullscreen.requestFullscreen()
 			.then(() => _setIsFullscreen(true))
-			.catch((error) => {
-				logger.error("react:hook", "useFullcreen", "requestFullscreen 0", error);
-				router.refresh();
-			})
-	});
+			.catch((error) => logger.error("react:hook", "useFullcreen", "requestFullscreen 0", error))
+	}, [elementToFullscreen]);
 
     return (
         <FullscreenContext.Provider value={{ setFullscreenOn, isFullscreen }}>

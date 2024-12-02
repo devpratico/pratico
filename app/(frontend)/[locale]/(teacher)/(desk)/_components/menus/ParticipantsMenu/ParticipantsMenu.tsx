@@ -41,7 +41,7 @@ export default function ParticipantMenu() {
                         </Callout.Root>
                     </Box>
 
-                    <Button variant='soft' asChild>
+                    {/* <Button variant='soft' asChild>
                         <Link href={getPathnameWithSearchParam('menu', 'defilement')} shallow={true}>
                             <Flex justify='between' align='center' width='100%'>
                                 <Text wrap='nowrap'>Défilement</Text>
@@ -50,16 +50,16 @@ export default function ParticipantMenu() {
                                 <ChevronRight/>
                             </Flex>
                         </Link>
-                    </Button>
+                    </Button> */}
 
-                    <Button variant='soft' disabled>
+                    {/* <Button variant='soft' disabled>
                         <Flex justify='between' align='center' width='100%'>
                             <Text wrap='nowrap' >Créer des équipes</Text>
                             <Box flexGrow='1'/>
                             <Badge color='gray'>Bientôt</Badge>
                             <ChevronRight />
                         </Flex>
-                    </Button>
+                    </Button> */}
                 </Flex>
 
             </Section>
@@ -75,12 +75,12 @@ export default function ParticipantMenu() {
                         </Flex>
                     </SegmentedControl.Item>
 
-                    <SegmentedControl.Item value='recompenser'>
+                    {/* <SegmentedControl.Item value='recompenser'>
                         <Flex align='center' gap='2'>
                             <Coins size='20' color='var(--orange)'/>
                             <Text>Récompenser</Text>
                         </Flex>
-                    </SegmentedControl.Item>
+                    </SegmentedControl.Item> */}
                 </SegmentedControl.Root>
 
 

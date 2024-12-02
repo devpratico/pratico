@@ -49,7 +49,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 					<MenuTabs tabs={[
 						{ menu: 'activities', label: 'Activités', icon: <Puzzle /> },
 						{ menu: 'participants', label: 'Participants', icon: <Users /> },
-						{ menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
+						// { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
 						{ menu: 'more', label: 'Plus', icon: <Ellipsis /> }
 					]} />
 				</Box>
@@ -60,7 +60,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 						{ menu: undefined, label: 'Capsule', icon: <FlaskRound /> },
 						{ menu: 'activities', label: 'Activités', icon: <Puzzle /> },
 						{ menu: 'participants', label: 'Participants', icon: <Users /> },
-						{ menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
+						// { menu: 'chat', label: 'Chat', icon: <MessageSquareText /> },
 						{ menu: 'more', label: 'Plus', icon: <Ellipsis /> }
 					]} />
 				</Box>					
