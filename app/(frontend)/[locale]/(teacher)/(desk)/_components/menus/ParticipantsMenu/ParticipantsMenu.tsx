@@ -67,7 +67,7 @@ export default function ParticipantMenu() {
             <Section size='1'>
 
 
-                <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
+                {/* <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
                     <SegmentedControl.Item value='collaborer'>
                         <Flex align='center' gap='2'>
                             <Pen size='20' color='var(--pink)'/>
@@ -75,13 +75,13 @@ export default function ParticipantMenu() {
                         </Flex>
                     </SegmentedControl.Item>
 
-                    {/* <SegmentedControl.Item value='recompenser'>
+                    <SegmentedControl.Item value='recompenser'>
                         <Flex align='center' gap='2'>
                             <Coins size='20' color='var(--orange)'/>
                             <Text>Récompenser</Text>
                         </Flex>
-                    </SegmentedControl.Item> */}
-                </SegmentedControl.Root>
+                    </SegmentedControl.Item>
+                </SegmentedControl.Root> */}
 
 
 
