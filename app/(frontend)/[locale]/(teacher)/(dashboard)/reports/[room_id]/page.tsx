@@ -4,6 +4,7 @@ import { Box, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceBoxServ } from "./_components/AttendanceBoxServ";
+import { NextIntlClientProvider } from "next-intl";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -55,32 +56,36 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
 	return (<>
-		<ScrollArea>
-			<Section px={{ initial: '3', xs: '0' }}>
-				<Container>
-					<Flex direction="column" gap="5">
-						<Flex justify="start" gap="5">
-							<Text weight="bold">
-							{		
-								capsuleTitle && capsuleTitle !== "Sans titre"
-								? capsuleTitle
-								: "Capsule sans titre"
-							}
-							</Text>
-							{
-								sessionDate.date
-								? `Session du ${formatDate(sessionDate.date)} ${sessionDate.end ? `au ${formatDate(sessionDate.end)}` : ""}`
-								: <></>
-							}
+		<NextIntlClientProvider>
+			<ScrollArea>
+				<Section px={{ initial: '3', xs: '0' }}>
+					<Container>
+						<Flex direction="column" gap="5">
+							<Flex justify="start" gap="5">
+								<Text weight="bold">
+								{		
+									capsuleTitle && capsuleTitle !== "Sans titre"
+									? capsuleTitle
+									: "Capsule sans titre"
+								}
+								</Text>
+								{
+									sessionDate.date
+									? `Session du ${formatDate(sessionDate.date)}`
+									: <></>
+								}
+							</Flex>
+							<Grid justify="center" columns="2" gap="3" height="auto" width="auto">
+								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+							</Grid>
 						</Flex>
-						<Grid columns="2" gap="3" height="500px" width="auto">
-							<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
-							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
-							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
-						</Grid>
-					</Flex>
-				</Container>
-			</Section>	
-		</ScrollArea>
+					</Container>
+				</Section>	
+			</ScrollArea>
+		</NextIntlClientProvider>
 	</>);
 };

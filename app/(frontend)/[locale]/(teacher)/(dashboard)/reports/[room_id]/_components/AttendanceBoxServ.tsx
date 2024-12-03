@@ -36,7 +36,6 @@ export async function AttendanceBoxServ({ sessionDate, roomId, userId }: Attenda
 		}
 	}
 	const data: AttendanceBoxProps["data"] = {
-		roomId: roomId,
 		attendanceCount: attendanceCount,
 		sessionDate: {
 		  date: sessionDate.date,
