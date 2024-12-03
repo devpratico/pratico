@@ -1,26 +1,12 @@
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { Box, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
+import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
+import AttendanceToPDF from "../../_components/AttendanceToPDF";
+import { AttendanceInfoType } from "../page";
 
-// TYPE
-export type AttendanceInfoType = {
-	first_name: string | null,
-	last_name: string | null,
-	connexion: string | undefined,
-}
-// // TYPE
-export type SessionInfoType = {
-  id: string;
-  created_at: string;
-  numberOfParticipant: number;
-  status?: 'open' | 'closed';
-  capsule_id?: string;
-  capsule_title?: string | null
-};
-
-export default async function SessionDetailsPage ({ params }: { params: Params }) {
+export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
 	let attendances: AttendanceInfoType[] = [];
@@ -87,23 +73,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<Flex direction="column" gap="5">
-						<Flex justify="start" gap="5">
-							<Text weight="bold">
-							{		
-								capsuleTitle && capsuleTitle !== "Sans titre"
-								? capsuleTitle
-								: "Capsule sans titre"
-							}
-							</Text>
-							{`Session du ${formatDate(sessionDate.date)} ${sessionDate.end ? `au ${formatDate(sessionDate.end)}` : ""}`}
-						</Flex>
-						<Grid columns="2" gap="3" height="500px" width="auto">
-							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
-							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
-							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
-						</Grid>
-					</Flex>
+					 <AttendanceToPDF attendances={attendances} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={{userInfo, roomId}}/>
 				</Container>
 			</Section>	
 		</ScrollArea>
