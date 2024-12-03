@@ -3,7 +3,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Box, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import { AttendanceBox } from "./_components/AttendanceBox";
+import { AttendanceBoxServ } from "./_components/AttendanceBoxServ";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -24,6 +24,7 @@ export type SessionInfoType = {
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
+	let userId: string | null = null;
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
 		date: "",
@@ -38,6 +39,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		const {data: { user }} = await supabase.auth.getUser();
 		if (user)
 		{
+			userId = user.id;
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
 			if (roomData)
 				sessionDate = { date: roomData.created_at, end: roomData.end_of_session };
@@ -72,7 +74,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 							}
 						</Flex>
 						<Grid columns="2" gap="3" height="500px" width="auto">
-							<AttendanceBox />
+							<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
 							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
 							<Box style={{ backgroundColor: "var(--green-5)" }}>Test</Box>
 						</Grid>
