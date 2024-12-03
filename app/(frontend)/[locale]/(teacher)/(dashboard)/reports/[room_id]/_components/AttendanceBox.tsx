@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { Badge, Box, Button, Flex, Grid, Skeleton, Strong, Text } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
@@ -15,13 +16,15 @@ export type AttendanceBoxProps = {
 			last_name: string | null,
 			organization: Json | null
 		} | null,
-		attendanceCount: number
+		attendanceCount: number;
+		nextUrl: string;
 	} | null;
 };
 export function AttendanceBox ({data}: AttendanceBoxProps) {
 	const formatter = useFormatter();
 	const [ date, setDate ] = useState<{start?: {date: string, time: string}, end?: {date: string, time: string}}>({});
 	const [ loading, setLoading ] = useState(true);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (data?.sessionDate) {
@@ -110,7 +113,7 @@ export function AttendanceBox ({data}: AttendanceBoxProps) {
 						</Flex>
 					</Box>
 				</Grid>
-				<Button onClick={() => console.log("Clicked on attendance box")} asChild>
+				<Button onClick={() => data?.nextUrl && router.push(data?.nextUrl)} asChild>
 					<Badge size="1" style={{ backgroundColor: "var(--violet-5)", cursor: "pointer", position: "absolute", bottom: "20px", right: "20px", borderRadius: "50px"}}>
 						<Strong>Détails</Strong>
 					</Badge>

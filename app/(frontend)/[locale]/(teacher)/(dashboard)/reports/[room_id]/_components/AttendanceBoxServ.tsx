@@ -42,6 +42,7 @@ export async function AttendanceBoxServ({ sessionDate, roomId, userId }: Attenda
 		  end: sessionDate.end,
 		},
 		userInfo: userInfo,
+		nextUrl: `/reports/${roomId}/attendance`,
 	  };
 	
 	return (
