@@ -77,7 +77,7 @@ export function AttendanceBox ({data}: AttendanceBoxProps) {
 
 	return (
 		<Box style={{ position: "relative", borderRadius: "10px", border: "1px solid"}}>
-			<Flex my="5" ml="-7">
+			<Flex my="5">
 				<Grid columns="2" justify="between" align="center">
 					<Box>
 						<Flex direction="column" gap="3" align="center">
