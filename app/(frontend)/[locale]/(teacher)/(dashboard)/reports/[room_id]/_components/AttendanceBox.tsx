@@ -77,48 +77,46 @@ export function AttendanceBox ({data}: AttendanceBoxProps) {
 
 	return (
 		<Box style={{ position: "relative", borderRadius: "10px", border: "1px solid"}}>
-			<Flex my="5">
-				<Grid columns="2" justify="between" align="center">
-					<Box>
-						<Flex direction="column" gap="3" align="center">
-							<Text style={{ color: "var(--violet-10)" }} size="9">{data?.attendanceCount}</Text>
-							<Text style={{ color: "var(--violet-10)" }}>
-							{
-								data?.attendanceCount && data?.attendanceCount > 1
-								? ` PARTICIPANTS`
-								: ` PARTICIPANT`
-							}
-							</Text>
-						</Flex>
-					</Box>
+			<Grid my="5" columns="2" justify="between" align="center">
+				<Box>
+					<Flex direction="column"  align="center">
+						<Text style={{ color: "var(--violet-10)" }} size="9">{data?.attendanceCount}</Text>
+						<Text style={{ color: "var(--violet-10)" }}>
+						{
+							data?.attendanceCount && data?.attendanceCount > 1
+							? ` PARTICIPANTS`
+							: ` PARTICIPANT`
+						}
+						</Text>
+					</Flex>
+				</Box>
 
-					<Box>
-						<Flex direction="column" gap="1">
-							<Text weight="bold">
-								{
-									data?.userInfo?.first_name && data?.userInfo?.last_name
-									? `Animateur: ${data?.userInfo?.first_name} ${data?.userInfo?.last_name}`
-									: <></>
-								}
-							</Text>
-							<Text>
-								Date: { !loading ? `${date?.start?.date}` : <Skeleton /> }
-							</Text>
-							<Text>
-								Début: { !loading ? `${date?.start?.time}` : <Skeleton /> }
-							</Text>
-							<Text>
-								Fin: { !loading ? `${date?.end?.date} ${date?.end?.time}` : <Skeleton />}
-							</Text>
-						</Flex>
-					</Box>
-				</Grid>
-				<Button onClick={() => data?.nextUrl && router.push(data?.nextUrl)} asChild>
-					<Badge size="1" style={{ backgroundColor: "var(--violet-5)", cursor: "pointer", position: "absolute", bottom: "20px", right: "20px", borderRadius: "50px"}}>
-						<Strong>Détails</Strong>
-					</Badge>
-				</Button>
-			</Flex>
+				<Box>
+					<Flex direction="column" gap="1">
+						<Text weight="bold">
+							{
+								data?.userInfo?.first_name && data?.userInfo?.last_name
+								? `Animateur: ${data?.userInfo?.first_name} ${data?.userInfo?.last_name}`
+								: <></>
+							}
+						</Text>
+						<Text>
+							Date: { !loading ? `${date?.start?.date}` : <Skeleton /> }
+						</Text>
+						<Text>
+							Début: { !loading ? `${date?.start?.time}` : <Skeleton /> }
+						</Text>
+						<Text>
+							Fin: { !loading ? `${date?.end?.date} ${date?.end?.time}` : <Skeleton />}
+						</Text>
+					</Flex>
+				</Box>
+			</Grid>
+			<Button onClick={() => data?.nextUrl && router.push(data?.nextUrl)}asChild>
+				<Badge size="1" style={{ backgroundColor: "var(--violet-5)", cursor: "pointer", position: "absolute", bottom: "20px", right: "20px", borderRadius: "50px"}}>
+					<Strong>Détails</Strong>
+				</Badge>
+			</Button>
 		</Box>
 	);
 };
