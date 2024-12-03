@@ -1,4 +1,4 @@
-import { PollSnapshot } from "./poll"
+import { PollSnapshot } from "./poll2"
 import { QuizSnapshot } from "./quiz"
 import { produce } from "immer"
 

@@ -262,7 +262,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
             activityId: activityId,
             currentQuestionId: firstQuestionId,
             currentQuestionState: 'answering',
-            answers: {}
+            answers: []
         }
     } else {
         logger.log('react:component', 'StartButton', 'Impossible to set activity snapshot, type not recognized:', activity.type)

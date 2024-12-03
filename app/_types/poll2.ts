@@ -58,7 +58,7 @@ export interface PollSnapshot {
      */
     activityId: number;
     currentQuestionId: string;
-    currentQuestionState: 'answering' | 'results';
+    currentQuestionState: 'answering' | 'show results';
     answers: PollUserAnswer[]
 }
 

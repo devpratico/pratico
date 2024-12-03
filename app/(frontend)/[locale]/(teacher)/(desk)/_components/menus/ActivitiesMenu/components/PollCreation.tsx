@@ -4,9 +4,8 @@ import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton
 import Title from "./Title"
 import {  LucideProps, X, Check, Copy, Trash2, Plus } from "lucide-react"
 import Navigator from "./Navigator"
-import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import CancelButton from "./CancelButton"
-import useActivityCreationStore from "../../../../../../../_stores/useActivityCreationStore"
+import usePollCreation, { closeAndSave } from "../../../../../../../_stores/usePollCreation"
 import CardDialog from "../../../CardDialog"
 
 
@@ -120,18 +119,18 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
 
 
 export default function PollCreation() {
-    const showActivityCreation = useActivityCreationStore(state => state.showActivityCreation)
-    const poll = useActivityCreationStore(state => state.currentActivity?.activity)
-    const onEditTitle = useActivityCreationStore(state => state.editTitle)
-    const currentQuestionId = useActivityCreationStore(state => state.currentActivity?.currentQuestionId)
-    const changeQuestionText = useActivityCreationStore(state => state.changeQuestionText)
-    const addChoice = useActivityCreationStore(state => state.addChoice)
-    const changeCurrentQuestionIndex = useActivityCreationStore(state => state.changeCurrentQuestionIndex)
-    const addEmptyQuestion = useActivityCreationStore(state => state.addEmptyQuestion)
-    const duplicateQuestion = useActivityCreationStore(state => state.duplicateQuestion)
-    const deleteQuestion = useActivityCreationStore(state => state.deleteQuestion)
-    const deleteChoice = useActivityCreationStore(state => state.deleteChoice)
-    const changeChoiceText = useActivityCreationStore(state => state.changeChoiceText)
+    const showPollCreation = usePollCreation(state => state.showPollCreation)
+    const poll = usePollCreation(state => state.currentPoll?.poll)
+    const onEditTitle = usePollCreation(state => state.editTitle)
+    const currentQuestionId = usePollCreation(state => state.currentPoll?.currentQuestionId)
+    const changeQuestionText = usePollCreation(state => state.changeQuestionText)
+    const addChoice = usePollCreation(state => state.addChoice)
+    const changeCurrentQuestionIndex = usePollCreation(state => state.changeCurrentQuestionIndex)
+    const addEmptyQuestion = usePollCreation(state => state.addEmptyQuestion)
+    const duplicateQuestion = usePollCreation(state => state.duplicateQuestion)
+    const deleteQuestion = usePollCreation(state => state.deleteQuestion)
+    const deleteChoice = usePollCreation(state => state.deleteChoice)
+    const changeChoiceText = usePollCreation(state => state.changeChoiceText)
 
     const choices = poll?.questions.find(q => q.id === currentQuestionId)?.choices
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id === currentQuestionId) || 0
@@ -139,7 +138,7 @@ export default function PollCreation() {
     if (!poll || !currentQuestionId) return null
 
     return (
-        <CardDialog open={showActivityCreation} preventClose>
+        <CardDialog open={showPollCreation} preventClose>
             <Grid rows='auto 1fr auto' height='100%'>
 
                 <Flex justify='between' gap='3' align='center' p='4'>
@@ -214,23 +213,4 @@ export default function PollCreation() {
             </Grid>
         </CardDialog>
     )
-}
-
-
-
-async function closeAndSave() {
-    const { currentActivity, closeActivity, setIsSaving } = useActivityCreationStore.getState()
-
-    if (!currentActivity) return
-    const poll = currentActivity.activity
-    const id = currentActivity.id?.toString()
-    // Id should be a number for supabase saveActvivity. Try parsing it as a number
-    const parsedId = id ? parseInt(id) : undefined
-
-    setIsSaving(true)
-    closeActivity()
-
-    await saveActivity({ id: parsedId, activity: poll })
-
-    setIsSaving(false)
 }
