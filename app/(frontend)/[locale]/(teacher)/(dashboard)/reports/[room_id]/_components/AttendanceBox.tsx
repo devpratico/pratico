@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
-import { Badge, Box, Button, Flex, Grid, Skeleton, Strong, Text } from "@radix-ui/themes";
+import { Badge, Box, Button, Flex, Grid, Section, Separator, Skeleton, Strong, Text } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -106,17 +106,20 @@ export function AttendanceBox ({data}: AttendanceBoxProps) {
 						<Text>
 							Début: { !loading ? `${date?.start?.time}` : <Skeleton /> }
 						</Text>
-						<Text>
-							Fin: { !loading ? `${date?.end?.date} ${date?.end?.time}` : <Skeleton />}
-						</Text>
+						<Flex gap="1" justify="between">
+							<Text>
+								Fin: { !loading ? `${date?.end?.date} ${date?.end?.time}` : <Skeleton />}
+							</Text>	
+							<Button mr="2" onClick={() => data?.nextUrl && router.push(data?.nextUrl)} asChild>
+								<Badge size="1" style={{ backgroundColor: "var(--violet-5)", cursor: "pointer", borderRadius: "50px"}}>
+									<Strong>Détails</Strong>
+								</Badge>
+							</Button>
+						</Flex>
+						
 					</Flex>
 				</Box>
 			</Grid>
-			<Button onClick={() => data?.nextUrl && router.push(data?.nextUrl)}asChild>
-				<Badge size="1" style={{ backgroundColor: "var(--violet-5)", cursor: "pointer", position: "absolute", bottom: "20px", right: "20px", borderRadius: "50px"}}>
-					<Strong>Détails</Strong>
-				</Badge>
-			</Button>
 		</Box>
 	);
 };
