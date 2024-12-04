@@ -3,7 +3,7 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Box, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import { AttendanceBoxServ } from "./_components/AttendanceBoxServ";
+import { AttendanceWidget } from "./_components/AttendanceWidget";
 import { NextIntlClientProvider } from "next-intl";
 
 // TYPE
@@ -75,12 +75,11 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 									: <></>
 								}
 							</Flex>
-							<Grid justify="center" columns="2" gap="3" height="auto" width="auto">
-								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceBoxServ sessionDate={sessionDate} roomId={roomId} userId={userId} />
+							<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
+								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
+								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
 							</Grid>
 						</Flex>
 					</Container>

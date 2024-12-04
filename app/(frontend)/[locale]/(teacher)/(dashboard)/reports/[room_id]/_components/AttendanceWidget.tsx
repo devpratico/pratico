@@ -1,10 +1,11 @@
 import createClient from "@/supabase/clients/server";
-import { AttendanceBox, AttendanceBoxProps } from "./AttendanceBox";
+import { AttendanceWidgetView, AttendanceWidgetViewProps } from "./AttendanceWidgetView";
 import { countAttendances } from "@/app/(backend)/api/attendance/attendance.server";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
+import { useFormatter } from "next-intl";
 
-type AttendanceBoxServProps = {
+type AttendanceWidgetProps = {
 	sessionDate: {
 		date: string, 
 		end: string | null | undefined
@@ -13,7 +14,7 @@ type AttendanceBoxServProps = {
 	userId: string | null
 };
 
-export async function AttendanceBoxServ({ sessionDate, roomId, userId }: AttendanceBoxServProps) {
+export async function AttendanceWidget({ sessionDate, roomId, userId }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const attendanceCount = await countAttendances(roomId);
 	let userInfo: {
@@ -35,7 +36,7 @@ export async function AttendanceBoxServ({ sessionDate, roomId, userId }: Attenda
 			userInfo = userData;
 		}
 	}
-	const data: AttendanceBoxProps["data"] = {
+	const data: AttendanceWidgetViewProps["data"] = {
 		attendanceCount: attendanceCount,
 		sessionDate: {
 		  date: sessionDate.date,
@@ -46,6 +47,6 @@ export async function AttendanceBoxServ({ sessionDate, roomId, userId }: Attenda
 	  };
 	
 	return (
-		<AttendanceBox data={data}/>
+		<AttendanceWidgetView data={data}/>
 	);
 };
