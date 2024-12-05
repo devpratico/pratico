@@ -9,7 +9,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
 
-
 export default function StudentForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
