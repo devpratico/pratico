@@ -29,7 +29,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const formatter = useFormatter();
 	const [ date, setDate ] = useState<{start?: {date: string, time: string}, end?: {date: string, time: string}}>({});
 	const [ loading, setLoading ] = useState(true);
-
+	const router = useRouter();
 	// useEffect(() => {
 	// 	if (data?.sessionDate) {
 	// 		const newDate = {} as {
@@ -91,10 +91,19 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 		info: "Date: ",
 		date: data?.sessionDate,
 	}
+	const buttonData = {
+		type: "attendance",
+		buttons: [
+			{
+				label: "Détails",
+				func: () => data?.nextUrl && router.push(data?.nextUrl)
+			}
+		]
+	}
 
 	const AttendanceThumb = <WidgetThumb data={thumbData}/>;
 	const AttendanceContent = <WidgetContent data={contentData}/>;
-	const AttendanceButtons = <WidgetButtons />;
+	const AttendanceButtons = <WidgetButtons data={buttonData} />;
 
 	return (
 		<ReportWidgetTemplate thumb={AttendanceThumb} content={AttendanceContent} buttons={AttendanceButtons} />

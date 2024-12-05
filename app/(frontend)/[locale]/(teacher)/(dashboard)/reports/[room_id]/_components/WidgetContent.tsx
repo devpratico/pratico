@@ -3,11 +3,11 @@ import { Flex, Text } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useState } from "react";
 
-export interface WidgentContentProps {
+export interface WidgetContentProps {
 	data: {
 		type: string, // "attendance" | "capsule" | "activity"
 		title?: string,
-		info?: string, // "Date: " | "Creer le" | "n questions" 
+		info?: string, // "Date: " | "Créer le" | "n questions" 
 		date?: {
 			date: string,
 			end: string | null | undefined
@@ -15,7 +15,7 @@ export interface WidgentContentProps {
 	}
 };
 
-export function WidgetContent ({ data }: WidgentContentProps) {
+export function WidgetContent ({ data }: WidgetContentProps) {
 	const formatter = useFormatter();
 	const [ date, setDate ] = useState<{start?: {date: string, time: string}, end?: {date: string, time: string}}>({});
 	const [ info, setInfo ] = useState<string>("");

@@ -1,11 +1,29 @@
-import { Button } from "@radix-ui/themes";
+"use client";
+import { Button, Strong } from "@radix-ui/themes";
 
-export function WidgetButtons () {
+export interface WidgetButtonsProps {
+	data: {
+		type: string, // "attendance" | "capsule" | "activity"
+		buttons: {
+			label: string,
+			func: () => void;
+		}[]
+	}
+};
+
+export function WidgetButtons ({ data }: WidgetButtonsProps) {
 	return (
 		<>
-			<Button key="1">Button</Button>
-			<Button key="2">Button</Button>
+		{
+			data.buttons.map((button, index) =>
+			{
+				return (
+					<Button radius="full" variant="soft" key={index} onClick={button.func}>
+						<Strong>{button.label}</Strong>
+					</Button>
+				);
+			})
+		}
 		</>
-
 	);
 };
