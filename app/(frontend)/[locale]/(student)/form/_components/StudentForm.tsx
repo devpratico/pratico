@@ -59,7 +59,6 @@ export default function StudentForm() {
                     setError('Impossible de se connecter. Veuillez réessayer plus tard.');
                     return;
                 }
-				revalidatePath("/", "layout");
 				router.refresh();
 			}
 
