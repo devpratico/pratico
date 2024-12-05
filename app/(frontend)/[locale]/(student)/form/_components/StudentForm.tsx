@@ -2,28 +2,26 @@
 import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
-import { fetchUser } from '@/app/(backend)/api/user/user.client';
+//import { fetchUser } from '@/app/(backend)/api/user/user.client';
+import { useUser } from '@/app/(frontend)/_hooks/useUser';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
 
+
 export default function StudentForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const nextUrl = searchParams.get('nextUrl');
-	let roomCode: string | undefined; 
-	// QUESTION: is that ok ?
-    // TODO: Answer : no. Use useParams instead
-	Array.from(searchParams.entries()).find((elem) => {
-		if (elem[1].includes('classroom'))
-			roomCode = elem[1].split('/').pop();
-	});
+    const roomCode = nextUrl?.split('/').pop();
+
     const [isLoading, setIsLoading] = useState(false);
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
 	const [ error, setError ] = useState<string | null>(null);
+    const { user } = useUser();
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -31,40 +29,51 @@ export default function StudentForm() {
 		return (true);
 	};
 
-	if (error)
-		throw new Error(error);
+	if (error) throw new Error(error);
+    if (!nextUrl) throw new Error('nextUrl not found in query params');
+    if (!roomCode) throw new Error('Room code not found in query params');
 
     return (
         <Form.Root onSubmit={async (event) => {
             event.preventDefault();
 
 			setIsLoading(true);
-			// setChecked({...checked, submit: true});
-			const formData = new FormData(event.currentTarget);
 
-			// Fetch user or sign in anonymously
-			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;
-			if (!user) {
-				logger.error('next:page', 'Impossible to fetch user or singing in anonymously');
-				return;
-			}
+            const { isReached } = await isAttendancesLimitReached(roomCode);
 
-			const firstName = formData.get('first-name') as string;
-			const lastName  = formData.get('last-name')  as string;
+            if (isReached) {
+                setError('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
+                setIsLoading(false);
+                return;
+            }
+			
+            // Il reste de la place, on peut continuer
 
-			const { isReached } = await isAttendancesLimitReached(roomCode);
-			if (isReached)
-				setError('Le nombre maximum de participants est atteint (10). Veuillez contacter l\'organisateur pour obtenir un accès.');
-			else
-			{
-				await createAttendance(firstName, lastName, roomCode);
-				if (nextUrl) {
-					router.push(nextUrl);
-				} else {
-					logger.error('next:page', 'No nextUrl found in query params');
-					router.push('/classroom');
-				}
-			}
+			// If user is not logged in, sign in anonymously
+            if (!user) {
+                const { data, error } = await signInAnonymously();
+                if (error || !data) {
+                    logger.error('supabase:auth', 'StudentForm', 'Impossible to sign in anonymously', error);
+                    setIsLoading(false);
+                    setError('Impossible de se connecter. Veuillez réessayer plus tard.');
+                    return;
+                }
+            }
+
+            if (!user) {
+                logger.error('next:page', 'StudentForm', 'User not found after sign in anonymously');
+                setIsLoading(false);
+                setError('Impossible de se connecter. Veuillez réessayer plus tard.');
+                return;
+            }
+
+            const formData = new FormData(event.currentTarget);
+            const firstName = formData.get('first-name') as string;
+            const lastName = formData.get('last-name') as string;
+            await createAttendance(firstName, lastName, roomCode, user.id);
+            
+            router.push(nextUrl);
+			
         }}>
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>

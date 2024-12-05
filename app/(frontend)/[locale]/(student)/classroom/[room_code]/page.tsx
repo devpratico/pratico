@@ -6,39 +6,39 @@ import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
 import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
+import { fetchNamesFromAttendance } from '@/app/(backend)/api/attendance/attendance.server'
 
-const MAX_PARTICIPANTS = 1;
+
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
 
 	// Check room exists
 	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
 	if (roomError || !roomData) {
-		logger.log("next:page", "StudentViewPage", "room error", roomError);
-		throw (roomError || "Room not found");
+		logger.error("next:page", "StudentViewPage", "room error", roomError);
+        throw new Error("Room not found");
 	}
 
     // Check user is logged in (can be anonymous)
-	const { user } = await fetchUser();
-	if (!user) {
-		logger.error('next:page', 'User not found');
+	const { user, error } = await fetchUser();
+	if (!user || error) {
+		logger.log('next:page', 'StudentViewPage', 'User not found', error);
 		const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
-        return (null);
 	}
 
     // Check user has signed attendance
-	logger.log('supabase:database', 'page classroom fetchOpenRoom id:', roomData.id);
-	const { data , error: hasSignedError  } = await fetchUserHasSignedAttendance(roomData.id, user.id);
-	logger.log('supabase:database', 'fetUserHasSignedAttendance', data);
-	if (!data || !data?.first_name || !data?.last_name || hasSignedError) {
-        logger.log('next:page', 'Attendance one of the names or both not found, redirecting to form', hasSignedError ? hasSignedError : null);
+	const hasSignedAttendance = await fetchUserHasSignedAttendance(roomData.id, user!.id);
+	if (!hasSignedAttendance) {
+        logger.log('next:page', 'User has not signed attendance, redirecting to form');
         const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
-        return (null);
     }
 
+    // Fetch user names
+    const { data } = await fetchNamesFromAttendance(user!.id);
+
     const canvasUser: CanvasUser = {
-        id: user.id,
+        id: user!.id,
         name: `${data?.first_name} ${data?.last_name}`,
         color: getRandomColor(),
     }

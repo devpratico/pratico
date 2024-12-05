@@ -1,5 +1,5 @@
 import StudentForm from "./_components/StudentForm"
-import { Flex, Card, Heading, Separator, Text } from "@radix-ui/themes"
+import { Flex, Card, Heading, Separator } from "@radix-ui/themes"
 import { Viewport } from "next"
 
 export const viewport: Viewport = {

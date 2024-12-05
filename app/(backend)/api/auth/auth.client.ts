@@ -40,6 +40,7 @@ export interface SignUpReturn extends LoginReturn { }
 export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpReturn> => {
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({ email, password })
+    revalidatePath('/', 'layout')
     return { user: data?.user, error: error?.message || null }
 }
 
