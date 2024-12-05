@@ -29,7 +29,7 @@ export function SideBarBtn({ href, message, children, iconSize }: SideBarBtnProp
 
     return (
         <Box style={style} asChild>
-            <Link href={href} target={message === "Ressources" ? "_blank" : "none"} rel={message === "Ressources" ? "noopener noreferrer" : "none"}>
+            <Link href={href} target={message === "Ressources" ? "_blank" : "_self"} rel={message === "Ressources" ? "noopener noreferrer" : ""}>
                 <Flex align='center' gap='2'>
                     {children}
                     <Text size='3' truncate>{message}</Text>

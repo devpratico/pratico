@@ -9,6 +9,7 @@ import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
+import { revalidatePath } from 'next/cache';
 
 
 export default function StudentForm() {
@@ -38,7 +39,7 @@ export default function StudentForm() {
             event.preventDefault();
 
 			setIsLoading(true);
-
+			const formData = new FormData(event.currentTarget);
             const { isReached } = await isAttendancesLimitReached(roomCode);
 
             if (isReached) {
@@ -58,7 +59,9 @@ export default function StudentForm() {
                     setError('Impossible de se connecter. Veuillez réessayer plus tard.');
                     return;
                 }
-            }
+				revalidatePath("/", "layout");
+				router.refresh();
+			}
 
             if (!user) {
                 logger.error('next:page', 'StudentForm', 'User not found after sign in anonymously');
@@ -66,8 +69,7 @@ export default function StudentForm() {
                 setError('Impossible de se connecter. Veuillez réessayer plus tard.');
                 return;
             }
-
-            const formData = new FormData(event.currentTarget);
+			
             const firstName = formData.get('first-name') as string;
             const lastName = formData.get('last-name') as string;
             await createAttendance(firstName, lastName, roomCode, user.id);
