@@ -1,4 +1,4 @@
-import { Grid, Flex } from "@radix-ui/themes";
+import { Grid, Flex, Section } from "@radix-ui/themes";
 
 interface ReportWidgetTemplateProps {
     thumb: React.ReactNode;
@@ -10,16 +10,14 @@ interface ReportWidgetTemplateProps {
 
 export default function ReportWidgetTemplate({ thumb, content, buttons }: ReportWidgetTemplateProps) {
     return (
-        <Grid columns='auto 1fr' rows='1' p='3' gap='3'  style={{boxShadow:'var(--shadow-2)', borderRadius:'var(--radius-3)', backgroundColor:'var(--accent-1)'}}>
-            {thumb}
-
-            <Grid columns='1' rows='1fr auto' gap='3'>
-                {content}
-
-                <Flex gap='3' justify='end'>
-                    {buttons}
-                </Flex>
-            </Grid>
+        <Grid align="center" columns='auto 1fr' rows='1' p='5' gap='5'  style={{boxShadow:'var(--shadow-2)', borderRadius:'var(--radius-3)', backgroundColor:'var(--accent-1)'}}>
+			{thumb}
+			<Grid columns='1' rows='1fr auto' gap='3' mt="7" ml="5">
+				{content}
+				<Flex gap='3' justify='end'>
+					{buttons}
+				</Flex>
+			</Grid>
         </Grid>
     )
 }

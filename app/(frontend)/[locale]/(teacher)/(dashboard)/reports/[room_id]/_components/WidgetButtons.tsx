@@ -6,7 +6,7 @@ export interface WidgetButtonsProps {
 		type: string, // "attendance" | "capsule" | "activity"
 		buttons: {
 			label: string,
-			func: () => void;
+			onClick: () => void;
 		}[]
 	}
 };
@@ -18,7 +18,7 @@ export function WidgetButtons ({ data }: WidgetButtonsProps) {
 			data.buttons.map((button, index) =>
 			{
 				return (
-					<Button radius="full" variant="soft" key={index} onClick={button.func}>
+					<Button radius="full" variant="soft" key={index} onClick={button.onClick}>
 						<Strong>{button.label}</Strong>
 					</Button>
 				);
