@@ -11,7 +11,7 @@ import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 
 type Id = number | string
 
-/** Looks a lot like PollSnapshot, but I prefer to keep client state and server data decoupled. */
+/** Looks a lot like PollSnapshot, but I prefer to keep client code and server code decoupled */
 type CurrentPoll = {
     id: Id,
     poll: Poll
@@ -26,6 +26,9 @@ type PollState = {
 
     /** The activity to show, if any */
     currentPoll: CurrentPoll | null
+
+    /** true while syncing with the database */
+    isSyncing: boolean
 }
 
 type PollActions = {
@@ -46,6 +49,8 @@ const usePollAnimation = create<PollStore>((set, get) => ({
     shouldShowPoll: false,
     
     currentPoll: null,
+
+    isSyncing: false,
 
     openPoll: (poll, id) => {
         set({
@@ -101,7 +106,13 @@ export default usePollAnimation
 
 // SERVICES
 
-/** Any time the answers change in the database, update them in the state */
+/**
+ * Any time the answers change in the database, update them in the state.
+ * - When a student answers a question
+ * - When the teacher answers a question
+ * If there is no snapshot, nothing happens. The poll is not closed.
+ * This function should be called once when the poll is opened.
+ */
 export function syncRemoteAnswers(roomCode: string) {
     const supabase = createClient()
     const channel  = supabase.channel(roomCode + "_realtime")
@@ -126,7 +137,7 @@ export function syncRemoteAnswers(roomCode: string) {
         const oldAnswers = usePollAnimation.getState().currentPoll?.answers
 
         if (isEqual(newAnswers, oldAnswers)) {
-            logger.log('supabase:realtime', "answers are the same. Doing nothing.")
+            logger.log('supabase:realtime', "usePollAnimation.tsx", "answers are the same. Doing nothing.")
             return
         }
 
@@ -140,12 +151,20 @@ export function syncRemoteAnswers(roomCode: string) {
 }
 
 
-/** Any time the local store changes (from a local action), save it in the database */
+/**
+ * Any time the local store changes (from a local action), save it in the database
+ * For example, when the teacher changes the current question id, the question state,
+ * or answers a question.
+ * If there is no snapshot, nothing happens. The poll is not deleted from the database.
+ * This function should be called once when the poll is opened.
+ */
 export function syncLocalState(roomId: number) {
 
-    usePollAnimation.subscribe(async state => {
+    const unsubscribre = usePollAnimation.subscribe(async (state, prevState) => {
         const currentPoll = state.currentPoll
         if (!currentPoll) return
+
+        usePollAnimation.setState({ isSyncing: true })
 
         const snapshot = {
             type: 'poll',
@@ -156,7 +175,17 @@ export function syncLocalState(roomId: number) {
         } as PollSnapshot
 
         logger.log('supabase:realtime', "saving poll snapshot to database", snapshot)
-        await saveRoomActivitySnapshot(roomId, snapshot)
+        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+
+        if (error) {
+            logger.log('supabase:realtime', "error saving poll snapshot to database", error)
+            // Rollback to the previous state
+            usePollAnimation.setState(prevState)
+        }
+
+        usePollAnimation.setState({ isSyncing: false })
     })
 
+    // Use this cleanup function to unsubscribe when the component unmounts
+    return unsubscribre
 }
