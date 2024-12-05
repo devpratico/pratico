@@ -48,9 +48,9 @@ export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpRet
 export const signInAnonymously = async () => {
     const supabase = createClient()
     const { data, error } = await supabase.auth.signInAnonymously({})
-    revalidatePath('/', 'layout')
 
     if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
+	revalidatePath('/', 'layout')
 
     return { data, error: error?.message }
 }

@@ -2,14 +2,12 @@
 import * as Form from '@radix-ui/react-form';
 import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
-//import { fetchUser } from '@/app/(backend)/api/user/user.client';
-import { useUser } from '@/app/(frontend)/_hooks/useUser';
+import { fetchUser } from '@/app/(backend)/api/user/user.client';
 import { useState } from 'react';
 import logger from '@/app/_utils/logger';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createAttendance, isAttendancesLimitReached } from '@/app/(backend)/api/attendance/attendance.client';
 import { janifera } from '@/app/(frontend)/Fonts';
-import { revalidatePath } from 'next/cache';
 
 
 export default function StudentForm() {
@@ -22,7 +20,6 @@ export default function StudentForm() {
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
 	const [ error, setError ] = useState<string | null>(null);
-    const { user } = useUser();
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -49,18 +46,14 @@ export default function StudentForm() {
             }
 			
             // Il reste de la place, on peut continuer
-
-			// If user is not logged in, sign in anonymously
+			const user = (await fetchUser()).user || (await signInAnonymously()).data.user;			// If user is not logged in, sign in anonymously
             if (!user) {
-                const { data, error } = await signInAnonymously();
-                if (error || !data) {
-                    logger.error('supabase:auth', 'StudentForm', 'Impossible to sign in anonymously', error);
-                    setIsLoading(false);
-                    setError('Impossible de se connecter. Veuillez réessayer plus tard.');
-                    return;
-                }
-				router.refresh();
+				logger.error('supabase:auth', 'StudentForm', 'Impossible to sign in anonymously', error);
+				setIsLoading(false);
+				setError('Impossible de se connecter. Veuillez réessayer plus tard.');
+				return;
 			}
+			router.refresh();
 
             if (!user) {
                 logger.error('next:page', 'StudentForm', 'User not found after sign in anonymously');
@@ -72,9 +65,8 @@ export default function StudentForm() {
             const firstName = formData.get('first-name') as string;
             const lastName = formData.get('last-name') as string;
             await createAttendance(firstName, lastName, roomCode, user.id);
-            
-            router.push(nextUrl);
-			
+			router.push(nextUrl);
+            			
         }}>
             <Flex direction='column' gap='3'>
                 <Form.Field key='first-name' name='first-name'>
