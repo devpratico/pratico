@@ -45,29 +45,33 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
         const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short'});
 
         return (
-            <DataList.Root size='1'>
-                <DataList.Item>
-                    <DataList.Label>Animateur</DataList.Label>
-                    <DataList.Value>{fullName}</DataList.Value>
-                </DataList.Item>
+			<>
+				<Strong>Présence</Strong>
+				<DataList.Root size='1'>
+					<DataList.Item>
+						<DataList.Label>Animateur</DataList.Label>
+						<DataList.Value>{fullName}</DataList.Value>
+					</DataList.Item>
 
-                <DataList.Item>
-                    <DataList.Label>Début</DataList.Label>
-                    <DataList.Value>{startDate}</DataList.Value>
-                </DataList.Item>
+					<DataList.Item>
+						<DataList.Label>Début</DataList.Label>
+						<DataList.Value>{startDate}</DataList.Value>
+					</DataList.Item>
 
-                <DataList.Item>
-                    <DataList.Label>Fin</DataList.Label>
-                    <DataList.Value>{endDate}</DataList.Value>
-                </DataList.Item>
-            </DataList.Root>
+					<DataList.Item>
+						<DataList.Label>Fin</DataList.Label>
+						<DataList.Value>{endDate}</DataList.Value>
+					</DataList.Item>
+				</DataList.Root>
+			</>
+            
         );
     }
 
     const buttons = (
 		<Button disabled={data.attendanceCount < 1} size="1" variant="soft" radius="full" asChild>
 			<Link href={data.nextUrl}>
-				<Strong>Détails</Strong>
+				<Strong>Détail</Strong>
 			</Link>
 		</Button>
     );
