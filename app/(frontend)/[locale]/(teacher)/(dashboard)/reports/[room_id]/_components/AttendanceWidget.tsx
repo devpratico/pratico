@@ -36,11 +36,11 @@ export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps
 	}
 	const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
 	if (roomData && roomData?.end_of_session)
-		sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
+	sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
 	if (!sessionDate?.date && !sessionDate?.end)
 	{
-		logger.error('supabase:database', 'sessionDetailsPage', 'fetch session date error', roomError);
-		redirect('/reports'); ;
+		logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate);
+		redirect("/reports");
 	}
 
 	data = {
