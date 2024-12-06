@@ -19,7 +19,7 @@ export type TeacherInfo = {
 	}
 }
 export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
-	{ attendances: AttendanceInfoType[], sessionDate: { date: string, end?: string | null | undefined }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
+	{ attendances: AttendanceInfoType[], sessionDate: { date: string, end?: string | null | undefined }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId: string}}
 ) {
 	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
@@ -50,7 +50,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 		<>
 			<Flex justify='between'>
 				<Button asChild variant="soft">
-					<Link href={`/reports`}>
+					<Link href={`/reports/${roomId}`}>
 						<ArrowLeft />Retour
 					</Link>
 				</Button>
