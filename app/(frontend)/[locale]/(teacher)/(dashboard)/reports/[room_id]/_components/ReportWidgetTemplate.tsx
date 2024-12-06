@@ -1,4 +1,4 @@
-import { Grid, Flex, Section } from "@radix-ui/themes";
+import { Grid, Flex } from "@radix-ui/themes";
 
 interface ReportWidgetTemplateProps {
     thumb: React.ReactNode;
