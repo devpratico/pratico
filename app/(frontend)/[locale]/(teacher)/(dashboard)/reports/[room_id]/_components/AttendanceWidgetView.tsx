@@ -65,7 +65,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
     }
 
     const buttons = (
-		<Button disabled={data.attendanceCount < 1} size="3" variant="soft" radius="full" asChild>
+		<Button disabled={data.attendanceCount < 1} variant="soft" radius="full" asChild>
 			<Link href={data.nextUrl}>
 				<Strong>Détails</Strong>
 			</Link>
