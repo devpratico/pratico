@@ -77,9 +77,6 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 							</Flex>
 							<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
-								<AttendanceWidget sessionDate={sessionDate} roomId={roomId} userId={userId} />
 							</Grid>
 						</Flex>
 					</Container>
