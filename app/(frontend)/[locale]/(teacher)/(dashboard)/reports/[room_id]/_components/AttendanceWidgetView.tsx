@@ -1,21 +1,15 @@
 "use client";
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "./WidgetThumb";
-import { WidgetContent } from "./WidgetContent";
-import { WidgetButtons } from "./WidgetButtons";
-import WidgetButton from "./WidgetButton";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { DataList } from "@radix-ui/themes";
+import { Button, DataList, Strong } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
-import { format } from "path";
 
 
 export type AttendanceWidgetViewProps = {
 	data: {
 		sessionDate: {
-			//date: string,
-			//end: string | null | undefined
             startDate: Date,
             endDate: Date
 		},
@@ -30,25 +24,7 @@ export type AttendanceWidgetViewProps = {
 };
 
 export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
-	const router = useRouter();
     const formatter = useFormatter();
-	
-	const contentData = {
-		type: "attendance",
-		title: data?.userInfo?.first_name && data?.userInfo?.last_name ? `Animateur: ${data?.userInfo?.first_name} ${data?.userInfo?.last_name}`: "",
-		info: "Date: ",
-		date: data?.sessionDate,
-	}
-	const buttonData = {
-		type: "attendance",
-		buttons: [
-			{
-				label: "Détails",
-				onClick: () => data?.nextUrl && router.push(data?.nextUrl)
-			}
-		]
-	}
-
 
     // Thumb
     const smallText = data.attendanceCount > 1 ? "PARTICIPANTS" : "PARTICIPANT";
@@ -88,14 +64,12 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
         );
     }
 
-	//const AttendanceContent = <WidgetContent data={contentData}/>;
-	const AttendanceButtons = <WidgetButtons data={buttonData} />;
-
-
     const buttons = (
-        <>
-            <WidgetButton key='1'>Détails</WidgetButton>
-        </>
+		<Button disabled={data.attendanceCount < 1} size="3" variant="soft" radius="full" asChild>
+			<Link href={"/reports/" + data.nextUrl}>
+				<Strong>Détails</Strong>
+			</Link>
+		</Button>
     );
 
 	return (
@@ -105,4 +79,4 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
             buttons={buttons}
         />
 	);
-};s
+};
