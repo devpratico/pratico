@@ -84,7 +84,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 									: <></>
 								}
 							<Flex direction="column" gap="5" mt="5">
-									<AttendanceWidget roomId={roomId} userId={userId} />
+								<AttendanceWidget roomId={roomId} userId={userId} />
 							</Flex>
 
 						</Grid>

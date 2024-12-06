@@ -3,7 +3,6 @@ import { AttendanceWidgetView, AttendanceWidgetViewProps } from "./AttendanceWid
 import { countAttendances } from "@/app/(backend)/api/attendance/attendance.server";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
-import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 
 type AttendanceWidgetProps = {
 	roomId: number,
@@ -36,11 +35,11 @@ export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps
 	}
 	const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
 	if (roomData && roomData?.end_of_session)
-	sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
-	if (!sessionDate?.date && !sessionDate?.end)
+		sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
+	if ((!sessionDate?.date && !sessionDate?.end) || roomError)
 	{
-		logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate);
-		return ;
+		logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate, roomError);
+		return (<>{`Quelque chose s'est mal passé. ${roomError?.message}`}</>);
 	}
 
 	data = {

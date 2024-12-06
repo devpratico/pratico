@@ -20,7 +20,8 @@ export type AttendanceWidgetViewProps = {
 		} | null,
 		attendanceCount: number;
 		nextUrl: string;
-	};
+	}
+	
 };
 
 export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
