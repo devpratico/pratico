@@ -1,10 +1,12 @@
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { Box, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceWidget } from "./_components/AttendanceWidget";
 import { NextIntlClientProvider } from "next-intl";
+import { Link } from "@/app/(frontend)/_intl/intlNavigation";
+import { ArrowLeft } from "lucide-react";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -60,21 +62,30 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 			<ScrollArea>
 				<Section px={{ initial: '3', xs: '0' }}>
 					<Container>
-						<Flex direction="column" gap="5">
-							<Flex justify="start" gap="5">
-								<Text weight="bold">
-								{		
-									capsuleTitle && capsuleTitle !== "Sans titre"
-									? capsuleTitle
-									: "Capsule sans titre"
-								}
-								</Text>
-								{
-									sessionDate.date
-									? `Session du ${formatDate(sessionDate.date)}`
-									: <></>
-								}
-							</Flex>
+					<Flex justify="between" mr="5">
+						<Button ml="5" asChild variant="soft">
+							<Link href={`/reports`}>
+								<ArrowLeft />Retour
+							</Link>
+						</Button>
+						<Flex justify="end" gap="5">
+							<Text weight="bold">
+							{		
+								capsuleTitle && capsuleTitle !== "Sans titre"
+								? capsuleTitle
+								: "Capsule sans titre"
+							}
+							</Text>
+							{
+								sessionDate.date
+								? `Session du ${formatDate(sessionDate.date)}`
+								: <></>
+							}
+						</Flex>
+					</Flex>
+					
+							<Flex direction="column" gap="5" m="5">
+
 							<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 								<AttendanceWidget roomId={roomId} userId={userId} />
 							</Grid>
