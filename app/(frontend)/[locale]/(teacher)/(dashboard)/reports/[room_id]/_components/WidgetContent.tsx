@@ -3,6 +3,7 @@ import { Flex, Text } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useState } from "react";
 
+
 export interface WidgetContentProps {
 	data: {
 		type: string, // "attendance" | "capsule" | "activity"
