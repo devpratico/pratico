@@ -12,7 +12,7 @@ export default function ReportWidgetTemplate({ thumb, content, buttons }: Report
     return (
         <Grid align="center" columns='auto 1fr' rows='1' p='5' gap='5'  style={{boxShadow:'var(--shadow-2)', borderRadius:'var(--radius-3)', backgroundColor:'var(--accent-1)'}}>
 			{thumb}
-			<Grid columns='1' rows='1fr auto' gap='3' mt="7" ml="5">
+			<Grid columns='1' rows='1fr auto' pt="5" gap='3'>
 				{content}
 				<Flex gap='3' justify='end'>
 					{buttons}

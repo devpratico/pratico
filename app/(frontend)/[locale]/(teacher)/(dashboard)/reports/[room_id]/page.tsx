@@ -62,30 +62,28 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 			<ScrollArea>
 				<Section px={{ initial: '3', xs: '0' }}>
 					<Container>
-					<Flex justify="between" mr="5">
-						<Button ml="5" asChild variant="soft">
-							<Link href={`/reports`}>
-								<ArrowLeft />Retour
-							</Link>
-						</Button>
-						<Flex justify="end" gap="5">
-							<Text weight="bold">
-							{		
-								capsuleTitle && capsuleTitle !== "Sans titre"
-								? capsuleTitle
-								: "Capsule sans titre"
-							}
-							</Text>
-							{
-								sessionDate.date
-								? `Session du ${formatDate(sessionDate.date)}`
-								: <></>
-							}
+						<Flex justify="between" mr="5">
+							<Button ml="5" asChild variant="soft">
+								<Link href={`/reports`}>
+									<ArrowLeft />Retour
+								</Link>
+							</Button>
+							<Flex justify="end" gap="5">
+								<Text weight="bold">
+								{		
+									capsuleTitle && capsuleTitle !== "Sans titre"
+									? capsuleTitle
+									: "Capsule sans titre"
+								}
+								</Text>
+								{
+									sessionDate.date
+									? `Session du ${formatDate(sessionDate.date)}`
+									: <></>
+								}
+							</Flex>
 						</Flex>
-					</Flex>
-					
-							<Flex direction="column" gap="5" m="5">
-
+						<Flex direction="column" gap="5" m="5">
 							<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 								<AttendanceWidget roomId={roomId} userId={userId} />
 							</Grid>
