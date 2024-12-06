@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import logger from "@/app/_utils/logger";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -33,6 +34,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	useEffect(() => {
 		router.refresh();
 	}, [router]);
+
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
@@ -49,7 +51,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	return (
 		<>
 			<Flex justify='between'>
-				<Button asChild variant="soft">
+				<Button onClick={() => logger.log("react:component", "Attendancetopdf", "return button")}asChild variant="soft">
 					<Link href={`/reports/${roomId}`}>
 						<ArrowLeft />Retour
 					</Link>

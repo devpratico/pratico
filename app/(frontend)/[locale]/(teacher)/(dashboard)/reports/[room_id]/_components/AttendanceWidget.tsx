@@ -40,7 +40,7 @@ export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps
 	if (!sessionDate?.date && !sessionDate?.end)
 	{
 		logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate);
-		redirect("/reports");
+		return ;
 	}
 
 	data = {
