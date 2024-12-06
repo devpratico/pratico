@@ -3,8 +3,9 @@ import { IconButton, Tooltip } from "@radix-ui/themes"
 import { Play } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
-import { startActivity } from "@/app/(backend)/api/room/room.client"
 import logger from "@/app/_utils/logger"
+import { openPoll } from "@/app/(frontend)/_stores/usePollAnimation"
+
 
 
 /**
@@ -16,14 +17,14 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
     const { room_code } = useParams<{ room_code?: string }>()
     const inRoom = !!room_code
 
+
     async function handleClick() {
         if (!inRoom) {
             logger.error('supabase:database', 'StartButton', 'Cannot start activity outside of a room')
             return
         }
         setLoading(true)
-        const { error } = await startActivity({ activityId: activity_id, roomCode: room_code })
-        if (error) logger.error('supabase:database', 'StartButton', 'Error starting activity:', error)
+        await openPoll(activity_id)
         setLoading(false)
     }
 

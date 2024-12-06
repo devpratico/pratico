@@ -7,6 +7,8 @@ import logger from "@/app/_utils/logger"
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
+import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import { useEffect } from "react"
 
 
 type Id = number | string
@@ -107,20 +109,45 @@ export default usePollAnimation
 // SERVICES
 
 /**
+ * Open a poll in the store given its id.
+ * This function fetches the activity from the database.
+ */
+export async function openPoll(id: Id) {
+    id = parseInt(id as string)
+
+    const { data , error } = await fetchActivity(id)
+
+    if (error || !data) {
+        logger.error('zustand:store', 'usePollAnimation', 'Error fetching activity', error)
+        return
+    }
+
+    const poll = data.type === 'poll' ? data.object as Poll : null
+
+    if (!poll) {
+        logger.error('zustand:store', 'usePollAnimation', 'Activity is not a poll')
+        return
+    }
+
+    usePollAnimation.getState().openPoll(poll, id)
+}
+
+/**
  * Any time the answers change in the database, update them in the state.
  * - When a student answers a question
  * - When the teacher answers a question
  * If there is no snapshot, nothing happens. The poll is not closed.
  * This function should be called once when the poll is opened.
  */
-export function syncRemoteAnswers(roomCode: string) {
+function syncRemoteAnswers(roomId: number) {
     const supabase = createClient()
-    const channel  = supabase.channel(roomCode + "_realtime")
+    const channel  = supabase.channel(roomId + "_realtime")
     const roomUpdate = {
         event: 'UPDATE',
         schema: 'public',
         table: 'rooms',
-        filter: `code=eq.${roomCode} AND status=eq.open`
+        //filter: `code=eq.${roomCode} AND status=eq.open`
+        filter: `id=eq.${roomId}`
     } as any // TODO: handle type
 
     channel.on('postgres_changes', roomUpdate , (payload): void => {
@@ -152,19 +179,23 @@ export function syncRemoteAnswers(roomCode: string) {
 
 
 /**
- * Any time the local store changes (from a local action), save it in the database
- * For example, when the teacher changes the current question id, the question state,
- * or answers a question.
- * If there is no snapshot, nothing happens. The poll is not deleted from the database.
- * This function should be called once when the poll is opened.
+ * Automatically save the local snapshot into the database.
+ * Not only does it save every modification (current question, question state, answers...)
+ * but it also it creates it if it doesn't exist, and removes it if the poll is null.
  */
-export function syncLocalState(roomId: number) {
-
+function syncLocalState(roomId: number) {
     const unsubscribre = usePollAnimation.subscribe(async (state, prevState) => {
-        const currentPoll = state.currentPoll
-        if (!currentPoll) return
-
         usePollAnimation.setState({ isSyncing: true })
+        
+        const currentPoll = state.currentPoll
+
+        // If there is no poll, remove the snapshot from the database
+        if (!currentPoll) {
+            logger.log('supabase:realtime', "usePollAnimation.tsx", "Removing snapshot from database")
+            await saveRoomActivitySnapshot(roomId, null)
+            usePollAnimation.setState({ isSyncing: false })
+            return
+        }
 
         const snapshot = {
             type: 'poll',
@@ -178,7 +209,7 @@ export function syncLocalState(roomId: number) {
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
 
         if (error) {
-            logger.log('supabase:realtime', "error saving poll snapshot to database", error)
+            logger.log('supabase:realtime', "usePollAnimation.tsx", "Error saving poll snapshot to database. Reverting back to previous state.", error)
             // Rollback to the previous state
             usePollAnimation.setState(prevState)
         }
@@ -188,4 +219,21 @@ export function syncLocalState(roomId: number) {
 
     // Use this cleanup function to unsubscribe when the component unmounts
     return unsubscribre
+}
+
+
+/**
+ * Use this hook to automatically sync the poll animation store with the database.
+ */
+export function useSyncedPollAnimation(roomId: number) {
+
+    useEffect(() => {
+        const cleanupLocal  = syncLocalState(roomId)
+        const cleanupRemote = syncRemoteAnswers(roomId)
+
+        return () => {
+            cleanupLocal()
+            cleanupRemote()
+        }
+    }, [roomId])
 }
