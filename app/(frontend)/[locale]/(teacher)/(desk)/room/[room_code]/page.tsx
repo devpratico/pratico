@@ -21,13 +21,14 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 		redirect(`/classroom/${room_code}`);
         return (null);
     }
-    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).single()
+    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by, id').eq('code', room_code).single()
     if (roomError) {
         logger.log("next:page", "TeacherViewPage", "room error", roomError);
         throw (roomError);
     }
-    if (user?.id !== roomData?.created_by)
-        redirect(`/classroom/${room_code}`);
+    if (user?.id !== roomData?.created_by) redirect(`/classroom/${room_code}`);
+
+
     return (
         <>
 			<TopBarPortal>
@@ -72,7 +73,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 			<TeacherCanvas roomCode={room_code} />
 
 			{/* Activity Card, that automatically opens when an activity is running */}
-			<ActivityCard />
+			<ActivityCard roomId={roomData.id} />
         </>
     )
 }

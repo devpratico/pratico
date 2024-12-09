@@ -122,12 +122,12 @@ export async function openPoll(id: Id) {
         return
     }
 
-    const poll = data.type === 'poll' ? data.object as Poll : null
-
-    if (!poll) {
+    if (!(data.type == 'poll')) {
         logger.error('zustand:store', 'usePollAnimation', 'Activity is not a poll')
         return
     }
+
+    const poll = data.object as Poll
 
     usePollAnimation.getState().openPoll(poll, id)
 }
@@ -168,7 +168,7 @@ function syncRemoteAnswers(roomId: number) {
             return
         }
 
-        usePollAnimation.getState().setAnswers(newAnswers)
+        //usePollAnimation.getState().setAnswers(newAnswers)
         
     }).subscribe()
 
@@ -185,15 +185,13 @@ function syncRemoteAnswers(roomId: number) {
  */
 function syncLocalState(roomId: number) {
     const unsubscribre = usePollAnimation.subscribe(async (state, prevState) => {
-        usePollAnimation.setState({ isSyncing: true })
-        
+
         const currentPoll = state.currentPoll
 
         // If there is no poll, remove the snapshot from the database
         if (!currentPoll) {
             logger.log('supabase:realtime', "usePollAnimation.tsx", "Removing snapshot from database")
             await saveRoomActivitySnapshot(roomId, null)
-            usePollAnimation.setState({ isSyncing: false })
             return
         }
 
@@ -210,11 +208,10 @@ function syncLocalState(roomId: number) {
 
         if (error) {
             logger.log('supabase:realtime', "usePollAnimation.tsx", "Error saving poll snapshot to database. Reverting back to previous state.", error)
-            // Rollback to the previous state
-            usePollAnimation.setState(prevState)
+            // TODO: Rollback to the previous state
         }
 
-        usePollAnimation.setState({ isSyncing: false })
+
     })
 
     // Use this cleanup function to unsubscribe when the component unmounts

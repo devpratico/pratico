@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
-import useActivityCreationStore from '@/app/(frontend)/_stores/usePollCreation'
+import usePollCreation from '@/app/(frontend)/_stores/usePollCreation'
 import logger from '@/app/_utils/logger'
 
 
@@ -95,8 +95,8 @@ async function openActivityCreation(id: number) {
 
     const activity = data.object
     if (activity.type == 'poll' && activity.schemaVersion == '3') {
-        const openActivity = useActivityCreationStore.getState().openActivity
-        openActivity({ id, activity})
+        const openPoll = usePollCreation.getState().openPoll
+        openPoll({id: id, poll: activity})
     } else {
         logger.error('supabase:database', 'activity is not poll or not schemaVersion 3')
     }    

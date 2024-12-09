@@ -55,7 +55,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
                         logger.log('supabase:realtime', "room row updated", newRecord.params)
                         if (prev) {
                             // Trick here 🚩 : Only update the params and activity_snapshot
-                            return {...prev, params: newRecord.params, activity_snapshot: newRecord.activity_snapshot}
+                            return {...prev, params: newRecord.params}//, activity_snapshot: newRecord.activity_snapshot}
                         } else {
                             return newRecord
                         }
