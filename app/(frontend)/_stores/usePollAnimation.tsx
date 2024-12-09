@@ -184,7 +184,8 @@ function syncRemoteAnswers(roomId: number) {
  * but it also it creates it if it doesn't exist, and removes it if the poll is null.
  */
 function syncLocalState(roomId: number) {
-    const unsubscribre = usePollAnimation.subscribe(async (state, prevState) => {
+    // TODO: use subscribeWithSelector to only subscribe to currentPoll, and use the isSyncing flag
+    const unsubscribe = usePollAnimation.subscribe(async (state, prevState) => {
 
         const currentPoll = state.currentPoll
 
@@ -215,7 +216,7 @@ function syncLocalState(roomId: number) {
     })
 
     // Use this cleanup function to unsubscribe when the component unmounts
-    return unsubscribre
+    return unsubscribe
 }
 
 
