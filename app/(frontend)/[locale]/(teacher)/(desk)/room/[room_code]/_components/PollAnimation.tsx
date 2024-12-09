@@ -4,15 +4,14 @@ import usePollAnimation, { useSyncedPollAnimation } from '@/app/(frontend)/_stor
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
-import { mockPoll } from '@/app/_types/poll2'
 
-/*export default function PollAnimation({ roomId }: { roomId: number }) {
-    return (
-        <p>Hello</p>
-    )
-}*/
 
-export default function PollAnimation({ roomId }: { roomId: number }) {
+interface PollAnimationProps {
+    roomId: number
+    userId: string
+}
+
+export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
     useSyncedPollAnimation(roomId) // Sync the usePollAnimation store with the server
 
     const shouldShowPoll = usePollAnimation(state => state.shouldShowPoll)
@@ -20,13 +19,28 @@ export default function PollAnimation({ roomId }: { roomId: number }) {
     const poll = usePollAnimation(state => state.currentPoll?.poll)
     const currentQuestionId = usePollAnimation(state => state.currentPoll?.currentQuestionId)
     const questionState = usePollAnimation(state => state.currentPoll?.questionState)
+    const changeQuestionState = usePollAnimation(state => state.changeQuestionState)
+    const answers = usePollAnimation(state => state.currentPoll?.answers)
+    const myAnswers = answers?.filter(a => a.userId == userId)
+    const addAnswer = usePollAnimation(state => state.addAnswer)
+    const removeAnswer = usePollAnimation(state => state.removeAnswer)
 
     const currentQuestion = poll?.questions.find(q => q.id == currentQuestionId)
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id == currentQuestionId)
-
-    const handleClickClose = () => {
-        closePoll()
+    const setChoiceState = (choiceId: string, state: 'selected' | 'unselected') => {
+        if (state == 'selected') {
+            if (!currentQuestionId) return
+            addAnswer({
+                userId: userId,
+                questionId: currentQuestionId,
+                choiceId: choiceId,
+                timestamp: Date.now()
+            })
+        } else {
+            removeAnswer(userId)
+        }
     }
+
 
     return (
         <CardDialog open={shouldShowPoll} preventClose>
@@ -35,7 +49,7 @@ export default function PollAnimation({ roomId }: { roomId: number }) {
                 <Flex justify='between' gap='3' align='center' p='4'>
                     <DialogPrimitive.Title asChild><Heading size='4' color="gray">{poll?.title}</Heading></DialogPrimitive.Title>
                     <VisuallyHidden><DialogPrimitive.Description>Activité sondage</DialogPrimitive.Description></VisuallyHidden>
-                    <Button onClick={handleClickClose} variant='soft' color='gray' disabled={false}>Terminer</Button>
+                    <Button onClick={closePoll} variant='soft' color='gray' disabled={false}>Terminer</Button>
                 </Flex>
 
 
@@ -51,13 +65,10 @@ export default function PollAnimation({ roomId }: { roomId: number }) {
                                 <PollAnswerRow
                                     key={`${index}-${choice.text}`}
                                     text={choice.text}
-                                    //votes={votesArray[index]}
                                     votes={3}
                                     questionState={questionState || 'answering'}
-                                    //answerState={choicesStates[index]}
-                                    answerState='unselected'
-                                    //setAnswerState={(value) => setAnswerState(index, value)}
-                                    setAnswerState={() => {}}
+                                    answerState={myAnswers?.some(a => a.choiceId == choice.id) ? 'selected' : 'unselected'}
+                                    setAnswerState={(value) => setChoiceState(choice.id, value)}
                                 />
                             ))}
                         </Flex>
@@ -80,11 +91,11 @@ export default function PollAnimation({ roomId }: { roomId: number }) {
                                 setCurrentQuestionIndex={() => {}}
                             />
 
-                            <Button size='3' onClick={() =>{}} style={{ display: questionState == 'show results' ? 'none' : 'flex' }}>
+                            <Button size='3' onClick={() => changeQuestionState('show results')} style={{ display: questionState == 'show results' ? 'none' : 'flex' }}>
                                 Voir les résultats
                             </Button>
 
-                            <Button size='3' onClick={()=>{}} style={{ display: questionState == 'show results' ? 'flex' : 'none' }} variant='soft'>
+                            <Button size='3' onClick={() => changeQuestionState('answering')} style={{ display: questionState == 'show results' ? 'flex' : 'none' }} variant='soft'>
                                 Masquer les résultats
                             </Button>
 

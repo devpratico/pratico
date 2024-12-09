@@ -132,6 +132,8 @@ export async function openPoll(id: Id) {
     usePollAnimation.getState().openPoll(poll, id)
 }
 
+// TODO: on first load, checj the existence of a snapshot in the database and load it if it exists
+
 /**
  * Any time the answers change in the database, update them in the state.
  * - When a student answers a question
