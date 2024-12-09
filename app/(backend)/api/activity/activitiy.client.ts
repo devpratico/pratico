@@ -91,3 +91,15 @@ export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<
 export async function fetchActivity(id: number) {
     return await fetchActivityServer(id)
 }
+
+export async function fetchSnapshot(roomId: number) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('activity_snapshot').eq('id', roomId).single()
+
+    if (error) {
+        logger.error('supabase:database', `Error fetching snapshot of room ${roomId}`, error?.message)
+        return { data: null, error: error?.message }
+    }
+
+    return { data, error: null }
+}

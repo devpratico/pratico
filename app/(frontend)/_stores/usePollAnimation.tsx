@@ -7,7 +7,7 @@ import logger from "@/app/_utils/logger"
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
-import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import { fetchActivity, fetchSnapshot } from "@/app/(backend)/api/activity/activitiy.client"
 import { useEffect } from "react"
 
 
@@ -132,7 +132,13 @@ export async function openPoll(id: Id) {
     usePollAnimation.getState().openPoll(poll, id)
 }
 
-// TODO: on first load, checj the existence of a snapshot in the database and load it if it exists
+/** On first load, check the existence of a snapshot in the database and load it if it exists */
+async function loadSnapshotIfAny(roomId: number) {
+    const { data }= await fetchSnapshot(roomId)
+    if (isPollSnapshot(data?.activity_snapshot)) {
+        // TODO: be careful, may trigger a loop
+    }
+}
 
 /**
  * Any time the answers change in the database, update them in the state.
