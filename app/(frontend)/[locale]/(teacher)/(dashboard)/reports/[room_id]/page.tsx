@@ -1,12 +1,11 @@
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { Box, Button, Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
+import { Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceWidget } from "./_components/AttendanceWidget";
 import { NextIntlClientProvider } from "next-intl";
-import { Link } from "@/app/(frontend)/_intl/intlNavigation";
-import { ArrowLeft } from "lucide-react";
+import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -62,11 +61,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 			<ScrollArea>
 				<Section px={{ initial: '3', xs: '0' }}>
 					<Container>
-						<Button mb="5" ml="5" asChild variant="soft">
-							<Link href={`/reports`}>
-								<ArrowLeft />Retour
-							</Link>
-						</Button>
+						<BackButton backTo="/reports"/>
 						<Flex gap="5" justify="start">
 
 						<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>

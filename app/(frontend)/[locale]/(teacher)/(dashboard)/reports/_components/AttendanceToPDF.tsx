@@ -1,13 +1,12 @@
 "use client";
 import { Button, Card, Flex, Link, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
-import logger from "@/app/_utils/logger";
+import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -51,11 +50,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	return (
 		<>
 			<Flex justify='between'>
-				<Button onClick={() => logger.log("react:component", "Attendancetopdf", "return button")}asChild variant="soft">
-					<Link href={`/reports/${roomId}`}>
-						<ArrowLeft />Retour
-					</Link>
-				</Button>
+				<BackButton backTo={`/reports/${roomId}`}/>
 				<Button onClick={() => reactToPrint()}>
 					Générer PDF
 				</Button>
@@ -64,7 +59,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 			<Card mt='5'>
 				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
 					<p>Pratico</p>
-					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
+					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 					{
 						date !== "Invalid Date" &&  start !== "Invalid Date"
@@ -109,7 +104,7 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 									<Text ml='1'>Nom</Text>
 								</th>
 								<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
-									<Text  ml='1'>{"Heure d'arrivée"}</Text>
+									<Text  ml='1'>{"Heure de connexion"}</Text>
 								</th>
 								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
 									<Text ml='1'>Signature</Text>
