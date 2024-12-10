@@ -1,12 +1,12 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { formatDate } from "@/app/_utils/utils_functions";
-import { useEffect, useRef, useState } from "react";
+import { ForwardedRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
+import { useFormatter } from "next-intl";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -16,19 +16,19 @@ export type TeacherInfo = {
 		address: string,
 		zip_code: string, 
 		city: string
-	}
+	} | any
 }
-export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
-	{ attendances: AttendanceInfoType[], sessionDate: { date: string, end?: string | null | undefined }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId: string}}
+export default function AttendanceToPDF ({ ref, attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
+	{ ref: ForwardedRef<HTMLDivElement>,attendances: AttendanceInfoType[], sessionDate: { startDate: Date, endDate?: Date }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId: string}}
 ) {
 	const router = useRouter();
+	const formatter = useFormatter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
-	const date = formatDate(sessionDate.date, undefined, "date");
-	const start = formatDate(sessionDate.date, undefined, "time");
-	const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
-	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "time") : undefined; 
-	const contentRef = useRef<HTMLDivElement>(null);
-	const reactToPrint = useReactToPrint({contentRef})
+	const date = formatter.dateTime(sessionDate.startDate, {dateStyle:'short'});
+	const start = formatter.dateTime(sessionDate.startDate, {timeStyle:'short'});
+	const dateEnd = sessionDate.endDate ? formatter.dateTime(sessionDate.endDate, {dateStyle: 'short'}) : undefined;
+	const end = sessionDate.endDate ? formatter.dateTime(sessionDate.endDate, {timeStyle: 'short'}) : undefined; 
+	
 
 	useEffect(() => {
 		router.refresh();
@@ -49,12 +49,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-			<Flex justify='between'>
-				<BackButton backTo={`/reports/${roomId}`}/>
-				<Button onClick={() => reactToPrint()}>
-					Générer PDF
-				</Button>
-			</Flex>
 			<style jsx global>{`
 				.hidden-on-screen {
 					display: none;
@@ -70,8 +64,8 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					}
 				}
 				`}</style>
-			<Card mt='5'>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={`${luciole.className} hidden-on-screen`} >
+			<Card mt='5' className="hidden-on-screen">
+				<div style={{fontSize: '12px', margin: '20px'}} ref={ref} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
@@ -155,14 +149,6 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</table>
 				</div>
 			</Card>
-			
-			<style jsx global>{`
-				@media print {
-					@page {
-						margin: 10mm 30mm;
-					}
-				}
-			`}</style>
 		</>		
 	);
 };
