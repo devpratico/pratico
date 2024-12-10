@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Flex, Link, Text } from "@radix-ui/themes";
+import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { useEffect, useRef, useState } from "react";
@@ -55,9 +55,23 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					Générer PDF
 				</Button>
 			</Flex>
+			<style jsx global>{`
+				.hidden-on-screen {
+					display: none;
+				}
 
+				@media print {
+					.hidden-on-screen {
+					display: block !important;
+					}
+
+					@page {
+					margin: 10mm 30mm;
+					}
+				}
+				`}</style>
 			<Card mt='5'>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
+				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={`${luciole.className} hidden-on-screen`} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
