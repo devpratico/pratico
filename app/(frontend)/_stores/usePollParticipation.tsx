@@ -71,7 +71,7 @@ export default usePollParticipation
 // SERVICES
 
 /** Check if there is a snapshot in the database and populate the store with it */
-async function loadSnapshotIfAny(roomId: number) {
+async function loadRemoteSnapshot(roomId: number) {
     const { data: snapshotData } = await fetchSnapshot(roomId)
     const snapshot = snapshotData?.activity_snapshot
 
@@ -122,7 +122,7 @@ async function loadSnapshotIfAny(roomId: number) {
 
 function syncRemotePoll(roomId: number) {
     // Check if there is a snapshot in the database
-    loadSnapshotIfAny(roomId)
+    loadRemoteSnapshot(roomId)
 
     // Listen to changes in the database
     const supabase = createClient()
@@ -135,8 +135,9 @@ function syncRemotePoll(roomId: number) {
         filter: `id=eq.${roomId}`
     } as any // TODO: handle type
 
-    channel.on('postgres_changes', roomUpdate, (payload): void => {
-        const newRecord = payload.new as Tables<'rooms'>
+    channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, (payload): void => {
+        if (!(payload.eventType === 'UPDATE')) return
+        const newRecord = payload.new
         const snapshot = newRecord.activity_snapshot
         logger.log('supabase:realtime', "activity snapshot updated", snapshot)
 
