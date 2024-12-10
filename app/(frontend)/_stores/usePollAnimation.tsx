@@ -135,8 +135,14 @@ export async function openPoll(id: Id) {
 /** On first load, check the existence of a snapshot in the database and load it if it exists */
 async function loadSnapshotIfAny(roomId: number) {
     const { data }= await fetchSnapshot(roomId)
-    if (isPollSnapshot(data?.activity_snapshot)) {
+    const snapshot = data?.activity_snapshot
+    if (isPollSnapshot(snapshot)) {
         // TODO: be careful, may trigger a loop
+        const activityId = snapshot.activityId
+        await openPoll(activityId) // Sets the polll with empty answers
+        usePollAnimation.getState().setAnswers(snapshot.answers) // Sets the answers
+    } else {
+        logger.log('zustand:store', 'usePollAnimation.tsx', 'No poll snapshot found in database')
     }
 }
 
@@ -232,14 +238,15 @@ function syncLocalState(roomId: number) {
  * Use this hook to automatically sync the poll animation store with the database.
  */
 export function useSyncedPollAnimation(roomId: number) {
-
     useEffect(() => {
-        const cleanupLocal  = syncLocalState(roomId)
-        const cleanupRemote = syncRemoteAnswers(roomId)
+        loadSnapshotIfAny(roomId).then(() => {
+            const cleanupLocal  = syncLocalState(roomId)
+            const cleanupRemote = syncRemoteAnswers(roomId)
 
-        return () => {
-            cleanupLocal()
-            cleanupRemote()
-        }
+            return () => {
+                cleanupLocal()
+                cleanupRemote()
+            }
+        })
     }, [roomId])
 }
