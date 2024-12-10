@@ -8,17 +8,18 @@ import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { useFormatter } from "next-intl";
 import { useReactToPrint } from "react-to-print";
+import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
 
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
-	const formatter = useFormatter();
+	// const formatter = useFormatter();
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
-	const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
-	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
-	const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short'});
-	const dateEnd = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {dateStyle: 'short'}) : undefined;
-	const end = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {timeStyle: 'short'}) : undefined;
+	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
+	// const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
+	// const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short'});
+	// const dateEnd = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {dateStyle: 'short'}) : undefined;
+	// const end = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {timeStyle: 'short'}) : undefined;
 	attendances = attendances.sort((a, b) => {
 			const tmpA = a.last_name || '';
 			const tmpB = b.last_name || '';
@@ -91,22 +92,9 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 				}
 				</Table.Body>
 			</Table.Root>
-			<style jsx global>{`
-				.hidden-on-screen {
-					display: none;
-				}
-
-				@media print {
-					.hidden-on-screen {
-					display: block !important;
-					}
-
-					@page {
-					margin: 10mm 30mm;
-					}
-				}
-				`}</style>
-			<Card mt='5' className="hidden-on-screen">
+			<AttendanceToPDF attendances={sorted} sessionDate={sessionDate} capsuleTitle={capsuleTitle} user={{userInfo}} classnameDiv={luciole.className} ref={contentRef}/>
+			
+			{/* <Card mt='5' className="hidden-on-screen">
 				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
@@ -190,7 +178,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 						</tbody>
 					</table>
 				</div>
-			</Card>	
+			</Card>	 */}
 		</>
 	);
 };
