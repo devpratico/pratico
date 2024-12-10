@@ -1,5 +1,5 @@
 "use client";
-import { Link, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "./WidgetThumb";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { AttendanceInfoType } from "../page";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
-import { size } from "lodash";
 import WidgetButton from "./WidgetButton";
 
 export type AttendanceWidgetViewProps = {
@@ -32,15 +31,12 @@ export type AttendanceWidgetViewProps = {
 			last_name: string | null,
 			connexion: string | undefined,
 		}[];
-
 	}
-	
 };
 
 export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
-	// const router = useRouter();
 	const formatter = useFormatter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
@@ -48,10 +44,6 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
 	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short'}) : undefined; 
 	
-
-	// useEffect(() => {
-	// 	router.refresh();
-	// }, [router]);
 
 	useEffect(() => {
 		const getAttendancesList = () => {

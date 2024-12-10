@@ -63,28 +63,25 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					<Container>
 						<BackButton backTo="/reports"/>
 						<Flex gap="5" justify="start">
+							<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 
-						<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
-
-								<Text size="4" weight="bold">
-								{		
-									capsuleTitle && capsuleTitle !== "Sans titre"
-									? capsuleTitle
-									: "Capsule sans titre"
-								}
-								</Text>
-								{
-									sessionDate.date
-									? <Text size="1">{`Session du ${formatDate(sessionDate.date)}`}</Text> 
-									: <></>
-								}
-							<Flex direction="column" gap="5" mt="5">
-								<AttendanceWidget roomId={roomId} userId={userId} />
-							</Flex>
-
-						</Grid>
+									<Text size="4" weight="bold">
+									{		
+										capsuleTitle && capsuleTitle !== "Sans titre"
+										? capsuleTitle
+										: "Capsule sans titre"
+									}
+									</Text>
+									{
+										sessionDate.date
+										? <Text size="1">{`Session du ${formatDate(sessionDate.date)}`}</Text> 
+										: <></>
+									}
+								<Flex direction="column" gap="5" mt="5">
+									<AttendanceWidget roomId={roomId} userId={userId} />
+								</Flex>
+							</Grid>
 						</Flex>
-
 					</Container>
 				</Section>	
 			</ScrollArea>

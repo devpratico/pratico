@@ -11,7 +11,7 @@ export function BackButton ({ backTo }: { backTo: string }) {
 		router.push(backTo || "/");
 	};
 	return (
-		<Button onClick={handleBack} variant="soft">
+		<Button mb="4" onClick={handleBack} variant="soft">
 			<ArrowLeft />Retour
 		</Button>)
 
