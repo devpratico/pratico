@@ -1,13 +1,11 @@
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
-import { Container, ScrollArea, Section, Table } from "@radix-ui/themes";
+import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
-import { janifera } from "@/app/(frontend)/Fonts";
-import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
-import { OptionsMenu } from "../../../_components/OptionsMenu";
 import { AttendanceDisplay } from "../_components/AttendanceDisplay";
+import { getFormatter } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
@@ -76,7 +74,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<AttendanceDisplay attendances={attendances} roomId={roomId} />
+					<AttendanceDisplay attendances={attendances} roomId={roomId} sessionDate={sessionDate} userInfo={userInfo} capsuleTitle={capsuleTitle} />
 				</Container>
 			</Section>	
 		</ScrollArea>
