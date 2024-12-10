@@ -4,9 +4,10 @@ import { Container, ScrollArea, Section, Table } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
-import { TableCell } from "../../_components/TableCell";
 import { janifera } from "@/app/(frontend)/Fonts";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
+import { OptionsMenu } from "../../../_components/OptionsMenu";
+import { AttendanceDisplay } from "../_components/AttendanceDisplay";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
@@ -75,39 +76,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<BackButton backTo={`/reports/${roomId}`}/>
-					<Table.Root variant="surface">
-						<Table.Header>
-							<Table.Row>
-								<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Heure de connexion</Table.ColumnHeaderCell>
-								<Table.ColumnHeaderCell>Signature</Table.ColumnHeaderCell>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-						{
-							attendances?.map((attendance, index) => {
-								return (
-									<Table.Row key={index}>
-										<Table.Cell>
-											{attendance.first_name}
-										</Table.Cell>
-										<Table.Cell>
-											{attendance.last_name}
-										</Table.Cell>
-										<Table.Cell>
-											{attendance.connexion}
-										</Table.Cell>
-										<Table.Cell className={janifera.className}>
-											{`${attendance.first_name} ${attendance.last_name}`}
-										</Table.Cell>
-									</Table.Row>
-								);
-							})
-						}
-						</Table.Body>
-					</Table.Root>
+					<AttendanceDisplay attendances={attendances} roomId={roomId} />
 				</Container>
 			</Section>	
 		</ScrollArea>
