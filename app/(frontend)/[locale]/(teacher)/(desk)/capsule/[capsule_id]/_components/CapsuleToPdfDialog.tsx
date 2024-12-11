@@ -171,7 +171,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 				<AlertDialog.Trigger>
 					<Button style={{ width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages} disabled={disabled}>
 						<FileDown size='20' style={{ marginRight: '5px' }} />
-						<Text>Imprimer / Exporter en PDF</Text>
+						<Text>Télécharger en PDF</Text>
 					</Button>
 				</AlertDialog.Trigger>
 

@@ -50,7 +50,7 @@ export type TeacherInfo = {
 			<Flex mb="5" justify='between'>
 				<BackButton	backTo={backTo} />
 				<Button onClick={() => reactToPrint()}>
-					Générer PDF
+					Imprimer / Exporter PDF
 				</Button>
 			</Flex>
 			<style jsx global>{`
