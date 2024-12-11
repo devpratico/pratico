@@ -3,7 +3,7 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "./WidgetThumb";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { Button, Card, DataList, Flex, Strong, Text } from "@radix-ui/themes";
+import { Button, Card, DataList, Flex, IconButton, Strong, Text } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -101,17 +101,16 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
     }
 
     const buttons = (
-		<>
-			<WidgetButton disabled={data.attendanceCount < 1} onClick={() => reactToPrint()}>
-				<FileDown size='20' style={{ marginTop: "5px" }} />
-			</WidgetButton>
-			<Button disabled={data.attendanceCount < 1} size="1" radius="full" variant="soft" asChild>
+		<Flex gap="2" align="center">
+			<IconButton disabled={data.attendanceCount < 1}  variant="ghost" onClick={() => reactToPrint()}>
+				<FileDown />
+			</IconButton>
+			<Button disabled={data.attendanceCount < 1} radius="full" asChild>
 				<Link href={data.attendanceCount >= 1 ? data.nextUrl : "#"}>
-					<Strong>Détails</Strong>
+					Détails
 				</Link>
 			</Button>
-		</>
-		
+		</Flex>
     );
 
 	return (
