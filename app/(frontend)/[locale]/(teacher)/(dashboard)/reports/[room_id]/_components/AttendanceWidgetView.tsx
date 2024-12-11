@@ -3,7 +3,7 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "./WidgetThumb";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { Button, Card, DataList, Flex, IconButton, Strong, Text } from "@radix-ui/themes";
+import { Button, Card, DataList, Flex, IconButton, Strong, Text, Tooltip } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -102,9 +102,11 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 
     const buttons = (
 		<>
-			<IconButton disabled={data.attendanceCount < 1}  variant="ghost" onClick={() => reactToPrint()}>
-				<FileDown />
-			</IconButton>
+			<Tooltip content="Imprimer / Exporter en PDF">
+				<IconButton disabled={data.attendanceCount < 1}  variant="ghost" onClick={() => reactToPrint()}>
+					<FileDown />
+				</IconButton>
+			</Tooltip>
 			<Button disabled={data.attendanceCount < 1} radius="full" asChild>
 				<Link href={data.attendanceCount >= 1 ? data.nextUrl : "#"}>
 					Détails
