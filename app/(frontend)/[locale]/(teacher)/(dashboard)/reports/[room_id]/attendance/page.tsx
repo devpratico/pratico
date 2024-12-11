@@ -1,13 +1,14 @@
 import logger from "@/app/_utils/logger";
-import { formatDate } from "@/app/_utils/utils_functions";
 import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
 import { AttendanceDisplay } from "../_components/AttendanceDisplay";
+import { getFormatter } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
+	const formatter = await getFormatter();
 	const roomId = params.room_id;
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
@@ -58,7 +59,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatDate(attendance.created_at, undefined, "time")
+							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle: 'medium'})
 						};
 						attendances.push(infos);
 					})

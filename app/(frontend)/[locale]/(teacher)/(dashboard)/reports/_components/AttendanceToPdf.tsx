@@ -7,7 +7,6 @@ import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Link, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { ArrowLeft } from "lucide-react";
 import { Json } from "@/supabase/types/database.types";
-import { UrlObject } from "url";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,

@@ -10,6 +10,7 @@ import { useReactToPrint } from "react-to-print";
 import { AttendanceInfoType } from "../page";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import WidgetButton from "./WidgetButton";
+import { FileDown } from "lucide-react";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -102,7 +103,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
     const buttons = (
 		<>
 			<WidgetButton disabled={data.attendanceCount < 1} onClick={() => reactToPrint()}>
-				Générer PDF
+				<FileDown size='20' style={{ marginTop: "5px" }} />
 			</WidgetButton>
 			<Button disabled={data.attendanceCount < 1} size="1" radius="full" variant="soft" asChild>
 				<Link href={data.attendanceCount >= 1 ? data.nextUrl : "#"}>
