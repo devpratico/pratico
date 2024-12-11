@@ -1,11 +1,10 @@
 "use client";
 
 import { Table } from "@radix-ui/themes";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AttendanceInfoType } from "../page";
 import { janifera } from "@/app/(frontend)/Fonts";
 import { useFormatter } from "next-intl";
-import { useReactToPrint } from "react-to-print";
 import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
 
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:

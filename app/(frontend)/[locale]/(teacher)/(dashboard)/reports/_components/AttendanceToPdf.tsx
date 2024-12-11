@@ -1,11 +1,10 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
-import { Link, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
-import { ArrowLeft } from "lucide-react";
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 /// TYPE
