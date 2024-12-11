@@ -58,7 +58,7 @@ export interface PollSnapshot {
      */
     activityId: number;
     currentQuestionId: string;
-    currentQuestionState: 'answering' | 'show results';
+    state: 'voting' | 'showing results',
     answers: PollUserAnswer[]
 }
 
@@ -68,30 +68,6 @@ export interface PollSnapshot {
  */
 export function isPollSnapshot(snapshot: any): snapshot is PollSnapshot {
     return snapshot?.type === 'poll'
-}
-
-
-type SnapshotUpdater = (snapshot: PollSnapshot) => PollSnapshot // prevSnapshot => newSnapshot
-
-
-
-export function changeCurrentQuestionId(questionId: string): SnapshotUpdater {
-    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.currentQuestionId = questionId })
-}
-
-
-export function changeCurrentQuestionState(state: PollSnapshot['currentQuestionState']): SnapshotUpdater {
-    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.currentQuestionState = state })
-}
-
-
-export function addAnswer(answer: PollUserAnswer): SnapshotUpdater {
-    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.answers.push(answer) })
-}
-
-
-export function removeAnswer(answerId: string): SnapshotUpdater {
-    return (snapshot: PollSnapshot) => produce(snapshot, draft => { draft.answers = draft.answers.filter(a => a.userId !== answerId) })
 }
 
 

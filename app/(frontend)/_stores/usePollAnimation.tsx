@@ -18,7 +18,7 @@ type CurrentPoll = {
     id: Id,
     poll: Poll
     currentQuestionId: string
-    questionState: 'answering' | 'show results'
+    state: PollSnapshot['state']
     answers: PollUserAnswer[]
 }
 
@@ -40,7 +40,7 @@ type PollActions = {
     addAnswer: (answer: PollUserAnswer) => void
     removeAnswer: (answerId: string) => void
     changeQuestionId: (questionId: string) => void
-    changeQuestionState: (state: CurrentPoll['questionState']) => void
+    changeQuestionState: (state: CurrentPoll['state']) => void
 }
 
 type PollStore = PollState & PollActions
@@ -61,7 +61,7 @@ const usePollAnimation = create<PollStore>((set, get) => ({
                 id: id,
                 poll: poll,
                 currentQuestionId: poll.questions[0].id,
-                questionState: 'answering',
+                state: 'voting',
                 answers: []
             }
         })
@@ -97,7 +97,7 @@ const usePollAnimation = create<PollStore>((set, get) => ({
 
     changeQuestionState: (state) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.questionState = state
+            draft.currentPoll!.state = state
         }))
     }
 
@@ -214,7 +214,7 @@ function syncLocalState(roomId: number) {
             type: 'poll',
             activityId: currentPoll.id,
             currentQuestionId: currentPoll.currentQuestionId,
-            currentQuestionState: currentPoll.questionState,
+            state: currentPoll.state,
             answers: currentPoll.answers
         } as PollSnapshot
 
