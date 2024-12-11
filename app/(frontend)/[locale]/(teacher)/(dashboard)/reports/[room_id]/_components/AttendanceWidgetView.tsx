@@ -136,7 +136,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 					margin: 10mm 30mm;
 					}
 				}
-				`}</style>
+			`}</style>
 			<Card mt='5' className="hidden-on-screen">
 				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
 					<p>Pratico</p>

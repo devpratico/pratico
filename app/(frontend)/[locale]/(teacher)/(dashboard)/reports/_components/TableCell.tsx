@@ -1,22 +1,21 @@
 "use client";
 
-import { Badge, Table, Text } from "@radix-ui/themes";
+import { Badge, Flex, Table, Text } from "@radix-ui/themes";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
-import { janifera } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { User, Users } from "lucide-react";
 
 export type ReportsProps = {
-	attendanceView: boolean,
-	roomId?: string,
+	roomId: string,
+	nbParticipant: number
 }
 
 export type TableCellProps = {
-	roomClosed?: boolean,
-	rowHeaderCell: string | null | undefined
-	cellOne: string | null | undefined,
-	cellTwo: string | null | undefined,
-	cellThree?: string | undefined
+	roomClosed: boolean,
+	title: string,
+	date: string,
+	status: string, //  "En cours" | "Terminé"
 }
 
 export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProps, infos: TableCellProps}) {
@@ -26,7 +25,7 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 		setIsClosed(infos.roomClosed);
 	  }, [infos.roomClosed]);
 	const handleClick = () => {
-		if (!navigationsIds.attendanceView && navigationsIds.roomId && infos.roomClosed)
+		if (navigationsIds.roomId && infos.roomClosed)
 			router.push(`/reports/${navigationsIds.roomId}`);
 		else
 		{
@@ -37,31 +36,29 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 		}
 	};
 	return (
-		<Table.Row style={{cursor: infos.roomClosed && !navigationsIds.attendanceView ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
-			<Table.RowHeaderCell style={{verticalAlign: 'middle'}}>{infos.rowHeaderCell ? infos.rowHeaderCell : ""}</Table.RowHeaderCell>
-			<Table.Cell style={{verticalAlign: 'middle'}}>
-					{infos.cellOne}
+		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
+			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
+			<Table.Cell>
+					{infos.date}
 			</Table.Cell>
-			<Table.Cell style={{verticalAlign: 'middle'}}>
+			<Table.Cell>
 				{
-					infos.cellTwo === "En cours"
+					infos.status === "En cours"
 					? <Badge color="violet" variant="soft" radius="full">
-						{infos.cellTwo}
+						{infos.status}
 					</Badge>
-					: infos.cellTwo === "Terminé"
-						? <Badge color="jade" variant="soft" radius="full">
-							{infos.cellTwo}
-						</Badge>
-						: infos.cellTwo
+					: <Badge color="jade" variant="soft" radius="full">
+							{infos.status}
+					</Badge>
 				}				
 			</Table.Cell>
-			{
-				navigationsIds.attendanceView
-				? <Table.Cell style={{verticalAlign: 'middle'}}>
-					<Text size='6' className={janifera.className}>{`${infos.rowHeaderCell} ${infos.cellOne}`}</Text>
-				</Table.Cell>			
-				: ""
-			}
+			<Table.Cell>
+				{
+					navigationsIds.nbParticipant > 1
+					? <Flex gap="1"><Text>1{navigationsIds.nbParticipant}</Text><Users size="20" /></Flex>
+					: <Flex gap="1"><Text>{navigationsIds.nbParticipant}</Text><User size="20" /></Flex>
+				}
+			</Table.Cell>
 		</Table.Row>
 	);
 };
