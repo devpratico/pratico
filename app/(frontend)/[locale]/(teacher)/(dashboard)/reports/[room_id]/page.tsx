@@ -28,10 +28,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	const formatter = await getFormatter();
 	let userId: string | null = null;
 	let capsuleTitle = "Sans titre";
-	let sessionDate: { date: string, end: string | null | undefined } = {
-		date: "",
-		end: ""
-	};
+	let sessionDate: { date: Date, end: Date } | null = null;
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
@@ -43,8 +40,8 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		{
 			userId = user.id;
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
-			if (roomData)
-				sessionDate = { date: roomData.created_at, end: roomData.end_of_session };
+			if (roomData && roomData.end_of_session)
+				sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
 			const capsuleId = roomData?.capsule_id;
 			if (capsuleId)
 			{
@@ -72,12 +69,12 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 								}
 								</Text>
 								{
-									sessionDate.date
-									? <Text size="1">{`Session du ${formatter.dateTime(new Date(sessionDate.date), {dateStyle: "short"})}`}</Text> 
+									sessionDate?.date
+									? <Text size="1">{`Session du ${formatter.dateTime(sessionDate.date, {dateStyle: "short"})}`}</Text> 
 									: <></>
 								}
 							<Flex direction="column" gap="5" mt="5">
-								<AttendanceWidget roomId={roomId} userId={userId} />
+								<AttendanceWidget roomId={roomId} userId={userId} capsuleTitle={capsuleTitle}/>
 							</Flex>
 						</Grid>
 					</Flex>

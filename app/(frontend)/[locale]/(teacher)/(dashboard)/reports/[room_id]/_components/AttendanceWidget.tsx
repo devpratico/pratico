@@ -8,10 +8,11 @@ import { getFormatter } from "next-intl/server";
 
 type AttendanceWidgetProps = {
 	roomId: number,
-	userId: string | null
+	userId: string | null,
+	capsuleTitle: string
 };
 
-export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps) {
+export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
 	const attendanceCount = await countAttendances(roomId);
@@ -27,7 +28,6 @@ export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps
 		organization: null,
 	  };
 	let attendances: AttendanceInfoType[] = [];
-	let capsuleTitle = "Sans titre";
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
@@ -42,21 +42,11 @@ export async function AttendanceWidget({ roomId, userId }: AttendanceWidgetProps
 				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (userData)
 				userInfo = userData;
-			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
-			if (roomData)
-				sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session!) };	
 			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
 			if (!attendanceData?.length)
 				logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
 			else if (!attendanceData || attendanceError) {
 				logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
-			}
-			const capsuleId = roomData?.capsule_id;
-			if (capsuleId)
-			{
-				const { data: capsuleData, error: capsuleError } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
-				if (capsuleData)
-					capsuleTitle = capsuleData.title ? capsuleData.title : "Sans titre";
 			}
 
 			if (attendanceData?.length)
