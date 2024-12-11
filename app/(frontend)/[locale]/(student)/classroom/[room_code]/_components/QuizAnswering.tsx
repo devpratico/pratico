@@ -2,7 +2,7 @@
 import { Container, Section, Dialog, Flex, Heading } from "@radix-ui/themes"
 import { Quiz } from "@/app/_types/quiz"
 import { QuizAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/menus/ActivitiesMenu/components/QuizAnimation"
-import { useUser } from "@/app/(frontend)/_hooks/useUser"
+import useUser from "@/app/(frontend)/_stores/useUser"
 import { useEffect, useMemo, useState, useCallback } from "react"
 import { useQuizSnapshot } from "@/app/(frontend)/_hooks/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
@@ -10,7 +10,7 @@ import createClient from "@/supabase/clients/client"
 
 
 export default function QuizAnswering() {
-    const { userId } = useUser()
+    const userId = useUser(state => state.user?.id)
     const { snapshot, addAnswer, removeAnswer } = useQuizSnapshot()
     const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)
     const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)

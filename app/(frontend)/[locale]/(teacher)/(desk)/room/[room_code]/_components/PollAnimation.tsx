@@ -4,6 +4,7 @@ import usePollAnimation, { useSyncedPollAnimation } from '@/app/(frontend)/_stor
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
+import { PollSnapshot } from '@/app/_types/poll2'
 
 
 interface PollAnimationProps {
@@ -18,7 +19,7 @@ export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
     const closePoll = usePollAnimation(state => state.closePoll)
     const poll = usePollAnimation(state => state.currentPoll?.poll)
     const currentQuestionId = usePollAnimation(state => state.currentPoll?.currentQuestionId)
-    const questionState = usePollAnimation(state => state.currentPoll?.questionState)
+    const questionState = usePollAnimation(state => state.currentPoll?.state)
     const changeQuestionState = usePollAnimation(state => state.changeQuestionState)
     const answers = usePollAnimation(state => state.currentPoll?.answers)
     const myAnswers = answers?.filter(a => a.userId == userId)
@@ -66,7 +67,7 @@ export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
                                     key={`${index}-${choice.text}`}
                                     text={choice.text}
                                     votes={3}
-                                    questionState={questionState || 'answering'}
+                                    questionState={questionState || 'voting'}
                                     answerState={myAnswers?.some(a => a.choiceId == choice.id) ? 'selected' : 'unselected'}
                                     setAnswerState={(value) => setChoiceState(choice.id, value)}
                                 />
@@ -91,11 +92,11 @@ export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
                                 setCurrentQuestionIndex={() => {}}
                             />
 
-                            <Button size='3' onClick={() => changeQuestionState('show results')} style={{ display: questionState == 'show results' ? 'none' : 'flex' }}>
+                            <Button size='3' onClick={() => changeQuestionState('showing results')} style={{ display: questionState == 'showing results' ? 'none' : 'flex' }}>
                                 Voir les résultats
                             </Button>
 
-                            <Button size='3' onClick={() => changeQuestionState('answering')} style={{ display: questionState == 'show results' ? 'flex' : 'none' }} variant='soft'>
+                            <Button size='3' onClick={() => changeQuestionState('voting')} style={{ display: questionState == 'showing results' ? 'flex' : 'none' }} variant='soft'>
                                 Masquer les résultats
                             </Button>
 
@@ -112,20 +113,20 @@ export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
 interface PollAnswerRowProps {
     text: string,
     votes: number,
-    questionState: 'answering' | 'show results'
+    questionState: PollSnapshot['state']
     answerState: 'selected' | 'unselected'
     setAnswerState: (value: 'selected' | 'unselected') => void
 }
 
 export function PollAnswerRow({ text, votes, questionState, answerState = 'unselected', setAnswerState }: PollAnswerRowProps) {
 
-    const isSolid = questionState == 'answering' && answerState === 'selected'
-    const isSoft = questionState == 'show results'
+    const isSolid = questionState == 'voting' && answerState === 'selected'
+    const isSoft = questionState == 'showing results'
     const variant = isSolid ? 'solid' : isSoft ? 'soft' : 'outline'
 
 
     function handleClick() {
-        if (questionState == 'show results') return
+        if (questionState == 'showing results') return
         setAnswerState(answerState == 'selected' ? 'unselected' : 'selected')
     }
 
@@ -133,7 +134,7 @@ export function PollAnswerRow({ text, votes, questionState, answerState = 'unsel
         <Button variant={variant} onClick={handleClick}>
             {text}
             <Box ml='auto'>
-                {questionState == 'show results' && <Badge variant='solid' radius='full'>{votes}</Badge>}
+                {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}
             </Box>
         </Button>
     )

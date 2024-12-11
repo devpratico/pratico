@@ -8,7 +8,7 @@ import TooltipL from "@/app/(frontend)/[locale]/_components/TooltipL";
 import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { useUser } from "@/app/(frontend)/_hooks/useUser";
+import useUser from "@/app/(frontend)/_stores/useUser";
 import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton";
 import GoPremiumBtn from "../../../../_components/GoPremiumBtn";
 
@@ -19,7 +19,7 @@ export default function StartDialog() {
     const [showCopied, setShowCopied] = useState(false)
     const [copyMessage, setCopyMessage] = useState('Copier')
     const [open, setOpen] = useState(true)
-    const { isSubscribed } = useUser()
+    const isSubscribed = useUser(state => state.isSubscribed)
 
     const link = baseUrl + '/' + room_code
     const linkWithoutProtocol = link.replace(/^https?:\/\//, '')

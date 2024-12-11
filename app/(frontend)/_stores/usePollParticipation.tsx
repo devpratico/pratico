@@ -6,6 +6,7 @@ import { fetchActivity, fetchSnapshot } from "@/app/(backend)/api/activity/activ
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
 import { useEffect } from "react"
+import useUser from "./useUser"
 
 
 type State = {
@@ -192,5 +193,13 @@ export function useSyncedPoll(roomId: number) {
 
 
 export function vote(choiceId: string) {
+    const userId = useUser(state => state.user?.id)
+    if (!userId) {
+        logger.error('zustand:store', 'usePollParticipation.tsx', 'vote', 'Cant vote because no user id found')
+        return
+    }
+    usePollParticipation.getState().vote({choiceId, userId})
 
+    // Save the vote in the database
+    
 }
