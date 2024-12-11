@@ -14,7 +14,7 @@ export default function ReportWidgetTemplate({ thumb, content, buttons }: Report
 			{thumb}
 				<Grid columns='1' rows='1fr auto' gap='5'>
 				{content}
-				<Flex gap='3' justify='end'>
+				<Flex gap="2" align="center" justify='end'>
 					{buttons}
 				</Flex>
 			</Grid>

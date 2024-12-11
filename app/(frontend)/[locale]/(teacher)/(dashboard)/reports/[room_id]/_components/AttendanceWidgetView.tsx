@@ -101,7 +101,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
     }
 
     const buttons = (
-		<Flex gap="2" align="center">
+		<>
 			<IconButton disabled={data.attendanceCount < 1}  variant="ghost" onClick={() => reactToPrint()}>
 				<FileDown />
 			</IconButton>
@@ -110,7 +110,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 					Détails
 				</Link>
 			</Button>
-		</Flex>
+		</>
     );
 
 	return (
