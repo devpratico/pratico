@@ -55,7 +55,7 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 			<Table.Cell>
 				{
 					navigationsIds.nbParticipant > 1
-					? <Flex gap="1"><Text>1{navigationsIds.nbParticipant}</Text><Users size="20" /></Flex>
+					? <Flex gap="1"><Text>{navigationsIds.nbParticipant}</Text><Users size="20" /></Flex>
 					: <Flex gap="1"><Text>{navigationsIds.nbParticipant}</Text><User size="20" /></Flex>
 				}
 			</Table.Cell>
