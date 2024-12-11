@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 export function BackButton ({ backTo }: { backTo: string }) {
 	const router = useRouter();
 
-	const handleBack = () => {
+	const handleBack = (e: React.MouseEvent) => {
+		e.preventDefault();
 		router.prefetch(backTo);
 		router.push(backTo || "/");
 	};
