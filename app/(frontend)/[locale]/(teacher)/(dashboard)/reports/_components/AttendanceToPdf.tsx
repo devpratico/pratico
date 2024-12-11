@@ -7,6 +7,7 @@ import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Link, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { ArrowLeft } from "lucide-react";
 import { Json } from "@/supabase/types/database.types";
+import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -48,11 +49,7 @@ export type TeacherInfo = {
 	return (
 		<>
 			<Flex mb="5" justify='between'>
-				<Button asChild variant="soft">
-					<Link href={backTo}>
-						<ArrowLeft />Retour
-					</Link>
-				</Button>
+				<BackButton	backTo={backTo} />
 				<Button onClick={() => reactToPrint()}>
 					Générer PDF
 				</Button>

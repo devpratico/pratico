@@ -1,10 +1,9 @@
 "use client";
 
-import { Button, Flex, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
 import { AttendanceInfoType } from "../page";
-import { janifera, luciole } from "@/app/(frontend)/Fonts";
-import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
+import { janifera } from "@/app/(frontend)/Fonts";
 import { useFormatter } from "next-intl";
 import { useReactToPrint } from "react-to-print";
 import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
@@ -12,8 +11,6 @@ import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
 	const formatter = useFormatter();
-	const contentRef = useRef<HTMLDivElement>(null);
-	const reactToPrint = useReactToPrint({contentRef});
 	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
 	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
 	const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short'});
