@@ -10,7 +10,6 @@ import { useReactToPrint } from "react-to-print";
 import { AttendanceInfoType } from "../page";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import WidgetButton from "./WidgetButton";
-import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -121,9 +120,8 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 				content={<Content/>}
 				buttons={buttons}
 			/>
-			<AttendanceToPDF attendances={data.attendances} sessionDate={data.sessionDate} capsuleTitle={data.capsuleTitle} user={{ userInfo: data.userInfo }} classnameDiv={"hidden-to-screen"} ref={contentRef} />
 
-			{/* <style jsx global>{`
+			<style jsx global>{`
 				.hidden-on-screen {
 					display: none;
 				}
@@ -222,7 +220,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 						</tbody>
 					</table>
 				</div>
-			</Card> */}
+			</Card>
 		</>
 		
 	);

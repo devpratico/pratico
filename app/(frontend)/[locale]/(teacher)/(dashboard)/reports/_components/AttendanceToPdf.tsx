@@ -1,39 +1,31 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { formatDate } from "@/app/_utils/utils_functions";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Link, useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { ArrowLeft } from "lucide-react";
+import { Json } from "@/supabase/types/database.types";
+import { UrlObject } from "url";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
 	last_name: string | null,
-	organization?: {
-		name: string,
-		address: string,
-		zip_code: string, 
-		city: string
-	}
+	organization?: Json | null
 }
 
   interface Props {
 	attendances: AttendanceInfoType[];
-	sessionDate: { date: string; end?: string | null | undefined };
+	sessionDate: { startDate: string; startTime: string; endDate?: string; endTime?: string };
 	capsuleTitle: string;
 	user: { userInfo: { first_name: string; last_name: string; organization: string } };
-	classnameDiv: string;
+	backTo: string;
   }
   
-  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, classnameDiv }, ref) => {
+  export function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo }: Props){
 	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
-	const date = formatDate(sessionDate.date, undefined, "date");
-	const start = formatDate(sessionDate.date, undefined, "time");
-	const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
-	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "time") : undefined; 
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef})
 
@@ -56,9 +48,9 @@ export type TeacherInfo = {
 	
 	return (
 		<>
-			<Flex justify='between'>
+			<Flex mb="5" justify='between'>
 				<Button asChild variant="soft">
-					<Link href={`/reports`}>
+					<Link href={backTo}>
 						<ArrowLeft />Retour
 					</Link>
 				</Button>
@@ -81,20 +73,17 @@ export type TeacherInfo = {
 					}
 				}
 			`}</style>
-			<Card mt='5' className={classnameDiv}>
+			<Card mt='5' className={"hidden-on-screen"}>
 				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
 					<p>Pratico</p>
-					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
+					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 					{
-						date !== "Invalid Date" &&  start !== "Invalid Date"
-						? 
-							date && start && end
-							? 	dateEnd && date !== dateEnd
-								? <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
-								: <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
-							: <Text as='div' mb='4'>{`${date ? `Session du ${date}` : ""} ${date && start ? ` à ${start}` : ""}`}</Text>
-						: <Text as='div' mb='4'></Text>
+						sessionDate.startDate && sessionDate.startTime && sessionDate.endTime
+						? 	sessionDate.endDate && sessionDate.startDate !== sessionDate.endDate
+							? <Text as='div' mb='4'>{`Session du ${sessionDate.startDate} à ${sessionDate.startTime} au ${sessionDate.endDate} à ${sessionDate.endTime}`}</Text>
+							: <Text as='div' mb='4'>{`Session du ${sessionDate.startDate} de ${sessionDate.startTime} à ${sessionDate.endTime}`}</Text> 
+						: <Text as='div' mb='4'>{`${sessionDate.startDate ? `Session du ${sessionDate.startDate}` : ""} ${sessionDate.startDate && sessionDate.startTime ? ` à ${sessionDate.startTime}` : ""}`}</Text>
 					}
 					{
 						userInfo ?
@@ -168,5 +157,4 @@ export type TeacherInfo = {
 			</Card>
 		</>		
   	);
-	  AttendanceToPDF.displayName = 'AttendanceToPDF';
-});
+};
