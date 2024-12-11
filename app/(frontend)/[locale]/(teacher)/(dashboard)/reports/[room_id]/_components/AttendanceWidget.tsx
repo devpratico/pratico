@@ -8,7 +8,7 @@ import { getFormatter } from "next-intl/server";
 
 type AttendanceWidgetProps = {
 	roomId: number,
-	userId: string | null,
+	userId: string,
 	capsuleTitle: string
 };
 
@@ -34,61 +34,43 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 		return ;				
 	}
 	try {
-		const {data: { user }} = await supabase.auth.getUser();
-		if (user)
-		{
-			const { data: userData, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
-			if (error)
-				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
-			if (userData)
-				userInfo = userData;
-			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
-			if (!attendanceData?.length)
-				logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
-			else if (!attendanceData || attendanceError) {
-				logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
-			}
-
-			if (attendanceData?.length)
-			{
-				await Promise.all(
-					attendanceData.map(async (attendance) => {
-						const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
-						if (!data || error) {
-							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
-						}
-						const infos: AttendanceInfoType = {
-							first_name: attendance.first_name,
-							last_name: attendance.last_name,
-							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short'})
-						};
-						attendances.push(infos);
-					})
-				);
-			}
-		}
-		
-	} catch (err) {
-		logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
-	}
-	if (userId)
-	{
 		const { data: userData, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', userId).single();
 		if (error)
 			logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 		if (userData)
-		{
 			userInfo = userData;
+		const { data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
+		if (roomData && roomData?.end_of_session)
+			sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
+		if ((!sessionDate?.date && !sessionDate?.end) || roomError)
+			logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate, roomError);
+		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+		if (!attendanceData?.length)
+			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
+		else if (!attendanceData || attendanceError) {
+			logger.error('supabase:database', 'sessionDetailsPage', attendanceError ? attendanceError : 'No attendances data for this capsule');
 		}
-	}
-	const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
-	if (roomData && roomData?.end_of_session)
-		sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
-	if ((!sessionDate?.date && !sessionDate?.end) || roomError)
-	{
-		logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate, roomError);
-		return (<>{`Quelque chose s'est mal passé. ${roomError?.message}`}</>);
-	}
+
+		if (attendanceData?.length)
+		{
+			await Promise.all(
+				attendanceData.map(async (attendance) => {
+					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
+					if (!data || error) {
+						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
+					}
+					const infos: AttendanceInfoType = {
+						first_name: attendance.first_name,
+						last_name: attendance.last_name,
+						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short'})
+					};
+					attendances.push(infos);
+				})
+			);
+		}
+	} catch (err) {
+		logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
+	}	
 
 	data = {
 		attendanceCount: attendanceCount,

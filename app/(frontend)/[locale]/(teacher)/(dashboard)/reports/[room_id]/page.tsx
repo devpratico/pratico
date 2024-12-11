@@ -53,6 +53,8 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	} catch (err) {
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
+	if (!userId)
+		return (<>Chargement...</>)
 	return (<>
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
