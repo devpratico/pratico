@@ -8,7 +8,7 @@ import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
 import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
-import { CircleAlert, CircleCheck, FolderDown } from "lucide-react";
+import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
@@ -170,8 +170,8 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 
 				<AlertDialog.Trigger>
 					<Button style={{ width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages} disabled={disabled}>
-						<FolderDown size='20' style={{ marginRight: '5px' }} />
-						<Text>Exporter en PDF</Text>
+						<FileDown size='20' style={{ marginRight: '5px' }} />
+						<Text>Télécharger en PDF</Text>
 					</Button>
 				</AlertDialog.Trigger>
 

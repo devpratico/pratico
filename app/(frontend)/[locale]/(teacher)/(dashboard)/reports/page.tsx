@@ -8,32 +8,6 @@ import { SessionInfoType } from './[room_id]/page';
 // TYPE
 export type CapsuleType = TablesInsert<"capsules">;
 
-// export const getReportData = async (capsuleId: string) => {
-// 	const { data: roomData, error: roomError } = await fetchRoomsByCapsuleId(capsuleId);
-// 	let sessions: SessionInfoType[] | null = null;
-// 	logger.debug("supabase:database", "ReportsOfCapsulePage", "fetchRoomsByCapsuleId datas", roomData, roomError);
-// 	if (!roomData || roomError)
-// 	{
-// 		logger.error("supabase:database", "ReportsOfCapsulePage", roomError ? roomError : "No rooms data for this capsule");
-// 		return (null);
-// 	}
-// 	roomData.map(async (room) => {
-// 		const{ data, error } =  await fetchAttendancesByRoomId(room.id);
-// 		if (!data || error)
-// 			logger.error("supabase:database", "ReportsOfCapsulePage", error ? error : "No attendance data for this room");
-// 		const infos: SessionInfoType = {
-// 			created_at: room.created_at,
-// 			numberOfParticipant: data ? data.length : 0,
-// 			status: room.status
-// 		}
-// 		if (sessions)
-// 			sessions.push(infos);
-// 		else
-// 			sessions = [infos];
-// 	});
-// 	return (sessions);
-// };
-
 export default async function ReportsPage() {
 	let capsules: CapsuleType[] = [];
 	let sessions: SessionInfoType[] = [];

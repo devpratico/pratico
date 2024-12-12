@@ -1,38 +1,33 @@
 "use client";
-import { Button, Card, Flex, Link, Text } from "@radix-ui/themes";
+import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { ArrowLeft } from "lucide-react";
-import { formatDate } from "@/app/_utils/utils_functions";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
+import { Json } from "@/supabase/types/database.types";
+import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
+import { FileDown } from "lucide-react";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
 	last_name: string | null,
-	organization?: {
-		name: string,
-		address: string,
-		zip_code: string, 
-		city: string
-	}
+	organization?: Json | null
 }
-export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo, roomId} }:
-	{ attendances: AttendanceInfoType[], sessionDate: { date: string, end?: string | null | undefined }, capsuleTitle: string, user: { userInfo: TeacherInfo | null, roomId?: string}}
-) {
-	const router = useRouter();
-	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
-	const date = formatDate(sessionDate.date, undefined, "date");
-	const start = formatDate(sessionDate.date, undefined, "time");
-	const dateEnd = sessionDate.end ? formatDate(sessionDate.end, undefined, "date") : undefined;
-	const end = sessionDate.end ? formatDate(sessionDate.end, undefined, "time") : undefined; 
-	const contentRef = useRef<HTMLDivElement>(null);
-	const reactToPrint = useReactToPrint({contentRef})
 
-	useEffect(() => {
-		router.refresh();
-	}, [router]);
+  interface Props {
+	attendances: AttendanceInfoType[];
+	sessionDate: { startDate: string; startTime: string; endDate?: string; endTime?: string };
+	capsuleTitle: string;
+	user: { userInfo: { first_name: string | null; last_name: string | null; organization: Json | null} | null };
+	backTo: string;
+	hideClassname?: string;
+  }
+  
+  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
+	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
+	const contentRef = useRef<HTMLDivElement>(null);
+	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
+
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
@@ -48,38 +43,45 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 	
 	return (
 		<>
-			<Flex justify='between'>
-				<Button asChild variant="soft">
-					<Link href={`/reports`}>
-						<ArrowLeft />Retour
-					</Link>
-				</Button>
+			<Flex mb="5" justify='between' className={hideClassname || ""}>
+				<BackButton	backTo={backTo} />
 				<Button onClick={() => reactToPrint()}>
-					Générer PDF
+					<FileDown size="20"/> Imprimer / Exporter PDF
 				</Button>
 			</Flex>
+			<style jsx global>{`
+				.hidden-on-screen {
+					display: none;
+				}
 
-			<Card mt='5'>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
+				@media print {
+					.hidden-on-screen {
+					display: block !important;
+					}
+
+					@page {
+					margin: 10mm 30mm;
+					}
+				}
+			`}</style>
+			<Card mt='5' className={"hidden-on-screen"}>
+				<div style={{fontSize: '12px', margin: '20px'}} ref={ref || contentRef} className={luciole.className} >
 					<p>Pratico</p>
-					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Rapport de Session</h2>
+					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
 					{
-						date !== "Invalid Date" &&  start !== "Invalid Date"
-						? 
-							date && start && end
-							? 	dateEnd && date !== dateEnd
-								? <Text as='div' mb='4'>{`Session du ${date} à ${start} au ${dateEnd} à ${end}`}</Text>
-								: <Text as='div' mb='4'>{`Session du ${date} de ${start} à ${end}`}</Text> 
-							: <Text as='div' mb='4'>{`${date ? `Session du ${date}` : ""} ${date && start ? ` à ${start}` : ""}`}</Text>
-						: <Text as='div' mb='4'></Text>
+						sessionDate.startDate && sessionDate.startTime && sessionDate.endTime
+						? 	sessionDate.endDate && sessionDate.startDate !== sessionDate.endDate
+							? <Text as='div' mb='4'>{`Session du ${sessionDate.startDate} à ${sessionDate.startTime} au ${sessionDate.endDate} à ${sessionDate.endTime}`}</Text>
+							: <Text as='div' mb='4'>{`Session du ${sessionDate.startDate} de ${sessionDate.startTime} à ${sessionDate.endTime}`}</Text> 
+						: <Text as='div' mb='4'>{`${sessionDate.startDate ? `Session du ${sessionDate.startDate}` : ""} ${sessionDate.startDate && sessionDate.startTime ? ` à ${sessionDate.startTime}` : ""}`}</Text>
 					}
 					{
 						userInfo ?
 						<>
 						{
 								userInfo.organization
-								? <Text >{`${`${userInfo.organization.name}, ` || ""}${userInfo.organization.address || ""} ${userInfo.organization.zip_code || ""} ${userInfo.organization.city || ""} `}</Text>
+								? <Text >{`${userInfo.organization.toString()} `}</Text>
 								: <></>
 							}
 							<Text as='div'>
@@ -144,14 +146,8 @@ export default function AttendanceToPDF ({ attendances, sessionDate, capsuleTitl
 					</table>
 				</div>
 			</Card>
-			
-			<style jsx global>{`
-				@media print {
-					@page {
-						margin: 10mm 30mm;
-					}
-				}
-			`}</style>
 		</>		
-	);
-};
+  	);
+});
+
+AttendanceToPDF.displayName = "AttendanceToPDF";
