@@ -239,13 +239,16 @@ function syncLocalState(roomId: number) {
  */
 export function useSyncedPollAnimation(roomId: number) {
     useEffect(() => {
+        let cleanUpLocal: () => void
+        let cleanUpRemote: () => void
+
         loadSnapshotIfAny(roomId).then(() => {
-            const cleanupLocal  = syncLocalState(roomId)
-            const cleanupRemote = syncRemoteAnswers(roomId)
+            cleanUpLocal  = syncLocalState(roomId)
+            cleanUpRemote = syncRemoteAnswers(roomId)
 
             return () => {
-                cleanupLocal()
-                cleanupRemote()
+                if (cleanUpLocal) cleanUpLocal()
+                if (cleanUpRemote) cleanUpRemote()
             }
         })
     }, [roomId])

@@ -1,6 +1,6 @@
 'use client'
 import CardDialog from '@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog'
-import usePollAnimation, { useSyncedPollAnimation } from '@/app/(frontend)/_stores/usePollAnimation'
+import usePollAnimation, { useSyncedPollAnimation } from '@/app/(frontend)/_hooks/stores/usePollAnimation'
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'

@@ -8,7 +8,7 @@ import { QuizProvider } from "@/app/(frontend)/_hooks/useQuiz"
 import { PollProvider } from "@/app/(frontend)/_hooks/usePoll"
 import { emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz"
 //import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
-import usePollCreation from "../../../../../../../_stores/usePollCreation"
+import usePollCreation from "../../../../../../../_hooks/stores/usePollCreation"
 import { mockPoll, emptyPoll  } from "@/app/_types/poll2"
 
 

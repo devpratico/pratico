@@ -9,7 +9,7 @@ import { useDisable } from "@/app/(frontend)/_hooks/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client"
-import useUser from "@/app/(frontend)/_stores/useUser"
+import { useUser } from "@/app/(frontend)/_hooks/useUser"
 
 
 
@@ -19,7 +19,7 @@ export default function ChangePasswordForm() {
     const [successMessage, setSuccessMessage ] = useState<string | null>(null);
     const [showPasswords, setShowPasswords] = useState<boolean>(false);
     const { disabled, setDisabled } = useDisable();
-    const user = useUser((state) => state.user);
+    const { user } = useUser();
 
 
     const handleShowPasswords = (e: React.MouseEvent<HTMLButtonElement>) => {

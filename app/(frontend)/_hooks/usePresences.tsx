@@ -5,7 +5,7 @@ import logger from "@/app/_utils/logger";
 import { getRandomColor } from "@/app/_utils/codeGen";
 import { getUserPreferences } from "tldraw";
 import { useParams } from "next/navigation";
-import useUser from "../_stores/useUser";
+import { useUser } from "./useUser";
 
 
 interface PresenceUser {
@@ -43,9 +43,7 @@ const PresencesContext = createContext<PresencesContext>(emptyPresencesContext)
 export function PresencesProvider({ children }: PresencesProviderProps) {
     const [presences, setPresences] = useState<PresenceState[]>([])
     const { room_code }: { room_code: string } = useParams();
-    const userId = useUser(state => state.user?.id)
-    const firstName = useUser(state => state.firstName)
-    const lastName = useUser(state => state.lastName)
+    const { userId, firstName, lastName } = useUser()
 
     useEffect(() => {
         logger.log('supabase:realtime', 'usePresences', presences)

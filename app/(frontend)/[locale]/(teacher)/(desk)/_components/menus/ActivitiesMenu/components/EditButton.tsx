@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
-import usePollCreation from '@/app/(frontend)/_stores/usePollCreation'
+import usePollCreation from '@/app/(frontend)/_hooks/stores/usePollCreation'
 import logger from '@/app/_utils/logger'
 
 

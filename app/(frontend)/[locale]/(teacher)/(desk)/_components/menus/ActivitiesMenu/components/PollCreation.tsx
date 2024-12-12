@@ -5,7 +5,7 @@ import Title from "./Title"
 import {  LucideProps, X, Check, Copy, Trash2, Plus } from "lucide-react"
 import Navigator from "./Navigator"
 import CancelButton from "./CancelButton"
-import usePollCreation, { closeAndSave } from "../../../../../../../_stores/usePollCreation"
+import usePollCreation, { closeAndSave } from "../../../../../../../_hooks/stores/usePollCreation"
 import CardDialog from "../../../CardDialog"
 
 

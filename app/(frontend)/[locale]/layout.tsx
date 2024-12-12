@@ -5,7 +5,7 @@ import '../globals.css'
 import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
 import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
-import { UserContextProvider } from '../_stores/useUser';
+import { UserContextProvider } from '@/app/(frontend)/_hooks/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 
@@ -55,7 +55,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
             <body className={luciole.className}>
                 <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
-                        <UserContextProvider value={userData}>
+                        <UserContextProvider {...userData}>
                             {children}
                         </UserContextProvider>
                     </DisableProvider>

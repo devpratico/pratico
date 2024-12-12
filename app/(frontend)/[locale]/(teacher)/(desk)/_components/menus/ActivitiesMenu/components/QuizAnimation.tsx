@@ -6,7 +6,7 @@ import Navigator from "./Navigator"
 import { useQuizSnapshot } from "@/app/(frontend)/_hooks/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
-import useUser from "@/app/(frontend)/_stores/useUser";
+import { useUser } from "@/app/(frontend)/_hooks/useUser";
 import createClient from "@/supabase/clients/client"
 import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client";
@@ -14,7 +14,7 @@ import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client";
 
 
 export default function QuizAnimation() {
-    const userId = useUser(state => state.user?.id)
+    const { userId } = useUser()
     const { room } = useRoom()
     const { snapshot, isPending, setCurrentQuestionId, setQuestionState, addAnswer, removeAnswer } = useQuizSnapshot()
     const [activityId, setActivityId] = useState<number | undefined>(() => snapshot?.activityId)

@@ -7,7 +7,7 @@ import { Poll as Poll2 } from "@/app/_types/poll2"
 import { adapter } from "./utils"
 import { TablesInsert } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"
-import { fetchActivity as fetchActivityServer } from "./activity.server"
+import { fetchActivity as fetchActivityServer, fetchSnapshot as fetchSnapshotServer } from "./activity.server"
 
 
 export async function deleteActivity(id: number) {
@@ -92,14 +92,7 @@ export async function fetchActivity(id: number) {
     return await fetchActivityServer(id)
 }
 
-export async function fetchSnapshot(roomId: number) {
-    const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('activity_snapshot').eq('id', roomId).single()
 
-    if (error) {
-        logger.error('supabase:database', `Error fetching snapshot of room ${roomId}`, error?.message)
-        return { data: null, error: error?.message }
-    }
-
-    return { data, error: null }
+export async function fetchSnapshot(id: number) {
+    return await fetchSnapshotServer(id)
 }

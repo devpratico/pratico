@@ -9,7 +9,7 @@ import { useParams } from "next/navigation"
 import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams'
 import { useState } from "react"
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
-import useUser from '@/app/(frontend)/_stores/useUser';
+import { useUser } from '@/app/(frontend)/_hooks/useUser';
 import GoPremiumBtn from '../../../../_components/GoPremiumBtn';
 
 
@@ -18,7 +18,7 @@ export default function ParticipantMenu() {
     const { presences } = usePresences()
     const [tab, setTab] = useState<'collaborer' | 'recompenser'>('collaborer')
     const { getPathnameWithSearchParam } = useSearchParams()
-    const isSubscribed = useUser(state => state.isSubscribed)
+    const { isSubscribed } = useUser()
 
     return (
         <>
