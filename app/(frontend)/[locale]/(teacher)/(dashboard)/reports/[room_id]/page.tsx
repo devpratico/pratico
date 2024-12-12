@@ -54,32 +54,32 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
 	if (!userId)
-		return (<>Chargement...</>)
+	{	
+		logger.error('supabase:database', 'CapsuleSessionsReportServer', 'User not found');
+		throw new Error("L'utilisateur n'a pas été trouvé");
+	}
 	return (<>
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<BackButton backTo="/reports"/>
-					<Flex gap="5" justify="start">
-						<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
-
-								<Text size="4" weight="bold">
-								{		
-									capsuleTitle && capsuleTitle !== "Sans titre"
-									? capsuleTitle
-									: "Capsule sans titre"
-								}
-								</Text>
-								{
-									sessionDate?.date
-									? <Text size="1">{`Session du ${formatter.dateTime(sessionDate.date, {dateStyle: "short"})}`}</Text> 
-									: <></>
-								}
-							<Flex direction="column" gap="5" mt="5">
-								<AttendanceWidget roomId={roomId} userId={userId} capsuleTitle={capsuleTitle}/>
-							</Flex>
-						</Grid>
+					<Flex direction="column" gap="3" align="start">
+						<BackButton backTo="/reports"/>
+						<Text size="4" weight="bold">
+						{		
+							capsuleTitle && capsuleTitle !== "Sans titre"
+							? capsuleTitle
+							: "Capsule sans titre"
+						}
+						</Text>
+						{
+							sessionDate?.date
+							? <Text size="1">{`Session du ${formatter.dateTime(sessionDate.date, {dateStyle: "short"})}`}</Text> 
+							: <></>
+						}
 					</Flex>
+					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
+						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
+					</Grid>
 				</Container>
 			</Section>	
 		</ScrollArea>

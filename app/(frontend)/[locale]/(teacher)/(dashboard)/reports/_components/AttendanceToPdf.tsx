@@ -7,6 +7,7 @@ import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
+import { FileDown } from "lucide-react";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -50,7 +51,7 @@ export type TeacherInfo = {
 			<Flex mb="5" justify='between'>
 				<BackButton	backTo={backTo} />
 				<Button onClick={() => reactToPrint()}>
-					Imprimer / Exporter PDF
+					<FileDown size="20"/> Imprimer / Exporter PDF
 				</Button>
 			</Flex>
 			<style jsx global>{`
