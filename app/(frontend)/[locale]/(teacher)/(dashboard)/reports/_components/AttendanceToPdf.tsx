@@ -1,7 +1,7 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../[room_id]/page";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
@@ -19,15 +19,16 @@ export type TeacherInfo = {
 	attendances: AttendanceInfoType[];
 	sessionDate: { startDate: string; startTime: string; endDate?: string; endTime?: string };
 	capsuleTitle: string;
-	user: { userInfo: { first_name: string; last_name: string; organization: string } };
+	user: { userInfo: { first_name: string | null; last_name: string | null; organization: Json | null} | null };
 	backTo: string;
+	hideClassname?: string;
   }
   
-  export function AttendanceToPDF ({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo }: Props){
+  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
 	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const contentRef = useRef<HTMLDivElement>(null);
-	const reactToPrint = useReactToPrint({contentRef})
+	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
 
 	useEffect(() => {
 		router.refresh();
@@ -48,7 +49,7 @@ export type TeacherInfo = {
 	
 	return (
 		<>
-			<Flex mb="5" justify='between'>
+			<Flex mb="5" justify='between' className={hideClassname || ""}>
 				<BackButton	backTo={backTo} />
 				<Button onClick={() => reactToPrint()}>
 					<FileDown size="20"/> Imprimer / Exporter PDF
@@ -70,7 +71,7 @@ export type TeacherInfo = {
 				}
 			`}</style>
 			<Card mt='5' className={"hidden-on-screen"}>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={contentRef} className={luciole.className} >
+				<div style={{fontSize: '12px', margin: '20px'}} ref={ref || contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
@@ -86,7 +87,7 @@ export type TeacherInfo = {
 						<>
 						{
 								userInfo.organization
-								? <Text >{`${userInfo.organization} `}</Text>
+								? <Text >{`${userInfo.organization.toString()} `}</Text>
 								: <></>
 							}
 							<Text as='div'>
@@ -153,4 +154,6 @@ export type TeacherInfo = {
 			</Card>
 		</>		
   	);
-};
+});
+
+AttendanceToPDF.displayName = "AttendanceToPDF";
