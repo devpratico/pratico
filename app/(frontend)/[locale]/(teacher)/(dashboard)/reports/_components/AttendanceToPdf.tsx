@@ -4,7 +4,6 @@ import { AttendanceInfoType } from "../[room_id]/page";
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
-import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { FileDown } from "lucide-react";
@@ -25,14 +24,9 @@ export type TeacherInfo = {
   }
   
   export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
-	const router = useRouter();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
-
-	useEffect(() => {
-		router.refresh();
-	}, [router]);
 
 	useEffect(() => {
 		const getAttendancesList = () => {
