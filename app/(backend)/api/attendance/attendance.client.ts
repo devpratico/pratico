@@ -2,8 +2,7 @@
 import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
 import { TablesInsert } from "@/supabase/types/database.types";
-import { fetchProfile, fetchUser } from "../user/user.server";
-import { fetchOpenRoomByCode, fetchRoomCreator, roomCreatorIsPaidCustomer } from "../room/room.server";
+import { fetchOpenRoomByCode, roomCreatorIsPaidCustomer } from "../room/room.server";
 import { countAttendances } from "./attendance.server";
 import { sendDiscordMessage } from "../discord/discord.server";
 

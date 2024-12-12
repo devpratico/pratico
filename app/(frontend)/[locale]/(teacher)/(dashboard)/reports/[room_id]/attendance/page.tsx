@@ -4,11 +4,9 @@ import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
 import { AttendanceDisplay } from "../_components/AttendanceDisplay";
-import { getFormatter } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
-	const formatter = await getFormatter();
 	const roomId = params.room_id;
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
@@ -56,10 +54,16 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 						if (!data || error) {
 							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 						}
+						const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+						const userLocale = typeof navigator !== 'undefined' ? navigator.language : 'fr-FR';
+						const userFormatter = new Intl.DateTimeFormat(userLocale, {
+							timeZone: userTimeZone,
+							timeStyle: 'medium'
+						});
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle: 'medium'})
+							connexion: userFormatter.format(new Date(attendance.created_at))
 						};
 						attendances.push(infos);
 					})
