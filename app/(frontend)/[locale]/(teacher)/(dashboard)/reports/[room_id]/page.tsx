@@ -29,6 +29,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	const formatter = await getFormatter();
 	let userId: string | null = null;
 	let capsuleTitle = "Sans titre";
+	let capsuleId: string | null = null;
 	let sessionDate: { date: Date, end: Date } | null = null;
 	if (!(roomId))
 	{
@@ -43,10 +44,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
 			if (roomData && roomData.end_of_session)
 				sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
-			const capsuleId = roomData?.capsule_id;
-			if (capsuleId)
+			if (roomData?.capsule_id)
 			{
-				const { data: capsuleData } = await supabase.from('capsules').select('*').eq('id', capsuleId).single();
+				capsuleId = roomData?.capsule_id;
+				const { data: capsuleData } = await supabase.from('capsules').select('title').eq('id', capsuleId).single();
 				if (capsuleData)
 					capsuleTitle = capsuleData.title ? capsuleData.title : "Sans titre";
 			}
@@ -80,7 +81,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
-						<CapsuleWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
+						<CapsuleWidget userId={userId!} capsuleTitle={capsuleTitle} capsuleId={capsuleId} />
 					</Grid>
 				</Container>
 			</Section>	

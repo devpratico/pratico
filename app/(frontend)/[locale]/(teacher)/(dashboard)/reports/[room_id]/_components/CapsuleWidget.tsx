@@ -1,29 +1,23 @@
-import { Button, IconButton, Link, Tooltip } from "@radix-ui/themes";
-import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { FileDown } from "lucide-react";
+import createClient from "@/supabase/clients/server";
+import { CapsuleWidgetView } from "./CapsuleWidgetView";
+import { getFormatter } from "next-intl/server";
 
-export function CapsuleWidget({ roomId, userId, capsuleTitle }: any) {
-	const thumb = "";
-	const content = "";
-	const buttons = <>
-			<Tooltip content="Imprimer / Exporter en PDF">
-				<IconButton disabled={false}  variant="ghost" onClick={() => console.log("test")}>
-					<FileDown />
-				</IconButton>
-			</Tooltip>
-			<Button  radius="full" asChild>
-				
-					Détails
-			</Button>
-		</>;
-
-	return (
-		<div>
-			<ReportWidgetTemplate
-				thumb={thumb}
-				content={content}
-				buttons={buttons}
-			/>
-		</div>
-	);
-}
+export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
+	const supabase = createClient();
+	const formatter = await getFormatter();
+	let capsuleDate = "";
+	const { data: capsuleData } = await supabase.from('capsules').select('created_at').eq('id', capsuleId).single();
+	if (capsuleData)
+	{
+		const date = new Date(capsuleData.created_at);
+		capsuleDate = formatter.dateTime(date, { dateStyle: 'short'});
+	}
+	const data = {
+		capsuleId: capsuleId,
+		capsuleTitle: capsuleTitle,
+		capsuleDate: capsuleDate
+	};
+	return (<>
+		<CapsuleWidgetView data={data} />
+	</>)
+};
