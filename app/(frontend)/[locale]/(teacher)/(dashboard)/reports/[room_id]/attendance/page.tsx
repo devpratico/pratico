@@ -8,8 +8,8 @@ import { getFormatter } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
-	const formatter = await getFormatter();
 	const roomId = params.room_id;
+	const formatter = await getFormatter();
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
@@ -24,6 +24,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 	}
 	try {
 		const {data: { user }} = await supabase.auth.getUser();
+
 		if (user)
 		{
 			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
@@ -56,10 +57,11 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 						if (!data || error) {
 							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 						}
+			
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle: 'medium'})
+							connexion: formatter.dateTime(new Date(attendance.created_at), { timeStyle: 'medium' }),
 						};
 						attendances.push(infos);
 					})
