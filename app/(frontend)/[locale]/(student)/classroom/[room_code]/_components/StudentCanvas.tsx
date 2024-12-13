@@ -1,18 +1,18 @@
 'use client'
 import Canvas from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
-import useBroadcastStore from "@/app/(frontend)/_hooks/useBroadcastStore";
+import useBroadcastStore from "@/app/(frontend)/_hooks/contexts/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import TLToolbar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/AutoSaver";
 import NavigatorSync from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/NavigatorSync";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import { CanvasUser } from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
-import { useRoom } from "@/app/(frontend)/_hooks/useRoom";
+import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
 import { useEffect } from "react";
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import { Box } from "@radix-ui/themes";
-import useWindow from "@/app/(frontend)/_hooks/useWindow";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
 import ToolBarBox from "./ToolBarBox";
 import MobileToolbar from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/MobileToolbar";
 import logger from "@/app/_utils/logger";

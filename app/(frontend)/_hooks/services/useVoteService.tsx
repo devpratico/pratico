@@ -2,14 +2,15 @@
 import logger from '@/app/_utils/logger'
 import { useState } from 'react'
 import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
-import { useRoom } from '../useRoom'
-import { useUser } from '../useUser'
-import usePollParticipation from '../stores/usePollParticipation'
+import { useRoom } from '../contexts/useRoom'
+import { useUser } from '../contexts/useUser'
+import usePollParticipation from '../stores/usePollParticipationStore'
 import { PollSnapshot } from '@/app/_types/poll2'
 
 
 interface useVoteServiceReturn {
     vote: (choiceId: string) => void
+    removeVote: (choiceId: string) => void
     isPending: boolean,
     error: string | null,
 }
@@ -22,12 +23,12 @@ export function useVoteService(): useVoteServiceReturn {
 
     if (!userId) {
         logger.error('zustand:store', 'usePollParticipation.tsx', 'vote', 'Cant vote because no user id found')
-        return { isPending: false, error: 'Cant vote because no user id found', vote: () => { } }
+        return { isPending: false, error: 'Cant vote because no user id found', vote: () => {}, removeVote: () => {} }
     }
 
     if (!room) {
         logger.error('zustand:store', 'usePollParticipation.tsx', 'vote', 'Cant vote because no room provided')
-        return { isPending: false, error: 'Cant vote because no room provided', vote: () => { } }
+        return { isPending: false, error: 'Cant vote because no room provided', vote: () => {}, removeVote: () => {} }
     }
 
     // TODO: use useTransition here to make non-blocking UI
@@ -58,5 +59,32 @@ export function useVoteService(): useVoteServiceReturn {
         }
     }
 
-    return { isPending, error, vote }
+    const removeVote = async (choiceId: string) => {
+        setIsPending(true)
+        setError(null)
+
+        // Optimistic update
+        usePollParticipation.getState().removeVote({ choiceId, userId: userId! })
+
+        // Save the new snapshot in the database
+        const newSnapshot: PollSnapshot = {
+            type: 'poll',
+            activityId: usePollParticipation.getState().pollId!,
+            currentQuestionId: usePollParticipation.getState().currentQuestionId!,
+            state: usePollParticipation.getState().state,
+            answers: usePollParticipation.getState().answers
+        }
+
+        const { error } = await saveRoomActivitySnapshot(room.id, newSnapshot)
+
+        setIsPending(false)
+
+        if (error) {
+            setError(error)
+            // Rollback the optimistic update
+            usePollParticipation.getState().vote({ choiceId, userId: userId! })
+        }
+    }
+
+    return { isPending, error, vote, removeVote }
 }

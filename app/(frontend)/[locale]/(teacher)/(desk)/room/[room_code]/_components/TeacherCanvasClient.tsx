@@ -1,6 +1,6 @@
 'use client'
 import Canvas from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
-import useBroadcastStore from "@/app/(frontend)/_hooks/useBroadcastStore";
+import useBroadcastStore from "@/app/(frontend)/_hooks/contexts/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import AutoSaver from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/AutoSaver";
 import NavigatorSync from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/NavigatorSync";

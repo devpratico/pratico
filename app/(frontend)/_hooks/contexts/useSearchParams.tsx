@@ -1,6 +1,6 @@
 'use client'
 import { ReadonlyURLSearchParams } from "next/navigation"
-import { usePathname, useRouter } from "../_intl/intlNavigation"
+import { usePathname, useRouter } from "../../_intl/intlNavigation"
 import { useSearchParams as useNextSearchParams } from "next/navigation"
 
 

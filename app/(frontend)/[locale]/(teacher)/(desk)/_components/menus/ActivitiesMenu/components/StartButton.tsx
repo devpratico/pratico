@@ -4,7 +4,7 @@ import { Play } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useState } from "react"
 import logger from "@/app/_utils/logger"
-import { openPoll } from "@/app/(frontend)/_hooks/stores/usePollAnimation"
+import { openPoll } from "@/app/(frontend)/_hooks/stores/usePollAnimationStore"
 
 
 

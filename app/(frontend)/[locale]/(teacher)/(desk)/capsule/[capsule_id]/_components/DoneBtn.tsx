@@ -2,7 +2,7 @@
 import logger from "@/app/_utils/logger";
 import { useRouter } from "next/navigation";
 import { saveCapsuleSnapshot } from "@/app/(backend)/api/capsule/capsule.client";
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@radix-ui/themes";

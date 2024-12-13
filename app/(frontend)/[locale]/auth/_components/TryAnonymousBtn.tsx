@@ -5,7 +5,7 @@ import { signInAnonymously, isUserAnonymous } from '@/app/(backend)/api/auth/aut
 import logger from '@/app/_utils/logger';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
-import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
+import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import { useState } from 'react';
 import Feedback from './Feedback';
 

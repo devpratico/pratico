@@ -1,14 +1,14 @@
 'use client'
 import { Flex, IconButton, Text, Popover } from "@radix-ui/themes"
 import { Plus, ChevronLeft, ChevronRight, Minimize2, Maximize2, Maximize } from "lucide-react"
-import { useNav } from "@/app/(frontend)/_hooks/useNav"
+import { useNav } from "@/app/(frontend)/_hooks/contexts/useNav"
 import AddMenu from "./menus/AddMenu"
 //import dynamic from "next/dynamic"
 //const AddMenu = dynamic(() => import('./menus/AddMenu'), { ssr: false })
 import { useState, useEffect, useMemo, useRef } from "react"
 import { debounce } from "lodash"
 import logger from "@/app/_utils/logger"
-import { useFullscreen } from "@/app/(frontend)/_hooks/useFullscreen"
+import { useFullscreen } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
 
 
 

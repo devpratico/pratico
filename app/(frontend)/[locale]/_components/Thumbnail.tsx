@@ -6,11 +6,11 @@ import {
   TLEditorSnapshot,
   exportAs
 } from "tldraw";
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { Flex, Spinner } from "@radix-ui/themes";
 import { useMemo, useState, useEffect, useTransition, useRef } from "react";
-import { useSnapshot } from "@/app/(frontend)/_hooks/useSnapshot";
-import { useNav } from "@/app/(frontend)/_hooks/useNav";
+import { useSnapshot } from "@/app/(frontend)/_hooks/contexts/useSnapshot";
+import { useNav } from "@/app/(frontend)/_hooks/contexts/useNav";
 
 
 interface ThumbnailProps {

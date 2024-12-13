@@ -26,7 +26,7 @@ type Actions = {
 type Store = State & Actions
 
 
-const usePollParticipation = create<Store>((set, get) => ({
+const usePollParticipationStore = create<Store>((set, get) => ({
 
     poll: null,
     pollId: null,
@@ -81,12 +81,12 @@ const usePollParticipation = create<Store>((set, get) => ({
     }
 }))
 
-export default usePollParticipation
+export default usePollParticipationStore
 
 
 /** Checks if poll, pollId and currentQuestionId are not null */
 function thereIsAPoll() {
-    const state = usePollParticipation.getState()
+    const state = usePollParticipationStore.getState()
     return (
         state.poll !== null &&
         state.pollId !== null &&

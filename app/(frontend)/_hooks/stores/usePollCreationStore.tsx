@@ -1,14 +1,8 @@
 import { Poll, PollQuestion, PollChoice } from "@/app/_types/poll2"
-//import { changeTitle } from "@/app/_types/poll"
-//import { create } from 'zustand'
-//import { createStore } from 'zustand/vanilla'
-//import { useStore } from 'zustand'
 import logger from "@/app/_utils/logger"
 import { produce } from "immer"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"
-//import { createContext, useContext, useRef } from "react"
 import { create } from 'zustand'
-import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 
 
 type Id = number | string
@@ -22,15 +16,11 @@ type CurrentPoll = {
 type PollCreationState = {
     showPollCreation: boolean
     currentPoll: CurrentPoll | null
-
-    /** Being saved on Supabase */
-    isSaving: boolean
 }
 
 type PollCreationActions = {
     openPoll: ({id, poll}: {id?: Id, poll: Poll}) => void
     closePoll: () => void
-    setIsSaving: (isSaving: boolean) => void
     editTitle: (title: string) => void
     changeCurrentQuestionId: (id: Id) => void
     changeCurrentQuestionIndex: (index: number) => void
@@ -49,12 +39,10 @@ type PollCreationStore = PollCreationState & PollCreationActions
 
 
 //const createPollCreationStore = () => createStore<PollCreationStore>((set, get) => ({
-const usePollCreation = create<PollCreationStore>((set, get) => ({
+const usePollCreationStore = create<PollCreationStore>((set, get) => ({
     showPollCreation: false,
 
     currentPoll: null,
-
-    isSaving: false,
 
     openPoll: ({id, poll}) => {
         if (poll.questions.length === 0) {
@@ -69,10 +57,6 @@ const usePollCreation = create<PollCreationStore>((set, get) => ({
 
     closePoll: () => {
         set({ showPollCreation: false, currentPoll: null })
-    },
-
-    setIsSaving: (isSaving) => {
-        set({ isSaving })
     },
 
     editTitle: (title: string) => {
@@ -285,25 +269,4 @@ const usePollCreationStore = <T,>(selector: (store: PollCreationStore) => T): T 
 export { PollCreationStoreProvider, usePollCreationStore }
 */
 
-export default usePollCreation
-
-
-
-// SERVICES
-
-export async function closeAndSave() {
-    const { currentPoll, closePoll, setIsSaving } = usePollCreation.getState()
-
-    if (!currentPoll) return
-    const poll = currentPoll.poll
-    const id = currentPoll.id?.toString()
-    // Id should be a number for supabase saveActvivity. Try parsing it as a number
-    const parsedId = id ? parseInt(id) : undefined
-
-    setIsSaving(true)
-    closePoll()
-
-    await saveActivity({ id: parsedId, activity: poll })
-
-    setIsSaving(false)
-}
+export default usePollCreationStore

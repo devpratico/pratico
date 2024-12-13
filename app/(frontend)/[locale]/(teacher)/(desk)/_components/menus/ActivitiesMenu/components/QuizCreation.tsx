@@ -1,7 +1,7 @@
 'use client'
 import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card, Tooltip } from '@radix-ui/themes'
 import { useCallback, useState, useMemo } from 'react'
-import { useQuiz } from '@/app/(frontend)/_hooks/useQuiz'
+import { useQuiz } from '@/app/(frontend)/_hooks/contexts/useQuiz'
 import { saveActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import Title from './Title'
 import CancelButton from './CancelButton'

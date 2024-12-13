@@ -5,7 +5,7 @@ import { Mail, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { sendDiscordMessage } from '@/app/(backend)/api/discord/discord.client';
 import Feedback from './Feedback';
-import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
+import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import ClientMismatchMessage from './ClientMismatchMessage';
 import createClient from '@/supabase/clients/client';
 

@@ -15,7 +15,7 @@ import {
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
-import { useTLEditor } from '@/app/(frontend)/_hooks/useTLEditor'
+import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'

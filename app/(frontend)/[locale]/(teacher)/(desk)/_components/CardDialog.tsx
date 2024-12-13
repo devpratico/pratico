@@ -1,7 +1,7 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
 import { Theme } from '@radix-ui/themes';
-import useWindow from '@/app/(frontend)/_hooks/useWindow';
+import useWindow from '@/app/(frontend)/_hooks/contexts/useWindow';
 import { useCallback } from 'react';
 
 

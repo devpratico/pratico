@@ -4,8 +4,8 @@ import '../colors.css'
 import '../globals.css'
 import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
-import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
-import { UserContextProvider } from '@/app/(frontend)/_hooks/useUser';
+import { DisableProvider } from '@/app/(frontend)/_hooks/contexts/useDisable';
+import { UserContextProvider } from '@/app/(frontend)/_hooks/contexts/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 

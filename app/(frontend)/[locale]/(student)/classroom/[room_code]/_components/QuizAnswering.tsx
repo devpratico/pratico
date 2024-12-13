@@ -2,9 +2,9 @@
 import { Container, Section, Dialog, Flex, Heading } from "@radix-ui/themes"
 import { Quiz } from "@/app/_types/quiz"
 import { QuizAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/menus/ActivitiesMenu/components/QuizAnimation"
-import { useUser } from "@/app/(frontend)/_hooks/useUser"
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser"
 import { useEffect, useMemo, useState, useCallback } from "react"
-import { useQuizSnapshot } from "@/app/(frontend)/_hooks/useQuizSnapshot"
+import { useQuizSnapshot } from "@/app/(frontend)/_hooks/contexts/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
 import createClient from "@/supabase/clients/client"
 

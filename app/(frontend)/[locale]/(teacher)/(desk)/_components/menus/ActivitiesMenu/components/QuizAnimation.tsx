@@ -3,12 +3,12 @@ import { Container, Section, Grid, Flex, Heading, Button, Box, Card, VisuallyHid
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {  useMemo,useCallback, useState, useEffect, Dispatch, SetStateAction } from "react"
 import Navigator from "./Navigator"
-import { useQuizSnapshot } from "@/app/(frontend)/_hooks/useQuizSnapshot"
+import { useQuizSnapshot } from "@/app/(frontend)/_hooks/contexts/useQuizSnapshot"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
-import { useUser } from "@/app/(frontend)/_hooks/useUser";
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser";
 import createClient from "@/supabase/clients/client"
-import { useRoom } from "@/app/(frontend)/_hooks/useRoom"
+import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client";
 
 
