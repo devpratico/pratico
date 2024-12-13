@@ -1,15 +1,15 @@
 "use client";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
-import { WidgetThumb } from "./WidgetThumb";
-import ReportWidgetTemplate from "./ReportWidgetTemplate";
+import { WidgetThumb } from "../../_components/WidgetThumb";
+import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
 import { Button, DataList, IconButton, Strong, Tooltip } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { AttendanceInfoType } from "../page";
+import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
-import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
+import { AttendanceToPDF } from "../../../_components/AttendanceToPdf";
 
 export type AttendanceWidgetViewProps = {
 	data: {

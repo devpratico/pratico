@@ -2,9 +2,10 @@ import logger from "@/app/_utils/logger";
 import { Container, Flex, Grid, ScrollArea, Section, Text } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
-import { AttendanceWidget } from "./_components/AttendanceWidget";
+import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
+import { CapsuleWidget } from "./_components/CapsuleWidget";
 
 // TYPE
 export type AttendanceInfoType = {
@@ -79,6 +80,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
+						<CapsuleWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
 					</Grid>
 				</Container>
 			</Section>	
