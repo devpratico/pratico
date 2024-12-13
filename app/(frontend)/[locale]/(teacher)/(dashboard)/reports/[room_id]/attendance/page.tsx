@@ -9,7 +9,6 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 	const supabase = createClient();
 	const roomId = params.room_id;
 	const locale = params.locale;
-	console.log("locale", locale);
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
