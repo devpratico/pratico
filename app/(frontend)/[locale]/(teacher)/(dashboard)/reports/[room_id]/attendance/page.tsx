@@ -8,6 +8,8 @@ import { AttendanceDisplay } from "../_components/AttendanceDisplay";
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
+	const locale = params.locale;
+	console.log("locale", locale);
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
@@ -22,6 +24,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 	}
 	try {
 		const {data: { user }} = await supabase.auth.getUser();
+
 		if (user)
 		{
 			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
@@ -48,15 +51,15 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 
 			if (attendanceData?.length)
 			{
+				const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 				await Promise.all(
 					attendanceData.map(async (attendance) => {
 						const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
 						if (!data || error) {
 							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 						}
-						const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-						const userLocale = typeof navigator !== 'undefined' ? navigator.language : 'fr-FR';
-						const userFormatter = new Intl.DateTimeFormat(userLocale, {
+			
+						const userFormatter = new Intl.DateTimeFormat(locale, {
 							timeZone: userTimeZone,
 							timeStyle: 'medium'
 						});
