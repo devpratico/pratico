@@ -4,11 +4,12 @@ import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
 import { AttendanceDisplay } from "../_components/AttendanceDisplay";
+import { getLocale } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
-	const locale = params.locale;
+	const locale = await getLocale();
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
