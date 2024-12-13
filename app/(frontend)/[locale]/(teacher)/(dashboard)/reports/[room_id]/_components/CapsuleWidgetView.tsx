@@ -20,8 +20,9 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 
         return (
 			<>
+				<Strong>Capsule</Strong>
 				<DataList.Root size='1'>
-				<DataList.Item>
+					<DataList.Item>
 						<DataList.Label>Titre</DataList.Label>
 						<DataList.Value>{data.capsuleTitle}</DataList.Value>
 					</DataList.Item>
