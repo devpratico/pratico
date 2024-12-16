@@ -1,19 +1,33 @@
 "use client";
-import { Button, DataList, IconButton, Link, Strong, Tooltip } from "@radix-ui/themes";
+import { Button, Card, DataList, Flex, IconButton, Link, Strong, Tooltip } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { FileDown } from "lucide-react";
+import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
+import { TLEditorSnapshot } from "tldraw";
+import { CapsuleToPdfDialog } from "../../../../(desk)/capsule/[capsule_id]/_components/CapsuleToPdfDialog";
+import { useState } from "react";
 
 interface CapsuleWidgetViewProps {
 	data: {
 		capsuleId: string;
 		capsuleTitle: string;
 		capsuleDate: string;
+		capsuleSnapshot: TLEditorSnapshot;
+		isRoom: boolean;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
+	const [ downloadClick, setDowloadClick ] = useState(false);
+
+	const handleDownload = () => {
+		setDowloadClick(true);
+	};
+
 	const Thumb = () => {
 		return (<>
-			<div style={{width: "100px", height: "100px", backgroundColor: "gray"}}></div>
+            <Card style={{width: "100%", height: "auto"}}>
+				<Thumbnail snapshot={data.capsuleSnapshot} />
+			</Card>
 		</>);
 	};
 	const Content = () => {
@@ -30,6 +44,10 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 						<DataList.Label>Créer le</DataList.Label>
 						<DataList.Value>{data.capsuleDate}</DataList.Value>
 					</DataList.Item>
+					<DataList.Item>
+						<DataList.Label></DataList.Label>
+						<DataList.Value></DataList.Value>
+					</DataList.Item>
 				</DataList.Root>
 			</>
             
@@ -37,24 +55,27 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
     }
 	const buttons = <>
 			<Tooltip content="Exporter en PDF">
-				<IconButton disabled={false}  variant="ghost" onClick={() => console.log("test")}>
+				<IconButton disabled={false}  variant="ghost" onClick={handleDownload}>
 					<FileDown />
 				</IconButton>
 			</Tooltip>
 			<Button radius="full" asChild>
-				<Link href={`/capsules/${data.capsuleId}`}>
+				<Link href={`/capsule/${data.capsuleId}`}>
 					Détails
 				</Link>
 			</Button>
 		</>;
 
 	return (
-		<div>
+		<>
 			<ReportWidgetTemplate
 				thumb={<Thumb />}
 				content={<Content />}
 				buttons={buttons}
 			/>
-		</div>
+			{
+				downloadClick && <CapsuleToPdfDialog capsuleId={data.capsuleId} isRoom={data.isRoom} shortcut={true} />
+			}
+		</>
 	);
 }
