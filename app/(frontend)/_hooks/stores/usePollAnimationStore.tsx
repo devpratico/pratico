@@ -16,9 +16,6 @@ type CurrentPoll = {
 }
 
 type PollState = {
-    /** Wether or not to show the activity*/
-    shouldShowPoll: boolean
-
     /** The activity to show, if any */
     currentPoll: CurrentPoll | null
 
@@ -27,7 +24,8 @@ type PollState = {
 }
 
 type PollActions = {
-    openPoll: (poll: Poll, id: Id) => void
+    setPoll: (poll: Poll, id: Id) => void
+    //setPollId: (id: Id) => void
     closePoll: () => void
     setAnswers: (answers: PollUserAnswer[]) => void
     addAnswer: (answer: PollUserAnswer) => void
@@ -40,28 +38,40 @@ type PollStore = PollState & PollActions
 
 
 const usePollAnimationStore = create<PollStore>((set, get) => ({
-
-    shouldShowPoll: false,
     
     currentPoll: null,
 
     isSyncing: false,
 
-    openPoll: (poll, id) => {
-        set({
-            shouldShowPoll: true,
-            currentPoll: {
+    setPoll: (poll, id) => {
+        set(produce<PollState>(draft => {
+            // If currentPoll already exists, just update the poll object
+            if (draft.currentPoll) {
+                draft.currentPoll.poll = poll
+                draft.currentPoll.id = id
+                return
+            }
+
+            // If there is no currentPoll, create a new one with empty snapshot data
+            draft.currentPoll = {
                 id: id,
                 poll: poll,
                 currentQuestionId: poll.questions[0].id,
                 state: 'voting',
                 answers: []
             }
-        })
+        }))
     },
 
+    /*setPollId: (id) => {
+        set(produce<PollState>(draft => {
+            if (!draft.currentPoll) return
+            draft.currentPoll.id = id
+        }))
+    },*/
+
     closePoll: () => {
-        set({ shouldShowPoll: false, currentPoll: null })
+        set({ currentPoll: null })
     },
 
     setAnswers: (answers) => {

@@ -13,8 +13,8 @@ import { Tables } from '@/supabase/types/database.types'
  * Should be used by higher level services (poll animation and participation).
  */
 export default function useSyncPollService(args: {
-    roomId: number
-    onPollChange: (poll: Poll | null) => void
+    roomId: number | undefined
+    onPollChange: (poll: Poll | null, id: string | number | undefined) => void
     onSnapshotChange: (snapshot: PollSnapshot | null) => void
 }): {
     isSyncing: boolean
@@ -26,17 +26,18 @@ export default function useSyncPollService(args: {
 
     // Fetch initial data
     useEffect(() => {
+        if (!roomId) return
         setIsSyncing(true)
         setError(null)
 
         getPollAndSnapshot(roomId).then(({ poll, snapshot, error }) => {
             setIsSyncing(false)
             setError(error)
-            onPollChange(poll)
+            onPollChange(poll, snapshot?.activityId)
             onSnapshotChange(snapshot)
         })
 
-    }, [roomId])
+    }, [roomId, onPollChange, onSnapshotChange])
 
     // Sync with database real-time
     useEffect(() => {
@@ -58,7 +59,7 @@ export default function useSyncPollService(args: {
             // If it's not a poll snapshot, empty the store
             if (!isPollSnapshot(newSnapshot)) {
                 onSnapshotChange(null)
-                onPollChange(null)
+                onPollChange(null, undefined)
                 return
             }
 
@@ -77,13 +78,13 @@ export default function useSyncPollService(args: {
                     setError(error)
                     return
                 }
-                onPollChange(poll)
+                onPollChange(poll, newPollId)
             }
 
         }).subscribe()
 
         return () => {supabase.removeChannel(channel)}
-    }, [roomId])
+    }, [roomId, onPollChange, onSnapshotChange])
 
 
     return { isSyncing, error}

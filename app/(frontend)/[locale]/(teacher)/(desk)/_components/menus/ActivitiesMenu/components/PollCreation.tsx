@@ -2,11 +2,12 @@
 import {  useRef, useMemo, useCallback } from "react"
 import { Grid, Flex, Button, Container, Section, TextArea, TextField, IconButton, Card, Separator, Tooltip } from "@radix-ui/themes"
 import Title from "./Title"
-import {  LucideProps, X, Check, Copy, Trash2, Plus } from "lucide-react"
+import { LucideProps, X, Check, Copy, Trash2, Plus } from "lucide-react"
 import Navigator from "./Navigator"
 import CancelButton from "./CancelButton"
-import usePollCreation, { closeAndSave } from "../../../../../../../_hooks/stores/usePollCreationStore"
+import usePollCreationStore from "@/app/(frontend)/_hooks/stores/usePollCreationStore"
 import CardDialog from "../../../CardDialog"
+import { useSavePollService } from "@/app/(frontend)/_hooks/services/usePollCreationService"
 
 
 interface ChoiceRowProps {
@@ -119,18 +120,20 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
 
 
 export default function PollCreation() {
-    const showPollCreation = usePollCreation(state => state.showPollCreation)
-    const poll = usePollCreation(state => state.currentPoll?.poll)
-    const onEditTitle = usePollCreation(state => state.editTitle)
-    const currentQuestionId = usePollCreation(state => state.currentPoll?.currentQuestionId)
-    const changeQuestionText = usePollCreation(state => state.changeQuestionText)
-    const addChoice = usePollCreation(state => state.addChoice)
-    const changeCurrentQuestionIndex = usePollCreation(state => state.changeCurrentQuestionIndex)
-    const addEmptyQuestion = usePollCreation(state => state.addEmptyQuestion)
-    const duplicateQuestion = usePollCreation(state => state.duplicateQuestion)
-    const deleteQuestion = usePollCreation(state => state.deleteQuestion)
-    const deleteChoice = usePollCreation(state => state.deleteChoice)
-    const changeChoiceText = usePollCreation(state => state.changeChoiceText)
+    const showPollCreation = usePollCreationStore(state => state.showPollCreation)
+    const deletePoll = usePollCreationStore(state => state.deletePoll)
+    const poll = usePollCreationStore(state => state.currentPoll?.poll)
+    const onEditTitle = usePollCreationStore(state => state.editTitle)
+    const currentQuestionId = usePollCreationStore(state => state.currentPoll?.currentQuestionId)
+    const changeQuestionText = usePollCreationStore(state => state.changeQuestionText)
+    const addChoice = usePollCreationStore(state => state.addChoice)
+    const changeCurrentQuestionIndex = usePollCreationStore(state => state.changeCurrentQuestionIndex)
+    const addEmptyQuestion = usePollCreationStore(state => state.addEmptyQuestion)
+    const duplicateQuestion = usePollCreationStore(state => state.duplicateQuestion)
+    const deleteQuestion = usePollCreationStore(state => state.deleteQuestion)
+    const deleteChoice = usePollCreationStore(state => state.deleteChoice)
+    const changeChoiceText = usePollCreationStore(state => state.changeChoiceText)
+    const { closePollAndSave } = useSavePollService()
 
     const choices = poll?.questions.find(q => q.id === currentQuestionId)?.choices
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id === currentQuestionId) || 0
@@ -146,8 +149,8 @@ export default function PollCreation() {
                         
                         poll.title} onEdit={onEditTitle} />
                     <Flex gap='3' align='center'>
-                        <CancelButton onCancel={()=>{}} />
-                        <Button variant='soft' color='gray' onClick={closeAndSave}>Terminer</Button>
+                        <CancelButton onCancel={deletePoll} />
+                        <Button variant='soft' color='gray' onClick={closePollAndSave}>Terminer</Button>
                     </Flex>
                 </Flex>
 

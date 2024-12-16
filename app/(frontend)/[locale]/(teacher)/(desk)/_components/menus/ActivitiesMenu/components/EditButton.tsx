@@ -7,6 +7,7 @@ import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
 import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import usePollCreation from '@/app/(frontend)/_hooks/stores/usePollCreationStore'
 import logger from '@/app/_utils/logger'
+import { useOpenPollService } from '@/app/(frontend)/_hooks/services/usePollCreationService'
 
 
 interface EditButtonProps {
@@ -16,6 +17,7 @@ interface EditButtonProps {
 export default function EditButton({ activityId }: EditButtonProps) {
     const router = useRouter()
     const [deleteOpen, setDeleteOpen] = useState(false)
+    const { openPoll } = useOpenPollService()
 
     async function handleDelete() {
         await deleteActivity(activityId)
@@ -39,7 +41,7 @@ export default function EditButton({ activityId }: EditButtonProps) {
 
                 <DropdownMenu.Content side='top'>
 
-                    <DropdownMenu.Item onSelect={async () => await openActivityCreation(activityId)}>
+                    <DropdownMenu.Item onSelect={() => openPoll(activityId)}>
                         <SquarePen size={15}/>
                         <span>Modifier</span>
                     </DropdownMenu.Item>
@@ -86,18 +88,4 @@ export default function EditButton({ activityId }: EditButtonProps) {
             </AlertDialog.Root>
         </>
     )
-}
-
-
-async function openActivityCreation(id: number) {
-    const { data, error } = await fetchActivity(id)
-    if (error || !data) return
-
-    const activity = data.object
-    if (activity.type == 'poll' && activity.schemaVersion == '3') {
-        const openPoll = usePollCreation.getState().openPoll
-        openPoll({id: id, poll: activity})
-    } else {
-        logger.error('supabase:database', 'activity is not poll or not schemaVersion 3')
-    }    
 }

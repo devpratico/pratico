@@ -1,21 +1,21 @@
 'use client'
 import CardDialog from '@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog'
-import usePollAnimation, { useSyncedPollAnimation } from '@/app/(frontend)/_hooks/stores/usePollAnimationStore'
+import usePollAnimation from '@/app/(frontend)/_hooks/stores/usePollAnimationStore'
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { PollSnapshot } from '@/app/_types/poll2'
+import { useSyncPollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 
 
 interface PollAnimationProps {
-    roomId: number
     userId: string
 }
 
-export default function PollAnimation({ roomId, userId }: PollAnimationProps) {
-    useSyncedPollAnimation(roomId) // Sync the usePollAnimation store with the server
+export default function PollAnimation({ userId }: PollAnimationProps) {
+    const { error } = useSyncPollAnimationService() // Sync the usePollAnimation store with the server
 
-    const shouldShowPoll = usePollAnimation(state => state.shouldShowPoll)
+    const shouldShowPoll = usePollAnimation(state => state.currentPoll != null)
     const closePoll = usePollAnimation(state => state.closePoll)
     const poll = usePollAnimation(state => state.currentPoll?.poll)
     const currentQuestionId = usePollAnimation(state => state.currentPoll?.currentQuestionId)

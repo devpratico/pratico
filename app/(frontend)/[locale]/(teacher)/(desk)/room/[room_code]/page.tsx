@@ -73,7 +73,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 			<TeacherCanvas roomCode={room_code} />
 
 			{/* Activity Card, that automatically opens when an activity is running */}
-			<PollAnimation roomId={roomData.id} userId={user.id} />
+			<PollAnimation userId={user.id} />
 
         </>
     )

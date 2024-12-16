@@ -20,7 +20,9 @@ type PollCreationState = {
 
 type PollCreationActions = {
     openPoll: ({id, poll}: {id?: Id, poll: Poll}) => void
-    closePoll: () => void
+    setPollId: (id: Id) => void
+    setShowPollCreation: (show: boolean) => void
+    deletePoll: () => void
     editTitle: (title: string) => void
     changeCurrentQuestionId: (id: Id) => void
     changeCurrentQuestionIndex: (index: number) => void
@@ -55,7 +57,21 @@ const usePollCreationStore = create<PollCreationStore>((set, get) => ({
         })
     },
 
-    closePoll: () => {
+    setPollId: (id: Id) => {
+        if (!get().currentPoll) {
+            logger.error('zustand:action', 'Cannot set the id of a non-existing poll')
+            return
+        }
+        set(produce<PollCreationStore>(state => {
+            state.currentPoll!.id = id
+        }))
+    },
+
+    setShowPollCreation: (show: boolean) => {
+        set({ showPollCreation: show })
+    },
+
+    deletePoll: () => {
         set({ showPollCreation: false, currentPoll: null })
     },
 
