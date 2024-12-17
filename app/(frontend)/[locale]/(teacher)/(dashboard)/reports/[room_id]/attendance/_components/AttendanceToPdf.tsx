@@ -1,6 +1,6 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
-import { AttendanceInfoType } from "../[room_id]/page";
+import { AttendanceInfoType } from "../../page";
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
@@ -43,12 +43,16 @@ export type TeacherInfo = {
 	
 	return (
 		<>
-			<Flex mb="5" justify='between' className={hideClassname || ""}>
-				<BackButton	backTo={backTo} />
-				<Button onClick={() => reactToPrint()}>
-					<FileDown size="20"/> Imprimer / Exporter PDF
-				</Button>
-			</Flex>
+			{
+				hideClassname === "hidden-on-screen"
+				?	<></>
+				:	<Flex mb="5" justify='between'>
+						<BackButton	backTo={backTo} />
+						<Button onClick={() => reactToPrint()}>
+							<FileDown size="20"/> Imprimer / Exporter PDF
+						</Button>
+					</Flex>
+  			}
 			<style jsx global>{`
 				.hidden-on-screen {
 					display: none;
