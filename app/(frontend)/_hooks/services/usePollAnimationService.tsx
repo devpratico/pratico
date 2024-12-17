@@ -7,7 +7,6 @@ import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import useSyncPollService from "./useSyncPollService"
 import { useState } from "react"
-import { isEqual } from "lodash"
 
 
 /**
@@ -46,7 +45,9 @@ export function useStartPollService(): {
 
         const poll = data.object as Poll
 
-        usePollAnimationStore.getState().setPoll(poll, id)
+        usePollAnimationStore.getState().setPoll(poll)
+        // No need to initialize some snapshot data, as the store contains default values
+
         setIsPending(false)
     }
 
@@ -54,39 +55,34 @@ export function useStartPollService(): {
 }
 
 
-export function useSyncPollAnimationService(): { error: string | null} {
+export function useSyncPollAnimationService(): {
+    isSyncing: boolean
+    error: string | null
+} {
     const roomId = useRoom().room?.id
     //const { roomId } = args
 
     // Sync remote poll data into the store
-    const { error: syncError } = useSyncPollService({
+    const { poll, snapshot, isSyncing, error } = useSyncPollService()
 
-        roomId: roomId,
-
-        onPollChange: (poll, id) => {
-            // If the poll is the same, don't update the store
-            const oldPoll = usePollAnimationStore.getState().currentPoll?.poll
-            if (isEqual(oldPoll, poll)) return
-
-            if (!poll || !id) {
-                usePollAnimationStore.getState().closePoll()
-                return
-            }
-
-            usePollAnimationStore.getState().setPoll(poll, id)
-        },
-
-        onSnapshotChange: (snapshot) => {
-            // Only change answers, because the other data is only managed by this user
-            // Only change answers if they are different
-            const oldAnswers = usePollAnimationStore.getState().currentPoll?.answers || []
-            const newAnswers = snapshot?.answers || []
-            if (!isEqual(oldAnswers, newAnswers)) {
-                usePollAnimationStore.getState().setAnswers(newAnswers)
-            }
+    // Put the snapshot in the store
+    useEffect(() => {
+        if (snapshot) {
+            usePollAnimationStore.getState().setPollId(snapshot.activityId)
+            usePollAnimationStore.getState().setAnswers(snapshot.answers)
+            usePollAnimationStore.getState().setQuestionId(snapshot.currentQuestionId)
+            usePollAnimationStore.getState().setQuestionState(snapshot.state)
         }
-    })
+    }, [snapshot])
 
+    // Put the poll in the store
+    useEffect(() => {
+        if (poll) {
+            usePollAnimationStore.getState().setPoll(poll)
+        } else {
+            usePollAnimationStore.getState().closePoll()
+        }
+    }, [poll])
 
     // Sync local state into the database
     // TODO: handle error
@@ -95,7 +91,7 @@ export function useSyncPollAnimationService(): { error: string | null} {
         return syncLocalState(roomId)
     }, [roomId])
 
-    return { error: syncError }
+    return { isSyncing, error }
 }
 
 
@@ -110,10 +106,8 @@ function syncLocalState(roomId: number) {
     // TODO: use a hook to get the current room id
     const unsubscribe = usePollAnimationStore.subscribe(async (state, prevState) => {
 
-        const currentPoll = state.currentPoll
-
         // If there is no poll, remove the snapshot from the database
-        if (!currentPoll) {
+        if (!state.poll) {
             logger.log('supabase:realtime', "usePollAnimationService.tsx", "Removing snapshot from database")
             await saveRoomActivitySnapshot(roomId, null)
             return
@@ -121,10 +115,10 @@ function syncLocalState(roomId: number) {
 
         const snapshot = {
             type: 'poll',
-            activityId: currentPoll.id,
-            currentQuestionId: currentPoll.currentQuestionId,
-            state: currentPoll.state,
-            answers: currentPoll.answers
+            activityId: state.id,
+            currentQuestionId: state.currentQuestionId,
+            state: state.state,
+            answers: state.answers
         } as PollSnapshot
 
         logger.log('supabase:realtime', "saving poll snapshot to database", snapshot)

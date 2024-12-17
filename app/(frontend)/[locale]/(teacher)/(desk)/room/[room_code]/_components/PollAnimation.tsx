@@ -6,6 +6,8 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { PollSnapshot } from '@/app/_types/poll2'
 import { useSyncPollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
+import useSyncPollService from '@/app/(frontend)/_hooks/services/useSyncPollService'
+import { useEffect } from 'react'
 
 
 interface PollAnimationProps {
@@ -15,13 +17,13 @@ interface PollAnimationProps {
 export default function PollAnimation({  userId }: PollAnimationProps) {
     const { error } = useSyncPollAnimationService() // Sync the usePollAnimation store with the server
 
-    const shouldShowPoll = usePollAnimation(state => state.currentPoll != null)
+    const shouldShowPoll = usePollAnimation(state => state.id != null)
     const closePoll = usePollAnimation(state => state.closePoll)
-    const poll = usePollAnimation(state => state.currentPoll?.poll)
-    const currentQuestionId = usePollAnimation(state => state.currentPoll?.currentQuestionId)
-    const questionState = usePollAnimation(state => state.currentPoll?.state)
-    const changeQuestionState = usePollAnimation(state => state.changeQuestionState)
-    const answers = usePollAnimation(state => state.currentPoll?.answers)
+    const poll = usePollAnimation(state => state.poll)
+    const currentQuestionId = usePollAnimation(state => state.currentQuestionId)
+    const questionState = usePollAnimation(state => state.state)
+    const changeQuestionState = usePollAnimation(state => state.setQuestionState)
+    const answers = usePollAnimation(state => state.answers)
     const myAnswers = answers?.filter(a => a.userId == userId)
     const addAnswer = usePollAnimation(state => state.addAnswer)
     const removeAnswer = usePollAnimation(state => state.removeAnswer)

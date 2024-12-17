@@ -3,35 +3,23 @@ import { create } from "zustand"
 import { produce } from "immer"
 
 
-
-type Id = number | string
-
-/** Looks a lot like PollSnapshot, but I prefer to keep client code and server code decoupled */
-type CurrentPoll = {
-    id: Id,
-    poll: Poll
-    currentQuestionId: string
+type PollState = {
+    id: number | string | null
+    poll: Poll | null
+    currentQuestionId: string | null
     state: PollSnapshot['state']
     answers: PollUserAnswer[]
 }
 
-type PollState = {
-    /** The activity to show, if any */
-    currentPoll: CurrentPoll | null
-
-    /** true while syncing with the database */
-    isSyncing: boolean
-}
-
 type PollActions = {
-    setPoll: (poll: Poll, id: Id) => void
-    //setPollId: (id: Id) => void
+    setPoll: (poll: Poll) => void
+    setPollId: (id: PollState['id']) => void
     closePoll: () => void
     setAnswers: (answers: PollUserAnswer[]) => void
     addAnswer: (answer: PollUserAnswer) => void
     removeAnswer: (answerId: string) => void
-    changeQuestionId: (questionId: string) => void
-    changeQuestionState: (state: CurrentPoll['state']) => void
+    setQuestionId: (questionId: string) => void
+    setQuestionState: (state: PollState['state']) => void
 }
 
 type PollStore = PollState & PollActions
@@ -39,68 +27,65 @@ type PollStore = PollState & PollActions
 
 const usePollAnimationStore = create<PollStore>((set, get) => ({
     
-    currentPoll: null,
+    id: null,
 
-    isSyncing: false,
+    poll: null,
 
-    setPoll: (poll, id) => {
+    currentQuestionId: null,
+
+    state: 'voting',
+
+    answers: [],
+
+    setPoll: (poll) => {
         set(produce<PollState>(draft => {
-            // If currentPoll already exists, just update the poll object
-            if (draft.currentPoll) {
-                draft.currentPoll.poll = poll
-                draft.currentPoll.id = id
-                return
-            }
-
-            // If there is no currentPoll, create a new one with empty snapshot data
-            draft.currentPoll = {
-                id: id,
-                poll: poll,
-                currentQuestionId: poll.questions[0].id,
-                state: 'voting',
-                answers: []
-            }
+            draft.poll = poll
         }))
     },
 
-    /*setPollId: (id) => {
+    setPollId: (id) => {
         set(produce<PollState>(draft => {
-            if (!draft.currentPoll) return
-            draft.currentPoll.id = id
+            draft.id = id
         }))
-    },*/
+    },
 
     closePoll: () => {
-        set({ currentPoll: null })
+        set(produce<PollState>(draft => {
+            draft.poll = null
+            draft.id = null
+            draft.currentQuestionId = null
+            draft.state = 'voting'
+            draft.answers = []
+        }))
     },
 
     setAnswers: (answers) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.answers = answers
+            draft.answers = answers
         }))
     },
 
     addAnswer: (answer) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.answers.push(answer)
+            draft.answers.push(answer)
         }))
     },
 
     removeAnswer: (answerId) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.answers = draft.currentPoll!.answers.filter(a => a.choiceId !== answerId)
+            draft.answers = draft.answers.filter(a => a.choiceId !== answerId)
         }))
     },
 
-    changeQuestionId: (questionId) => {
+    setQuestionId: (questionId) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.currentQuestionId = questionId
+            draft.currentQuestionId = questionId
         }))
     },
 
-    changeQuestionState: (state) => {
+    setQuestionState: (state) => {
         set(produce<PollState>(draft => {
-            draft.currentPoll!.state = state
+            draft.state = state
         }))
     }
 

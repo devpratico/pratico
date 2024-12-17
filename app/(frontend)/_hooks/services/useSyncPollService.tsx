@@ -7,6 +7,7 @@ import { Poll, isPollSnapshot, PollSnapshot } from '@/app/_types/poll2'
 import { Tables } from '@/supabase/types/database.types'
 import { isEqual } from 'lodash'
 import logger from '@/app/_utils/logger'
+import { useRoom } from '../contexts/useRoom'
 
 
 /**
@@ -14,17 +15,17 @@ import logger from '@/app/_utils/logger'
  * Provide callbacks to react to changes.
  * Should be used by higher level services (poll animation and participation).
  */
-export default function useSyncPollService(args: {
-    roomId: number | undefined
-    onPollChange: (poll: Poll | null, id: string | number | undefined) => void
-    onSnapshotChange: (snapshot: PollSnapshot | null) => void
-}): {
+export default function useSyncPollService(): {
+    poll: Poll | null
+    snapshot: PollSnapshot | null
     isSyncing: boolean
     error: string | null
 } {
+    const roomId = useRoom().room?.id
+    const [poll, setPoll] = useState<Poll | null>(null)
+    const [snapshot, setSnapshot] = useState<PollSnapshot | null>(null)
     const [isSyncing, setIsSyncing] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const { roomId, onPollChange, onSnapshotChange } = args
 
     // Fetch initial data
     useEffect(() => {
@@ -36,11 +37,11 @@ export default function useSyncPollService(args: {
         getPollAndSnapshot(roomId).then(({ poll, snapshot, error }) => {
             setIsSyncing(false)
             setError(error)
-            onPollChange(poll, snapshot?.activityId)
-            onSnapshotChange(snapshot)
+            setPoll(poll)
+            setSnapshot(snapshot)
         })
 
-    }, [roomId, onPollChange, onSnapshotChange])
+    }, [roomId])
 
     // Sync with database real-time
     useEffect(() => {
@@ -66,13 +67,13 @@ export default function useSyncPollService(args: {
 
             // If it's not a poll snapshot, empty the store
             if (!isPollSnapshot(newSnapshot)) {
-                onSnapshotChange(null)
-                onPollChange(null, undefined)
+                setPoll(null)
+                setSnapshot(null)
                 return
             }
 
             // It's a poll. Update the store snapshot
-            onSnapshotChange(newSnapshot)
+            setSnapshot(newSnapshot)
 
             // Maybe the activity has changed. Update it if needed
             const oldPollId = isPollSnapshot(oldSnapshot) ? oldSnapshot.activityId : null
@@ -86,16 +87,17 @@ export default function useSyncPollService(args: {
                     setError(error)
                     return
                 }
-                onPollChange(poll, newPollId)
+                setPoll(poll)
             }
 
         }).subscribe()
 
         return () => {supabase.removeChannel(channel)}
-    }, [roomId, onPollChange, onSnapshotChange])
+    }, [roomId])
 
 
-    return { isSyncing, error}
+
+    return { poll, snapshot, isSyncing, error}
 }
 
 

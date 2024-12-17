@@ -51,13 +51,19 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
         channel
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
                 (payload): void => {
-                    const oldRecord = room
                     const newRecord = payload.new as Room
 
-                    if (isEqual(oldRecord?.params, newRecord.params)) return
+                    //if (isEqual(oldRecord?.params, newRecord.params)) return
 
                     logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
-                    setRoom(newRecord)
+                    setRoom((prev) => {
+                        if (isEqual(prev?.params, newRecord.params)) return prev
+                        if (prev) {
+                            return {...prev, params: newRecord.params}
+                        } else {
+                            return newRecord
+                        }
+                    })
 
                     /*setRoom((prev) => {
                         logger.log('supabase:realtime', "room row updated", newRecord.params)
