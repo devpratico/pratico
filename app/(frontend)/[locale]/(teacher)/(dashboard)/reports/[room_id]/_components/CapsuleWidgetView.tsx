@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, DataList, Flex, IconButton, Link, Strong, Tooltip } from "@radix-ui/themes";
+import { Box, Button, Card, DataList, Flex, IconButton, Link, Strong, Tooltip } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { FileDown } from "lucide-react";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
@@ -25,31 +25,27 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 
 	const Thumb = () => {
 		return (<>
-            <Card style={{width: "100%", height: "auto"}}>
+            <Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
 				<Thumbnail snapshot={data.capsuleSnapshot} />
-			</Card>
+			</Box>
 		</>);
 	};
 	const Content = () => {
 
         return (
-			<>
-				<Strong>Capsule</Strong>
+			// <>
+				// {/* <Strong>Capsule</Strong> */}
 				<DataList.Root size='1'>
 					<DataList.Item>
 						<DataList.Label>Titre</DataList.Label>
 						<DataList.Value>{data.capsuleTitle}</DataList.Value>
 					</DataList.Item>
 					<DataList.Item>
-						<DataList.Label>Créer le</DataList.Label>
+						<DataList.Label>Date de création</DataList.Label>
 						<DataList.Value>{data.capsuleDate}</DataList.Value>
 					</DataList.Item>
-					<DataList.Item>
-						<DataList.Label></DataList.Label>
-						<DataList.Value></DataList.Value>
-					</DataList.Item>
 				</DataList.Root>
-			</>
+			// </>
             
         );
     }
