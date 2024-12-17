@@ -7,6 +7,7 @@ import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import useSyncPollService from "./useSyncPollService"
 import { useState } from "react"
+import { isEqual } from "lodash"
 
 
 /**
@@ -53,8 +54,9 @@ export function useStartPollService(): {
 }
 
 
-export function useSyncPollAnimationService(): { error: string | null } {
+export function useSyncPollAnimationService(): { error: string | null} {
     const roomId = useRoom().room?.id
+    //const { roomId } = args
 
     // Sync remote poll data into the store
     const { error: syncError } = useSyncPollService({
@@ -62,6 +64,10 @@ export function useSyncPollAnimationService(): { error: string | null } {
         roomId: roomId,
 
         onPollChange: (poll, id) => {
+            // If the poll is the same, don't update the store
+            const oldPoll = usePollAnimationStore.getState().currentPoll?.poll
+            if (isEqual(oldPoll, poll)) return
+
             if (!poll || !id) {
                 usePollAnimationStore.getState().closePoll()
                 return
@@ -71,14 +77,13 @@ export function useSyncPollAnimationService(): { error: string | null } {
         },
 
         onSnapshotChange: (snapshot) => {
-            if (!snapshot) {
-                usePollAnimationStore.getState().closePoll()
-                return
+            // Only change answers, because the other data is only managed by this user
+            // Only change answers if they are different
+            const oldAnswers = usePollAnimationStore.getState().currentPoll?.answers || []
+            const newAnswers = snapshot?.answers || []
+            if (!isEqual(oldAnswers, newAnswers)) {
+                usePollAnimationStore.getState().setAnswers(newAnswers)
             }
-
-            usePollAnimationStore.getState().setAnswers(snapshot.answers)
-            usePollAnimationStore.getState().changeQuestionId(snapshot.currentQuestionId)
-            usePollAnimationStore.getState().changeQuestionState(snapshot.state)
         }
     })
 
@@ -102,14 +107,14 @@ export function useSyncPollAnimationService(): { error: string | null } {
  * but it also it creates it if it doesn't exist, and removes it if the poll is null.
  */
 function syncLocalState(roomId: number) {
-    // TODO: use subscribeWithSelector to only subscribe to currentPoll, and use the isSyncing flag
+    // TODO: use a hook to get the current room id
     const unsubscribe = usePollAnimationStore.subscribe(async (state, prevState) => {
 
         const currentPoll = state.currentPoll
 
         // If there is no poll, remove the snapshot from the database
         if (!currentPoll) {
-            logger.log('supabase:realtime', "usePollAnimation.tsx", "Removing snapshot from database")
+            logger.log('supabase:realtime', "usePollAnimationService.tsx", "Removing snapshot from database")
             await saveRoomActivitySnapshot(roomId, null)
             return
         }
@@ -126,7 +131,7 @@ function syncLocalState(roomId: number) {
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
 
         if (error) {
-            logger.log('supabase:realtime', "usePollAnimation.tsx", "Error saving poll snapshot to database. Reverting back to previous state.", error)
+            logger.log('supabase:realtime', "usePollAnimationService.tsx", "Error saving poll snapshot to database. Reverting back to previous state.", error)
             // TODO: Rollback to the previous state
         }
     })

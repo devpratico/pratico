@@ -5,6 +5,8 @@ import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { fetchSnapshot } from '@/app/(backend)/api/activity/activitiy.client'
 import { Poll, isPollSnapshot, PollSnapshot } from '@/app/_types/poll2'
 import { Tables } from '@/supabase/types/database.types'
+import { isEqual } from 'lodash'
+import logger from '@/app/_utils/logger'
 
 
 /**
@@ -26,6 +28,7 @@ export default function useSyncPollService(args: {
 
     // Fetch initial data
     useEffect(() => {
+        logger.log('react:hook', 'useSyncPollService.tsx', 'useEffect', 'Fetching initial data')
         if (!roomId) return
         setIsSyncing(true)
         setError(null)
@@ -41,6 +44,7 @@ export default function useSyncPollService(args: {
 
     // Sync with database real-time
     useEffect(() => {
+        if (!roomId) return
         const supabase = createClient()
         const channel = supabase.channel(roomId + "_realtime")
         const roomUpdate = {
@@ -52,9 +56,13 @@ export default function useSyncPollService(args: {
 
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
+            logger.log('react:hook', 'useSyncPollService.tsx', 'Supabase channel change detected in room', roomId)
             setError(null)
             const oldSnapshot = payload.old.activity_snapshot
             const newSnapshot = payload.new.activity_snapshot
+
+            // If nothing has changed, do nothing
+            if (isEqual(oldSnapshot, newSnapshot)) return
 
             // If it's not a poll snapshot, empty the store
             if (!isPollSnapshot(newSnapshot)) {

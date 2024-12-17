@@ -12,7 +12,7 @@ interface PollAnimationProps {
     userId: string
 }
 
-export default function PollAnimation({ userId }: PollAnimationProps) {
+export default function PollAnimation({  userId }: PollAnimationProps) {
     const { error } = useSyncPollAnimationService() // Sync the usePollAnimation store with the server
 
     const shouldShowPoll = usePollAnimation(state => state.currentPoll != null)

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
+import { isEqual } from 'lodash';
 
 
 // TODO: There's a trick 🚩 here to only update the room when the params change - and do nothing
@@ -30,9 +31,10 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
-    // Fetch the room data (happens once)
+    // Fetch the initial room data (happens once)
     useEffect(() => {
         if (!room_code) return;
+        logger.log('react:hook', 'useRoom.tsx', 'Fetch initial room data', room_code)
         fetchOpenRoomByCode(room_code).then(({data, error}) => {
             if (error || !data) return
             const _room = data as Room
@@ -49,9 +51,15 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
         channel
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
                 (payload): void => {
+                    const oldRecord = room
                     const newRecord = payload.new as Room
 
-                    setRoom((prev) => {
+                    if (isEqual(oldRecord?.params, newRecord.params)) return
+
+                    logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
+                    setRoom(newRecord)
+
+                    /*setRoom((prev) => {
                         logger.log('supabase:realtime', "room row updated", newRecord.params)
                         if (prev) {
                             // Trick here 🚩 : Only update the params and activity_snapshot
@@ -59,7 +67,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
                         } else {
                             return newRecord
                         }
-                    })
+                    })*/
                 }
             ).subscribe()
 
