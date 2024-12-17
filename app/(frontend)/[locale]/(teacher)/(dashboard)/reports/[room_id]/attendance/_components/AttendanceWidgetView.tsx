@@ -3,14 +3,13 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "../../_components/WidgetThumb";
 import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
-import { Box, Button, DataList, IconButton, Tooltip, Heading } from "@radix-ui/themes";
+import { Button, DataList, IconButton, Strong, Tooltip } from "@radix-ui/themes";
 import { useFormatter } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
 import { AttendanceToPDF } from "./AttendanceToPdf";
-
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -77,8 +76,8 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
         const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short'});
 
         return (
-			<Box>
-				<Heading as='h2' size='4' mb='4'>Présence</Heading>
+			<>
+				<Strong>Présence</Strong>
 				<DataList.Root size='1'>
 					<DataList.Item>
 						<DataList.Label>Animateur</DataList.Label>
@@ -95,7 +94,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 						<DataList.Value>{endDate}</DataList.Value>
 					</DataList.Item>
 				</DataList.Root>
-			</Box>
+			</>
             
         );
     }

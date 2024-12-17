@@ -3,14 +3,15 @@ import { CapsuleWidgetView } from "./CapsuleWidgetView";
 import { getFormatter } from "next-intl/server";
 import { TLEditorSnapshot } from "tldraw";
 import { fetchRoomsByCapsuleId } from "@/app/(backend)/api/room/room.server";
+import { Json } from "@/supabase/types/database.types";
 
 export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
 	let capsuleDate = "";
-	let capsuleSnapshot: any = null;
+	let capsuleSnapshot: Json | TLEditorSnapshot | null = null;
 	let isRoom = false;
-	const { data: capsuleData } = await supabase.from('capsules').select('tld_snapshot, created_at').eq('id', capsuleId).single();
+	const { data: capsuleData } = await supabase.from('capsules').select('tld_snapshot, created_at').eq("created_by", userId).eq('id', capsuleId).single();
 	if (capsuleData)
 	{
 		const date = new Date(capsuleData.created_at);
@@ -28,7 +29,7 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
-		capsuleSnapshot: capsuleSnapshot as TLEditorSnapshot,
+		capsuleSnapshot: capsuleSnapshot,
 		isRoom: isRoom
 	};
 	return (<>

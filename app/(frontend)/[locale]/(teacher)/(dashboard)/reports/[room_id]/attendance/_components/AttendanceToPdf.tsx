@@ -60,15 +60,15 @@ export type TeacherInfo = {
 
 				@media print {
 					.hidden-on-screen {
-					display: block !important;
+						display: block !important;
 					}
 
 					@page {
-					margin: 10mm 30mm;
+						margin: 10mm 30mm;
 					}
 				}
 			`}</style>
-			<Card mt='5' className={"hidden-on-screen"}>
+			<Card mt='5' className={"hidden-on-screen"} style={{display: "none"}}>
 				<div style={{fontSize: '12px', margin: '20px'}} ref={ref || contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>

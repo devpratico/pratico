@@ -1,32 +1,54 @@
 "use client";
-import { Box, Button, Card, DataList, Flex, IconButton, Link, Strong, Tooltip, Heading } from "@radix-ui/themes";
+import { Box, Button, DataList, IconButton, Link, Tooltip, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { FileDown } from "lucide-react";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { TLEditorSnapshot } from "tldraw";
 import { CapsuleToPdfDialog } from "../../../../(desk)/capsule/[capsule_id]/_components/CapsuleToPdfDialog";
 import { useState } from "react";
+import { Json } from "@/supabase/types/database.types";
+import jsPDF from "jspdf";
 
 interface CapsuleWidgetViewProps {
 	data: {
 		capsuleId: string;
 		capsuleTitle: string;
 		capsuleDate: string;
-		capsuleSnapshot: TLEditorSnapshot;
+		capsuleSnapshot: Json | TLEditorSnapshot;
 		isRoom: boolean;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const [ downloadClick, setDowloadClick ] = useState(false);
+	console.log(data.capsuleSnapshot, " SNAPSHOTS");
 
 	const handleDownload = () => {
 		setDowloadClick(true);
+		const doc = new jsPDF();
+		let yPos = 20;
+		const pages = data.capsuleSnapshot as TLEditorSnapshot;
+		console.log(pages, " PAGES");
+		
+		pages.session.pageStates.forEach((page, index) => {
+			if (index > 0) {
+				doc.addPage();
+			}
+			doc.setFontSize(12);
+			doc.text(
+				`Page ${page.pageId} ${index + 1}`,
+				10,
+				yPos
+			);
+			yPos += 10;
+		});
+
+		doc.save("document.pdf");
 	};
 
 	const Thumb = () => {
 		return (
             <Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
-				<Thumbnail snapshot={data.capsuleSnapshot} />
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
 			</Box>
 		);
 	};
