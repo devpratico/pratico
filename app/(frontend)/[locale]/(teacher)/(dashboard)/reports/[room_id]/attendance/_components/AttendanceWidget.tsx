@@ -4,8 +4,7 @@ import { countAttendances } from "@/app/(backend)/api/attendance/attendance.serv
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
 import { AttendanceInfoType } from "../../page";
-import { getFormatter } from "next-intl/server";
-import { useLocale } from "next-intl";
+import { getFormatter, getLocale } from "next-intl/server";
 
 type AttendanceWidgetProps = {
 	roomId: number,
@@ -16,7 +15,7 @@ type AttendanceWidgetProps = {
 export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
-	const local = useLocale();
+	const local = await getLocale();
 	const attendanceCount = await countAttendances(roomId);
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];
