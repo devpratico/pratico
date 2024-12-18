@@ -62,7 +62,7 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 					const infos: AttendanceInfoType = {
 						first_name: attendance.first_name,
 						last_name: attendance.last_name,
-						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short', timeZone: 'Europe/Paris'})
+						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short'})
 					};
 					attendances.push(infos);
 				})

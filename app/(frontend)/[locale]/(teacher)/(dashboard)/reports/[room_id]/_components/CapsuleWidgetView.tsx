@@ -3,11 +3,10 @@ import { Box, Button, DataList, IconButton, Link, Tooltip, Heading } from "@radi
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { FileDown } from "lucide-react";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
-import { TLEditorSnapshot } from "tldraw";
+import { Tldraw, TLEditorSnapshot } from "tldraw";
 import { CapsuleToPdfDialog } from "../../../../(desk)/capsule/[capsule_id]/_components/CapsuleToPdfDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Json } from "@/supabase/types/database.types";
-import jsPDF from "jspdf";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -20,29 +19,13 @@ interface CapsuleWidgetViewProps {
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const [ downloadClick, setDowloadClick ] = useState(false);
-	console.log(data.capsuleSnapshot, " SNAPSHOTS");
 
-	const handleDownload = () => {
+	useEffect(() => {	console.log(data.capsuleSnapshot, " SNAPSHOTS", downloadClick);
+	}, [downloadClick, data.capsuleSnapshot]);
+	const handleDownload = async () => {
 		setDowloadClick(true);
-		const doc = new jsPDF();
-		let yPos = 20;
-		const pages = data.capsuleSnapshot as TLEditorSnapshot;
-		console.log(pages, " PAGES");
-		
-		pages.session.pageStates.forEach((page, index) => {
-			if (index > 0) {
-				doc.addPage();
-			}
-			doc.setFontSize(12);
-			doc.text(
-				`Page ${page.pageId} ${index + 1}`,
-				10,
-				yPos
-			);
-			yPos += 10;
-		});
-
-		doc.save("document.pdf");
+		const timeout = setTimeout(() => {setDowloadClick(false)}, 1000);
+		return (() => clearTimeout(timeout));
 	};
 
 	const Thumb = () => {
@@ -92,7 +75,9 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 				buttons={buttons}
 			/>
 			{
-				downloadClick && <CapsuleToPdfDialog capsuleId={data.capsuleId} isRoom={data.isRoom} shortcut={true} />
+				downloadClick && <Tldraw snapshot={data.capsuleSnapshot as TLEditorSnapshot}>
+					<CapsuleToPdfDialog capsuleId={data.capsuleId} isRoom={data.isRoom} shortcut={true} />
+				</Tldraw>
 			}
 		</>
 	);
