@@ -39,6 +39,7 @@ export default function useSyncPollService(): {
             setError(error)
             setPoll(poll)
             setSnapshot(snapshot)
+            logger.log('react:hook', 'useSyncPollService.tsx', 'Initial data fetched', poll, snapshot)
         })
 
     }, [roomId])

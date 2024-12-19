@@ -6,7 +6,7 @@ import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll2"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import useSyncPollService from "./useSyncPollService"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
 
 
@@ -75,8 +75,11 @@ export function usePollAnimationService(): {
         return { error }
     }, [save, isSaving, userId])
 
-    const myChoicesIds = usePollAnimationStore(state =>
-        state.answers.filter(a => a.userId == userId).map(a => a.choiceId)
+    const answers = usePollAnimationStore(state => state.answers)
+
+    const myChoicesIds = useMemo(() =>
+        answers.filter(a => a.userId === userId).map(a => a.choiceId),
+        [answers, userId]
     )
 
     return {
@@ -230,7 +233,7 @@ export function useClosePollService(): {
  * Listen to the changes in the database and
  * automatically update the store
  */
-export function useSyncRemotePollAnswersService(): {
+export function useSyncRemotePollService(): {
     isSyncing: boolean
     error: string | null
 } {
@@ -240,6 +243,9 @@ export function useSyncRemotePollAnswersService(): {
     // Put the snapshot in the store
     useEffect(() => {
         if (snapshot) {
+            usePollAnimationStore.getState().setPollId(snapshot.activityId)
+            usePollAnimationStore.getState().setQuestionId(snapshot.currentQuestionId)
+            usePollAnimationStore.getState().setQuestionState(snapshot.state)
             usePollAnimationStore.getState().setAnswers(snapshot.answers)
         } else {
             usePollAnimationStore.getState().closePoll()
@@ -271,7 +277,7 @@ function useSaveRoomActivitySnapshot() :{
     const [isSaving, setIsSaving] = useState(false)
     const roomId = useRoom().room?.id
 
-    const save = async () => {
+    const save = useCallback(async () => {
         if (!roomId) return { error: 'No room id'}
         setIsSaving(true)
         const state = usePollAnimationStore.getState()
@@ -286,7 +292,7 @@ function useSaveRoomActivitySnapshot() :{
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
         setIsSaving(false)
         return { error }
-    }
+    }, [roomId])
 
     return { save, isSaving }
 }
