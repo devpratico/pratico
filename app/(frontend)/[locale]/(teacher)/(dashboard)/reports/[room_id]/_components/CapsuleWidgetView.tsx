@@ -1,12 +1,11 @@
 "use client";
-import { Box, Button, DataList, IconButton, Link, Tooltip, Heading } from "@radix-ui/themes";
+import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { FileDown } from "lucide-react";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { Tldraw, TLEditorSnapshot } from "tldraw";
-import { CapsuleToPdfDialog } from "../../../../(desk)/capsule/[capsule_id]/_components/CapsuleToPdfDialog";
 import { useEffect, useState } from "react";
 import { Json } from "@/supabase/types/database.types";
+import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -22,13 +21,6 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 
 	useEffect(() => {	console.log(data.capsuleSnapshot, " SNAPSHOTS",downloadClick);
 	}, [downloadClick, data.capsuleSnapshot]);
-	const handleDownload = async () => {
-		if (downloadClick)
-			return ;
-		setDowloadClick(true);
-		const timeout = setTimeout(() => {setDowloadClick(false)}, 1000);
-		return (() => clearTimeout(timeout));
-	};
 
 	const Thumb = () => {
 		return (
@@ -57,11 +49,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         );
     }
 	const buttons = <>
-			<Tooltip content="Exporter en PDF">
-				<IconButton disabled={false}  variant="ghost" onClick={handleDownload}>
-					<FileDown />
-				</IconButton>
-			</Tooltip>
+			<CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} isRoom={data.isRoom} />
 			<Button radius="full" asChild>
 				<Link href={`/capsule/${data.capsuleId}`}>
 					Ouvrir la capsule
@@ -76,9 +64,6 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 				content={<Content />}
 				buttons={buttons}
 			/>
-				<Tldraw snapshot={data.capsuleSnapshot as TLEditorSnapshot}>
-					<CapsuleToPdfDialog capsuleId={data.capsuleId} isRoom={data.isRoom} shortcut={downloadClick} />
-				</Tldraw>
 		</>
 	);
 }
