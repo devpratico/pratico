@@ -44,8 +44,8 @@ export function usePollAnimationService(): {
         const { error } = await save()
 
         if (error) {
-            // Rollback
             usePollAnimationStore.getState().setAnswers(originalAnswers)
+            logger.error('zustand:store', 'usePollAnimation.tsx', 'Error saving answer', error)
         }
         return { error }
     }, [userId, save, isSaving])
@@ -69,8 +69,8 @@ export function usePollAnimationService(): {
         const { error } = await save()
 
         if (error) {
-            // Rollback
             usePollAnimationStore.getState().setAnswers(originalAnswers)
+            logger.error('zustand:store', 'usePollAnimation.tsx', 'Error saving answer', error)
         }
         return { error }
     }, [save, isSaving, userId])

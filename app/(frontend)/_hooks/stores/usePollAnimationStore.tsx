@@ -74,7 +74,7 @@ const usePollAnimationStore = create<PollStore>((set, get) => ({
     removeAnswer: ({userId, questionId, choiceId}) => {
         set(produce<PollState>(draft => {
             draft.answers = draft.answers.filter( a => {
-                !(a.userId === userId && a.questionId === questionId && a.choiceId === choiceId)
+                return !(a.userId === userId && a.questionId === questionId && a.choiceId === choiceId)
             })
         }))
     },
