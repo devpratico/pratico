@@ -5,12 +5,12 @@ import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Sec
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { PollSnapshot } from '@/app/_types/poll2'
-import { useSyncRemotePollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
+import { useSyncAnimationPollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 
 
 export default function PollAnimation() {
     // Sync store state with remote answers
-    const { isSyncing, error } = useSyncRemotePollService()
+    const { isSyncing, error } = useSyncAnimationPollService()
 
     // Store state
     const shouldShowPoll = usePollAnimation(state => state.id != null)

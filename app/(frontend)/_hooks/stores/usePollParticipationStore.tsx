@@ -12,6 +12,8 @@ type State = {
     pollId: number | null,
     currentQuestionId: string | null,
     state: PollSnapshot['state'],
+
+    /** These will only be this user's answers */
     answers: PollUserAnswer[]
 }
 
@@ -67,7 +69,7 @@ const usePollParticipationStore = create<Store>((set, get) => ({
         }))
     },
 
-    removeVote: ({ choiceId, userId }) => {
+    removeVote: ({choiceId, userId}) => {
         if (!thereIsAPoll()) {
             logger.error('zustand:store', 'usePollParticipation.tsx', 'removeVote', 'No poll found')
             return

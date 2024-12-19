@@ -5,7 +5,6 @@ import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { fetchSnapshot } from '@/app/(backend)/api/activity/activitiy.client'
 import { Poll, isPollSnapshot, PollSnapshot } from '@/app/_types/poll2'
 import { Tables } from '@/supabase/types/database.types'
-import { isEqual } from 'lodash'
 import logger from '@/app/_utils/logger'
 import { useRoom } from '../contexts/useRoom'
 

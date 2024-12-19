@@ -233,7 +233,7 @@ export function useClosePollService(): {
  * Listen to the changes in the database and
  * automatically update the store
  */
-export function useSyncRemotePollService(): {
+export function useSyncAnimationPollService(): {
     isSyncing: boolean
     error: string | null
 } {
