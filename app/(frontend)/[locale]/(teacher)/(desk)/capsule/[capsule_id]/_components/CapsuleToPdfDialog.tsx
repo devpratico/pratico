@@ -1,7 +1,7 @@
 "use client";
 
 import jsPDF from "jspdf";
-import { Editor, exportToBlob } from "tldraw";
+import { Editor, exportToBlob, useEditor } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
@@ -16,6 +16,7 @@ let pdfExportLock = false;
 export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: string | string[], isRoom: boolean, shortcut?: boolean})
 {
 	let { editor } = useTLEditor();
+	// const editor = useEditor();
 	const supabase = createClient();
 	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);
@@ -67,6 +68,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 
 		try {
 			await processBlob(0);
+			setOpenDialog(false);
 		} catch (error) {
 			logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
 			setState('error');
