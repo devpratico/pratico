@@ -3,7 +3,7 @@ import { AttendanceWidgetView, AttendanceWidgetViewProps } from "./AttendanceWid
 import { countAttendances } from "@/app/(backend)/api/attendance/attendance.server";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
-import { AttendanceInfoType } from "../page";
+import { AttendanceInfoType } from "../../page";
 import { getFormatter } from "next-intl/server";
 
 type AttendanceWidgetProps = {

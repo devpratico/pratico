@@ -3,7 +3,7 @@ import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
-import { AttendanceDisplay } from "../_components/AttendanceDisplay";
+import { AttendanceDisplay } from "./_components/AttendanceDisplay";
 import { getFormatter } from "next-intl/server";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
