@@ -5,44 +5,24 @@ import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Sec
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { PollSnapshot } from '@/app/_types/poll2'
-import { useSyncPollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
-import useSyncPollService from '@/app/(frontend)/_hooks/services/useSyncPollService'
-import { useEffect } from 'react'
+import { useSyncRemotePollAnswersService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 
 
-interface PollAnimationProps {
-    userId: string
-}
+export default function PollAnimation() {
+    // Sync store state with remote answers
+    const { isSyncing, error } = useSyncRemotePollAnswersService()
 
-export default function PollAnimation({  userId }: PollAnimationProps) {
-    const { error } = useSyncPollAnimationService() // Sync the usePollAnimation store with the server
-
+    // Store state
     const shouldShowPoll = usePollAnimation(state => state.id != null)
-    const closePoll = usePollAnimation(state => state.closePoll)
     const poll = usePollAnimation(state => state.poll)
     const currentQuestionId = usePollAnimation(state => state.currentQuestionId)
     const questionState = usePollAnimation(state => state.state)
-    const changeQuestionState = usePollAnimation(state => state.setQuestionState)
-    const answers = usePollAnimation(state => state.answers)
-    const myAnswers = answers?.filter(a => a.userId == userId)
-    const addAnswer = usePollAnimation(state => state.addAnswer)
-    const removeAnswer = usePollAnimation(state => state.removeAnswer)
-
     const currentQuestion = poll?.questions.find(q => q.id == currentQuestionId)
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id == currentQuestionId)
-    const setChoiceState = (choiceId: string, state: 'selected' | 'unselected') => {
-        if (state == 'selected') {
-            if (!currentQuestionId) return
-            addAnswer({
-                userId: userId,
-                questionId: currentQuestionId,
-                choiceId: choiceId,
-                timestamp: Date.now()
-            })
-        } else {
-            removeAnswer(userId)
-        }
-    }
+    
+    // Service methods
+    const { closePoll } = useClosePollService()
+    const { toggleAnswer, setQuestionState, myChoicesIds } = usePollAnimationService()
 
 
     return (
@@ -70,8 +50,9 @@ export default function PollAnimation({  userId }: PollAnimationProps) {
                                     text={choice.text}
                                     votes={3}
                                     questionState={questionState || 'voting'}
-                                    answerState={myAnswers?.some(a => a.choiceId == choice.id) ? 'selected' : 'unselected'}
-                                    setAnswerState={(value) => setChoiceState(choice.id, value)}
+                                    answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
+                                    //setAnswerState={(value) => setChoiceState(choice.id, value)}
+                                    onClick={() => toggleAnswer(choice.id)}
                                 />
                             ))}
                         </Flex>
@@ -94,11 +75,11 @@ export default function PollAnimation({  userId }: PollAnimationProps) {
                                 setCurrentQuestionIndex={() => {}}
                             />
 
-                            <Button size='3' onClick={() => changeQuestionState('showing results')} style={{ display: questionState == 'showing results' ? 'none' : 'flex' }}>
+                            <Button size='3' onClick={() => setQuestionState('showing results')} style={{ display: questionState == 'showing results' ? 'none' : 'flex' }}>
                                 Voir les résultats
                             </Button>
 
-                            <Button size='3' onClick={() => changeQuestionState('voting')} style={{ display: questionState == 'showing results' ? 'flex' : 'none' }} variant='soft'>
+                            <Button size='3' onClick={() => setQuestionState('voting')} style={{ display: questionState == 'showing results' ? 'flex' : 'none' }} variant='soft'>
                                 Masquer les résultats
                             </Button>
 
@@ -117,10 +98,11 @@ interface PollAnswerRowProps {
     votes: number,
     questionState: PollSnapshot['state']
     answerState: 'selected' | 'unselected'
-    setAnswerState: (value: 'selected' | 'unselected') => void
+    //setAnswerState: (value: 'selected' | 'unselected') => void
+    onClick: () => void
 }
 
-export function PollAnswerRow({ text, votes, questionState, answerState = 'unselected', setAnswerState }: PollAnswerRowProps) {
+export function PollAnswerRow({ text, votes, questionState, answerState = 'unselected', onClick }: PollAnswerRowProps) {
 
     const isSolid = questionState == 'voting' && answerState === 'selected'
     const isSoft = questionState == 'showing results'
@@ -129,7 +111,8 @@ export function PollAnswerRow({ text, votes, questionState, answerState = 'unsel
 
     function handleClick() {
         if (questionState == 'showing results') return
-        setAnswerState(answerState == 'selected' ? 'unselected' : 'selected')
+        //setAnswerState(answerState == 'selected' ? 'unselected' : 'selected')
+        onClick()
     }
 
     return (

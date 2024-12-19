@@ -55,15 +55,14 @@ export default function useSyncPollService(): {
             filter: `id=eq.${roomId}`
         } as any
 
+
+
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
             logger.log('react:hook', 'useSyncPollService.tsx', 'Supabase channel change detected in room', roomId)
             setError(null)
             const oldSnapshot = payload.old.activity_snapshot
             const newSnapshot = payload.new.activity_snapshot
-
-            // If nothing has changed, do nothing
-            if (isEqual(oldSnapshot, newSnapshot)) return
 
             // If it's not a poll snapshot, empty the store
             if (!isPollSnapshot(newSnapshot)) {

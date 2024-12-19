@@ -2,11 +2,136 @@ import logger from "@/app/_utils/logger"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useEffect } from "react"
-import { PollSnapshot, Poll } from "@/app/_types/poll2"
+import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll2"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import useSyncPollService from "./useSyncPollService"
-import { useState } from "react"
+import { useState, useCallback } from "react"
+import { useUser } from "../contexts/useUser"
+
+
+export function usePollAnimationService(): {
+    addAnswer: (choiceId: string) => Promise<{ error: string | null }>
+    removeAnswer: (choiceId: string) => Promise<{ error: string | null }>
+    toggleAnswer: (choiceId: string) => Promise<{ error: string | null }>
+    setCurrentQuestion: (questionId: string) => Promise<{ error: string | null }>
+    setQuestionState: (state: PollSnapshot['state']) => Promise<{ error: string | null }>
+    myChoicesIds: string[]
+    isSaving: boolean
+} {
+    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const { userId } = useUser()
+
+    const addAnswer = useCallback(async (choiceId: string) => {
+        if (isSaving) return { error: 'Saving in progress ' }
+        if (!userId) return { error: 'No user id' }
+
+        const currentQuestionId = usePollAnimationStore.getState().currentQuestionId
+        if (!currentQuestionId) return { error: 'No current question id' }
+
+        // Save the current answers in case of rollback
+        const originalAnswers = usePollAnimationStore.getState().answers
+
+        const newAnswer: PollUserAnswer = {
+            userId: userId,
+            questionId: currentQuestionId,
+            choiceId: choiceId,
+            timestamp: Date.now()
+        }
+
+        usePollAnimationStore.getState().addAnswer(newAnswer)
+
+        const { error } = await save()
+
+        if (error) {
+            // Rollback
+            usePollAnimationStore.getState().setAnswers(originalAnswers)
+        }
+        return { error }
+    }, [userId, save, isSaving])
+
+    const removeAnswer = useCallback(async (choiceId: string) => {
+        if (isSaving) return { error: 'Saving in progress' }
+        if (!userId) return { error: 'No user id' }
+
+        const currentQuestionId = usePollAnimationStore.getState().currentQuestionId
+        if (!currentQuestionId) return { error: 'No current question id' }
+
+        // Save the current answers in case of rollback
+        const originalAnswers = usePollAnimationStore.getState().answers
+
+        usePollAnimationStore.getState().removeAnswer({
+            userId: userId,
+            questionId: currentQuestionId,
+            choiceId: choiceId
+        })
+
+        const { error } = await save()
+
+        if (error) {
+            // Rollback
+            usePollAnimationStore.getState().setAnswers(originalAnswers)
+        }
+        return { error }
+    }, [save, isSaving, userId])
+
+    const myChoicesIds = usePollAnimationStore(state =>
+        state.answers.filter(a => a.userId == userId).map(a => a.choiceId)
+    )
+
+    return {
+
+        addAnswer: addAnswer,
+
+        removeAnswer: removeAnswer,
+
+        toggleAnswer: async (choiceId) => {
+            if (myChoicesIds.includes(choiceId)) {
+                return removeAnswer(choiceId)
+            } else {
+                return addAnswer(choiceId)
+            }
+        },
+
+        setCurrentQuestion: async (questionId) => {
+            if (isSaving) return { error: 'Saving in progress' }
+
+            const previousQuestionId = usePollAnimationStore.getState().currentQuestionId    
+
+            usePollAnimationStore.getState().setQuestionId(questionId)
+
+            const { error } = await save()
+            if (error && previousQuestionId) {
+                // Rollback (if previous value exist)
+                usePollAnimationStore.getState().setQuestionId(previousQuestionId)
+            }
+
+            return { error }
+        },
+
+        setQuestionState: async (state) => {
+            if (isSaving) return { error: 'Saving in progress' }
+
+            const previousState = usePollAnimationStore.getState().state
+
+            usePollAnimationStore.getState().setQuestionState(state)
+
+            const { error } = await save()
+            if (error && previousState) {
+                // Rollback (if previous value exist)
+                usePollAnimationStore.getState().setQuestionState(previousState)
+            }
+
+            return { error }
+        },
+
+        myChoicesIds: myChoicesIds,
+
+        isSaving: isSaving,
+    }
+}
+
+
 
 
 /**
@@ -14,16 +139,18 @@ import { useState } from "react"
  * This function fetches the activity from the database.
  */
 export function useStartPollService(): {
-    startPoll: (activityId: number | string) => Promise<void>
+    startPoll: (activityId: number | string) => Promise<{ error: string | null }>
     isPending: boolean
-    error: string | null
 } {
     const [isPending, setIsPending] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+    const roomId = useRoom().room?.id
 
     const startPoll = async (activityId: number | string) => {
+        if (!roomId) {
+            logger.error('supabase:database', 'StartButton', 'Cannot start activity outside of a room')
+            return { error: 'No room id' }
+        }
         setIsPending(true)
-        setError(null)
 
         const id = parseInt(activityId as string)
 
@@ -31,47 +158,91 @@ export function useStartPollService(): {
 
         if (error || !data) {
             logger.error('zustand:store', 'usePollAnimation', 'Error fetching activity', error)
-            setError(error)
             setIsPending(false)
-            return
+            return { error: 'Error fetching activity' }
         }
 
         if (!(data.type == 'poll')) {
             logger.error('zustand:store', 'usePollAnimation', 'Activity is not a poll')
-            setError('Activity is not a poll')
             setIsPending(false)
-            return
+            return { error: 'Activity is not a poll' }
         }
 
         const poll = data.object as Poll
 
+        // Update the store
         usePollAnimationStore.getState().setPoll(poll)
-        // No need to initialize some snapshot data, as the store contains default values
+        usePollAnimationStore.getState().setPollId(id)
+        usePollAnimationStore.getState().setQuestionId(poll.questions[0].id)
 
+        // Save in the database
+        const snapshot: PollSnapshot = {
+            type: 'poll',
+            activityId: id,
+            currentQuestionId: poll.questions[0].id,
+            state: 'voting',
+            answers: []
+        }
+
+        const { error: snapshotError } = await saveRoomActivitySnapshot(roomId, snapshot)
         setIsPending(false)
+
+        return { error: snapshotError }
     }
 
-    return { startPoll, isPending, error }
+    return { startPoll, isPending }
 }
 
 
-export function useSyncPollAnimationService(): {
+/**
+ * Close a poll activity.
+ * This empties the store and remove the activity snapshot
+ * from the database
+ */
+export function useClosePollService(): {
+    closePoll: () => Promise<{error: string | null}>
+    isPending: boolean
+} {
+    const [isPending, setIsPending] = useState(false)
+    const roomId = useRoom().room?.id
+
+    return {
+        closePoll: async () => {
+            if (!roomId) return { error: 'No room id'}
+            setIsPending(true)
+            const previousState = usePollAnimationStore.getState()
+
+            usePollAnimationStore.getState().closePoll()
+
+            const { error } = await saveRoomActivitySnapshot(roomId, null)
+            setIsPending(false)
+
+            if (error) usePollAnimationStore.setState(previousState) // Rollback
+
+            return { error }
+        },
+
+        isPending: isPending
+    }
+}
+
+/**
+ * Listen to the changes in the database and
+ * automatically update the store
+ */
+export function useSyncRemotePollAnswersService(): {
     isSyncing: boolean
     error: string | null
 } {
-    const roomId = useRoom().room?.id
-    //const { roomId } = args
-
     // Sync remote poll data into the store
     const { poll, snapshot, isSyncing, error } = useSyncPollService()
 
     // Put the snapshot in the store
     useEffect(() => {
         if (snapshot) {
-            usePollAnimationStore.getState().setPollId(snapshot.activityId)
             usePollAnimationStore.getState().setAnswers(snapshot.answers)
-            usePollAnimationStore.getState().setQuestionId(snapshot.currentQuestionId)
-            usePollAnimationStore.getState().setQuestionState(snapshot.state)
+        } else {
+            usePollAnimationStore.getState().closePoll()
         }
     }, [snapshot])
 
@@ -84,13 +255,6 @@ export function useSyncPollAnimationService(): {
         }
     }, [poll])
 
-    // Sync local state into the database
-    // TODO: handle error
-    useEffect(() => {
-        if (!roomId) return
-        return syncLocalState(roomId)
-    }, [roomId])
-
     return { isSyncing, error }
 }
 
@@ -98,21 +262,19 @@ export function useSyncPollAnimationService(): {
 // Utils
 
 /**
- * Automatically save the local snapshot into the database.
- * Not only does it save every modification (current question, question state, answers...)
- * but it also it creates it if it doesn't exist, and removes it if the poll is null.
+ * Save the current state of the poll in the store, into the database.
  */
-function syncLocalState(roomId: number) {
-    // TODO: use a hook to get the current room id
-    const unsubscribe = usePollAnimationStore.subscribe(async (state, prevState) => {
+function useSaveRoomActivitySnapshot() :{
+    save: () => Promise<{ error: string | null }>
+    isSaving: boolean
+} {
+    const [isSaving, setIsSaving] = useState(false)
+    const roomId = useRoom().room?.id
 
-        // If there is no poll, remove the snapshot from the database
-        if (!state.poll) {
-            logger.log('supabase:realtime', "usePollAnimationService.tsx", "Removing snapshot from database")
-            await saveRoomActivitySnapshot(roomId, null)
-            return
-        }
-
+    const save = async () => {
+        if (!roomId) return { error: 'No room id'}
+        setIsSaving(true)
+        const state = usePollAnimationStore.getState()
         const snapshot = {
             type: 'poll',
             activityId: state.id,
@@ -121,15 +283,10 @@ function syncLocalState(roomId: number) {
             answers: state.answers
         } as PollSnapshot
 
-        logger.log('supabase:realtime', "saving poll snapshot to database", snapshot)
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        setIsSaving(false)
+        return { error }
+    }
 
-        if (error) {
-            logger.log('supabase:realtime', "usePollAnimationService.tsx", "Error saving poll snapshot to database. Reverting back to previous state.", error)
-            // TODO: Rollback to the previous state
-        }
-    })
-
-    // Use this cleanup function to unsubscribe when the component unmounts
-    return unsubscribe
+    return { save, isSaving }
 }

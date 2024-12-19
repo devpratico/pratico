@@ -15,16 +15,14 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
     // TODO: get rid of the room_code param and use it in the service hook
     const { room_code } = useParams<{ room_code?: string }>()
     const inRoom = !!room_code
-    const { startPoll, isPending, error } = useStartPollService()
+    const { startPoll, isPending } = useStartPollService()
 
 
     async function handleClick() {
-        if (!inRoom) {
-            logger.error('supabase:database', 'StartButton', 'Cannot start activity outside of a room')
-            return
+        const { error } = await startPoll(activity_id)
+        if (error) {
+            logger.error('supabase:database', 'StartButton.tsx', 'Error starting poll', error)
         }
-
-        await startPoll(activity_id)
     }
 
     return (

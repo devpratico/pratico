@@ -17,7 +17,7 @@ type PollActions = {
     closePoll: () => void
     setAnswers: (answers: PollUserAnswer[]) => void
     addAnswer: (answer: PollUserAnswer) => void
-    removeAnswer: (answerId: string) => void
+    removeAnswer: ({userId, questionId, choiceId}: {userId: string, questionId: string, choiceId: string}) => void
     setQuestionId: (questionId: string) => void
     setQuestionState: (state: PollState['state']) => void
 }
@@ -71,9 +71,11 @@ const usePollAnimationStore = create<PollStore>((set, get) => ({
         }))
     },
 
-    removeAnswer: (answerId) => {
+    removeAnswer: ({userId, questionId, choiceId}) => {
         set(produce<PollState>(draft => {
-            draft.answers = draft.answers.filter(a => a.choiceId !== answerId)
+            draft.answers = draft.answers.filter( a => {
+                !(a.userId === userId && a.questionId === questionId && a.choiceId === choiceId)
+            })
         }))
     },
 
