@@ -20,9 +20,11 @@ interface CapsuleWidgetViewProps {
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const [ downloadClick, setDowloadClick ] = useState(false);
 
-	useEffect(() => {	console.log(data.capsuleSnapshot, " SNAPSHOTS", downloadClick);
+	useEffect(() => {	console.log(data.capsuleSnapshot, " SNAPSHOTS",downloadClick);
 	}, [downloadClick, data.capsuleSnapshot]);
 	const handleDownload = async () => {
+		if (downloadClick)
+			return ;
 		setDowloadClick(true);
 		const timeout = setTimeout(() => {setDowloadClick(false)}, 1000);
 		return (() => clearTimeout(timeout));

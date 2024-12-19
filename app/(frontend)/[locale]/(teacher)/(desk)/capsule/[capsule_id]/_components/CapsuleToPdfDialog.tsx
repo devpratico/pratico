@@ -1,7 +1,7 @@
 "use client";
 
 import jsPDF from "jspdf";
-import { exportToBlob, useEditor } from "tldraw";
+import { Editor, exportToBlob, useEditor } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
@@ -9,11 +9,12 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+let pdfExportLock = false;
 
 // if shortcut, doesnt display "Telcharger en PDF" button
-export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: string | string[], isRoom: boolean, shortcut?: boolean})
+export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut, myEditor}: {capsuleId: string | string[], isRoom: boolean, shortcut?: boolean, myEditor?: Editor})
 {
-	const editor = useEditor();
+	let editor = useEditor();
 	const supabase = createClient();
 	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);
@@ -24,6 +25,10 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
 	const createPdf = useCallback(async (blobs: Blob[], pdf: jsPDF) => {
+		if (pdfExportLock)
+			return ;
+		console.log("CreatePDF called");
+		pdfExportLock = true;
 		const processBlob = async (index: number) => {
 			if (index >= blobs.length) {
 				setDisabled(false);
@@ -60,7 +65,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 		};
 
 		try {
-			processBlob(0);
+			await processBlob(0);
 		} catch (error) {
 			logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
 			setState('error');
@@ -68,6 +73,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 	}, [filename]);
 
 	const handleExportAllPages = useCallback(async () => {
+		console.log("handleExportAllPAges called", editor);
 		if (!editor)
 			return ;
 		setDisabled(true);
@@ -129,7 +135,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 			const timeout = setTimeout(() => {
 				setErrorMsg(null);
 				setOpenDialog(false);
-			}, 2000);
+			}, 20000);
 			return (() => clearTimeout(timeout));
 		}
 		const validBlobs = allBlobs.filter(blob => blob.size > 0);
@@ -148,6 +154,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: st
 	}, [shortcut, handleExportAllPages]);
 
 	useEffect(() => {
+		console.log("useEffect to get data called");
 		const getCapsuleData = async () => {
 			const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
 			if (error)
