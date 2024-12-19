@@ -1,7 +1,7 @@
 "use client";
 
 import jsPDF from "jspdf";
-import { Editor, exportToBlob, useEditor } from "tldraw";
+import { Editor, exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
@@ -9,12 +9,13 @@ import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
 let pdfExportLock = false;
 
 // if shortcut, doesnt display "Telcharger en PDF" button
-export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut, myEditor}: {capsuleId: string | string[], isRoom: boolean, shortcut?: boolean, myEditor?: Editor})
+export function CapsuleToPdfDialog({capsuleId, isRoom, shortcut}: {capsuleId: string | string[], isRoom: boolean, shortcut?: boolean})
 {
-	let editor = useEditor();
+	let { editor } = useTLEditor();
 	const supabase = createClient();
 	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);

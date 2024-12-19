@@ -77,9 +77,11 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 				buttons={buttons}
 			/>
 			{
-				downloadClick && <Tldraw snapshot={data.capsuleSnapshot as TLEditorSnapshot}>
+				downloadClick
+				? <Tldraw snapshot={data.capsuleSnapshot as TLEditorSnapshot}>
 					<CapsuleToPdfDialog capsuleId={data.capsuleId} isRoom={data.isRoom} shortcut={true} />
 				</Tldraw>
+				: <></>
 			}
 		</>
 	);
