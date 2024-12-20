@@ -4,8 +4,8 @@ import createClient from "@/supabase/clients/client";
 import { Box, Button, Card, Dialog, Flex, IconButton, Tooltip } from "@radix-ui/themes";
 import { FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useEffect, useState } from "react";
-import { createTLStore, Editor, Tldraw, TLEditorSnapshot, TLStore } from "tldraw";
+import { useState } from "react";
+import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
 export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
 	const { generatePdf } = useGeneratePdf ();
@@ -14,11 +14,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 	const supabase = createClient();
 	const formatter = useFormatter();
 	const [ filename, setFilename ] = useState("capsule.pdf");
-	const [store, setStore] = useState<TLStore>();
-	useEffect(() => {
-		if (!store)
-			setStore(createTLStore(snapshot.document.store));
-	}, [store, snapshot]);
 
 	const handleClick = async () => {
 		console.log("CLICKED", snapshot, editor);
@@ -75,7 +70,7 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 				<Card>
 					<Flex gap="2">
 						<Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
-							<Tldraw hideUi onMount={(editor) => setEditor(editor)}  store={store}/>
+							<Tldraw hideUi onMount={(editor) => setEditor(editor)} snapshot={snapshot}/>
 						</Box>
 						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
 						<Button onClick={handleClick}>Exporter</Button>
