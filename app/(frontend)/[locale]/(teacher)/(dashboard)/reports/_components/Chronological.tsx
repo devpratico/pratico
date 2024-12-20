@@ -1,9 +1,11 @@
+"use client";
 import { Table } from "@radix-ui/themes";
 import { TableCell } from "./TableCell";
-import { formatDate } from "@/app/_utils/utils_functions";
 import { SessionInfoType } from "../[room_id]/page";
+import { useFormatter } from "next-intl";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
+	const formatter = useFormatter();
 	const sortedSessions = order
 		? [...sessions].sort((a, b) => {
 			return (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
@@ -11,6 +13,8 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 		: [...sessions].sort((a, b) => {
 		return (new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 	});
+
+
 	return (
 		<Table.Root variant="surface">
 			<Table.Header>
@@ -18,6 +22,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 					<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Date de la session</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell></Table.ColumnHeaderCell>
 				</Table.Row>
 			</Table.Header>
 
@@ -27,8 +32,8 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 					return (
 						<TableCell
 							key={index}
-							navigationsIds={{attendanceView: false, roomId: session.id}}
-							infos={{roomClosed: session.status === "closed", rowHeaderCell: session.capsule_title, cellOne: formatDate(session.created_at), cellTwo: session.status === "open" ? "En cours" : "Terminé"}}
+							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at)), status: session.status === "open" ? "En cours" : "Terminé"}}
 						/>
 					);
 				})

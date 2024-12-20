@@ -8,6 +8,7 @@ import { DisableProvider } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import { UserContextProvider } from '@/app/(frontend)/_hooks/contexts/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
+import { NextIntlClientProvider } from 'next-intl';
 
 
 export const metadata: Metadata = {
@@ -56,7 +57,9 @@ export default async function RootLayout({children, params: { locale }}: RootLay
                 <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
                         <UserContextProvider {...userData}>
-                            {children}
+							<NextIntlClientProvider>
+						 	   {children}
+							</NextIntlClientProvider>
                         </UserContextProvider>
                     </DisableProvider>
                 </Theme>

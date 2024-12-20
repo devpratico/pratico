@@ -41,7 +41,7 @@ export default function ParticipantMenu() {
                         </Callout.Root>
                     </Box>
 
-                    <Button variant='soft' asChild>
+                    {/* <Button variant='soft' asChild>
                         <Link href={getPathnameWithSearchParam('menu', 'defilement')} shallow={true}>
                             <Flex justify='between' align='center' width='100%'>
                                 <Text wrap='nowrap'>Défilement</Text>
@@ -50,16 +50,16 @@ export default function ParticipantMenu() {
                                 <ChevronRight/>
                             </Flex>
                         </Link>
-                    </Button>
+                    </Button> */}
 
-                    <Button variant='soft' disabled>
+                    {/* <Button variant='soft' disabled>
                         <Flex justify='between' align='center' width='100%'>
                             <Text wrap='nowrap' >Créer des équipes</Text>
                             <Box flexGrow='1'/>
                             <Badge color='gray'>Bientôt</Badge>
                             <ChevronRight />
                         </Flex>
-                    </Button>
+                    </Button> */}
                 </Flex>
 
             </Section>
@@ -67,7 +67,7 @@ export default function ParticipantMenu() {
             <Section size='1'>
 
 
-                <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
+                {/* <SegmentedControl.Root defaultValue='collaborer' size='2' value={tab} style={{ width: '100%' }} onValueChange={(value) => setTab(value as any)}>
                     <SegmentedControl.Item value='collaborer'>
                         <Flex align='center' gap='2'>
                             <Pen size='20' color='var(--pink)'/>
@@ -81,7 +81,7 @@ export default function ParticipantMenu() {
                             <Text>Récompenser</Text>
                         </Flex>
                     </SegmentedControl.Item>
-                </SegmentedControl.Root>
+                </SegmentedControl.Root> */}
 
 
 

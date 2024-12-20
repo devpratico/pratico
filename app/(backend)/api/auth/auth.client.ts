@@ -40,6 +40,7 @@ export interface SignUpReturn extends LoginReturn { }
 export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpReturn> => {
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({ email, password })
+    revalidatePath('/', 'layout')
     return { user: data?.user, error: error?.message || null }
 }
 
@@ -49,7 +50,7 @@ export const signInAnonymously = async () => {
     const { data, error } = await supabase.auth.signInAnonymously({})
 
     if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
-    revalidatePath('/', 'layout')
+	revalidatePath('/', 'layout')
 
     return { data, error: error?.message }
 }

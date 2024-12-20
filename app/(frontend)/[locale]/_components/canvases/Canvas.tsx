@@ -4,8 +4,6 @@ import {
     Editor,
     getUserPreferences,
     setUserPreferences, 
-    DefaultColorStyle, 
-    DefaultSizeStyle,
     TLStoreWithStatus,
     TLStore,
     StoreSnapshot,
@@ -48,7 +46,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
      * It's used to set some initial preferences.
      */
     const handleMount = useCallback((editor: Editor) => {
-
         // Expose the editor to the outside world (`useTLEditor` hook)
         setEditor(editor)
 
@@ -57,12 +54,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             onMount(editor)
         }
 
-        
         editor.setCameraOptions({
-            wheelBehavior: 'none'
+            wheelBehavior: 'none',
         })
 
-        
         /**
          * Set the user preferences
          * Instead of overwriting the whole object, we use the already existing preferences and overwrite some of them
@@ -88,23 +83,21 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     const options = useMemo(() => ({ maxPages: 300 }), [])
 
     return (
-		<div id='tldrawId' style={{ width: '100%'}}>
-			<Tldraw
-				className='tldraw-canvas'
-				hideUi={true}
-				onMount={handleMount}
-				components={{Background: Background, OnTheCanvas: CanvasArea}}
-				store={store}
-				snapshot={ store ? undefined : initialSnapshot }
-				persistenceKey={persistenceKey}
-				options={options}
-			>
-				{children}
-				{/* <Resizer/> */}
-				<EmbedHint/>
-				<KeyboardShortcuts/>
-			</Tldraw>
-		</div>
+		<Tldraw
+			className='tldraw-canvas'
+			hideUi={true}
+			onMount={handleMount}
+			components={{ Background: Background, OnTheCanvas: CanvasArea }}
+			store={store}
+			snapshot={ store ? undefined : initialSnapshot }
+			persistenceKey={persistenceKey}
+			options={options}
+		>
+			{children}
+			{/* <Resizer/> */}
+			<EmbedHint/>
+			<KeyboardShortcuts/>
+		</Tldraw>
     )
 }
 

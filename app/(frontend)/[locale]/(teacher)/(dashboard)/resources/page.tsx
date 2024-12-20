@@ -1,4 +1,7 @@
-import { Container, Section, Callout, ScrollArea } from '@radix-ui/themes';
+/*
+	This page is not used yet.
+*/
+import { Container, Section, Heading, Callout, ScrollArea } from '@radix-ui/themes';
 
 
 export default function ResourcesPage() {

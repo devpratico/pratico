@@ -49,7 +49,7 @@ export const fetchAttendanceByUser = async (userId: string) => {
 
 export const fetchNamesFromAttendance = async (userId: string) => {
     const supabase = createClient();
-    const { data, error } = await supabase.from('attendance').select().eq('user_id', userId).maybeSingle();
+    const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId).maybeSingle();
     if (error || null) {
         logger.log('supabase:database', `no names for user ${userId.slice(0, 5)}...`, error?.message);
         return ({ data: null, error: error ? error : 'No data found, null returned' });
@@ -59,15 +59,13 @@ export const fetchNamesFromAttendance = async (userId: string) => {
     }
 };
 
-export const fetchUserHasSignedAttendance = async (roomId: number | undefined, userId: string) => {
+export const fetchUserHasSignedAttendance = async (roomId: number, userId: string) => {
     logger.log('next:api', 'fetUserHasSignedAttendance', `roomId: ${roomId}, userId: ${userId}`);
-    if (!roomId || !userId) {
-        logger.error('next:api', 'fetchUserHasSignedAttendance roomnId or userId missing');
-        return ({ data: null, error: 'fetchUserHasSignedAttendance roomId or userId missing' });
-    }
+
     const supabase = createClient();
-    const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+    /*const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
     if (error) logger.error('supabase:database', `error fetching attendance with room id ${roomId}...`, error.message);
+
     if (!data)
         return ({ data: null, error: error ? error?.message : 'No attendance found with this id' });
     logger.log('next:api', 'fetUserHasSignedAttendance room datas', data);
@@ -75,7 +73,18 @@ export const fetchUserHasSignedAttendance = async (roomId: number | undefined, u
         if (elem.user_id === userId)
             return ({ first_name: elem.first_name, last_name: elem.last_name });
     });
-    return ({ data: participant ? { first_name: participant?.first_name, last_name: participant?.last_name } : null, error: error ? error : null });
+    return ({ data: participant ? { first_name: participant?.first_name, last_name: participant?.last_name } : null, error: error ? error : null });*/
+
+    const { data, error } = await supabase.from('attendance').select('id').eq('room_id', roomId).eq('user_id', userId);
+
+    if (error) logger.error('supabase:database', 'fetchUserHasSignedAttendance', `error fetching attendance with room id ${roomId}...`, error.message);
+    if (data && data?.length > 1) logger.warn('supabase:database', 'fetchUserHasSignedAttendance', `more than one attendance found with room id ${roomId}...`, data);
+
+    if (data && data?.length > 0) {
+        return true
+    }
+    
+    return false
 };
 
 export async function countAttendances(roomId: number) {
