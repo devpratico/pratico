@@ -19,6 +19,7 @@ export default function PollAnimation() {
     const currentQuestion = poll?.questions.find(q => q.id == currentQuestionId)
     const questionState = usePollAnimation(state => state.state)
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id == currentQuestionId)
+    const answers = usePollAnimation(state => state.answers)
 
     // Service methods
     const { closePoll } = useClosePollService()
@@ -48,10 +49,9 @@ export default function PollAnimation() {
                                 <PollAnswerRow
                                     key={`${index}-${choice.text}`}
                                     text={choice.text}
-                                    votes={3}
+                                    votes={answers.filter(a => a.choiceId == choice.id).length}
                                     questionState={questionState || 'voting'}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
-                                    //setAnswerState={(value) => setChoiceState(choice.id, value)}
                                     onClick={() => toggleAnswer(choice.id)}
                                 />
                             ))}
