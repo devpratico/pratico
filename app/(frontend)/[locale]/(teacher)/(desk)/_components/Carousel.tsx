@@ -5,7 +5,7 @@ import { Card, Flex, ScrollArea, DropdownMenu, IconButton, Box } from '@radix-ui
 import { Ellipsis, Trash2, Copy } from 'lucide-react'
 import { TLPageId } from 'tldraw'
 import { useState, useEffect, useMemo, useCallback, memo, useRef } from 'react'
-import { SnapshotProvider } from '@/app/(frontend)/_hooks/useSnapshot'
+import { SnapshotProvider } from '@/app/(frontend)/_hooks/contexts/useSnapshot'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, pointerWithin, TouchSensor, useSensor, useSensors, AutoScrollActivator, Over  } from '@dnd-kit/core';
 import { DragMoveEvent } from '@dnd-kit/core/dist/types'
 import { Droppable } from './drag-n-drop/Droppable'

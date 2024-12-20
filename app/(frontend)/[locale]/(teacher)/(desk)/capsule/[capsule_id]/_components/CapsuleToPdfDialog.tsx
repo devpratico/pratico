@@ -1,6 +1,6 @@
 "use client";
 
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import jsPDF from "jspdf";
 import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
