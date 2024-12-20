@@ -3,7 +3,7 @@ import { saveActivity, fetchActivity } from "@/app/(backend)/api/activity/activi
 import usePollCreationStore from "../stores/usePollCreationStore"
 import logger from "@/app/_utils/logger"
 import { useState } from "react"
-import { Poll } from "@/app/_types/poll2"
+import { Poll } from "@/app/_types/poll"
 
 
 /**

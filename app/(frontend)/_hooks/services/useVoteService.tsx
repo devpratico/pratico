@@ -5,7 +5,7 @@ import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'
 import { useUser } from '../contexts/useUser'
 import usePollParticipation from '../stores/usePollParticipationStore'
-import { PollSnapshot } from '@/app/_types/poll2'
+import { PollSnapshot } from '@/app/_types/poll'
 
 
 interface useVoteServiceReturn {

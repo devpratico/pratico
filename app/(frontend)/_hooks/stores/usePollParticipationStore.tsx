@@ -1,5 +1,5 @@
 'use client'
-import { PollUserAnswer, Poll, PollSnapshot } from "@/app/_types/poll2"
+import { PollUserAnswer, Poll, PollSnapshot } from "@/app/_types/poll"
 import { create } from "zustand"
 import { produce } from "immer"
 import logger from "@/app/_utils/logger"

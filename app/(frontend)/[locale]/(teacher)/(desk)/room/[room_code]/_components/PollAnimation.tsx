@@ -4,7 +4,7 @@ import usePollAnimation from '@/app/(frontend)/_hooks/stores/usePollAnimationSto
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
-import { PollSnapshot } from '@/app/_types/poll2'
+import { PollSnapshot } from '@/app/_types/poll'
 import { useSyncAnimationPollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 
 
@@ -98,7 +98,6 @@ interface PollAnswerRowProps {
     votes: number,
     questionState: PollSnapshot['state']
     answerState: 'selected' | 'unselected'
-    //setAnswerState: (value: 'selected' | 'unselected') => void
     onClick: () => void
 }
 

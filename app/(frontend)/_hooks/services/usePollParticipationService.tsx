@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import useSyncPollService from './useSyncPollService'
 import usePollParticipationStore from '../stores/usePollParticipationStore'
-import { PollSnapshot } from '@/app/_types/poll2'
+import { PollSnapshot } from '@/app/_types/poll'
 import { useUser } from '../contexts/useUser'
 import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'

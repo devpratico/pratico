@@ -1,4 +1,4 @@
-import { Poll, PollQuestion, PollChoice } from "@/app/_types/poll2"
+import { Poll, PollQuestion, PollChoice } from "@/app/_types/poll"
 import logger from "@/app/_utils/logger"
 import { produce } from "immer"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"

@@ -1,4 +1,4 @@
-import { Poll, PollUserAnswer, PollSnapshot } from "@/app/_types/poll2"
+import { Poll, PollUserAnswer, PollSnapshot } from "@/app/_types/poll"
 import { create } from "zustand"
 import { produce } from "immer"
 

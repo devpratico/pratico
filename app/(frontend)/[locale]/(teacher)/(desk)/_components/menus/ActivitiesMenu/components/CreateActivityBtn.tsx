@@ -5,11 +5,10 @@ import CardDialog from "../../../CardDialog"
 import QuizCreation from "./QuizCreation"
 import PollCreation from "./PollCreation"
 import { QuizProvider } from "@/app/(frontend)/_hooks/contexts/useQuiz"
-import { PollProvider } from "@/app/(frontend)/_hooks/contexts/usePoll"
 import { emptyQuiz } from "@/app/(frontend)/_hooks/contexts/useQuiz"
 //import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
 import usePollCreation from "../../../../../../../_hooks/stores/usePollCreationStore"
-import { mockPoll, emptyPoll  } from "@/app/_types/poll2"
+import { mockPoll, emptyPoll  } from "@/app/_types/poll"
 
 
 export default function CreateActivityBtn() {

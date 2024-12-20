@@ -1,7 +1,7 @@
 import { Json } from "@/supabase/types/database.types"
 import { Quiz } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
-import { Poll as Poll2 } from "@/app/_types/poll2"
+import { Poll as Poll2 } from "@/app/_types/poll"
 import logger from "@/app/_utils/logger"
 
 
