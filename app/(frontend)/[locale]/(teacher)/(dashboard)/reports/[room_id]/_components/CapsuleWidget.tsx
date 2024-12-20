@@ -30,7 +30,7 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
 		capsuleSnapshot: capsuleSnapshot,
-		isRoom: isRoom
+		isRoom: isRoom,
 	};
 	return (<>
 		<CapsuleWidgetView data={data} />

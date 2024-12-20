@@ -1,11 +1,11 @@
-import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePDF";
+import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, Card, Dialog, Flex, IconButton, Tooltip } from "@radix-ui/themes";
+import { Box, Button, Card, Dialog, Flex, IconButton, Tooltip } from "@radix-ui/themes";
 import { FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
 import { useEffect, useState } from "react";
-import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
+import { createTLStore, Editor, Tldraw, TLEditorSnapshot, TLStore } from "tldraw";
 
 export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
 	const { generatePdf } = useGeneratePdf ();
@@ -14,10 +14,14 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 	const supabase = createClient();
 	const formatter = useFormatter();
 	const [ filename, setFilename ] = useState("capsule.pdf");
-
+	const [store, setStore] = useState<TLStore>();
+	useEffect(() => {
+		if (!store)
+			setStore(createTLStore(snapshot.document.store));
+	}, [store, snapshot]);
 
 	const handleClick = async () => {
-		console.log("CLICKED", editor);
+		console.log("CLICKED", snapshot, editor);
 		if (!editor)
 			return ;
 		if (!isRoom) {
@@ -35,7 +39,16 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 				}
 			}
 		}
-		await generatePdf(editor, filename);
+		const result = await generatePdf(editor, filename);
+		if (result && !result.error)
+		{
+			const { pdf } = result;
+			console.log("PDF", pdf.output('blob'));
+			pdf.save(filename);
+		}
+		else
+			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", result?.error);
+		
 	};
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
@@ -60,9 +73,10 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			<Dialog.Title>Exporter en PDF</Dialog.Title>
 
 				<Card>
-					<Flex>
-						<Tldraw hideUi onMount={(editor) => setEditor(editor)} snapshot={snapshot} />
-
+					<Flex gap="2">
+						<Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
+							<Tldraw hideUi onMount={(editor) => setEditor(editor)}  store={store}/>
+						</Box>
 						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
 						<Button onClick={handleClick}>Exporter</Button>
 					</Flex>

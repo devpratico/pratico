@@ -2,8 +2,8 @@
 import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
-import { Tldraw, TLEditorSnapshot } from "tldraw";
-import { useEffect, useState } from "react";
+import { TLEditorSnapshot } from "tldraw";
+import { useEffect, useMemo, useState } from "react";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
 

@@ -8,7 +8,7 @@ import logger from "@/app/_utils/logger";
 export function useGeneratePdf(): {
     inProgress: boolean; // True while the PDF is being generated
     progress: number;    // Progress % of the PDF generation, from 0 to 100
-    generatePdf(editor: Editor, filename: string): Promise<void>;//Promise<{ pdf: jsPDF, error: string | null }>;
+    generatePdf(editor: Editor, filename: string): Promise<{ pdf: jsPDF, error: string | null} | undefined>;
 } {
     const [inProgress, setInProgress] = useState(false);
     const [pagesProgress, setPagesProgress] = useState({loading: 0, total: 0});
@@ -19,7 +19,6 @@ export function useGeneratePdf(): {
 			if (index >= blobs.length) {
 				setProgress(0);
 				console.log("PDF GENERATED", pdf);
-				pdf.save(filename);
 				return ;
 			}
 			const blob = blobs[index];
@@ -103,6 +102,7 @@ export function useGeneratePdf(): {
 		const validBlobs = allBlobs.filter(blob => blob.size > 0) as Blob[];
 		setProgress(0);
 		await createPdf(validBlobs, pdf, filename);
+		return ({pdf: pdf, error: null});
 	};
 
     return { inProgress, progress, generatePdf };
