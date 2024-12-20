@@ -23,7 +23,7 @@ export default function PollAnimation() {
 
     // Service methods
     const { closePoll } = useClosePollService()
-    const { toggleAnswer, setQuestionState, myChoicesIds } = usePollAnimationService()
+    const { toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = usePollAnimationService()
 
 
     return (
@@ -72,7 +72,7 @@ export default function PollAnimation() {
                             <Navigator
                                 total={poll?.questions ? Object.keys(poll.questions).length : 0}
                                 currentQuestionIndex={currentQuestionIndex || 0}
-                                setCurrentQuestionIndex={() => {}}
+                                setCurrentQuestionIndex={setCurrentQuestionIndex}
                             />
 
                             <Button size='3' onClick={() => setQuestionState('showing results')} style={{ display: questionState == 'showing results' ? 'none' : 'flex' }}>

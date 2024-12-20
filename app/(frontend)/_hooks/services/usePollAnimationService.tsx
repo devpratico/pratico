@@ -14,7 +14,8 @@ export function usePollAnimationService(): {
     addAnswer: (choiceId: string) => Promise<{ error: string | null }>
     removeAnswer: (choiceId: string) => Promise<{ error: string | null }>
     toggleAnswer: (choiceId: string) => Promise<{ error: string | null }>
-    setCurrentQuestion: (questionId: string) => Promise<{ error: string | null }>
+    setCurrentQuestionId: (questionId: string) => Promise<{ error: string | null }>
+    setCurrentQuestionIndex: (index: number) => Promise<{ error: string | null }>
     setQuestionState: (state: PollSnapshot['state']) => Promise<{ error: string | null }>
     myChoicesIds: string[]
     isSaving: boolean
@@ -96,12 +97,31 @@ export function usePollAnimationService(): {
             }
         },
 
-        setCurrentQuestion: async (questionId) => {
+        setCurrentQuestionId: async (questionId) => {
             if (isSaving) return { error: 'Saving in progress' }
 
             const previousQuestionId = usePollAnimationStore.getState().currentQuestionId    
 
             usePollAnimationStore.getState().setQuestionId(questionId)
+
+            const { error } = await save()
+            if (error && previousQuestionId) {
+                // Rollback (if previous value exist)
+                usePollAnimationStore.getState().setQuestionId(previousQuestionId)
+            }
+
+            return { error }
+        },
+
+        setCurrentQuestionIndex: async (index) => {
+            if (isSaving) return { error: 'Saving in progress' }
+
+            const id = usePollAnimationStore.getState().poll?.questions[index].id
+            if (!id) return { error: 'No question id' }
+
+            const previousQuestionId = usePollAnimationStore.getState().currentQuestionId
+
+            usePollAnimationStore.getState().setQuestionId(id)
 
             const { error } = await save()
             if (error && previousQuestionId) {
