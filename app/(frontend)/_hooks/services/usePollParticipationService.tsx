@@ -1,28 +1,76 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import useSyncPollService from './useSyncPollService'
 import usePollParticipationStore from '../stores/usePollParticipationStore'
 import { PollSnapshot } from '@/app/_types/poll2'
 import { useUser } from '../contexts/useUser'
-
+import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
+import { useRoom } from '../contexts/useRoom'
 
 
 export default function usePollParticipationService(): {
     toggleVote: (choiceId: string) => Promise<{ error: string | null }>
+    myChoicesIds: string[]
     isPending: boolean
 } {
     const [isPending, setIsPending] = useState(false)
+    const { userId } = useUser()
+    const roomId = useRoom().room?.id
+    const answers = usePollParticipationStore(state => state.answers)
 
-    async function toggleVote(choiceId: string) {
+   const toggleVote = useCallback(async (choiceId: string) => {
+        if (!userId) return { error: 'No user id' }
+        if (!roomId) return { error: 'No room id' }
+
+        const initialState = usePollParticipationStore.getState()
+        if (!initialState.currentQuestionId) return { error: 'No current question' }
+
+        // Save this for later in case we need to rollback
+        const initialSnapshot: PollSnapshot = {
+            type: 'poll',
+            activityId: roomId,
+            currentQuestionId: initialState.currentQuestionId,
+            state: 'voting',
+            answers: initialState.answers
+        }
+
         setIsPending(true)
 
-        // Do something
+        // Check if the user has already voted this choice
+        const hasVoted = initialState.answers.some(a => a.userId === userId && a.choiceId === choiceId)
+
+        if (hasVoted) {
+            usePollParticipationStore.getState().removeVote({ choiceId, userId })
+        } else {
+            usePollParticipationStore.getState().vote({ choiceId, userId })
+        }
+
+        // Save the snapshot to the database
+        const snapshot: PollSnapshot = {
+            type: 'poll',
+            activityId: roomId,
+            currentQuestionId: initialState.currentQuestionId,
+            state: 'voting',
+            answers: usePollParticipationStore.getState().answers
+        }
+
+        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        if (error) {
+            // Rollback the vote
+            usePollParticipationStore.getState().setSnapshot(initialSnapshot)
+            setIsPending(false)
+            return { error }
+        }
 
         setIsPending(false)
         return { error: null }
-    }
+    }, [userId, roomId])
 
-    return { toggleVote, isPending }
+    const myChoicesIds = useMemo(() =>
+        answers.filter(a => a.userId === userId).map(a => a.choiceId)
+    , [userId, answers])
+
+    return { toggleVote, myChoicesIds, isPending }
 }
 
 
@@ -41,17 +89,7 @@ export function useSyncParticipationPollService(): {
 
     // Put the snapshot in the store
     useEffect(() => {
-        if (!snapshot) {
-            usePollParticipationStore.getState().setSnapshot(null)
-            return
-        }
-
-        // Remove all the answers that are not this user's answers
-        const _snapshot: PollSnapshot = {
-            ...snapshot,
-            answers: snapshot?.answers.filter(a => a.userId === userId) || []
-        }
-        usePollParticipationStore.getState().setSnapshot(_snapshot)
+        usePollParticipationStore.getState().setSnapshot(snapshot)
     }, [snapshot, userId])
 
     // Put the poll in the store

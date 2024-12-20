@@ -23,7 +23,7 @@ export function usePollAnimationService(): {
     const { userId } = useUser()
 
     const addAnswer = useCallback(async (choiceId: string) => {
-        if (isSaving) return { error: 'Saving in progress ' }
+        if (isSaving) return { error: 'Saving in progress '}
         if (!userId) return { error: 'No user id' }
 
         const currentQuestionId = usePollAnimationStore.getState().currentQuestionId

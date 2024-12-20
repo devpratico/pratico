@@ -21,8 +21,8 @@ type State = {
 type Actions = {
     setPoll: (poll: Poll | null) => void
     setSnapshot: (snapshot: PollSnapshot | null) => void
-    vote:       ({choiceId, userId}: {choiceId: string, userId: string}) => void
-    removeVote: ({choiceId, userId}: {choiceId: string, userId: string}) => void
+    vote:       (arg0: {choiceId: string, userId: string}) => void
+    removeVote: (arg0: {choiceId: string, userId: string}) => void
 }
 
 type Store = State & Actions
@@ -77,7 +77,7 @@ const usePollParticipationStore = create<Store>((set, get) => ({
 
         set(produce<State>(draft => {
             draft.answers = draft.answers.filter(a =>
-                a.choiceId !== choiceId && a.userId !== userId
+                !(a.choiceId == choiceId) && (a.userId == userId)
             )
         }))
     }
