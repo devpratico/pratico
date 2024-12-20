@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AttendanceInfoType } from "../page";
 import { janifera } from "@/app/(frontend)/Fonts";
 import { useFormatter } from "next-intl";
-import { AttendanceToPDF } from "../../_components/AttendanceToPDF";
+import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
 
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
