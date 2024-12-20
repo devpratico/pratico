@@ -5,11 +5,11 @@ import { RectangleEllipsis, Eye, EyeOff } from "lucide-react"
 import { MouseEventHandler, useState } from "react"
 import Feedback from "./Feedback"
 import { updateUserPassword } from "@/app/(backend)/api/auth/auth.client"
-import { useDisable } from "@/app/(frontend)/_hooks/useDisable"
+import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
 import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client"
-import { useUser } from "@/app/(frontend)/_hooks/useUser"
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser"
 
 
 

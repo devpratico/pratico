@@ -1,8 +1,7 @@
 import { Section, Heading, Button } from "@radix-ui/themes"
 import { ChevronLeft } from "lucide-react"
 import ActivitiesTable from "./ActivitiesTable"
-import SearchParamLink from "../../SearchParamLink"
-import CreateSpecificActivityBtn from "./CreateSpecificActivityBtn"
+import SearchParamLink from "../../../SearchParamLink"
 
 
 export default function AllPollsMenu() {
@@ -15,8 +14,6 @@ export default function AllPollsMenu() {
                     </Button>
                 </SearchParamLink>
             </Section>
-
-            <CreateSpecificActivityBtn type="poll" />
             
             <Section size='1'>
                 <Heading size='3' trim='end' mb='2'>Mes sondages</Heading>

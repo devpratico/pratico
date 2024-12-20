@@ -59,7 +59,7 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
     const userId = user?.id
 
     if (!userId || userError) {
-        logger.error('supabase:database', 'Error fetching user', userError)
+        logger.error('supabase:database', 'Error fetching user', userError?.message)
         return { data: [], error: userError?.message || null }
     }
 
@@ -92,3 +92,14 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
 
 
 
+export async function fetchSnapshot(roomId: number) {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('activity_snapshot').eq('id', roomId).single()
+
+    if (error) {
+        logger.error('supabase:database', `Error fetching snapshot of room ${roomId}`, error.message)
+        return { data: null, error: error.message }
+    }
+
+    return { data, error: null }
+}

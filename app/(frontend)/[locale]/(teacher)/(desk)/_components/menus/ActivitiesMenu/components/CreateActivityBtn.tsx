@@ -1,18 +1,19 @@
 'use client'
 import { DropdownMenu, Button } from "@radix-ui/themes"
 import { useState } from "react"
-import CardDialog from "../../CardDialog"
-import QuizCreation from "../../activities/QuizCreation"
-import PollCreation from "../../activities/PollCreation"
-import { QuizProvider } from "@/app/(frontend)/_hooks/useQuiz"
-import { PollProvider } from "@/app/(frontend)/_hooks/usePoll"
-import { emptyQuiz } from "@/app/(frontend)/_hooks/useQuiz"
-import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
+import CardDialog from "../../../CardDialog"
+import QuizCreation from "./QuizCreation"
+import PollCreation from "./PollCreation"
+import { QuizProvider } from "@/app/(frontend)/_hooks/contexts/useQuiz"
+import { emptyQuiz } from "@/app/(frontend)/_hooks/contexts/useQuiz"
+//import { emptyPoll } from "@/app/(frontend)/_hooks/usePoll"
+import usePollCreation from "../../../../../../../_hooks/stores/usePollCreationStore"
+import { mockPoll, emptyPoll  } from "@/app/_types/poll"
 
 
 export default function CreateActivityBtn() {
     const [openQuizCreation, setOpenQuizCreation] = useState(false)
-    const [openPollCreation, setOpenPollCreation] = useState(false)
+    const openPoll = usePollCreation(state => state.openPoll)
 
     return (
         <>
@@ -23,7 +24,7 @@ export default function CreateActivityBtn() {
 
                 <DropdownMenu.Content align='end'>
                     <DropdownMenu.Item onSelect={() => setOpenQuizCreation(true)}>Quiz</DropdownMenu.Item>
-                    <DropdownMenu.Item onSelect={() => setOpenPollCreation(true)}>Sondage</DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={() => openPoll({poll: emptyPoll})}>Sondage</DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
 
@@ -32,12 +33,6 @@ export default function CreateActivityBtn() {
                 <QuizProvider quiz={emptyQuiz}>
                     <QuizCreation closeDialog={() => setOpenQuizCreation(false)} />
                 </QuizProvider>
-            </CardDialog>
-
-            <CardDialog preventClose open={openPollCreation} onOpenChange={setOpenPollCreation}>
-                <PollProvider poll={emptyPoll}>
-                    <PollCreation closeDialog={() => setOpenPollCreation(false)} />
-                </PollProvider>
             </CardDialog>
         </>
     )

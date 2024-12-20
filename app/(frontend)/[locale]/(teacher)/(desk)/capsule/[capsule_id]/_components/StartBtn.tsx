@@ -7,7 +7,7 @@ import { Button } from "@radix-ui/themes";
 import { useState } from "react";
 import { Play } from "lucide-react";
 import createClient from "@/supabase/clients/client";
-import { useUser } from "@/app/(frontend)/_hooks/useUser";
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser";
 
 
 interface StartBtnProps {

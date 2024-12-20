@@ -1,7 +1,7 @@
 'use client'
 import { Card, Flex, IconButton } from "@radix-ui/themes"
 import { MousePointer2, Pen, Type, Shapes, Image as ImageLucid, Eraser } from 'lucide-react'
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor"
 import { track, DefaultColorStyle, DefaultSizeStyle } from "tldraw"
 import { useEffect } from "react"
 

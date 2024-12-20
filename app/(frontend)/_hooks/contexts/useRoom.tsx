@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
+import { isEqual } from 'lodash';
 
 
 // TODO: There's a trick 🚩 here to only update the room when the params change - and do nothing
@@ -30,9 +31,10 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
-    // Fetch the room data (happens once)
+    // Fetch the initial room data (happens once)
     useEffect(() => {
         if (!room_code) return;
+        logger.log('react:hook', 'useRoom.tsx', 'Fetch initial room data', room_code)
         fetchOpenRoomByCode(room_code).then(({data, error}) => {
             if (error || !data) return
             const _room = data as Room
@@ -51,15 +53,27 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
                 (payload): void => {
                     const newRecord = payload.new as Room
 
+                    //if (isEqual(oldRecord?.params, newRecord.params)) return
+
+                    logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
                     setRoom((prev) => {
-                        logger.log('supabase:realtime', "room row updated", newRecord.params)
+                        if (isEqual(prev?.params, newRecord.params)) return prev
                         if (prev) {
-                            // Trick here 🚩 : Only update the params and activity_snapshot
-                            return {...prev, params: newRecord.params, activity_snapshot: newRecord.activity_snapshot}
+                            return {...prev, params: newRecord.params}
                         } else {
                             return newRecord
                         }
                     })
+
+                    /*setRoom((prev) => {
+                        logger.log('supabase:realtime', "room row updated", newRecord.params)
+                        if (prev) {
+                            // Trick here 🚩 : Only update the params and activity_snapshot
+                            return {...prev, params: newRecord.params}//, activity_snapshot: newRecord.activity_snapshot}
+                        } else {
+                            return newRecord
+                        }
+                    })*/
                 }
             ).subscribe()
 

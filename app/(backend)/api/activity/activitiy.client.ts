@@ -3,10 +3,11 @@ import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
+import { Poll as Poll2 } from "@/app/_types/poll"
 import { adapter } from "./utils"
 import { TablesInsert } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"
-import { fetchActivity } from "./activity.server"
+import { fetchActivity as fetchActivityServer, fetchSnapshot as fetchSnapshotServer } from "./activity.server"
 
 
 export async function deleteActivity(id: number) {
@@ -53,7 +54,7 @@ export async function duplicateActivity({ id }: DuplicateActivityArgs): Promise<
 
 export interface SaveActivityArgs {
     id?: number
-    activity: Quiz | Poll
+    activity: Quiz | Poll | Poll2
 }
 
 export interface SaveActivityReturn {
@@ -87,3 +88,11 @@ export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<
 }
 
 
+export async function fetchActivity(id: number) {
+    return await fetchActivityServer(id)
+}
+
+
+export async function fetchSnapshot(id: number) {
+    return await fetchSnapshotServer(id)
+}

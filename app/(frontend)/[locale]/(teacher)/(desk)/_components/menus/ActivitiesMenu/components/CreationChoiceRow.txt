@@ -2,8 +2,8 @@
 import { Trash2 } from 'lucide-react'
 import { Flex, IconButton, Checkbox, TextField, Text } from '@radix-ui/themes'
 import { useMemo } from 'react'
-import { usePoll } from '@/app/(frontend)/_hooks/usePoll'
-import { useQuiz } from '@/app/(frontend)/_hooks/useQuiz'
+import { usePoll } from '@/app/(frontend)/_hooks/contexts/usePoll'
+import { useQuiz } from '@/app/(frontend)/_hooks/contexts/useQuiz'
 
 
 
