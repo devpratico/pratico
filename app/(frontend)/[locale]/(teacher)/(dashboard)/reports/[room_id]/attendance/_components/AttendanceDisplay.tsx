@@ -4,7 +4,7 @@ import { Table } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { AttendanceInfoType } from "../../page";
 import { janifera } from "@/app/(frontend)/Fonts";
-import { useFormatter, useTimeZone } from "next-intl";
+import { useFormatter } from "next-intl";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 import logger from "@/app/_utils/logger";
 

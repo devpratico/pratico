@@ -59,7 +59,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle: 'medium'})
+							connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle: 'medium', timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone})
 						};
 						attendances.push(infos);
 					})
