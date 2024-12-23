@@ -15,9 +15,7 @@ type AttendanceWidgetProps = {
 export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const tz = await getTimeZone();
-	logger.log("react:component", "AttendanceWidget", "timezone", timezone, tz);
+	const timezone = await getTimeZone();
 	const attendanceCount = await countAttendances(roomId);
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];
