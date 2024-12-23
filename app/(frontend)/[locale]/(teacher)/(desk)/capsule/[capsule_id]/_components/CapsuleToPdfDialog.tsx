@@ -5,16 +5,17 @@ import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
+import { useFormatter } from "next-intl";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
 {
 	const { editor } = useTLEditor();
 	const supabase = createClient();
+	const formatter = useFormatter();
 	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);
 	const [ filename, setFilename ] = useState("capsule.pdf");
@@ -150,19 +151,21 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 				const data = await getCapsuleData();
 				if (data?.title) {
 					if (data?.title === "Sans titre")
-						setFilename(`capsule-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
+						setFilename(`capsule-${formatter.dateTime(new Date(data.created_at), {dateStyle: 'short', timeStyle: 'short'})
+  							.replace(/[\/:]/g, '').replace(' ', '-')}.pdf`);
 					else
 					{
 						const title = data?.title
 							.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
 							.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
 							.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-						setFilename(`${title}-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
+						setFilename(`${title}-${formatter.dateTime(new Date(data.created_at), {dateStyle: 'short', timeStyle: 'short'})
+							.replace(/[\/:]/g, '').replace(' ', '-')}.pdf`);
 					}
 				}
 			}
 		})();
-	}, [isRoom, capsuleId, supabase]);
+	}, [isRoom, capsuleId, supabase, formatter]);
 
 	return (
 			<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>

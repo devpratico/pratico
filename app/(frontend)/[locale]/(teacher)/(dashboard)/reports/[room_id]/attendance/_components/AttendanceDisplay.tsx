@@ -4,17 +4,19 @@ import { Table } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { AttendanceInfoType } from "../../page";
 import { janifera } from "@/app/(frontend)/Fonts";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTimeZone } from "next-intl";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
 	const formatter = useFormatter();
+	const timezone = useTimeZone();
+	console.log("TIMEZONE", timezone);
 	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
 	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
-	const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short'});
+	const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short', timeZoneName: 'short', timeZone: timezone});
 	const dateEnd = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {dateStyle: 'short'}) : undefined;
-	const end = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {timeStyle: 'short'}) : undefined;
+	const end = sessionDate.end ? formatter.dateTime(new Date(sessionDate.end), {timeStyle: 'short', timeZoneName: 'short', timeZone: timezone}) : undefined;
 	attendances = attendances.sort((a, b) => {
 			const tmpA = a.last_name || '';
 			const tmpB = b.last_name || '';
