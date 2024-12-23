@@ -11,6 +11,7 @@ import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 import logger from "@/app/_utils/logger";
+import { time } from "console";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -39,7 +40,8 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
 	const formatter = useFormatter();
-	const timezone = useTimeZone();
+	const timeszone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const [timezone, setTimezone] = useState<string>(timeszone);
 	const locale = useLocale();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
@@ -47,7 +49,14 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
 	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
 	
-
+	useEffect(() => {
+		console.log("TIMEZONE", timezone, timeszone);
+		if (!timezone)
+		{
+			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			setTimezone(tz);
+		}
+	}, [timezone, timeszone]);
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
