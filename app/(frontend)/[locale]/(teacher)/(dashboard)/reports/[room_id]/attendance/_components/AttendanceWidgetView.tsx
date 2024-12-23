@@ -11,6 +11,7 @@ import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 import { DateTime } from "luxon";
+import logger from "@/app/_utils/logger";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -77,9 +78,9 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 
         // const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
         // const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
-		const startDate = DateTime.fromJSDate(data.sessionDate.startDate).setLocale(locale).setZone(timezone).toLocaleString(DateTime.DATETIME_SHORT);
+		const startDate = DateTime.fromJSDate(data.sessionDate.startDate).setLocale(locale).setZone(timezone, { keepLocalTime: true }).toLocaleString(DateTime.DATETIME_SHORT);
 		const endDate = DateTime.fromJSDate(data.sessionDate.endDate).setLocale(locale).setZone(timezone).toLocaleString(DateTime.DATETIME_SHORT);
-
+		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, endDate, locale, timezone);
 		return (
 			<>
 				<Strong>Présence</Strong>
