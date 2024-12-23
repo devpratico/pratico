@@ -15,7 +15,9 @@ type AttendanceWidgetProps = {
 export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
-	const timezone = await getTimeZone();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const tz = await getTimeZone();
+	console.log("TIMEZONE", timezone, tz);
 	const attendanceCount = await countAttendances(roomId);
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];

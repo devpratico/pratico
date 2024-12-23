@@ -11,7 +11,6 @@ import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 import logger from "@/app/_utils/logger";
-import { time } from "console";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -40,8 +39,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
 	const formatter = useFormatter();
-	const timeszone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const [timezone, setTimezone] = useState<string>(timeszone);
+	const [timezone, setTimezone] = useState<string>();
 	const locale = useLocale();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
@@ -50,13 +48,13 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
 	
 	useEffect(() => {
-		console.log("TIMEZONE", timezone, timeszone);
 		if (!timezone)
 		{
 			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 			setTimezone(tz);
 		}
-	}, [timezone, timeszone]);
+	}, [timezone]);
+	
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
@@ -84,11 +82,10 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
             fullName = "Utilisateur anonyme";
         }
 
-        // const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
+        const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
         const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
-		const starrrt = Intl.DateTimeFormat(locale, { timeZone: timeszone, dateStyle: "short", timeStyle: "short" }).format(data.sessionDate.startDate);
-		const startDate = Intl.DateTimeFormat(locale, { timeZone: timezone, dateStyle: "short", timeStyle: "short" }).format(data.sessionDate.startDate);
-		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, starrrt, endDate, locale, timezone);
+		
+		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, endDate, locale, timezone);
 		return (
 			<>
 				<Strong>Présence</Strong>

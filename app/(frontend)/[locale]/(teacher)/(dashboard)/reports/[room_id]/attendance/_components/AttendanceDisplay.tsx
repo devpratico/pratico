@@ -11,8 +11,7 @@ import logger from "@/app/_utils/logger";
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
 	const formatter = useFormatter();
-	const timezone = useTimeZone();
-
+	const [ timezone, setTimezone ] = useState<string>();
 	logger.log("react:component", "AttendanceDisplay", "timezone", timezone);
 	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
 	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
@@ -27,6 +26,13 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 	const [ option, setOption ] = useState("alphabétique");
 	const [ sorted, setSorted ] = useState<AttendanceInfoType[]>(attendances);
 
+	useEffect(() => {
+		if (!timezone)
+		{
+			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			setTimezone(tz);
+		}
+	}, [timezone]);
 	useEffect(() => {
 		switch (option) {
 			case "- récent":
