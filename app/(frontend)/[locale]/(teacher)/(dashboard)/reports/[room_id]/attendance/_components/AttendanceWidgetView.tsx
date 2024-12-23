@@ -86,9 +86,9 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 
         // const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
         const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
-	
+		const starrrt = Intl.DateTimeFormat(locale, { timeZone: timeszone, dateStyle: "short", timeStyle: "short" }).format(data.sessionDate.startDate);
 		const startDate = Intl.DateTimeFormat(locale, { timeZone: timezone, dateStyle: "short", timeStyle: "short" }).format(data.sessionDate.startDate);
-		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, endDate, locale, timezone);
+		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, starrrt, endDate, locale, timezone);
 		return (
 			<>
 				<Strong>Présence</Strong>
