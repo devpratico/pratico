@@ -4,7 +4,7 @@ import { countAttendances } from "@/app/(backend)/api/attendance/attendance.serv
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
 import { AttendanceInfoType } from "../../page";
-import { getFormatter } from "next-intl/server";
+import { getFormatter, getTimeZone } from "next-intl/server";
 
 type AttendanceWidgetProps = {
 	roomId: number,
@@ -15,6 +15,7 @@ type AttendanceWidgetProps = {
 export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
+	const timezone = await getTimeZone();
 	const attendanceCount = await countAttendances(roomId);
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];
@@ -62,7 +63,7 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 					const infos: AttendanceInfoType = {
 						first_name: attendance.first_name,
 						last_name: attendance.last_name,
-						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short'})
+						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short', timeZone: timezone}),
 					};
 					attendances.push(infos);
 				})

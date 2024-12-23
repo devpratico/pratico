@@ -4,7 +4,7 @@ import { Json } from "@/supabase/types/database.types";
 import { WidgetThumb } from "../../_components/WidgetThumb";
 import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
 import { Button, DataList, IconButton, Strong, Tooltip } from "@radix-ui/themes";
-import { useFormatter } from "next-intl";
+import { useFormatter, useTimeZone } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { AttendanceInfoType } from "../../page";
@@ -38,11 +38,12 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
 	const formatter = useFormatter();
+	const timezone = useTimeZone();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
-	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short'});
+	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short', timeZone: timezone});
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
-	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short'}) : undefined; 
+	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
 	
 
 	useEffect(() => {
@@ -72,8 +73,8 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
             fullName = "Utilisateur anonyme";
         }
 
-        const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short'});
-        const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short'});
+        const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
+        const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
 
         return (
 			<>
