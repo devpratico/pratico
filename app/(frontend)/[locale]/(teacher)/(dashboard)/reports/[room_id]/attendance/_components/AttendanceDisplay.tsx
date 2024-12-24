@@ -68,8 +68,8 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 				<Table.Body>
 				{
 					sorted.map((attendance, index) => {
-						const formattedConnecion = attendance.connexion ? formatter.dateTime(new Date(attendance.connexion), {timeStyle: 'short', timeZone: timezone}) : undefined;
-						
+						const formattedConnecion = attendance.connexion ? formatter.dateTime(new Date(attendance.connexion), { timeStyle: 'short', timeZone: timezone }) : undefined;		
+
 						return (
 							<Table.Row key={index}>
 								<Table.Cell>
