@@ -39,21 +39,13 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
 	const formatter = useFormatter();
-	const [timezone, setTimezone] = useState<string>();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const locale = useLocale();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
 	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short', timeZone: timezone});
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
 	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
-	
-	useEffect(() => {
-		if (!timezone)
-		{
-			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-			setTimezone(tz);
-		}
-	}, [timezone]);
 	
 	useEffect(() => {
 		const getAttendancesList = () => {

@@ -11,7 +11,7 @@ import logger from "@/app/_utils/logger";
 export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
 	const formatter = useFormatter();
-	const [ timezone, setTimezone ] = useState<string>();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	logger.log("react:component", "AttendanceDisplay", "timezone", timezone);
 	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
 	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
@@ -26,13 +26,6 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 	const [ option, setOption ] = useState("alphabétique");
 	const [ sorted, setSorted ] = useState<AttendanceInfoType[]>(attendances);
 
-	useEffect(() => {
-		if (!timezone)
-		{
-			const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-			setTimezone(tz);
-		}
-	}, [timezone]);
 	useEffect(() => {
 		switch (option) {
 			case "- récent":
@@ -60,7 +53,9 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 
 	return (
 		<>
-			<AttendanceToPDF attendances={sorted} sessionDate={{startDate: date, startTime: start, endDate: dateEnd, endTime: end}} capsuleTitle={capsuleTitle} user={{userInfo}} backTo={`/reports/${roomId}`} />
+			<AttendanceToPDF attendances={sorted} sessionDate={{ startDate: date, startTime: start, endDate: dateEnd, endTime: end }}
+				capsuleTitle={capsuleTitle} user={{ userInfo }} backTo={`/reports/${roomId}`}
+			/>
 			<Table.Root variant="surface">
 				<Table.Header>
 					<Table.Row>
