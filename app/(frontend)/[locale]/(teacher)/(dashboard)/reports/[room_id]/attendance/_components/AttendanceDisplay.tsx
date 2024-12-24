@@ -12,7 +12,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	logger.log("react:component", "AttendanceDisplay", "timezone", timezone);
+	logger.log("react:component", "AttendanceDisplay", "timezone", timezone, attendances.length > 0 && attendances[0].connexion);
 	// const options = ["+ récent", "- récent", "alphabétique", "anti-alphabétique"];
 	const date = formatter.dateTime(new Date(sessionDate.date), {dateStyle:'short'});
 	const start = formatter.dateTime(new Date(sessionDate.date), {timeStyle:'short', timeZone: timezone});
@@ -68,6 +68,8 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 				<Table.Body>
 				{
 					sorted.map((attendance, index) => {
+						const formattedConnecion = attendance.connexion ? formatter.dateTime(new Date(attendance.connexion), {timeStyle: 'short', timeZone: timezone}) : undefined;
+						
 						return (
 							<Table.Row key={index}>
 								<Table.Cell>
@@ -77,7 +79,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 									{attendance.last_name}
 								</Table.Cell>
 								<Table.Cell>
-									{attendance.connexion}
+									{formattedConnecion}
 								</Table.Cell>
 								<Table.Cell className={janifera.className}>
 									{`${attendance.first_name} ${attendance.last_name}`}
