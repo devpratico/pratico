@@ -1,4 +1,5 @@
 "use client";
+
 import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";

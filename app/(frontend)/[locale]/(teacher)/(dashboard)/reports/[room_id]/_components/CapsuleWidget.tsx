@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
 import { CapsuleWidgetView } from "./CapsuleWidgetView";
 import { getFormatter } from "next-intl/server";
-import { TLEditorSnapshot } from "tldraw";
+import { Tldraw, TLEditorSnapshot } from "tldraw";
 import { fetchRoomsByCapsuleId } from "@/app/(backend)/api/room/room.server";
 import { Json } from "@/supabase/types/database.types";
 
@@ -25,6 +25,8 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 				isRoom = roomData[0].status === "open";
 		}
 	}
+
+
 	const data = {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,

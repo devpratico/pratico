@@ -38,8 +38,9 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		if (result && !result.error)
 		{
 			const { pdf } = result;
-			console.log("PDF", pdf.output('blob'));
-			pdf.save(filename);
+			console.log("PDF", pdf);
+			pdf.output('dataurlnewwindow');
+			// pdf.save(filename);
 		}
 		else
 			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", result?.error);
@@ -69,8 +70,8 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 
 				<Card>
 					<Flex gap="2">
-						<Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
-							<Tldraw hideUi onMount={(editor) => setEditor(editor)} snapshot={snapshot}/>
+						<Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto" }}>
+								<Tldraw hideUi onMount={(editor) => setEditor(editor)} snapshot={snapshot}/>
 						</Box>
 						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
 						<Button onClick={handleClick}>Exporter</Button>
