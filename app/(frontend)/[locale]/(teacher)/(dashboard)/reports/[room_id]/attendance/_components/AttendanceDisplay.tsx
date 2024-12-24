@@ -68,7 +68,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 				<Table.Body>
 				{
 					sorted.map((attendance, index) => {
-						const formattedConnecion = attendance.connexion ? formatter.dateTime(new Date(attendance.connexion), { timeStyle: 'short', timeZone: timezone }) : undefined;		
+						const formattedConnection = attendance.connexion ? formatter.dateTime(new Date(attendance.connexion), { timeStyle: 'medium', timeZone: timezone }) : undefined;		
 
 						return (
 							<Table.Row key={index}>
@@ -79,7 +79,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 									{attendance.last_name}
 								</Table.Cell>
 								<Table.Cell>
-									{formattedConnecion}
+									{formattedConnection}
 								</Table.Cell>
 								<Table.Cell className={janifera.className}>
 									{`${attendance.first_name} ${attendance.last_name}`}
