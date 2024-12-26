@@ -15,42 +15,26 @@ export function useGeneratePdf(): {
 	const [progress, setProgress] = useState(0);
 
 	const createPdf = async (blobs: Blob[], pdf: jsPDF, filename: string) => {
-		const processBlob = async (index: number) => {
-			if (index >= blobs.length) {
-				setProgress(0);
-				console.log("PDF GENERATED", pdf);
-				return ;
-			}
-			const blob = blobs[index];
-			setPagesProgress((prev) => ({loading: index + 1, total: prev?.total}));
-			const reader = new FileReader();
-			reader.onload = async () => {
-				const base64data = reader.result as string;
+		console.log("createPDF", blobs, pdf);
+			for (let index = 0; index < blobs.length; index++) {
+				const blob = blobs[index];
+				const base64data = await new Promise<string>((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(reader.result as string);
+					reader.onerror = reject;
+					reader.readAsDataURL(blob);
+				});
+			
 				try {
 					pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+					if (index < blobs.length - 1) {
+						pdf.addPage();
+					}
 				} catch (error) {
 					logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
 				}
-
-				if (index < blobs.length - 1) {
-					pdf.addPage();
-				}
 				setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
-
-				const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
-				return (() => clearTimeout(timeout));
-			};
-			reader.onerror = (error) => {
-				logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);
-			};
-			reader.readAsDataURL(blob);
-		};
-
-		try {
-			await processBlob(0);
-		} catch (error) {
-			logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
-		};
+			}
 	};
 
 	const generatePdf = async (editor: Editor, filename: string) => {
@@ -60,7 +44,7 @@ export function useGeneratePdf(): {
 		const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
-
+	console.log("ALL PAGES", allPages);
 		
 		setPagesProgress({loading: 0, total: allPages.length});
 		if (allPages.length === 0)
@@ -70,6 +54,7 @@ export function useGeneratePdf(): {
 		try {
 			for (let i = 0; i < allPages.length; i++) {
 			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
+				console.log("ShapeIds", shapeIds);
 				if (shapeIds.size === 0)
 					continue;
 				setPagesProgress((prev) => ({loading: prev?.loading + 1, total: prev?.total}));
@@ -102,7 +87,7 @@ export function useGeneratePdf(): {
 		const validBlobs = allBlobs.filter(blob => blob.size > 0) as Blob[];
 		setProgress(0);
 		await createPdf(validBlobs, pdf, filename);
-		return ({pdf: pdf, error: null});
+		return ({ pdf: pdf, error: null });
 	};
 
     return { inProgress, progress, generatePdf };

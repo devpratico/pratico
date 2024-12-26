@@ -4,8 +4,8 @@ import createClient from "@/supabase/clients/client";
 import { Box, Button, Card, Dialog, Flex, IconButton, Tooltip } from "@radix-ui/themes";
 import { FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useState } from "react";
-import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
+import { useCallback, useState } from "react";
+import { Editor, getUserPreferences, setUserPreferences, TLComponents, Tldraw, TldrawImage, TLEditorSnapshot, track, useEditor, useReactor } from "tldraw";
 
 export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
 	const { generatePdf } = useGeneratePdf ();
@@ -54,6 +54,18 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			return (data);
 	};
 
+	const handleMount = useCallback((theEditor: Editor) => {
+		if (!editor)
+			setEditor(theEditor);
+		setUserPreferences({
+            ...getUserPreferences(),
+            edgeScrollSpeed: 0
+        })
+	}, [editor]);
+
+	const components: TLComponents = {
+		SharePanel: InfoPanel,
+	};
 	return (
 		<Dialog.Root  open={openDialog} onOpenChange={setOpenDialog}>
 			
@@ -67,12 +79,14 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 
 			<Dialog.Content>
 			<Dialog.Title>Exporter en PDF</Dialog.Title>
-
 				<Card>
-					<Flex gap="2">
-						<Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto" }}>
-								<Tldraw hideUi onMount={(editor) => setEditor(editor)} snapshot={snapshot}/>
+					<Flex direction="column-reverse" gap="3">
+						<Box style={{ inset: "inherit" /*padding: "0", width: "0px", height: "0px"*/ }}>
+								<Tldraw options={{ maxPages: 1 }} components={components} hideUi onMount={handleMount} snapshot={snapshot} />
 						</Box>
+						{/* <Box style={{ boxShadow:"var(--shadow-3)", borderRadius: "var(--radius-4)"}}>
+							<TldrawImage snapshot={snapshot} pageId={snapshot.session.pageStates[0].pageId}/>	
+						</Box> */}
 						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
 						<Button onClick={handleClick}>Exporter</Button>
 					</Flex>
@@ -82,3 +96,23 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		</Dialog.Root>
 	);
 }
+
+const InfoPanel = track(() => {
+	const editor = useEditor();
+	const tool = editor?.getCurrentToolId()
+	const zoom = editor?.getZoomLevel().toFixed(2)
+	useReactor(
+		'change title',
+		() => {
+			const shapes = editor?.getCurrentPageShapes()
+			document.title = `shapes: ${shapes?.length}`
+		},
+		[editor]
+	)
+	return (
+		<div style={{ pointerEvents: 'all', backgroundColor: 'thistle', fontSize: 14, padding: 8 }}>
+			<div>tool: {tool}</div>
+			<div>zoom: {zoom}</div>
+		</div>
+	)
+})
