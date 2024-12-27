@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
 import { CapsuleWidgetView } from "./CapsuleWidgetView";
 import { getFormatter } from "next-intl/server";
-import { Tldraw, TLEditorSnapshot } from "tldraw";
+import { TLEditorSnapshot } from "tldraw";
 import { fetchRoomsByCapsuleId } from "@/app/(backend)/api/room/room.server";
 import { Json } from "@/supabase/types/database.types";
 

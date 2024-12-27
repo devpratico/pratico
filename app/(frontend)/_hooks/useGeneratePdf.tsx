@@ -66,7 +66,8 @@ export function useGeneratePdf(): {
 			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
 				if (shapeIds.size === 0)
 					continue;
-				setPagesProgress((prev) => ({loading: prev?.loading + 1, total: prev?.total}));
+				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
+
 				try {
 					const blob = await exportToBlob({
 					editor,
@@ -79,7 +80,6 @@ export function useGeneratePdf(): {
 					}
 					});
 					allBlobs.push(blob);
-					setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 					setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 
 				} catch (error) {
@@ -99,6 +99,7 @@ export function useGeneratePdf(): {
 		setProgress(0);
 		setPagesProgress({ loading: 0, total: validBlobs.length });
 		await createPdf(validBlobs, pdf);
+		setProgress(0);
 		return ({ pdf: pdf, error: error });
 	};
 

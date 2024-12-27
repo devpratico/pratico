@@ -79,13 +79,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			return (data);
 	};
 
-	useEffect(() => {
-		if (editor && snapshot)
-		{
-			editor.loadSnapshot(snapshot);
-		}	
-	}, [editor, snapshot]);
-
 	const handleMount = useCallback((newEditor: Editor) => {
         if (!editor) {
             setEditor(newEditor);
@@ -94,8 +87,8 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 
 	return (
 		<Dialog.Root  open={openDialog}
-			onOpenChange={() => {
-				if (state === "idle") setOpenDialog(false);
+			onOpenChange={(isOpen) => {
+				if (state === "idle") setOpenDialog(isOpen);
 			}}
 		>
 			
@@ -105,7 +98,10 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 					<Box style={{ width: "0px", height: "0px" }}>
 						<Tldraw options={{ maxPages: 1 }} hideUi onMount={handleMount} snapshot={snapshot}/>
 					</Box>
-					<IconButton variant="ghost" onClick={handleClick} >
+					<IconButton variant="ghost" onClick={() => {
+						setOpenDialog(true);
+						handleClick();
+					}} >
 						<FileDown />
 					</IconButton>
 					</Box>
