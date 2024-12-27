@@ -1,11 +1,11 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Box, Button, Card, Dialog, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
+import { Box, Card, Dialog, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Editor, Tldraw, TldrawImage, TLEditorSnapshot } from "tldraw";
+import { useCallback, useEffect, useState } from "react";
+import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
 export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
@@ -26,18 +26,13 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		else if (progress > 0 && progress < 100)
 			setState('downloading');
 		else
-		{
-			setState('idle')
-			setOpenDialog(false);
-		}
-		console.log("STATE", state);
-	}, [editor, inProgress, progress, errorMsg, state]);
+			setState('idle');
+	}, [editor, inProgress, progress, errorMsg]);
 
 	const handleClick = async () => {
-		console.log("CLICKED", editor);
 		if (!editor)
 			return ;
-		// setOpenDialog(true);
+		setOpenDialog(true);
 		if (!isRoom) {
 			const data = await getCapsuleData();
 			if (data?.title) {
@@ -70,11 +65,8 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 				setErrorMsg(error);
 				return ;
 			}
-			console.log(
-				"HERE", pdf, error
-			)
-			pdf.output('dataurlnewwindow');
-			// pdf.save(filename);				
+			pdf.save(filename);
+			setOpenDialog(false);			
 		}
 		else
 			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", "no result");
@@ -118,20 +110,7 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			</Tooltip>
 
 			<Dialog.Content>
-			<Dialog.Title>Exporter en PDF</Dialog.Title>
-				{/* <Card>
-					<Flex direction="column-reverse" gap="3">
-						<Box style={{ width: "100%" }}>
-							<Tldraw options={{ maxPages: 1 }} hideUi onMount={handleMount} snapshot={snapshot}/>
-						</Box>
-						<Box style={{ boxShadow:"var(--shadow-3)", borderRadius: "var(--radius-4)"}}>
-							<TldrawImage snapshot={snapshot} pageId={snapshot.session.pageStates[0].pageId}/>	
-						</Box>
-						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
-						<Button onClick={handleClick}>Exporter</Button>
-					</Flex>
-					
-				</Card> */}
+			<Dialog.Title>Export de la capsule en PDF</Dialog.Title>
 				<Card variant='surface' my='4'>
 						
 
@@ -146,7 +125,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 
 						{/* LOADING */}
 						<Flex direction='column' align='center' gap='3' display={state=='loading' ? 'flex' : 'none'}>
-
 							<Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
 								<Text trim='both'>{filename}</Text>
 								<Text size='1'>{`Conversion page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>

@@ -37,7 +37,7 @@ export function useGeneratePdf(): {
 					if (index < blobs.length - 1) {
 						pdf.addPage();
 					}
-					setPagesProgress((prev) => ({ loading: prev?.loading + 1, total: prev?.total }));
+					setPagesProgress((prev) => ({ loading: index, total: prev?.total }));
 				} catch (error) {
 					logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
 					setError("Une erreur est survenue lors de la création du pdf");
@@ -53,7 +53,7 @@ export function useGeneratePdf(): {
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
 		
-		setPagesProgress({loading: 0, total: allPages.length});
+		setPagesProgress({ loading: 0, total: allPages.length });
 		if (allPages.length === 0)
 		{	
 			setProgress(0);
@@ -79,7 +79,7 @@ export function useGeneratePdf(): {
 					}
 					});
 					allBlobs.push(blob);
-					setPagesProgress((prev) => ({ loading: prev?.loading + 1, total: prev?.total }));
+					setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 					setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 
 				} catch (error) {
