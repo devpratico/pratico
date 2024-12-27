@@ -64,12 +64,12 @@ export type TeacherInfo = {
 					}
 
 					@page {
-						margin: 10mm 30mm;
+						margin: 10mm 20mm;
 					}
 				}
 			`}</style>
 			<Card mt='5' className={"hidden-on-screen"} style={{display: "none"}}>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={ref || contentRef} className={luciole.className} >
+				<div style={{fontSize: '12px'}} ref={ref || contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
