@@ -2,7 +2,7 @@
 import { Table } from "@radix-ui/themes";
 import { TableCell } from "./TableCell";
 import { SessionInfoType } from "../[room_id]/page";
-import { useFormatter, useTimeZone } from "next-intl";
+import { useFormatter } from "next-intl";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
 	const formatter = useFormatter();
@@ -20,7 +20,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 			<Table.Header>
 				<Table.Row>
 					<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Date de la session</Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell>Début de la session</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell></Table.ColumnHeaderCell>
 				</Table.Row>
@@ -33,7 +33,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						<TableCell
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
-							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at)), status: session.status === "open" ? "En cours" : "Terminé"}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: "short" ,timeStyle: "short" }), status: session.status === "open" ? "En cours" : "Terminé"}}
 						/>
 					);
 				})
