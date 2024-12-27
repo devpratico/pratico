@@ -1,49 +1,83 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Box, Button, Card, Dialog, Flex, IconButton, Tooltip } from "@radix-ui/themes";
-import { FileDown } from "lucide-react";
+import { Box, Button, Card, Dialog, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
+import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useState } from "react";
-import { Editor, getUserPreferences, setUserPreferences, TLComponents, Tldraw, TldrawImage, TLEditorSnapshot, track, useEditor, useReactor } from "tldraw";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Editor, Tldraw, TldrawImage, TLEditorSnapshot } from "tldraw";
 
 export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
-	const { generatePdf } = useGeneratePdf ();
+	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
 	const supabase = createClient();
 	const formatter = useFormatter();
 	const [ filename, setFilename ] = useState("capsule.pdf");
+	const [ state, setState ] = useState<'idle' | 'loading' | 'downloading'  | 'error'>('idle');
+	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
+
+
+	useEffect(() => {
+		if (errorMsg)
+			setState('error');
+		else if (inProgress)
+			setState('loading');
+		else if (progress > 0 && progress < 100)
+			setState('downloading');
+		else
+		{
+			setState('idle')
+			setOpenDialog(false);
+		}
+		console.log("STATE", state);
+	}, [editor, inProgress, progress, errorMsg, state]);
 
 	const handleClick = async () => {
-		console.log("CLICKED", snapshot, editor);
+		console.log("CLICKED", editor);
 		if (!editor)
 			return ;
+		// setOpenDialog(true);
 		if (!isRoom) {
 			const data = await getCapsuleData();
 			if (data?.title) {
 				if (data?.title === "Sans titre")
-					setFilename(`capsule-${formatter.dateTime(new Date(data.created_at)).split(" ").join("-")}.pdf`);
+				{
+					const date = formatter.dateTime(new Date(data.created_at)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
+
+					setFilename(`capsule-${date}.pdf`);
+				}
 				else
 				{
 					const title = data?.title
 						.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
 						.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
 						.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-					setFilename(`${title}-${formatter.dateTime(new Date(data.created_at)).split(" ").join("-")}.pdf`);
+					const date = formatter.dateTime(new Date(data.created_at)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
+
+					setFilename(`${title}-${date}.pdf`);
 				}
 			}
 		}
-		const result = await generatePdf(editor, filename);
-		if (result && !result.error)
+
+		const result = await generatePdf(editor);
+		if (result)
 		{
-			const { pdf } = result;
-			console.log("PDF", pdf);
+			const { pdf, error } = result;
+			if (error)
+			{
+				logger.error("react:component", "CapsuleToPDFBtn", "handleClick", error);
+				setErrorMsg(error);
+				return ;
+			}
+			console.log(
+				"HERE", pdf, error
+			)
 			pdf.output('dataurlnewwindow');
-			// pdf.save(filename);
+			// pdf.save(filename);				
 		}
 		else
-			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", result?.error);
+			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", "no result");
 		
 	};
 	const getCapsuleData = async () => {
@@ -54,65 +88,93 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			return (data);
 	};
 
-	const handleMount = useCallback((theEditor: Editor) => {
-		if (!editor)
-			setEditor(theEditor);
-		setUserPreferences({
-            ...getUserPreferences(),
-            edgeScrollSpeed: 0
-        })
-	}, [editor]);
+	useEffect(() => {
+		if (editor && snapshot)
+		{
+			editor.loadSnapshot(snapshot);
+		}	
+	}, [editor, snapshot]);
 
-	const components: TLComponents = {
-		SharePanel: InfoPanel,
-	};
+	const handleMount = useCallback((newEditor: Editor) => {
+        if (!editor) {
+            setEditor(newEditor);
+        }
+    }, [editor]);
+
 	return (
 		<Dialog.Root  open={openDialog} onOpenChange={setOpenDialog}>
 			
 			<Tooltip content="Exporter en PDF">
 				<Dialog.Trigger>
-					<IconButton variant="ghost" onClick={() => setOpenDialog(true)} >
+					<Box>
+					<Box style={{ width: "0px", height: "0px" }}>
+						<Tldraw options={{ maxPages: 1 }} hideUi onMount={handleMount} snapshot={snapshot}/>
+					</Box>
+					<IconButton variant="ghost" onClick={handleClick} >
 						<FileDown />
 					</IconButton>
+					</Box>
 				</Dialog.Trigger>
 			</Tooltip>
 
 			<Dialog.Content>
 			<Dialog.Title>Exporter en PDF</Dialog.Title>
-				<Card>
+				{/* <Card>
 					<Flex direction="column-reverse" gap="3">
-						<Box style={{ inset: "inherit" /*padding: "0", width: "0px", height: "0px"*/ }}>
-								<Tldraw options={{ maxPages: 1 }} components={components} hideUi onMount={handleMount} snapshot={snapshot} />
+						<Box style={{ width: "100%" }}>
+							<Tldraw options={{ maxPages: 1 }} hideUi onMount={handleMount} snapshot={snapshot}/>
 						</Box>
-						{/* <Box style={{ boxShadow:"var(--shadow-3)", borderRadius: "var(--radius-4)"}}>
+						<Box style={{ boxShadow:"var(--shadow-3)", borderRadius: "var(--radius-4)"}}>
 							<TldrawImage snapshot={snapshot} pageId={snapshot.session.pageStates[0].pageId}/>	
-						</Box> */}
+						</Box>
 						<Dialog.Description>Exporter le contenu de la capsule en PDF</Dialog.Description>
 						<Button onClick={handleClick}>Exporter</Button>
 					</Flex>
 					
-				</Card>
+				</Card> */}
+				<Card variant='surface' my='4'>
+						
+
+						{/* ERROR */}
+						<Flex direction='column' align='center' gap='3' display={state=='error' ? 'flex' : 'none'}>
+							<Flex align='center' gap='1' style={{ color: 'var(--red)' }}>
+								<CircleAlert size='15' style={{ color: 'var(--red)' }} />
+								<Text trim='both'>{`${errorMsg ? errorMsg : "Une erreur s'est produite"}`}</Text>
+							</Flex>
+						</Flex>
+
+
+						{/* LOADING */}
+						<Flex direction='column' align='center' gap='3' display={state=='loading' ? 'flex' : 'none'}>
+
+							<Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
+								<Text trim='both'>{filename}</Text>
+								<Text size='1'>{`Conversion page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+							</Flex>
+
+							<Box width='100%'>
+								<Progress value={progress} />
+							</Box> 
+						</Flex>
+
+						{/* DOWNLOADING */}
+						<Flex direction='column' align='center' gap='3' display={state == 'downloading' ? 'flex' : 'none'}>
+							<Flex mb="5" align='center' gap='1' style={{ color: 'var(--green)' }}>
+								<CircleCheck size='15' style={{ color: 'var(--green)' }} />
+								<Text trim='both'>{`Conversion réussie, téléchargement du PDF en cours...`}</Text>
+							</Flex>
+							<Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
+								<Text trim='both'>{filename}</Text>
+								<Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+							</Flex>
+
+							<Box width='100%'>
+								<Progress value={progress} />
+							</Box>
+						</Flex>
+
+					</Card>
 			</Dialog.Content>
 		</Dialog.Root>
 	);
 }
-
-const InfoPanel = track(() => {
-	const editor = useEditor();
-	const tool = editor?.getCurrentToolId()
-	const zoom = editor?.getZoomLevel().toFixed(2)
-	useReactor(
-		'change title',
-		() => {
-			const shapes = editor?.getCurrentPageShapes()
-			document.title = `shapes: ${shapes?.length}`
-		},
-		[editor]
-	)
-	return (
-		<div style={{ pointerEvents: 'all', backgroundColor: 'thistle', fontSize: 14, padding: 8 }}>
-			<div>tool: {tool}</div>
-			<div>zoom: {zoom}</div>
-		</div>
-	)
-})
