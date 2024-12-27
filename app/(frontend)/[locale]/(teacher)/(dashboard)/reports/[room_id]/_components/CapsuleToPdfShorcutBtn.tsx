@@ -25,8 +25,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			setState('loading');
 		else if (progress > 0 && progress < 100)
 			setState('downloading');
-		else
-			setState('idle');
 	}, [editor, inProgress, progress, errorMsg]);
 
 	const handleClick = async () => {
@@ -66,6 +64,7 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 				return ;
 			}
 			pdf.save(filename);
+			setState('idle');
 			setOpenDialog(false);			
 		}
 		else
@@ -94,7 +93,11 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
     }, [editor]);
 
 	return (
-		<Dialog.Root  open={openDialog} onOpenChange={setOpenDialog}>
+		<Dialog.Root  open={openDialog}
+			onOpenChange={() => {
+				if (state === "idle") setOpenDialog(false);
+			}}
+		>
 			
 			<Tooltip content="Exporter en PDF">
 				<Dialog.Trigger>
