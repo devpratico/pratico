@@ -4,7 +4,7 @@ import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { TLEditorSnapshot } from "tldraw";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
 
@@ -18,10 +18,6 @@ interface CapsuleWidgetViewProps {
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
-	const [ downloadClick, setDowloadClick ] = useState(false);
-
-	useEffect(() => {	console.log(data.capsuleSnapshot, " SNAPSHOTS",downloadClick);
-	}, [downloadClick, data.capsuleSnapshot]);
 
 	const Thumb = () => {
 		return (
@@ -34,7 +30,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 
         return (
 			<Box>
-				<Heading as='h2' size='4' mb='4'>Capsule</Heading>
+				<Heading as='h2' size='4' mb='4'>Diaporama</Heading>
 				<DataList.Root size='1'>
 					<DataList.Item>
 						<DataList.Label>Titre</DataList.Label>

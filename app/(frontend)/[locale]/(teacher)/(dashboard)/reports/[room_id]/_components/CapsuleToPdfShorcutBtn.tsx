@@ -109,7 +109,7 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			</Tooltip>
 
 			<Dialog.Content>
-			<Dialog.Title>Export de la capsule en PDF</Dialog.Title>
+			<Dialog.Title>Export du diaporama en PDF</Dialog.Title>
 				<Card variant='surface' my='4'>
 						
 
