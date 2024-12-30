@@ -65,27 +65,18 @@ export function useGeneratePdf(): {
 		try {
 			for (let i = 0; i < allPages.length; i++) {
 				logger.error("react:hook", "UseGeneratePDF", `Exporting page ${allPages[i].id}`);
-			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
+			  	const shapeIds = Array.from(editor.getPageShapeIds(allPages[i]));
 				logger.error("react:hook", "UseGeneratePDF", "shapeIds:", shapeIds, "i:", i);
-				if (shapeIds.size === 0)
+				if (shapeIds.length === 0)
 					continue;
 				logger.error("react:hook", "UseGeneratePDF", "i:", i, "shapeIds:", shapeIds);
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
-				logger.error("react:hook", "UseGeneratePDF", `${{
-					editor,
-					ids: Array.from(shapeIds),
-					format: 'webp',
-					opts: {
-						bounds: defaultBox,
-						padding: 0,
-						darkMode: false,
-					}
-					}}`);
+				logger.error("react:hook", "UseGeneratePDF", `${editor}, ${shapeIds}, 'webp', ${defaultBox}`);
 				try {
 					logger.error("react:hook", "UseGeneratePDF", "Exporting to blob");
 					const blob = await exportToBlob({
 					editor,
-					ids: Array.from(shapeIds),
+					ids: shapeIds,
 					format: 'webp',
 					opts: {
 						bounds: defaultBox,
