@@ -59,7 +59,7 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			const { pdf, error } = result;
 			if (error)
 			{
-				logger.error("react:component", "CapsuleToPDFBtn", "handleClick", error);
+				logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", error);
 				setErrorMsg(error);
 				return ;
 			}
@@ -68,13 +68,13 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			setOpenDialog(false);			
 		}
 		else
-			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", "no result");
+			logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", "no result");
 		
 	};
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
 		if (error)
-			logger.error("react:component", "CapsuleToPDFBtn", "getCapsuleData", error);
+			logger.error("react:component", "CapsuleToPDFShortcutBtn", "getCapsuleData", error);
 		else
 			return (data);
 	};

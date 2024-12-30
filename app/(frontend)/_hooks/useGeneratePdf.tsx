@@ -63,9 +63,12 @@ export function useGeneratePdf(): {
 			setPagesProgress({ loading: 0, total: allPages.length });
 		try {
 			for (let i = 0; i < allPages.length; i++) {
+				logger.error("react:hook", "UseGeneratePDF", `Exporting page ${allPages[i].id}`);
 			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
+				logger.error("react:hook", "UseGeneratePDF", "shapeIds:", shapeIds, "i:", i);
 				if (shapeIds.size === 0)
 					continue;
+				logger.error("react:hook", "UseGeneratePDF", "i:", i, "shapeIds:", shapeIds);
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 
 				try {
@@ -79,16 +82,17 @@ export function useGeneratePdf(): {
 						darkMode: false,
 					}
 					});
+					logger.error("react:hook", "UseGeneratePDF", `Blob ${blob}`);
 					allBlobs.push(blob);
 					setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 
 				} catch (error) {
-					logger.error("react:component", "CapsuleToPDFBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
+					logger.error("react:hook", "UseGeneratePDF", `Failed to get svgElement in page ${allPages[i].id}`, error);
 					setError("Une erreur est survenue lors de la convertion des pages");
 				}
 			}
 		} catch (error) {
-			logger.error("react:component", "CapsuleToPDFBtn", "handleExportAllPages", error);
+			logger.error("react:hook", "UseGeneratePDF", "handleExportAllPages", error);
 			setError(`Une erreur est survenue lors de la convertion des pages: ${error}`);
 		}
 		if (allBlobs.length === 0)
