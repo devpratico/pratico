@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext } from "react"
 import { User } from "@supabase/supabase-js"
-import logger from "../../_utils/logger"
+import logger from "../../../_utils/logger"
 
 /**
  * UserContextProvider is a context provider that wraps the entire app and provides the user object to all components.

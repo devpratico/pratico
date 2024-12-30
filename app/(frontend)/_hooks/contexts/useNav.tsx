@@ -3,7 +3,6 @@ import logger from '@/app/_utils/logger';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getIndexBetween, TLPageId, useValue, useComputed, uniqueId, EditSubmenu, getIndexBelow, getIndexAbove, TLFrameShape } from 'tldraw';
 import { useTLEditor } from './useTLEditor';
-import { useRouter } from '../_intl/intlNavigation';
 
 
 type NavContextType = {

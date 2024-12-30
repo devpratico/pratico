@@ -4,7 +4,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
 import { useParams } from 'next/navigation'
-import { useNav } from '@/app/(frontend)/_hooks/useNav';
+import { useNav } from '@/app/(frontend)/_hooks/contexts/useNav';
 import { CapsuleToPdfDialog } from '../../capsule/[capsule_id]/_components/CapsuleToPdfDialog';
 import { Link } from '@/app/(frontend)/_intl/intlNavigation';
 import { BookOpen, ExternalLink } from 'lucide-react';

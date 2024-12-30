@@ -8,8 +8,7 @@ import TooltipL from "@/app/(frontend)/[locale]/_components/TooltipL";
 import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { useUser } from "@/app/(frontend)/_hooks/useUser";
-import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton";
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser";
 import GoPremiumBtn from "../../../../_components/GoPremiumBtn";
 
 

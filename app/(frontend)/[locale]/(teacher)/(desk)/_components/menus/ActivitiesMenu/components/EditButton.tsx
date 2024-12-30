@@ -2,26 +2,19 @@
 import { IconButton, DropdownMenu, AlertDialog, Button, Flex } from '@radix-ui/themes'
 import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
-import CardDialog from '../CardDialog'
-import { Quiz } from '@/app/_types/quiz'
-import { Poll } from '@/app/_types/poll'
-import { QuizProvider } from '@/app/(frontend)/_hooks/useQuiz'
-import { PollProvider } from '@/app/(frontend)/_hooks/usePoll'
-import QuizCreation from './QuizCreation'
-import PollCreation from './PollCreation'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
+import { useOpenPollService } from '@/app/(frontend)/_hooks/services/usePollCreationService'
 
 
 interface EditButtonProps {
     activityId: number
-    initialActivity: Quiz | Poll
 }
 
-export default function EditButton({ activityId, initialActivity }: EditButtonProps) {
+export default function EditButton({ activityId }: EditButtonProps) {
     const router = useRouter()
-    const [open, setOpen] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
+    const { openPoll } = useOpenPollService()
 
     async function handleDelete() {
         await deleteActivity(activityId)
@@ -45,7 +38,7 @@ export default function EditButton({ activityId, initialActivity }: EditButtonPr
 
                 <DropdownMenu.Content side='top'>
 
-                    <DropdownMenu.Item onSelect={() => setOpen(true)}>
+                    <DropdownMenu.Item onSelect={() => openPoll(activityId)}>
                         <SquarePen size={15}/>
                         <span>Modifier</span>
                     </DropdownMenu.Item>
@@ -64,22 +57,6 @@ export default function EditButton({ activityId, initialActivity }: EditButtonPr
 
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
-
-
-
-            <CardDialog open={open} onOpenChange={setOpen}>
-                {
-                    initialActivity.type === 'quiz' ? (
-                        <QuizProvider quiz={initialActivity as Quiz}>
-                            <QuizCreation idToSaveTo={activityId} closeDialog={() => setOpen(false)} />
-                        </QuizProvider>
-                    ) : (
-                        <PollProvider poll={initialActivity as Poll}>
-                            <PollCreation idToSaveTo={activityId} closeDialog={() => setOpen(false)} />
-                        </PollProvider>
-                    )
-                }
-            </CardDialog>
 
 
             <AlertDialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>

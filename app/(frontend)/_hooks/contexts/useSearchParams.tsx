@@ -1,6 +1,6 @@
 'use client'
 import { ReadonlyURLSearchParams } from "next/navigation"
-import { usePathname, useRouter } from "../_intl/intlNavigation"
+import { usePathname, useRouter } from "../../_intl/intlNavigation"
 import { useSearchParams as useNextSearchParams } from "next/navigation"
 
 
@@ -94,20 +94,23 @@ export default function useSearchParams(): useSearchParamsType {
     
     function setSearchParam(name: string, value: string) {
         const newPathname = getPathnameWithSearchParam(name, value)
-        router.push(newPathname)
+        //router.push(newPathname)
+        window.history.pushState(null, '', `${newPathname}`)
     }
 
 
     
     function removeSearchParam(name: string) {
         const newPathname = getPathnameWithoutSearchParam(name)
-        router.push(newPathname)
+        //router.push(newPathname)
+        window.history.pushState(null, '', `${newPathname}`)
     }
 
     
     function toggleSearchParam(name: string, value: string) {
         const newPathname = getPathnameWithSearchParamToggled(name, value)
-        router.push(newPathname)
+        //router.push(newPathname)
+        window.history.pushState(null, '', `${newPathname}`)
     }
 
 

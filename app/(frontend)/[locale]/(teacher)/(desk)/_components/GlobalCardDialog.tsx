@@ -1,5 +1,5 @@
 'use client'
-import { useCardDialog } from "@/app/(frontend)/_hooks/useCardDialog"
+import { useCardDialog } from "@/app/(frontend)/_hooks/contexts/useCardDialog"
 import CardDialog from "./CardDialog"
 
 

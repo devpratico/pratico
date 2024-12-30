@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from "react"
 import { isEqual } from "lodash"
 import useOptimisticSave from "./useOptimisticSave"
 import logger from "../../_utils/logger"
-import { useUser } from "./useUser"
+import useUser from "../_stores/useUser"
 
 
 interface PollSnapshotHook {
@@ -20,7 +20,7 @@ interface PollSnapshotHook {
 }
 
 export function usePollSnapshot(): PollSnapshotHook {
-    const { userId } = useUser()
+    const userId = useUser(state => state.user?.id)
     const { room } = useRoom()
     const [snapshot, setSnapshot] = useState<PollSnapshot | undefined>(() => {
         if (room && isPollSnapshot(room.activity_snapshot)) {
