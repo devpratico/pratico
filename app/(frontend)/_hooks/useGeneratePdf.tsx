@@ -64,26 +64,16 @@ export function useGeneratePdf(): {
 			setPagesProgress({ loading: 0, total: allPages.length });
 		try {
 			for (let i = 0; i < allPages.length; i++) {
-				logger.error("react:hook", "UseGeneratePDF", `Exporting page ${allPages[i].id}`);
-				const shapeArray: TLShapeId[] = [];
 			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
-				logger.error("react:hook", "UseGeneratePDF", "shapeIds:", shapeIds, "i:", i);
 				if (shapeIds.size === 0)
 					continue;
-				else if (shapeIds.size > 0)
-				{
-					shapeIds.forEach((id) => {
-						const shape = editor.getShape(id);
-						console.log("id", id, "shape", shape);
-						if (id && shape?.type !== "text")
-							shapeArray.push(id);
-					});
-				}
-				logger.error("react:hook", "UseGeneratePDF", "i:", i, "shapeIds:", shapeIds);
+				const shapeArray = Array.from(shapeIds).filter(id => {
+					const shape = editor.getShape(id);
+					return shape && shape.x && shape.y;
+				});
+				
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
-				logger.error("react:hook", "UseGeneratePDF", `${editor}, ${shapeIds}, 'webp', ${defaultBox}`);
 				try {
-					logger.error("react:hook", "UseGeneratePDF", "Exporting to blob");
 					const blob = await exportToBlob({
 					editor,
 					ids: shapeArray,
@@ -94,13 +84,16 @@ export function useGeneratePdf(): {
 						darkMode: false,
 					}
 					});
-					logger.error("react:hook", "UseGeneratePDF", `Blob ${blob}`);
+					if (!blob || blob.size === 0) {
+						console.error("Blob invalide généré pour les formes :", shapeArray);
+						continue;
+					}
 					allBlobs.push(blob);
 					setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 
 				} catch (error) {
 					logger.error("react:hook", "UseGeneratePDF", `Failed to get svgElement in page ${allPages[i].id}`, error);
-					setError("Une erreur est survenue lors de la convertion des pages");
+					continue ;
 				}
 			}
 		} catch (error) {

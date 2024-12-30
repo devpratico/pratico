@@ -81,7 +81,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
-						<CapsuleWidget userId={userId!} capsuleTitle={capsuleTitle} capsuleId={capsuleId} />
+						{/* <CapsuleWidget userId={userId!} capsuleTitle={capsuleTitle} capsuleId={capsuleId} /> */}
 					</Grid>
 				</Container>
 			</Section>	

@@ -4,7 +4,6 @@ import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { TLEditorSnapshot } from "tldraw";
-import { useEffect, useState } from "react";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
 
@@ -46,7 +45,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         );
     }
 	const buttons = <>
-			{/* <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} isRoom={data.isRoom} /> */}
+			<CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} isRoom={data.isRoom} />
 			<Button radius="full" asChild>
 				<Link href={`/capsule/${data.capsuleId}`}>
 					Ouvrir la capsule
