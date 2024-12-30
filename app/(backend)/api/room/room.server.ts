@@ -57,7 +57,7 @@ export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
 
 	if (!capsuleId)
         return ({ data: null, error: 'fetchRoomsByCapsuleId: capsuleId missing' })
-    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", capsuleId);
+    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId);
 
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)

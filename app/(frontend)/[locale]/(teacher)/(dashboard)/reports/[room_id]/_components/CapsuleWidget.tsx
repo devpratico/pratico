@@ -4,6 +4,7 @@ import { getFormatter } from "next-intl/server";
 import { TLEditorSnapshot } from "tldraw";
 import { fetchRoomsByCapsuleId } from "@/app/(backend)/api/room/room.server";
 import { Json } from "@/supabase/types/database.types";
+import logger from "@/app/_utils/logger";
 
 export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: { userId: string, capsuleTitle: string, capsuleId: string }) {
 	const supabase = createClient();
@@ -21,9 +22,11 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: { user
 		const { data: roomData } = await fetchRoomsByCapsuleId(capsuleId);
 		if (roomData)
 		{
-			if (roomData.length > 0)
-				isRoom = roomData[0].status === "open";
+			// if (roomData.length > 0)
+			// 	isRoom = roomData[0].status === "open";
 		}
+		else
+			logger.error('supabase:database', 'CapsuleWidget', 'Error getting room data');
 	}
 	const data = {
 		capsuleId: capsuleId,
