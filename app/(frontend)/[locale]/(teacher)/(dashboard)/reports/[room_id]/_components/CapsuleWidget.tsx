@@ -5,7 +5,7 @@ import { TLEditorSnapshot } from "tldraw";
 import { fetchRoomsByCapsuleId } from "@/app/(backend)/api/room/room.server";
 import { Json } from "@/supabase/types/database.types";
 
-export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
+export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: { userId: string, capsuleTitle: string, capsuleId: string }) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
 	let capsuleDate = "";
@@ -15,7 +15,7 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 	if (capsuleData)
 	{
 		const date = new Date(capsuleData.created_at);
-		capsuleDate = formatter.dateTime(date, { dateStyle: 'short'});
+		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
 		if (capsuleData.tld_snapshot && capsuleData.tld_snapshot?.length > 0)
 			capsuleSnapshot = capsuleData.tld_snapshot[0];
 		const { data: roomData } = await fetchRoomsByCapsuleId(capsuleId);
@@ -25,8 +25,6 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 				isRoom = roomData[0].status === "open";
 		}
 	}
-
-
 	const data = {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,
@@ -35,6 +33,6 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: any) {
 		isRoom: isRoom,
 	};
 	return (<>
-		<CapsuleWidgetView data={data} />
+		{/* <CapsuleWidgetView data={data} /> */}
 	</>)
 };

@@ -55,7 +55,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	} catch (err) {
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
-	if (!userId)
+	if (!userId || !capsuleId)
 	{	
 		logger.error('supabase:database', 'CapsuleSessionsReportServer', 'User not found');
 		throw new Error("L'utilisateur n'a pas été trouvé");
@@ -81,7 +81,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
-						{/* <CapsuleWidget userId={userId!} capsuleTitle={capsuleTitle} capsuleId={capsuleId} /> */}
+						<CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} />
 					</Grid>
 				</Container>
 			</Section>	
