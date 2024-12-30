@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Editor, exportToBlob } from "tldraw";
 import { defaultBox } from "../[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
+import { log } from "console";
 
 export function useGeneratePdf(): {
     inProgress: boolean; // True while the PDF is being generated
@@ -70,8 +71,18 @@ export function useGeneratePdf(): {
 					continue;
 				logger.error("react:hook", "UseGeneratePDF", "i:", i, "shapeIds:", shapeIds);
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
-
+				logger.error("react:hook", "UseGeneratePDF", `${{
+					editor,
+					ids: Array.from(shapeIds),
+					format: 'webp',
+					opts: {
+						bounds: defaultBox,
+						padding: 0,
+						darkMode: false,
+					}
+					}}`);
 				try {
+					logger.error("react:hook", "UseGeneratePDF", "Exporting to blob");
 					const blob = await exportToBlob({
 					editor,
 					ids: Array.from(shapeIds),
