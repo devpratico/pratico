@@ -1,7 +1,7 @@
 "use client";
 import jsPDF from "jspdf";
 import { useState } from "react";
-import { Editor, exportToBlob } from "tldraw";
+import { Editor, exportToBlob, TLShape, TLShapeId } from "tldraw";
 import { defaultBox } from "../[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
 import { log } from "console";
@@ -65,10 +65,20 @@ export function useGeneratePdf(): {
 		try {
 			for (let i = 0; i < allPages.length; i++) {
 				logger.error("react:hook", "UseGeneratePDF", `Exporting page ${allPages[i].id}`);
-			  	const shapeIds = Array.from(editor.getPageShapeIds(allPages[i]));
+				const shapeArray: TLShapeId[] = [];
+			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
 				logger.error("react:hook", "UseGeneratePDF", "shapeIds:", shapeIds, "i:", i);
-				if (shapeIds.length === 0)
+				if (shapeIds.size === 0)
 					continue;
+				else if (shapeIds.size > 0)
+				{
+					shapeIds.forEach((id) => {
+						const shape = editor.getShape(id);
+						console.log("id", id, "shape", shape);
+						if (id && shape?.type !== "text")
+							shapeArray.push(id);
+					});
+				}
 				logger.error("react:hook", "UseGeneratePDF", "i:", i, "shapeIds:", shapeIds);
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 				logger.error("react:hook", "UseGeneratePDF", `${editor}, ${shapeIds}, 'webp', ${defaultBox}`);
@@ -76,7 +86,7 @@ export function useGeneratePdf(): {
 					logger.error("react:hook", "UseGeneratePDF", "Exporting to blob");
 					const blob = await exportToBlob({
 					editor,
-					ids: shapeIds,
+					ids: shapeArray,
 					format: 'webp',
 					opts: {
 						bounds: defaultBox,
