@@ -55,13 +55,12 @@ export const fetchRoomDate = cache(async (roomId: number) => {
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
 
-    const sanitizedCapsuleId = sanitizeUuid(capsuleId);
-    if (!sanitizedCapsuleId)
+	if (!capsuleId)
         return ({ data: null, error: 'fetchRoomsByCapsuleId: capsuleId missing' })
-    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", sanitizedCapsuleId);
+    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", capsuleId);
 
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId)
+    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
     return { data, error: error?.message }
 })

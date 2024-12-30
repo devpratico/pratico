@@ -18,12 +18,12 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: { user
 		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
 		if (capsuleData.tld_snapshot && capsuleData.tld_snapshot?.length > 0)
 			capsuleSnapshot = capsuleData.tld_snapshot[0];
-		// const { data: roomData } = await fetchRoomsByCapsuleId(capsuleId);
-		// if (roomData)
-		// {
-		// 	if (roomData.length > 0)
-		// 		isRoom = roomData[0].status === "open";
-		// }
+		const { data: roomData } = await fetchRoomsByCapsuleId(capsuleId);
+		if (roomData)
+		{
+			if (roomData.length > 0)
+				isRoom = roomData[0].status === "open";
+		}
 	}
 	const data = {
 		capsuleId: capsuleId,
