@@ -55,7 +55,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 	} catch (err) {
         logger.error('supabase:database', 'CapsuleSessionsReportServer', 'Error getting attendances', err);
 	}
-	if (!userId || !capsuleId)
+	if (!userId)
 	{	
 		logger.error('supabase:database', 'CapsuleSessionsReportServer', 'User not found');
 		throw new Error("L'utilisateur n'a pas été trouvé");
