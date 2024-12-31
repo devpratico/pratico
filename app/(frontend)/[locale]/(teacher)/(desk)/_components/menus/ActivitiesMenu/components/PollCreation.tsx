@@ -10,61 +10,37 @@ import CardDialog from "../../../CardDialog"
 import { useSavePollService } from "@/app/(frontend)/_hooks/services/usePollCreationService"
 
 
-interface ChoiceRowProps {
+/**
+ * Represents a choice addes by the user for the current question.
+ * The text is editable, and the choice can be deleted.
+ */
+function ChoiceRow(props: {
     text: string
-    style?: 'normal' | 'active' | 'overlay'
     onTextChange: (newText: string) => void
     onDelete: () => void
-}
-
-function ChoiceRow({text, style='normal', onTextChange, onDelete}: ChoiceRowProps) {
-    //const text = useMemo(() => state.text, [state.text])
-    //const [value, setValue] = useState(text)
+}) {
+    const { text, onTextChange, onDelete } = props
     const iconProps: LucideProps = { size: 18, strokeWidth: 2, absoluteStrokeWidth: true }
-    const opacity = style === 'active' ? 0 : 1
-    const shadow = style === 'overlay' ? 'var(--shadow-2), var(--shadow-4)' : undefined
-    const flexStyle = { opacity }
-    //const inputStyle = { flexGrow:1, boxShadow: shadow, backgroundColor:'var(--color-background)' }
-    const inputStyle = useMemo(() => ({ flexGrow:1, boxShadow: shadow, backgroundColor:'var(--color-background)' }), [shadow])
-
-    /*const onBlur = useCallback(()=>(event: React.ChangeEvent<HTMLInputElement>) => {
-        //actions.onTextChange(event.target.value)
-        requestAnimationFrame(() => {actions.onTextChange(event.target.value)})
-    }, [actions])*/
-
-    /*const onChange = useCallback(()=>(event: React.ChangeEvent<HTMLInputElement>) => {
-        //actions.onTextChange(event.target.value)
-        setValue(event.target.value)
-    }, [setValue])*/
+    const inputStyle = useMemo(() => ({ flexGrow:1, backgroundColor:'var(--color-background)' }), [])
 
     const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         onTextChange(event.target.value)
     }, [onTextChange])
 
     return (
-        <Flex align='center' gap='3' width='100%' style={flexStyle}>
+        <Flex align='center' gap='3' width='100%'>
 
             <TextField.Root
                 style={inputStyle}
                 value={text}
-                //value={value}
                 onChange={onChange}
-                //onBlur={onBlur}
                 placeholder="Ajouter une réponse"
             />
 
             <Flex align='center' justify='between' gap='3'>
-
                 <IconButton size='2' variant="ghost" color='gray' radius='full' onClick={onDelete}>
                     <X {...iconProps} />
                 </IconButton>
-
-                {/*<DnD.GrabHandle>
-                    <IconButton size='2' variant="ghost" color='gray' style={{cursor: state.style === 'normal' ? 'grab' : 'grabbing'}}>
-                        <GripVertical {...iconProps} opacity={0.5}/>
-                    </IconButton>
-                </DnD.GrabHandle>*/}
-
             </Flex>
 
         </Flex>
@@ -72,17 +48,18 @@ function ChoiceRow({text, style='normal', onTextChange, onDelete}: ChoiceRowProp
 }
 
 
-
-interface NewChoiceProps {
-    onConfirm: (newChoiceText: string) => void
-}
-
-function NewChoice({ onConfirm }: NewChoiceProps) {
+/**
+ * The input to add a new choice to the current question.
+ * There's a button to confirm when the user has finished typing.
+ */
+function NewChoice(props: {
+    onConfirm: (value: string) => void
+}) {
     const inputRef = useRef<HTMLInputElement>(null)
 
     const confirmAndClear = (value: string) => {
         if (value.trim() === '') return
-        onConfirm(value)
+        props.onConfirm(value)
         if (inputRef.current) inputRef.current.value = ''
     }
 
@@ -118,7 +95,9 @@ function NewChoice({ onConfirm }: NewChoiceProps) {
     )
 }
 
-
+/**
+ * The dialog containing everything needed to create a poll.
+ */
 export default function PollCreation() {
     const showPollCreation = usePollCreationStore(state => state.showPollCreation)
     const deletePoll = usePollCreationStore(state => state.deletePoll)
@@ -174,7 +153,6 @@ export default function PollCreation() {
                                     <ChoiceRow
                                         key={choice.id}
                                         text={choice.text}
-                                        style='normal'
                                         onTextChange={(newText) => changeChoiceText(choice.id, newText)}
                                         onDelete={() => deleteChoice(choice.id)}
                                     />
