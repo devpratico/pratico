@@ -3,7 +3,7 @@ import { AttendanceWidgetView, AttendanceWidgetViewProps } from "./AttendanceWid
 import { countAttendances } from "@/app/(backend)/api/attendance/attendance.server";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
-import { AttendanceInfoType } from "../page";
+import { AttendanceInfoType } from "../../page";
 import { getFormatter } from "next-intl/server";
 
 type AttendanceWidgetProps = {
@@ -14,7 +14,6 @@ type AttendanceWidgetProps = {
 
 export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
-	const formatter = await getFormatter();
 	const attendanceCount = await countAttendances(roomId);
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];
@@ -62,7 +61,7 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 					const infos: AttendanceInfoType = {
 						first_name: attendance.first_name,
 						last_name: attendance.last_name,
-						connexion: formatter.dateTime(new Date(attendance.created_at), {timeStyle:'short'})
+						connexion: attendance.created_at,
 					};
 					attendances.push(infos);
 				})

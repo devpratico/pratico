@@ -43,9 +43,6 @@ export const fetchOpenRoomsCodes = cache(async () => {
     return { data, error: error?.message }
 })
 
-
-
-
 export const fetchRoomDate = cache(async (roomId: number) => {
     if (!roomId)
         return ({ data: null, error: 'fetchRoom: roomId missing' })
@@ -58,13 +55,12 @@ export const fetchRoomDate = cache(async (roomId: number) => {
 
 export const fetchRoomsByCapsuleId = cache(async (capsuleId: string) => {
 
-    const sanitizedCapsuleId = sanitizeUuid(capsuleId);
-    if (!sanitizedCapsuleId)
+	if (!capsuleId)
         return ({ data: null, error: 'fetchRoomsByCapsuleId: capsuleId missing' })
-    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId, "sanitized: ", sanitizedCapsuleId);
+    logger.debug("next:api", "fetchRoomsByCapsuleId", capsuleId);
 
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', sanitizedCapsuleId)
+    const { data, error } = await supabase.from('rooms').select('*').eq('capsule_id', capsuleId)
     if (error) logger.error('supabase:database', 'Error fetching rooms by capsule id', error.message)
     return { data, error: error?.message }
 })
@@ -124,3 +120,11 @@ export async function roomCreatorIsPaidCustomer(roomId: number) {
 
     return await customerIsSubscribed(creatorId)
 }
+
+export async function isRoomOpen(roomId: string) {
+	const supabase = createClient()
+	const { data, error } = await supabase.from('rooms').select('status').eq('id', roomId).single()
+	if (error)
+		logger.error('supabase:database', 'isRoomOpen', 'error getting room status', error.message)
+	return (data?.status === 'open');
+};

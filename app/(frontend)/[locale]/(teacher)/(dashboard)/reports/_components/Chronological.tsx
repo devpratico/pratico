@@ -6,6 +6,7 @@ import { useFormatter } from "next-intl";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
 	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const sortedSessions = order
 		? [...sessions].sort((a, b) => {
 			return (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
@@ -20,7 +21,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 			<Table.Header>
 				<Table.Row>
 					<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Date de la session</Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell>Début de la session</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell></Table.ColumnHeaderCell>
 				</Table.Row>
@@ -33,7 +34,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						<TableCell
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
-							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at)), status: session.status === "open" ? "En cours" : "Terminé"}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: "short", timeStyle: "short", timeZone: timezone }), status: session.status === "open" ? "En cours" : "Terminé"}}
 						/>
 					);
 				})

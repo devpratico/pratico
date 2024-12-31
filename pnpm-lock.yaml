@@ -117,6 +117,9 @@ importers:
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.10
+      '@types/luxon':
+        specifier: ^3.4.2
+        version: 3.4.2
       '@types/node':
         specifier: ^22.4.1
         version: 22.7.5
@@ -1781,6 +1784,9 @@ packages:
 
   '@types/lodash@4.17.10':
     resolution: {integrity: sha512-YpS0zzoduEhuOWjAotS6A5AVCva7X4lVlYLF0FYHAY9sdraBfnatttHItlWeZdGhuEkf+OzMNg2ZYAx8t+52uQ==}
+
+  '@types/luxon@3.4.2':
+    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
 
   '@types/node@22.7.5':
     resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
@@ -6559,6 +6565,8 @@ snapshots:
   '@types/json5@0.0.29': {}
 
   '@types/lodash@4.17.10': {}
+
+  '@types/luxon@3.4.2': {}
 
   '@types/node@22.7.5':
     dependencies:
