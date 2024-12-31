@@ -1,42 +1,38 @@
 "use client";
 
+import createClient from "@/supabase/clients/client";
+import { useEffect } from "react";
+
 export default function PlayGround () {
 	if (process.env.NODE_ENV === 'production') {
 		return (null);
 	}
+	const supabase = createClient();
 
-	const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	useEffect(() => {
+		const getData = async () => {
+			console.log("Playground getData");
+			const { data: { user } } = await supabase.auth.getUser();
+		
+			if (!user)
+				return (console.log("USER NOT FOUND IN THE PLAYGROUND"));
+			const { data, error } = await supabase.from("rooms").select("*").eq("created_by", user.id).limit(1);
+			if (data)
+				console.log("HERE THE DATA:", data);
+			else
+			{
+				if (error)
+					console.error("HERE THE ERROR:", error);
+				else
+					console.log("NOTHING, NO DATA NOR ERROR");
+			}
+		};
+		getData();
+	}, []);
 
-	const userLocale = typeof navigator !== 'undefined' ? navigator.language : 'fr-FR';
-
-	const now = new Date();
-	const usDate = new Intl.DateTimeFormat('en-US', {
-		timeZone: 'America/New_York',
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-	}).format(now);
-
-	const userFormatter = new Intl.DateTimeFormat(userLocale, {
-		timeZone: userTimeZone,
-		dateStyle: 'long',
-		timeStyle: 'long',
-	});
-
-	const formattedUserDate = userFormatter.format(now);
 
 	return (
-		<div style={{position: 'absolute', inset: 0 }}>
-			<p>
-				Hello
-			</p>
-			<p>
-				{usDate} - {userTimeZone} - {userLocale} -  {formattedUserDate}
-			</p>
-		</div>
+		<></>
 	)
 };
 
