@@ -43,7 +43,7 @@ export function useSavePollService(): {
             }
 
             // Save the id for future updates
-            usePollCreationStore.getState().setPollId(data?.id)
+            if (data?.id) usePollCreationStore.getState().setPollId(data.id)
 
         } else {
             // The id is already known

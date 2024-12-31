@@ -1,8 +1,9 @@
 'use client'
 import { useState, useCallback } from "react"
-import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import { saveActivity, fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import logger from "@/app/_utils/logger"
 import useQuizCreationStore from "../stores/useQuizCreationStore"
+import { Quiz } from "@/app/_types/quiz2"
 
 
 export function useSaveQuizService(): {
@@ -33,7 +34,7 @@ export function useSaveQuizService(): {
             }
 
             if (saveData?.id) useQuizCreationStore.getState().setActivityId(saveData.id)
-                
+
         } else {
             // The id is already known
             // Id should be a number for supabase saveActvivity. Try parsing it as a number
@@ -60,4 +61,36 @@ export function useSaveQuizService(): {
     }, [save])
 
     return { save, closeAndSave, isPending}
+}
+
+
+
+export function useOpenQuizService(): {
+    openQuiz: (activityId: number) => Promise<{error: string | null}>
+    isPending: boolean
+} {
+    const [isPending, setIsPending] = useState(false)
+
+    const openQuiz = useCallback(async (activityId: number) => {
+        setIsPending(true)
+        const { data, error } = await fetchActivity(activityId)
+        setIsPending(false)
+
+        if (error || !data?.object) {
+            logger.error('supabase:database', `Error opening quiz ${activityId}`, error)
+            return { error: error ?? 'No data found' }
+        }
+
+        if (data.object.type !== 'quiz') {
+            logger.error('supabase:database', `Error opening quiz ${activityId}`, 'Activity is not a quiz')
+            return { error: 'Activity is not a quiz' }
+        }
+
+        const quiz = data.object as Quiz
+
+        useQuizCreationStore.getState().openQuiz(activityId, quiz)
+        return { error: null }
+    }, [])
+
+    return { openQuiz, isPending }
 }
