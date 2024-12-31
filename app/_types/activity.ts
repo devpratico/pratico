@@ -1,5 +1,6 @@
 import { PollSnapshot } from "./poll"
 import { QuizSnapshot } from "./quiz"
+import { QuizSnapshot as QuizSnapshot2 } from "./quiz2"
 import { produce } from "immer"
 
 
@@ -11,7 +12,7 @@ export interface Activity {
     schemaVersion: string
 }
 
-export type ActivitySnapshot = QuizSnapshot | PollSnapshot
+export type ActivitySnapshot = QuizSnapshot | PollSnapshot | QuizSnapshot2
 
 
 type ActivityUpdater<T extends Activity> = (activity: T) => T

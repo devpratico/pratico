@@ -299,16 +299,20 @@ function useSaveRoomActivitySnapshot() :{
 
     const save = useCallback(async () => {
         if (!roomId) return { error: 'No room id'}
-        setIsSaving(true)
+        
         const state = usePollAnimationStore.getState()
-        const snapshot = {
+        if (!state.id) return { error: 'No activity id'}
+        if (!state.currentQuestionId) return { error: 'No current question id'}
+        
+        const snapshot: PollSnapshot = {
             type: 'poll',
             activityId: state.id,
             currentQuestionId: state.currentQuestionId,
             state: state.state,
             answers: state.answers
-        } as PollSnapshot
-
+        }
+        
+        setIsSaving(true)
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
         setIsSaving(false)
         return { error }

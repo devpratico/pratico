@@ -54,7 +54,7 @@ export interface PollSnapshot {
     /**
      * The id of the poll in the supabase database.
      */
-    activityId: number;
+    activityId: string | number;
     currentQuestionId: string;
     state: 'voting' | 'showing results',
     answers: PollUserAnswer[]

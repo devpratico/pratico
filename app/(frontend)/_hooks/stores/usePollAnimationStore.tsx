@@ -1,3 +1,4 @@
+'use client'
 import { Poll, PollUserAnswer, PollSnapshot } from "@/app/_types/poll"
 import { create } from "zustand"
 import { produce } from "immer"
@@ -24,7 +25,10 @@ type PollActions = {
 
 type PollStore = PollState & PollActions
 
-
+/**
+ * Store for managing the poll animation state
+ * This shouldn't be used directly in the components, but rather through the usePollAnimationService hook
+ */
 const usePollAnimationStore = create<PollStore>((set, get) => ({
     
     id: null,
