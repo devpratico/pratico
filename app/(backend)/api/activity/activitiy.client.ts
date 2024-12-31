@@ -2,10 +2,10 @@
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
+import { Quiz as Quiz2 } from "@/app/_types/quiz2"
 import { Poll } from "@/app/_types/poll"
-import { Poll as Poll2 } from "@/app/_types/poll"
 import { adapter } from "./utils"
-import { TablesInsert } from "@/supabase/types/database.types"
+import { TablesInsert, Tables } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"
 import { fetchActivity as fetchActivityServer, fetchSnapshot as fetchSnapshotServer } from "./activity.server"
 
@@ -54,11 +54,11 @@ export async function duplicateActivity({ id }: DuplicateActivityArgs): Promise<
 
 export interface SaveActivityArgs {
     id?: number
-    activity: Quiz | Poll | Poll2
+    activity: Quiz | Poll | Quiz2
 }
 
 export interface SaveActivityReturn {
-    data: any // TODO: Define the type of data
+    data: Tables<'activities'> | null
     error: string | null
 }
 

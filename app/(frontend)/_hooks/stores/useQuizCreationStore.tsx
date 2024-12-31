@@ -18,7 +18,8 @@ type QuizCreationState = {
 type QuizCreationActions = {
     openEmptyQuiz: () => void
     openQuiz: (activityId: Id, quiz: Quiz) => void
-    showPollCreation: (show?: boolean) => void
+    setShowQuizCreation: (show?: boolean) => void
+    setActivityId: (id: Id) => void
     removeQuiz: () => void
     setTitle: (title: string) => void
     setCurrentQuestion: (arg: { id: string } | { index: number }) => void
@@ -62,8 +63,12 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
         })
     },
 
-    showPollCreation: (show = true) => {
+    setShowQuizCreation: (show = true) => {
         set({ showQuizCreation: show })
+    },
+
+    setActivityId: (id) => {
+        set({ activityId: id })
     },
 
     removeQuiz: () => {
