@@ -71,7 +71,7 @@ export function useSavePollService(): {
 
 
 
-export function useOpenPollService():{
+/*export function useOpenPollService():{
     openPoll: (activityId: number) => Promise<void>
     isPending: boolean
     error: string | null
@@ -106,4 +106,4 @@ export function useOpenPollService():{
     }
 
     return { openPoll, isPending, error }
-}
+}*/

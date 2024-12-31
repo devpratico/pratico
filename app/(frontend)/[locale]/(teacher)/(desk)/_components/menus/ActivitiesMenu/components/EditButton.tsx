@@ -4,17 +4,14 @@ import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
-import { useOpenPollService } from '@/app/(frontend)/_hooks/services/usePollCreationService'
+import useOpenActivityService from '@/app/(frontend)/_hooks/services/useOpenActivityService'
 
 
-interface EditButtonProps {
-    activityId: number
-}
-
-export default function EditButton({ activityId }: EditButtonProps) {
+export default function EditButton({ activityId }: { activityId: number }) {
     const router = useRouter()
     const [deleteOpen, setDeleteOpen] = useState(false)
-    const { openPoll } = useOpenPollService()
+    const { openActivity } = useOpenActivityService()
+
 
     async function handleDelete() {
         await deleteActivity(activityId)
@@ -38,7 +35,7 @@ export default function EditButton({ activityId }: EditButtonProps) {
 
                 <DropdownMenu.Content side='top'>
 
-                    <DropdownMenu.Item onSelect={() => openPoll(activityId)}>
+                    <DropdownMenu.Item onSelect={() => openActivity(activityId)}>
                         <SquarePen size={15}/>
                         <span>Modifier</span>
                     </DropdownMenu.Item>

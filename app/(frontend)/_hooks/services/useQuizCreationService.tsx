@@ -65,7 +65,7 @@ export function useSaveQuizService(): {
 
 
 
-export function useOpenQuizService(): {
+/*export function useOpenQuizService(): {
     openQuiz: (activityId: number) => Promise<{error: string | null}>
     isPending: boolean
 } {
@@ -93,4 +93,4 @@ export function useOpenQuizService(): {
     }, [])
 
     return { openQuiz, isPending }
-}
+}*/
