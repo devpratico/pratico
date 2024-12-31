@@ -1,6 +1,5 @@
-// https://docs.dndkit.com/presets/sortable
-
 'use client';
+// https://docs.dndkit.com/presets/sortable
 import { DndContext, DragEndEvent, DragStartEvent, rectIntersection, DragOverlay } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
