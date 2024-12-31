@@ -27,7 +27,7 @@ type QuizCreationActions = {
     setQuestionText: (arg: { id: string, text: string }) => void
     removeQuestion: (id: string) => void
     duplicateQuestion: (id: string) => void
-    addEmptyChoice: (questionId: string) => void
+    addChoice: (text: string) => void
     setChoiceText: (id: string, text: string) => void
     setChoiceCorrect: (id: string, isCorrect: boolean) => void
     removeChoice: (id: string) => void
@@ -46,7 +46,7 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
             showQuizCreation: true,
             quiz: emptyQuiz,
             activityId: undefined,
-            currentQuestionId: undefined
+            currentQuestionId: emptyQuiz.questions[0].id
         })
     },
 
@@ -148,16 +148,16 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
         }))
     },
 
-    addEmptyChoice: (questionId) => {
+    addChoice: (text) => {
         if (!get().quiz) {
-            logger.error('zustand:action', 'Cannot add a choice to a question in a non-existing quiz')
+            logger.error('zustand:action', 'Cannot add a choice to a non-existing quiz')
             return
         }
         set(produce<QuizCreationStore>(state => {
-            const question = state.quiz!.questions.find(q => q.id === questionId)
+            const question = state.quiz!.questions.find(q => q.id === state.currentQuestionId)
             if (question) question.choices.push({
                 id: uniqueTimestampId('choice-'),
-                text: '',
+                text: text,
                 isCorrect: false
             })
         }))

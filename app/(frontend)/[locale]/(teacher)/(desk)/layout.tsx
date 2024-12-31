@@ -21,6 +21,7 @@ import { CardDialogProvider } from "@/app/(frontend)/_hooks/contexts/useCardDial
 import GlobalCardDialog from "./_components/GlobalCardDialog"
 import { FullscreenProvider } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
 import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
+import QuizCreation from "./_components/menus/ActivitiesMenu/components/QuizCreation"
 
 
 
@@ -101,6 +102,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 {/* Poll creation dialog */}
                 <PollCreation/>
+                
+                {/* Quiz creation dialog */}
+                <QuizCreation/>
 
                 
 
