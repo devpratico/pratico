@@ -89,7 +89,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 				<Dialog.Trigger>
 					<Box>
 					<Box style={{ width: "0px", height: "0px" }}>
-						<Tldraw options={{ maxPages: 1 }} hideUi onMount={handleMount} snapshot={snapshot}/>
+						<Tldraw hideUi onMount={handleMount} snapshot={snapshot}/>
 					</Box>
 					<IconButton variant="ghost" onClick={() => {
 						setOpenDialog(true);
