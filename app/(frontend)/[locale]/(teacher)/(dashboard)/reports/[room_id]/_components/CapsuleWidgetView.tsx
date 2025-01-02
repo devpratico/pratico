@@ -39,7 +39,11 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         return (
 			<Box>
 				<Heading as='h2' size='4' mb='4'>Diaporama</Heading>
-				<Text as="p" size="1" style={{color: "var(--gray-8)"}}>{"Si vous avez modifié la capsule lors de la session (ajout de dessins, de pages, de post-its...), vous pouvez récupérer le résultat au format pdf en cliquant sur le bouton ci-dessous."}</Text>
+				<Text as="p" size="1" style={{color: "var(--gray-8)"}}>
+                    {`Retrouvez le résultat de votre capsule modifiée lors de la session 
+                    (ajout de dessins, de pages, de post-its...) 
+                    au format PDF en cliquant sur le bouton ci-dessous.`}
+                </Text>
 			</Box>
         );
     }
