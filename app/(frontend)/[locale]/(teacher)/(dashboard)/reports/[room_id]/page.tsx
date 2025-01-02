@@ -7,6 +7,7 @@ import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
 
+
 // TYPE
 export type AttendanceInfoType = {
 	first_name: string | null,
@@ -25,7 +26,7 @@ export type SessionInfoType = {
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
-	const roomId = params.room_id;
+	const roomId: string = params.room_id;
 	const formatter = await getFormatter();
 	let userId: string | null = null;
 	let capsuleTitle = "Sans titre";
@@ -61,7 +62,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		throw new Error("L'utilisateur n'a pas été trouvé");
 	}
 	return (<>
-		<ScrollArea>
+		<ScrollArea type="scroll"> 
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 					<Flex direction="column" gap="3" align="start">
@@ -81,7 +82,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
-						<CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} />
+						{/* <CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} /> */}
 					</Grid>
 				</Container>
 			</Section>	

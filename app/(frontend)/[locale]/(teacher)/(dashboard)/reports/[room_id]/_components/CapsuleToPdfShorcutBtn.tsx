@@ -7,7 +7,7 @@ import { useFormatter } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
+export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snapshot: TLEditorSnapshot, title: string, capsuleDate: string }) {
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -31,27 +31,24 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		if (!editor)
 			return ;
 		setOpenDialog(true);
-		if (!isRoom) {
-			const data = await getCapsuleData();
-			if (data?.title) {
-				if (data?.title === "Sans titre")
+			if (title) {
+				if (title === "Sans titre")
 				{
-					const date = formatter.dateTime(new Date(data.created_at)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
+					const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
 
 					setFilename(`capsule-${date}.pdf`);
 				}
 				else
 				{
-					const title = data?.title
+					const validTitle = title
 						.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
 						.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
 						.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-					const date = formatter.dateTime(new Date(data.created_at)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
+					const date = formatter.dateTime(new Date(capsuleDate)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
 
 					setFilename(`${title}-${date}.pdf`);
 				}
 			}
-		}
 
 		const result = await generatePdf(editor);
 		if (result)
@@ -69,14 +66,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		}
 		else
 			logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", "no result");
-		
-	};
-	const getCapsuleData = async () => {
-		const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
-		if (error)
-			logger.error("react:component", "CapsuleToPDFShortcutBtn", "getCapsuleData", error);
-		else
-			return (data);
 	};
 
 	const handleMount = useCallback((newEditor: Editor) => {
@@ -92,7 +81,8 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 			}}
 		>
 			
-			<Tooltip content="Exporter en PDF">
+			<Tooltip content="Exporter la capsule modifiée en PDF">
+
 				<Dialog.Trigger>
 					<Box>
 					<Box style={{ width: "0px", height: "0px" }}>

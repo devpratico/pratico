@@ -4,10 +4,9 @@ import { countAttendances } from "@/app/(backend)/api/attendance/attendance.serv
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
 import { AttendanceInfoType } from "../../page";
-import { getFormatter } from "next-intl/server";
 
 type AttendanceWidgetProps = {
-	roomId: number,
+	roomId: string,
 	userId: string,
 	capsuleTitle: string
 };

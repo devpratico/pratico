@@ -1,11 +1,11 @@
 "use client";
 
-import { Box, Button, DataList, Link, Heading } from "@radix-ui/themes";
+import { Box, Heading, Text } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
+import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -13,14 +13,12 @@ interface CapsuleWidgetViewProps {
 		capsuleTitle: string;
 		capsuleDate: string;
 		capsuleSnapshot: Json | TLEditorSnapshot;
-		isRoom: boolean;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
-
 	const Thumb = () => {
 		return (
-            <Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%", height: "auto"}}>
+            <Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", width: "100%", aspectRatio: "16/9", overflow: "hidden" }} >	
 				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
 			</Box>
 		);
@@ -30,36 +28,13 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         return (
 			<Box>
 				<Heading as='h2' size='4' mb='4'>Diaporama</Heading>
-				<DataList.Root size='1'>
-					<DataList.Item>
-						<DataList.Label>Titre</DataList.Label>
-						<DataList.Value>{data.capsuleTitle}</DataList.Value>
-					</DataList.Item>
-					<DataList.Item>
-						<DataList.Label>Date de création</DataList.Label>
-						<DataList.Value>{data.capsuleDate}</DataList.Value>
-					</DataList.Item>
-				</DataList.Root>
+				<Text as="p" size="1" style={{color: "var(--gray-8)"}}>{"Si vous avez modifié la capsule lors de la session (ajout de dessins, de pages, de post-its...), vous pouvez récupérer le résultat au format pdf en cliquant sur le bouton ci-dessous."}</Text>
 			</Box>
-            
         );
     }
-	const buttons = <>
-			{/* <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} isRoom={data.isRoom} /> */}
-			<Button radius="full" asChild>
-				<Link href={`/capsule/${data.capsuleId}`}>
-					Ouvrir la capsule
-				</Link>
-			</Button>
-		</>;
+	const buttons = <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} title={data.capsuleTitle} capsuleDate={data.capsuleDate} />;
 
 	return (
-		<>
-			<ReportWidgetTemplate
-				thumb={<Thumb />}
-				content={<Content />}
-				buttons={buttons}
-			/>
-		</>
+		<ReportWidgetTemplate thumb={<Thumb />} content={<Content />} buttons={buttons} />
 	);
 }

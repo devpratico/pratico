@@ -5,36 +5,31 @@ import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
 
-export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId }: { userId: string, capsuleTitle: string, capsuleId: null | string }) {
+export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId, roomId }: { userId: string, capsuleTitle: string, capsuleId: null | string, roomId: string }) {
 	const supabase = createClient();
 	const formatter = await getFormatter();
 	let capsuleDate = "";
 	let capsuleSnapshot: Json | TLEditorSnapshot | null = null;
-	let isRoom = false;
 	logger.log('supabase:database', 'CapsuleWidget', 'userId', userId, 'capsuleId', capsuleId);
 	if (!capsuleId)
 		throw new Error("capsuleId is missing");
-	const { data: capsuleData } = await supabase.from('capsules').select('tld_snapshot, created_at').eq("created_by", userId).eq('id', capsuleId).single();
+	const { data: capsuleData } = await supabase.from('capsules').select('created_at').eq("created_by", userId).eq('id', capsuleId).single();
 	if (capsuleData)
 	{
 		const date = new Date(capsuleData.created_at);
 		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
-		if (capsuleData.tld_snapshot && capsuleData.tld_snapshot?.length > 0)
-			capsuleSnapshot = capsuleData.tld_snapshot[0];
-		const { data: roomData } = await supabase.from('rooms').select('status').eq("id", userId).eq('capsule_id', capsuleId).single();
-		if (roomData)
-		{
-			isRoom = roomData.status === "open";
-		}
-		else
-			logger.error('supabase:database', 'CapsuleWidget', 'Error getting room data');
+	}
+	const { data: capsuleRoomData } = await supabase.from('rooms').select('capsule_snapshot').eq("created_by", userId).eq("capsule_id", capsuleId).eq('id', roomId).single();
+	if (capsuleRoomData)
+	{
+		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)
+			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
 	}
 	const data = {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
 		capsuleSnapshot: capsuleSnapshot,
-		isRoom: isRoom,
 	};
 	return (<>
 		<CapsuleWidgetView data={data} />
