@@ -214,7 +214,42 @@ export function useStartQuizService(): {
     return {start, isPending}
 }
 
+/**
+ * Close the current quiz in the store.
+ * This empties the store and removes the snapshot from the database.
+ */
+export function useCloseQuizService(): {
+    close: () => Promise<AsyncOperationResult>
+    isPending: boolean
+} {
+    const [isPending, setIsPending] = useState(false)
+    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const roomId = useRoom().room?.id
 
+    const close = useCallback(async () => {
+        if (!roomId) return { error: 'No room id' }
+
+        const state = useQuizAnimationStore.getState()
+        if (!state.activityId) return { error: 'No activity id' }
+
+        setIsPending(true)
+
+        // Update the store
+        state.closeQuiz()
+
+        // Save the new state in the database
+        const { error } = await save()
+        if (error) {
+            setIsPending(false)
+            return { error }
+        }
+
+        setIsPending(false)
+        return { error: null }
+    }, [roomId, save])
+
+    return { close, isPending }
+}
 
 
 
