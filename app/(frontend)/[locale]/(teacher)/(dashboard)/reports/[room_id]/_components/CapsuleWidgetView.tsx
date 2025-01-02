@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Heading, Text } from "@radix-ui/themes";
+import { Box, Heading, Text, Flex } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
@@ -18,9 +18,20 @@ interface CapsuleWidgetViewProps {
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const Thumb = () => {
 		return (
-            <Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", width: "100%", aspectRatio: "16/9", overflow: "hidden" }} >	
+            <Flex
+                align={'center'}
+                justify={'center'}
+                style={{
+                    borderRadius: "var(--radius-3)",
+                    boxShadow: "var(--shadow-4)",
+                    width: "190px",
+                    aspectRatio: "16/9",
+                    overflow: "hidden",
+                    backgroundColor: "var(--gray-5)",
+                }}
+            >	
 				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
-			</Box>
+			</Flex>
 		);
 	};
 	const Content = () => {
