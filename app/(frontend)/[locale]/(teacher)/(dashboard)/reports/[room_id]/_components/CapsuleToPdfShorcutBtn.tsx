@@ -33,7 +33,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 				setFilename(`${validTitle}-${date}.pdf`);
 			}
 		}
-	}, [title]);
+	}, [title, capsuleDate, formatter]);
 
 	useEffect(() => {
 		if (errorMsg)
@@ -75,62 +75,68 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
     }, []);
 
 	return (
-		<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
-			<Box display="none">
-				<Tldraw hideUi onMount={handleMount} snapshot={snapshot}/>
-			</Box>
+        <>
 
-			<Tooltip content="Exporter la capsule modifiée en PDF">	
-				<IconButton variant="ghost" onClick={handleClick} >
-					<FileDown />
-				</IconButton>
-			</Tooltip>
+            {/* Hidden Tldraw component, needed to download the pdf */}
+            <Box height='0' width='0' style={{opacity: 0}} overflow='hidden'>
+                <Tldraw hideUi onMount={handleMount} snapshot={snapshot} />
+            </Box>
 
 
-			<AlertDialog.Content>
-			<AlertDialog.Title>Export du diaporama en PDF</AlertDialog.Title>
-				<Card variant='surface' my='4'>
-						
-
-						{/* ERROR */}
-						<Flex direction='column' align='center' gap='3' display={state=='error' ? 'flex' : 'none'}>
-							<Flex align='center' gap='1' style={{ color: 'var(--red)' }}>
-								<CircleAlert size='15' style={{ color: 'var(--red)' }} />
-								<Text trim='both'>{`${errorMsg ? errorMsg : "Une erreur s'est produite"}`}</Text>
-							</Flex>
-						</Flex>
+            <Tooltip content="Exporter la capsule modifiée en PDF">
+                <IconButton variant="ghost" onClick={handleClick} >
+                    <FileDown />
+                </IconButton>
+            </Tooltip>
 
 
-						{/* LOADING */}
-						<Flex direction='column' align='center' gap='3' display={state=='loading' ? 'flex' : 'none'}>
-							<Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
-								<Text trim='both'>{filename}</Text>
-								<Text size='1'>{`Conversion page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
-							</Flex>
+            <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
-							<Box width='100%'>
-								<Progress value={progress} />
-							</Box> 
-						</Flex>
+                <AlertDialog.Content>
+                <AlertDialog.Title>Export du diaporama en PDF</AlertDialog.Title>
+                    <Card variant='surface' my='4'>
 
-						{/* DOWNLOADING */}
-						<Flex direction='column' align='center' gap='3' display={state == 'downloading' ? 'flex' : 'none'}>
-							<Flex mb="5" align='center' gap='1' style={{ color: 'var(--green)' }}>
-								<CircleCheck size='15' style={{ color: 'var(--green)' }} />
-								<Text trim='both'>{`Conversion réussie, téléchargement du PDF en cours...`}</Text>
-							</Flex>
-							<Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
-								<Text trim='both'>{filename}</Text>
-								<Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
-							</Flex>
+                            {/* ERROR */}
+                            <Flex direction='column' align='center' gap='3' display={state=='error' ? 'flex' : 'none'}>
+                                <Flex align='center' gap='1' style={{ color: 'var(--red)' }}>
+                                    <CircleAlert size='15' style={{ color: 'var(--red)' }} />
+                                    <Text trim='both'>{`${errorMsg ? errorMsg : "Une erreur s'est produite"}`}</Text>
+                                </Flex>
+                            </Flex>
 
-							<Box width='100%'>
-								<Progress value={progress} />
-							</Box>
-						</Flex>
 
-					</Card>
-			</AlertDialog.Content>
-		</AlertDialog.Root>
+                            {/* LOADING */}
+                            <Flex direction='column' align='center' gap='3' display={state=='loading' ? 'flex' : 'none'}>
+                                <Flex align='center' justify='between' gap='1' width='100%' style={{color:'var(--gray-10)'}}>
+                                    <Text trim='both'>{filename}</Text>
+                                    <Text size='1'>{`Conversion page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+                                </Flex>
+
+                                <Box width='100%'>
+                                    <Progress value={progress} />
+                                </Box> 
+                            </Flex>
+
+                            {/* DOWNLOADING */}
+                            <Flex direction='column' align='center' gap='3' display={state == 'downloading' ? 'flex' : 'none'}>
+                                <Flex mb="5" align='center' gap='1' style={{ color: 'var(--green)' }}>
+                                    <CircleCheck size='15' style={{ color: 'var(--green)' }} />
+                                    <Text trim='both'>{`Conversion réussie, téléchargement du PDF en cours...`}</Text>
+                                </Flex>
+                                <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
+                                    <Text trim='both'>{filename}</Text>
+                                    <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+                                </Flex>
+
+                                <Box width='100%'>
+                                    <Progress value={progress} />
+                                </Box>
+                            </Flex>
+
+                        </Card>
+                </AlertDialog.Content>
+            </AlertDialog.Root>
+
+        </>
 	);
 }
