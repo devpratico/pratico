@@ -1,6 +1,5 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
-import createClient from "@/supabase/clients/client";
 import { Box, Card, Dialog, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
@@ -11,7 +10,6 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
-	const supabase = createClient();
 	const formatter = useFormatter();
 	const [ filename, setFilename ] = useState("capsule.pdf");
 	const [ state, setState ] = useState<'idle' | 'loading' | 'downloading'  | 'error'>('idle');
@@ -35,7 +33,6 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 				if (title === "Sans titre")
 				{
 					const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
-
 					setFilename(`capsule-${date}.pdf`);
 				}
 				else
@@ -46,7 +43,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 						.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
 					const date = formatter.dateTime(new Date(capsuleDate)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
 
-					setFilename(`${title}-${date}.pdf`);
+					setFilename(`${validTitle}-${date}.pdf`);
 				}
 			}
 

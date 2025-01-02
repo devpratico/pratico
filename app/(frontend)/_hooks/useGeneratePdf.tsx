@@ -1,10 +1,9 @@
 "use client";
 import jsPDF from "jspdf";
 import { useState } from "react";
-import { Editor, exportToBlob, TLShape, TLShapeId } from "tldraw";
+import { Editor, exportToBlob } from "tldraw";
 import { defaultBox } from "../[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
-import { log } from "console";
 
 export function useGeneratePdf(): {
     inProgress: boolean; // True while the PDF is being generated
@@ -64,19 +63,15 @@ export function useGeneratePdf(): {
 			setPagesProgress({ loading: 0, total: allPages.length });
 		try {
 			for (let i = 0; i < allPages.length; i++) {
-			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
-				if (shapeIds.size === 0)
+			  	const shapeIds = Array.from(editor.getPageShapeIds(allPages[i]));
+				if (shapeIds.length === 0)
 					continue;
-				const shapeArray = Array.from(shapeIds).filter(id => {
-					const shape = editor.getShape(id);
-					return shape && shape.x && shape.y;
-				});
 				
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 				try {
 					const blob = await exportToBlob({
 					editor,
-					ids: shapeArray,
+					ids: shapeIds,
 					format: 'webp',
 					opts: {
 						bounds: defaultBox,
@@ -85,7 +80,7 @@ export function useGeneratePdf(): {
 					}
 					});
 					if (!blob || blob.size === 0) {
-						console.error("Blob invalide généré pour les formes :", shapeArray);
+						console.error("Blob invalide généré pour les formes :", shapeIds);
 						continue;
 					}
 					allBlobs.push(blob);
