@@ -17,33 +17,33 @@ export function useGeneratePdf(): {
 	const [error, setError] = useState<string | null>(null);
 
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
-			if (blobs.length === 0)
-			{	
-				setError("Aucun élément à exporter");
-				return ;
-			}
-			setInProgress(false);
-			for (let index = 0; index < blobs.length; index++) {
-				const blob = blobs[index];
-				const base64data = await new Promise<string>((resolve, reject) => {
-					const reader = new FileReader();
-					reader.onload = () => resolve(reader.result as string);
-					reader.onerror = reject;
-					reader.readAsDataURL(blob);
-				});
-			
-				try {
-					pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-					if (index < blobs.length - 1) {
-						pdf.addPage();
-					}
-					setPagesProgress((prev) => ({ loading: index, total: prev?.total }));
-				} catch (error) {
-					logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
-					setError("Une erreur est survenue lors de la création du pdf");
+		if (blobs.length === 0)
+		{	
+			setError("Aucun élément à exporter");
+			return ;
+		}
+		setInProgress(false);
+		for (let index = 0; index < blobs.length; index++) {
+			const blob = blobs[index];
+			const base64data = await new Promise<string>((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result as string);
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+		
+			try {
+				pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+				if (index < blobs.length - 1) {
+					pdf.addPage();
 				}
-				setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+				setPagesProgress((prev) => ({ loading: index, total: prev?.total }));
+			} catch (error) {
+				logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
+				setError("Une erreur est survenue lors de la création du pdf");
 			}
+			setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+		}
 	};
 
 	const generatePdf = async (editor: Editor) => {
@@ -104,7 +104,7 @@ export function useGeneratePdf(): {
 		setPagesProgress({ loading: 0, total: validBlobs.length });
 		await createPdf(validBlobs, pdf);
 		setProgress(0);
-		return ({ pdf: pdf, error: error });
+		return { pdf, error };
 	};
 
     return { inProgress, pagesProgress, progress, generatePdf };

@@ -15,6 +15,25 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 	const [ state, setState ] = useState<'idle' | 'loading' | 'downloading'  | 'error'>('idle');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
+	useEffect(() => {
+		if (title) {
+			if (title === "Sans titre")
+			{
+				const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
+				setFilename(`capsule-${date}.pdf`);
+			}
+			else
+			{
+				const validTitle = title
+					.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
+					.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
+					.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
+				const date = formatter.dateTime(new Date(capsuleDate)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
+
+				setFilename(`${validTitle}-${date}.pdf`);
+			}
+		}
+	}, [title]);
 
 	useEffect(() => {
 		if (errorMsg)
@@ -29,23 +48,6 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 		if (!editor)
 			return ;
 		setOpenDialog(true);
-			if (title) {
-				if (title === "Sans titre")
-				{
-					const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
-					setFilename(`capsule-${date}.pdf`);
-				}
-				else
-				{
-					const validTitle = title
-						.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
-						.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
-						.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-					const date = formatter.dateTime(new Date(capsuleDate)).replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
-
-					setFilename(`${validTitle}-${date}.pdf`);
-				}
-			}
 
 		const result = await generatePdf(editor);
 		if (result)
@@ -62,7 +64,11 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 			setOpenDialog(false);			
 		}
 		else
+		{	
 			logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", "no result");
+			setState('idle');
+			setOpenDialog(false);	
+		}
 	};
 
 	const handleMount = useCallback((newEditor: Editor) => {
