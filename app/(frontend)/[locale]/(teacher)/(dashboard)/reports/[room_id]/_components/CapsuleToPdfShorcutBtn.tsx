@@ -1,6 +1,6 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
-import { Box, Card, Dialog, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
+import { AlertDialog, Box, Card, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -47,7 +47,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 	const handleClick = async () => {
 		if (!editor)
 			return ;
-		setOpenDialog(true);
+		// setOpenDialog(true);
 
 		const result = await generatePdf(editor);
 		if (result)
@@ -78,31 +78,25 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
     }, [editor]);
 
 	return (
-		<Dialog.Root  open={openDialog}
-			onOpenChange={(isOpen) => {
-				if (state === "idle") setOpenDialog(isOpen);
-			}}
-		>
-			
-			<Tooltip content="Exporter la capsule modifiée en PDF">
+		<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
+			<Box style={{ width: "0px", height: "0px" }}>
+				<Tldraw hideUi onMount={handleMount} snapshot={snapshot}/>
+			</Box>
 
-				<Dialog.Trigger>
-					<Box>
-					<Box style={{ width: "0px", height: "0px" }}>
-						<Tldraw hideUi onMount={handleMount} snapshot={snapshot}/>
-					</Box>
-					<IconButton variant="ghost" onClick={() => {
-						setOpenDialog(true);
-						handleClick();
-					}} >
-						<FileDown />
-					</IconButton>
-					</Box>
-				</Dialog.Trigger>
+			<Tooltip content="Exporter la capsule modifiée en PDF">	
+				<AlertDialog.Trigger>
+						<IconButton variant="ghost" onClick={() => {
+								// setOpenDialog(true);
+								handleClick();
+							}} >
+							<FileDown />
+						</IconButton>
+				</AlertDialog.Trigger>
 			</Tooltip>
 
-			<Dialog.Content>
-			<Dialog.Title>Export du diaporama en PDF</Dialog.Title>
+
+			<AlertDialog.Content>
+			<AlertDialog.Title>Export du diaporama en PDF</AlertDialog.Title>
 				<Card variant='surface' my='4'>
 						
 
@@ -144,7 +138,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 						</Flex>
 
 					</Card>
-			</Dialog.Content>
-		</Dialog.Root>
+			</AlertDialog.Content>
+		</AlertDialog.Root>
 	);
 }
