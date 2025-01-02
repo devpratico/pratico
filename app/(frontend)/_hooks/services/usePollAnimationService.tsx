@@ -161,6 +161,7 @@ export function usePollAnimationService(): {
  * Open a poll in the store given its id.
  * This function fetches the activity from the database.
  */
+/*
 export function useStartPollService(): {
     startPoll: (activityId: number | string) => Promise<{ error: string | null }>
     isPending: boolean
@@ -214,7 +215,7 @@ export function useStartPollService(): {
     }
 
     return { startPoll, isPending }
-}
+}*/
 
 
 /**

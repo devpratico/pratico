@@ -10,6 +10,8 @@ import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
+import QuizAnimation from "./_components/QuizAnimation";
+
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25;
@@ -72,6 +74,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 
 			{/* Activity Card, that automatically opens when an activity is running */}
 			<PollAnimation />
+            <QuizAnimation />
 
         </>
     )

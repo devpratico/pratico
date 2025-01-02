@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@radix-ui/themes"
 import { Play } from "lucide-react"
 import { useParams } from "next/navigation"
 import logger from "@/app/_utils/logger"
-import { useStartPollService } from "@/app/(frontend)/_hooks/services/usePollAnimationService"
+import { useStartActivityService } from "@/app/(frontend)/_hooks/services/useStartActivityService"
 
 
 
@@ -15,13 +15,13 @@ export default function StartButton({ activity_id }: { activity_id: number }) {
     // TODO: get rid of the room_code param and use it in the service hook
     const { room_code } = useParams<{ room_code?: string }>()
     const inRoom = !!room_code
-    const { startPoll, isPending } = useStartPollService()
+    const { start, isPending } = useStartActivityService()
 
 
     async function handleClick() {
-        const { error } = await startPoll(activity_id)
+        const { error } = await start(activity_id)
         if (error) {
-            logger.error('supabase:database', 'StartButton.tsx', 'Error starting poll', error)
+            logger.error('supabase:database', 'StartButton.tsx', 'Error starting activity', error)
         }
     }
 

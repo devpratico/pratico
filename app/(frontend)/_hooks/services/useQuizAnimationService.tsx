@@ -155,6 +155,7 @@ export function useQuizAnimationService(): {
 /**
  * Set up a quiz in the store, coming from the database.
  */
+/*
 export function useStartQuizService(): {
     start: (activityId: string | number) => Promise<AsyncOperationResult>
     isPending: boolean
@@ -213,7 +214,7 @@ export function useStartQuizService(): {
     }, [roomId, save])
 
     return {start, isPending}
-}
+}*/
 
 /**
  * Close the current quiz in the store.
