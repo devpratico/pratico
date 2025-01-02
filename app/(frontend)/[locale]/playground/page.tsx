@@ -20,11 +20,14 @@ export default function PlayGround () {
 		
 			if (!user)
 				return (console.log("USER NOT FOUND IN THE PLAYGROUND"));
-			const { data, error } = await supabase.from("rooms").select("*").eq("created_by", user.id).limit(1);
+			const { data, error } = await supabase.from("rooms").select("*").eq("created_by", user.id);
 			if (data)
 			{
 				console.log("HERE THE DATA:", data);
-				setSnapshot(data[0].capsule_snapshot);
+				if (data.length === 2)
+					setSnapshot(data[1].capsule_snapshot);
+				else
+					setSnapshot(data[0].capsule_snapshot);
 			}
 			else
 			{

@@ -34,25 +34,27 @@ export function CapsulesDisplay ({capsules}: {capsules: CapsuleType[] | any[]}) 
 				<OptionsMenu setOption={setOption} label="Trier par" options={options} />
 			</Flex>
 			<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
-				{sortedCapsules.map((cap) => {
-					const id = cap.id
-					const title = cap.title || "Sans titre"
-					const created_at = new Date(cap.created_at)
-					const snap = cap.tld_snapshot?.[0] as TLEditorSnapshot | undefined// as TLStoreSnapshot | undefined
+				{
+					sortedCapsules.map((cap) => {
+						const id = cap.id
+						const title = cap.title || "Sans titre"
+						const created_at = new Date(cap.created_at)
+						const snap = cap.tld_snapshot?.[0] as TLEditorSnapshot | undefined// as TLStoreSnapshot | undefined
 
-					let url = `/capsule/${id}`
+						let url = `/capsule/${id}`
 
-					return (
-						<Box position='relative' key={id}>
-							<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-								<Miniature title={title} createdAt={created_at}>
-									{snap && <Thumbnail snapshot={snap} scale={0.2} />}
-								</Miniature>
-							</Link>
-							<Menu capsuleId={id} key={id} />
-						</Box>
-					)
-				})}
+						return (
+							<Box position='relative' key={id}>
+								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
+									<Miniature title={title} createdAt={created_at}>
+										{snap && <Thumbnail snapshot={snap} scale={0.2} />}
+									</Miniature>
+								</Link>
+								<Menu capsuleId={id} key={id} />
+							</Box>
+						)
+					}
+				)}
 			</Grid>
 	</>);
 };

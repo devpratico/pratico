@@ -87,7 +87,7 @@ export const fetchUserHasSignedAttendance = async (roomId: number, userId: strin
     return false
 };
 
-export async function countAttendances(roomId: number) {
+export async function countAttendances(roomId: string) {
     const supabase = createClient()
     const response = await supabase.from('attendance').select('id').eq('room_id', roomId)
     if (response.error) {

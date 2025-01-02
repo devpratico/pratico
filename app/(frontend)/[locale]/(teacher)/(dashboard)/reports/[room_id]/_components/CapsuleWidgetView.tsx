@@ -13,7 +13,6 @@ interface CapsuleWidgetViewProps {
 		capsuleTitle: string;
 		capsuleDate: string;
 		capsuleSnapshot: Json | TLEditorSnapshot;
-		isRoom: boolean;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
@@ -45,7 +44,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         );
     }
 	const buttons = <>
-			{/* <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} isRoom={data.isRoom} /> */}
+			{/* <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} /> */}
 			<Button radius="full" asChild>
 				<Link href={`/capsule/${data.capsuleId}`}>
 					Ouvrir la capsule

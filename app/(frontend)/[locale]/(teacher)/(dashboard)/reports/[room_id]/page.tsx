@@ -25,7 +25,7 @@ export type SessionInfoType = {
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
-	const roomId = params.room_id;
+	const roomId: string = params.room_id;
 	const formatter = await getFormatter();
 	let userId: string | null = null;
 	let capsuleTitle = "Sans titre";
@@ -81,7 +81,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 					</Flex>
 					<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' p='5'>
 						<AttendanceWidget roomId={roomId} userId={userId!} capsuleTitle={capsuleTitle}/>
-						<CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} />
+						<CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
 					</Grid>
 				</Container>
 			</Section>	

@@ -7,7 +7,7 @@ import { useFormatter } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot: TLEditorSnapshot, capsuleId: string, isRoom: boolean}) {
+export function CapsuleToPdfShortcutBtn({ snapshot, capsuleId }: { snapshot: TLEditorSnapshot, capsuleId: string }) {
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -31,7 +31,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 		if (!editor)
 			return ;
 		setOpenDialog(true);
-		if (!isRoom) {
 			const data = await getCapsuleData();
 			if (data?.title) {
 				if (data?.title === "Sans titre")
@@ -51,7 +50,6 @@ export function CapsuleToPdfShortcutBtn({snapshot, capsuleId, isRoom}: {snapshot
 					setFilename(`${title}-${date}.pdf`);
 				}
 			}
-		}
 
 		const result = await generatePdf(editor);
 		if (result)
