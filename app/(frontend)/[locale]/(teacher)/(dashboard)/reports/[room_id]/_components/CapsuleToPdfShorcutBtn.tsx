@@ -71,10 +71,8 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 	};
 
 	const handleMount = useCallback((newEditor: Editor) => {
-        if (!editor) {
-            setEditor(newEditor);
-        }
-    }, [editor]);
+		setEditor(newEditor);
+    }, []);
 
 	return (
 		<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
