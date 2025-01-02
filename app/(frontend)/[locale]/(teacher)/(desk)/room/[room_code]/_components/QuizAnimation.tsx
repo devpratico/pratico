@@ -1,7 +1,7 @@
 'use client'
 import CardDialog from '@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog'
 import useQuizAnimation from '@/app/(frontend)/_hooks/stores/useQuizAnimationStore'
-import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
+import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card, ButtonProps } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { QuizSnapshot } from '@/app/_types/quiz2'
@@ -105,10 +105,16 @@ interface QuizAnswerRowProps {
 
 export function QuizAnswerRow({ text, votes, questionState, answerState = 'unselected', isCorrect, onClick }: QuizAnswerRowProps) {
 
-    const isSolid = questionState == 'answering' && answerState === 'selected'
-    const isSoft = questionState == 'showing results'
+    const isSolid = (questionState == 'answering' && answerState === 'selected') || (questionState == 'showing results' && isCorrect)
+    const isSoft = questionState == 'showing results' && !isCorrect
     const variant = isSolid ? 'solid' : isSoft ? 'soft' : 'outline'
-    const color = isCorrect && questionState == 'showing results' ? 'green' : undefined
+
+    let color: ButtonProps['color']
+    if (questionState === 'showing results') {
+        color = isCorrect ? 'green' : 'gray';
+    } else {
+        color = undefined;
+    }
 
     function handleClick() {
         if (questionState == 'showing results') return
