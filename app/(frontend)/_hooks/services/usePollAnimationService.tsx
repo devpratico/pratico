@@ -182,7 +182,7 @@ export function useStartPollService(): {
         if (error || !data) {
             logger.error('zustand:store', 'usePollAnimation', 'Error fetching activity', error)
             setIsPending(false)
-            return { error: 'Error fetching activity' }
+            return { error: 'Error fetching activity: ' + error}
         }
 
         if (!(data.type == 'poll')) {
