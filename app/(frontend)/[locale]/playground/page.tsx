@@ -1,9 +1,13 @@
 "use client";
 
 import createClient from "@/supabase/clients/client";
-import { useEffect } from "react";
+import { Json } from "@/supabase/types/database.types";
+import { Box } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
+import { TldrawImage, TLEditorSnapshot } from "tldraw";
 
 export default function PlayGround () {
+	const [ snapshot, setSnapshot ] = useState<Json | TLEditorSnapshot>();
 	if (process.env.NODE_ENV === 'production') {
 		return (null);
 	}
@@ -18,7 +22,10 @@ export default function PlayGround () {
 				return (console.log("USER NOT FOUND IN THE PLAYGROUND"));
 			const { data, error } = await supabase.from("rooms").select("*").eq("created_by", user.id).limit(1);
 			if (data)
+			{
 				console.log("HERE THE DATA:", data);
+				setSnapshot(data[0].capsule_snapshot);
+			}
 			else
 			{
 				if (error)
@@ -32,7 +39,9 @@ export default function PlayGround () {
 
 
 	return (
-		<></>
+		<Box width="auto">
+			<TldrawImage snapshot={snapshot as TLEditorSnapshot} />
+		</Box>
 	)
 };
 
