@@ -1,6 +1,6 @@
 'use client'
 import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/app/_types/quiz2"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
@@ -18,6 +18,7 @@ export function useQuizAnimationService(): {
     setCurrentQuestionIndex: (index: number) => Promise<AsyncOperationResult>
     setQuestionState: (state: QuizSnapshot['state']) => Promise<AsyncOperationResult>
     isPending: boolean
+    myChoicesIds: string[]
 } {
     const { save, isSaving } = useSaveRoomActivitySnapshot()
     const { userId } = useUser()
@@ -143,11 +144,19 @@ export function useQuizAnimationService(): {
         return { error: null }
     }, [save])
 
+    const answers = useQuizAnimationStore(state => state.answers)
+
+    const myChoicesIds = useMemo(() =>
+        answers.filter(a => a.userId === userId).map(a => a.choiceId),
+        [answers, userId]
+    )
+
     return {
         toggleAnswer: toggleAnswer,
         setCurrentQuestionIndex: setCurrentQuestionIndex,
         setQuestionState: setQuestionState,
-        isPending: isSaving
+        isPending: isSaving,
+        myChoicesIds: myChoicesIds
     }
 }
 
