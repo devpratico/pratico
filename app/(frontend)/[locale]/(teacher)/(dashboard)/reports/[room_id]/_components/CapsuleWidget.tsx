@@ -13,11 +13,15 @@ export async function CapsuleWidget ({ userId, capsuleTitle, capsuleId, roomId }
 	logger.log('supabase:database', 'CapsuleWidget', 'userId', userId, 'capsuleId', capsuleId);
 	if (!capsuleId)
 		throw new Error("capsuleId is missing");
-	const { data: capsuleRoomData } = await supabase.from('rooms').select('capsule_snapshot, created_at').eq("created_by", userId).eq("capsule_id", capsuleId).eq('id', roomId).single();
+	const { data: capsuleData } = await supabase.from('capsules').select('created_at').eq("created_by", userId).eq('id', capsuleId).single();
+	if (capsuleData)
+	{
+		const date = new Date(capsuleData.created_at);
+		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
+	}
+	const { data: capsuleRoomData } = await supabase.from('rooms').select('capsule_snapshot').eq("created_by", userId).eq("capsule_id", capsuleId).eq('id', roomId).single();
 	if (capsuleRoomData)
 	{
-		const date = new Date(capsuleRoomData.created_at);
-		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
 		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
 	}
