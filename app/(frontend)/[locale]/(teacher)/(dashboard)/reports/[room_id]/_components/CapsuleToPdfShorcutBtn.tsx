@@ -91,6 +91,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, capsuleId }: { snapshot: TLE
 		>
 			
 			<Tooltip content="Exporter la capsule modifiée en PDF">
+
 				<Dialog.Trigger>
 					<Box>
 					<Box style={{ width: "0px", height: "0px" }}>

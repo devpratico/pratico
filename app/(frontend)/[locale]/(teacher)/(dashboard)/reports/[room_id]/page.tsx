@@ -7,6 +7,7 @@ import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
 
+
 // TYPE
 export type AttendanceInfoType = {
 	first_name: string | null,
@@ -61,7 +62,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		throw new Error("L'utilisateur n'a pas été trouvé");
 	}
 	return (<>
-		<ScrollArea>
+		<ScrollArea type="scroll"> 
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
 					<Flex direction="column" gap="3" align="start">
