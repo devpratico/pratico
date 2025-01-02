@@ -76,7 +76,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 
 	return (
 		<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
-			<Box style={{ width: "0px", height: "0px" }}>
+			<Box display="none">
 				<Tldraw hideUi onMount={handleMount} snapshot={snapshot}/>
 			</Box>
 
