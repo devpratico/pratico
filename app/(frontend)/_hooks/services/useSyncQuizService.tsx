@@ -3,42 +3,41 @@ import createClient from '@/supabase/clients/client'
 import { useEffect, useState } from 'react'
 import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { fetchSnapshot } from '@/app/(backend)/api/activity/activitiy.client'
-import { Poll, isPollSnapshot, PollSnapshot } from '@/app/_types/poll'
+import { Quiz, isQuizSnapshot, QuizSnapshot } from '@/app/_types/quiz2'
 import { Tables } from '@/supabase/types/database.types'
 import logger from '@/app/_utils/logger'
 import { useRoom } from '../contexts/useRoom'
 
-
 /**
  * Low level service that fetches the snapshot from the room table and keeps it in sync real-time.
  * Provide callbacks to react to changes.
- * Should be used by higher level services (poll animation and participation).
+ * Should be used by higher level services (quiz animation and participation).
  */
-export default function useSyncPollService(): {
-    poll: Poll | null
-    snapshot: PollSnapshot | null
+export default function useSyncQuizService(): {
+    quiz: Quiz | null
+    snapshot: QuizSnapshot | null
     isSyncing: boolean
     error: string | null
 } {
     const roomId = useRoom().room?.id
-    const [poll, setPoll] = useState<Poll | null>(null)
-    const [snapshot, setSnapshot] = useState<PollSnapshot | null>(null)
+    const [quiz, setQuiz] = useState<Quiz | null>(null)
+    const [snapshot, setSnapshot] = useState<QuizSnapshot | null>(null)
     const [isSyncing, setIsSyncing] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
     // Fetch initial data
     useEffect(() => {
-        logger.log('react:hook', 'useSyncPollService.tsx', 'useEffect', 'Fetching initial data')
+        logger.log('react:hook', 'useSyncQuizService.tsx', 'useEffect', 'Fetching initial data')
         if (!roomId) return
         setIsSyncing(true)
         setError(null)
 
-        getPollAndSnapshot(roomId).then(({ poll, snapshot, error }) => {
+        getQuizAndSnapshot(roomId).then(({ quiz, snapshot, error }) => {
             setIsSyncing(false)
             setError(error)
-            setPoll(poll)
+            setQuiz(quiz)
             setSnapshot(snapshot)
-            logger.log('react:hook', 'useSyncPollService.tsx', 'Initial data fetched', poll, snapshot)
+            logger.log('react:hook', 'useSyncQuizService.tsx', 'Initial data fetched', quiz, snapshot)
         })
 
     }, [roomId])
@@ -55,39 +54,37 @@ export default function useSyncPollService(): {
             filter: `id=eq.${roomId}`
         } as any
 
-
-
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
-            logger.log('react:hook', 'useSyncPollService.tsx', 'Supabase channel change detected in room', roomId)
+            logger.log('react:hook', 'useSyncQuizService.tsx', 'Supabase channel change detected in room', roomId)
             setError(null)
             const oldSnapshot = payload.old.activity_snapshot
             const newSnapshot = payload.new.activity_snapshot
 
-            // If it's not a poll snapshot, empty the store
-            if (!isPollSnapshot(newSnapshot)) {
-                setPoll(null)
+            // If it's not a quiz snapshot, empty the store
+            if (!isQuizSnapshot(newSnapshot)) {
+                setQuiz(null)
                 setSnapshot(null)
                 return
             }
 
-            // It's a poll. Update the store snapshot
+            // It's a quiz. Update the store snapshot
             setSnapshot(newSnapshot)
 
             // Maybe the activity has changed. Update it if needed
-            const oldPollId = isPollSnapshot(oldSnapshot) ? oldSnapshot.activityId : null
-            let newPollId = newSnapshot.activityId
-            newPollId = parseInt(newPollId as string)
+            const oldQuizId = isQuizSnapshot(oldSnapshot) ? oldSnapshot.activityId : null
+            let newQuizId = newSnapshot.activityId
+            newQuizId = parseInt(newQuizId as string)
 
-            if (oldPollId !== newPollId) {
+            if (oldQuizId !== newQuizId) {
                 setIsSyncing(true)
-                const { poll, error } = await getPoll(newPollId)
+                const { quiz, error } = await getQuiz(newQuizId)
                 setIsSyncing(false)
                 if (error) {
                     setError(error)
                     return
                 }
-                setPoll(poll)
+                setQuiz(quiz)
             }
 
         }).subscribe()
@@ -95,16 +92,13 @@ export default function useSyncPollService(): {
         return () => {supabase.removeChannel(channel)}
     }, [roomId])
 
-
-
-    return { poll, snapshot, isSyncing, error}
+    return { quiz, snapshot, isSyncing, error }
 }
-
 
 // Utils
 
-async function getPollSnapshot(roomId: number): Promise<{
-    snapshot: PollSnapshot | null
+async function getQuizSnapshot(roomId: number): Promise<{
+    snapshot: QuizSnapshot | null
     error: string | null
 }> {
     const { data, error } = await fetchSnapshot(roomId)
@@ -112,43 +106,41 @@ async function getPollSnapshot(roomId: number): Promise<{
 
     const snapshot = data?.activity_snapshot
 
-    if (!snapshot || !isPollSnapshot(snapshot)) {
-        // The snapshot has been deleted or changed to an other activity
+    if (!snapshot || !isQuizSnapshot(snapshot)) {
+        // The snapshot has been deleted or changed to another activity
         return { snapshot: null, error: null }
     }
 
     return { snapshot: snapshot, error: null }
 }
 
-
-async function getPoll(activityId: number): Promise<{
-    poll: Poll | null
+async function getQuiz(activityId: number): Promise<{
+    quiz: Quiz | null
     error: string | null
 }> {
     const { data, error } = await fetchActivity(activityId)
 
-    if (error || !data) return { poll: null, error: 'Error fetching activity' }
-    if (data.type !== 'poll') return { poll: null, error: 'Activity is not a poll' }
+    if (error || !data) return { quiz: null, error: 'Error fetching activity' }
+    if (data.type !== 'quiz') return { quiz: null, error: 'Activity is not a quiz' }
 
-    const poll = data.object as Poll
+    const quiz = data.object as Quiz
 
-    return { poll: poll, error: null }
+    return { quiz: quiz, error: null }
 }
 
-
-async function getPollAndSnapshot(roomId: number): Promise<{
-    poll: Poll | null
-    snapshot: PollSnapshot | null
+async function getQuizAndSnapshot(roomId: number): Promise<{
+    quiz: Quiz | null
+    snapshot: QuizSnapshot | null
     error: string | null
 }> {
-    const { snapshot, error } = await getPollSnapshot(roomId)
-    if (error) return { poll: null, snapshot: null, error: error }
+    const { snapshot, error } = await getQuizSnapshot(roomId)
+    if (error) return { quiz: null, snapshot: null, error: error }
 
     if (snapshot) {
-        const { poll, error } = await getPoll(parseInt(snapshot.activityId as string))
-        if (error) return { poll: null, snapshot: null, error: error }
-        return { poll: poll, snapshot: snapshot, error: null }
+        const { quiz, error } = await getQuiz(parseInt(snapshot.activityId as string))
+        if (error) return { quiz: null, snapshot: null, error: error }
+        return { quiz: quiz, snapshot: snapshot, error: null }
     }
 
-    return { poll: null, snapshot: null, error: null }
+    return { quiz: null, snapshot: null, error: null }
 }

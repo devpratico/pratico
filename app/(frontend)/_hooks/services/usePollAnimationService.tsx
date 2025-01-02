@@ -219,7 +219,7 @@ export function useStartPollService(): {
 
 /**
  * Close a poll activity.
- * This empties the store and remove the activity snapshot
+ * This empties the store and removes the activity snapshot
  * from the database
  */
 export function useClosePollService(): {

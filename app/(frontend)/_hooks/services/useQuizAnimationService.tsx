@@ -1,12 +1,13 @@
 'use client'
 import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/app/_types/quiz2"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useUser } from "../contexts/useUser"
 import logger from "@/app/_utils/logger"
+import useSyncQuizService from "./useSyncQuizService"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -251,7 +252,36 @@ export function useCloseQuizService(): {
     return { close, isPending }
 }
 
+export function useSyncAnimationQuizService(): {
+    isSyncing: boolean
+    error: string | null
+} {
+    // Sync remote quiz data into the store
+    const { quiz, snapshot, isSyncing, error } = useSyncQuizService()
 
+    // Put the snapshot in the store
+    useEffect(() => {
+        if (snapshot) {
+            useQuizAnimationStore.getState().setActivityId(snapshot.activityId)
+            useQuizAnimationStore.getState().setQuestionId(snapshot.currentQuestionId)
+            useQuizAnimationStore.getState().setQuestionState(snapshot.state)
+            useQuizAnimationStore.getState().setAnswers(snapshot.answers)
+        } else {
+            useQuizAnimationStore.getState().closeQuiz()
+        }
+    }, [snapshot])
+
+    // Put the quiz in the store
+    useEffect(() => {
+        if (quiz) {
+            useQuizAnimationStore.getState().setQuiz(quiz)
+        } else {
+            useQuizAnimationStore.getState().closeQuiz()
+        }
+    }, [quiz])
+
+    return { isSyncing, error }
+}
 
 // Utils
 
