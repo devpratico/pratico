@@ -47,8 +47,7 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 	const handleClick = async () => {
 		if (!editor)
 			return ;
-		// setOpenDialog(true);
-
+		setOpenDialog(true);
 		const result = await generatePdf(editor);
 		if (result)
 		{
@@ -84,14 +83,9 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
 			</Box>
 
 			<Tooltip content="Exporter la capsule modifiée en PDF">	
-				<AlertDialog.Trigger>
-						<IconButton variant="ghost" onClick={() => {
-								// setOpenDialog(true);
-								handleClick();
-							}} >
-							<FileDown />
-						</IconButton>
-				</AlertDialog.Trigger>
+				<IconButton variant="ghost" onClick={handleClick} >
+					<FileDown />
+				</IconButton>
 			</Tooltip>
 
 
