@@ -2,10 +2,10 @@
 
 import { Box, Heading, Text } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
+import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -16,10 +16,9 @@ interface CapsuleWidgetViewProps {
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
-
 	const Thumb = () => {
 		return (
-            <Box style={{borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", padding: "0", width: "100%"}}>
+            <Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", width: "100%", aspectRatio: "16/9", overflow: "hidden" }} >	
 				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
 			</Box>
 		);
@@ -33,7 +32,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 			</Box>
         );
     }
-	const buttons = <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} capsuleId={data.capsuleId} />;
+	const buttons = <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} title={data.capsuleTitle} capsuleDate={data.capsuleDate} />;
 
 	return (
 		<ReportWidgetTemplate thumb={<Thumb />} content={<Content />} buttons={buttons} />
