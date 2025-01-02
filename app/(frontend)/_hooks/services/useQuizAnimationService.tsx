@@ -1,10 +1,12 @@
 'use client'
-import { QuizSnapshot, QuizUserAnswer } from "@/app/_types/quiz2"
+import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/app/_types/quiz2"
 import { useState, useCallback } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
+import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useUser } from "../contexts/useUser"
+import logger from "@/app/_utils/logger"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -149,12 +151,78 @@ export function useQuizAnimationService(): {
 }
 
 
+/**
+ * Set up a quiz in the store, coming from the database.
+ */
+export function useStartQuizService(): {
+    start: (activityId: string | number) => Promise<AsyncOperationResult>
+    isPending: boolean
+} {
+    const [isPending, setIsPending] = useState(false)
+    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const roomId = useRoom().room?.id
+
+    const start = useCallback(async (activityId: string | number) => {
+        if (!roomId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'useStartQuizService', 'No room id')
+            return { error: 'No room id' }
+        }
+
+        const state = useQuizAnimationStore.getState()
+        if (state.activityId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'useStartQuizService', 'A quiz is already started')
+            return { error: 'A quiz is already started' }
+        }
+
+        setIsPending(true)
+
+        const id = parseInt(activityId as string)
+        const { data, error } = await fetchActivity(id)
+
+        if (error || !data) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'useStartQuizService', 'Error fetching quiz: ' + error)
+            setIsPending(false)
+            return { error: 'Error fetching quiz: ' + error }
+        }
+
+        if (data.type !== 'quiz') {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'useStartQuizService', 'Not a quiz')
+            setIsPending(false)
+            return { error: 'Not a quiz' }
+        }
+
+        const quiz = data.object as Quiz
+
+        // Update the store
+        state.setQuiz(quiz)
+        state.setActivityId(id)
+        state.setQuestionId(quiz.questions[0].id)
+
+        // Save the new state in the database
+        const { error: saveError } = await save()
+        if (saveError) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'useStartQuizService', 'Error saving quiz: ' + saveError)
+            setIsPending(false)
+            state.closeQuiz() // Rollback the store
+            return { error: 'Error saving quiz: ' + saveError }
+        }
+
+        setIsPending(false)
+        return { error: null }
+    }, [roomId, save])
+
+    return {start, isPending}
+}
+
+
+
 
 
 // Utils
 
 /**
  * Save the current state of the quiz in the store, into the database.
+ * Only used by the useQuizAnimationService hook.
  */
 function useSaveRoomActivitySnapshot(): {
     save: () => Promise<AsyncOperationResult>
