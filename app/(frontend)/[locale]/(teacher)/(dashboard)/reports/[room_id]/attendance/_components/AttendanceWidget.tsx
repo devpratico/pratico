@@ -55,7 +55,7 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 		{
 			await Promise.all(
 				attendanceData.map(async (attendance) => {
-					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
+					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).single();
 					if (!data || error) {
 						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 					}
