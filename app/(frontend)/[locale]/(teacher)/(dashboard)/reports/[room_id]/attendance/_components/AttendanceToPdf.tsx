@@ -22,9 +22,10 @@ export type TeacherInfo = {
 	user: { userInfo: { first_name: string | null; last_name: string | null; organization: Json | null} | null };
 	backTo: string;
 	hideClassname?: string;
+	hideColumnInfo?: boolean;
   }
   
-  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
+  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname, hideColumnInfo }, ref) => {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
 	const formatter = useFormatter();
@@ -100,6 +101,9 @@ export type TeacherInfo = {
 								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
 									<Text ml='1'>Nom</Text>
 								</th>
+								<th hidden={hideColumnInfo} style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
+									<Text ml='1'>Information supplémentaire</Text>
+								</th>
 								<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
 									<Text  ml='1'>{"Heure d'arrivée"}</Text>
 								</th>
@@ -132,6 +136,9 @@ export type TeacherInfo = {
 											</td>
 											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
 												<Text ml='1'>{attendance.last_name}</Text>
+											</td>
+											<td hidden={hideColumnInfo} style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.additional_info}</Text>
 											</td>
 											<td style={{ maxInlineSize: '100px', padding: '10px' }}>
 												<Text ml='1'>{connexion}</Text>

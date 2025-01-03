@@ -31,8 +31,9 @@ export type AttendanceWidgetViewProps = {
 			first_name: string | null,
 			last_name: string | null,
 			connexion: string | undefined,
-			additional_info?: string | null,
+			additional_info: string | null,
 		}[];
+		hideColumnInfo?: boolean;
 	}
 };
 

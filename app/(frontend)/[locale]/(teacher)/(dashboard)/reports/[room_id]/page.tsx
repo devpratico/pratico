@@ -12,7 +12,7 @@ import { CapsuleWidget } from "./_components/CapsuleWidget";
 export type AttendanceInfoType = {
 	first_name: string | null,
 	last_name: string | null,
-	additional_info?: string | null,
+	additional_info: string | null,
 	connexion: string | undefined,
 }
 // // TYPE
