@@ -24,13 +24,25 @@ export type TeacherInfo = {
 	hideClassname?: string;
 	hideColumnInfo?: boolean;
   }
+
+  const getTeachersName = (teacher: TeacherInfo | null) => {
+	if (teacher === null)
+		return (null);
+	if (teacher.first_name && teacher.last_name)
+		return `${teacher.first_name} ${teacher.last_name}`;
+	else if (teacher.first_name)
+		return teacher.first_name;
+	else if (teacher.last_name)
+		return teacher.last_name;
+	return (null);
+  };
   
   export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname, hideColumnInfo }, ref) => {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const teacherName = `${userInfo?.first_name} ${userInfo?.last_name}`
+	const teacherName = getTeachersName(userInfo);
 
 	return (
 		<>
