@@ -20,7 +20,7 @@ export default function StudentForm() {
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
 	const [ error, setError ] = useState<string | null>(null);
-    const [ additionalInfo, setAdditionalInfo ] = useState({info: ""});
+    const [ additionalInfo, setAdditionalInfo ] = useState<string | null>(null);
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -65,9 +65,10 @@ export default function StudentForm() {
 			
             const firstName = formData.get('first-name') as string;
             const lastName = formData.get('last-name') as string;
-            const info = formData.get('additional-info') as string;
-            console.log('info', info, info.length);
-            await createAttendance(firstName, lastName, roomCode, user.id);
+            let info = formData.get('additional-info') as string;
+            if (info.trim().length === 0)
+                info = "";
+            await createAttendance(firstName, lastName, roomCode, user.id, info);
 			router.push(nextUrl);
             			
         }}>
@@ -94,11 +95,7 @@ export default function StudentForm() {
 
                 <Form.Field key='additional-info' name='additional-info'>
                     <Form.Control asChild>
-                        <TextArea onChange={(e) =>  {
-								if (e.target.value.length < 140)
-									setAdditionalInfo({info: e.target.value})
-							}}
-							placeholder='Informations supplémentaires (Facultatif)'/>
+                        <TextArea placeholder='Informations supplémentaires (facultatif)'/>
                     </Form.Control>
                 </Form.Field>
 

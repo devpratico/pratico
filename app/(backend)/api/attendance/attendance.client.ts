@@ -1,27 +1,31 @@
 'use server';
 import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
-import { TablesInsert } from "@/supabase/types/database.types";
 import { fetchOpenRoomByCode, roomCreatorIsPaidCustomer } from "../room/room.server";
 import { countAttendances } from "./attendance.server";
 import { sendDiscordMessage } from "../discord/discord.server";
+import { TablesInsert } from "@/supabase/types/database.types";
 
 
 export type AttendanceInsert = TablesInsert<'attendance'>
 
 export const createAttendance = async (firstName: string, lastName: string, roomCode: string, userId: string, additionalInfo?: string) => {
-    const { data: roomData } = await fetchOpenRoomByCode(roomCode);
-
+    const supabase = createClient()
+    const { data: roomData, error: roomError } = await supabase.from('rooms').select('id').eq('code', roomCode).eq('status', 'open').single()
+    logger.log('supabase:database', 'roomData:', roomData);
+    if (roomError) logger.error('supabase:database', `error getting room by code "${roomCode}"`, roomError.message)
+    if (!additionalInfo)
+        logger.log("next:api", "createAttendance", "No additional info provided");
     const attendance: AttendanceInsert = {
         user_id: userId,
         first_name: firstName,
         last_name: lastName,
         signature: true,
         room_id: roomData?.id,
+        additional_info: additionalInfo
     };
     logger.log('supabase:database', 'createAttendance:', attendance);
 
-    const supabase = createClient();
     const { error } = await supabase.from('attendance').insert(attendance);
     if (error) logger.error('supabase:database', 'Error creating attendance', error.message)
     return ({ error: error?.message });
