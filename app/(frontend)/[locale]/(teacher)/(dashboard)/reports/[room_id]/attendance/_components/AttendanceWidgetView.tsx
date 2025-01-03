@@ -33,7 +33,7 @@ export type AttendanceWidgetViewProps = {
 			connexion: string | undefined,
 			additional_info: string | null,
 		}[];
-		hideColumnInfo?: boolean;
+		hideColumnInfo: boolean;
 	}
 };
 
@@ -133,6 +133,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 				user={{ userInfo: data.userInfo }}
 				backTo="/reports"
 				hideClassname="hidden-on-screen"
+				hideColumnInfo={data.hideColumnInfo}
 				ref={contentRef}  />
 		</>
 		

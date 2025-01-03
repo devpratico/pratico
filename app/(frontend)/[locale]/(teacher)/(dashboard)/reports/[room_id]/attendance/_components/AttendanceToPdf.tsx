@@ -1,7 +1,7 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../../page";
-import { forwardRef, RefObject, useRef } from "react";
+import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Json } from "@/supabase/types/database.types";
@@ -30,6 +30,17 @@ export type TeacherInfo = {
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const [ teacherName, setTeacherName ] = useState<string>();
+
+	useEffect(() => {
+		if (userInfo?.first_name && userInfo?.last_name)
+			setTeacherName(`${userInfo.first_name} ${userInfo.last_name}`);
+		else if (userInfo?.first_name)
+			setTeacherName(userInfo.first_name);
+		else if (userInfo?.last_name)
+			setTeacherName(userInfo.last_name);
+	}, [userInfo?.first_name, userInfo?.last_name]);
+
 	return (
 		<>
 			{
@@ -77,12 +88,12 @@ export type TeacherInfo = {
 								? <Text >{`${userInfo.organization.toString()} `}</Text>
 								: <></>
 							}
-							<Text as='div'>
+							<Text hidden={!teacherName} as='div'>
 								<Text style={{ fontSize: '12px', fontWeight: 'bold'}}>Animateur: </Text>
-								<Text >{`${userInfo.first_name}, ${userInfo.last_name}`}</Text>
+								<Text >{teacherName}</Text>
 							</Text>	
 							
-							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
+							<Text hidden={!teacherName} as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${teacherName}`}</Text>
 						</>
 						: ""
 					}
