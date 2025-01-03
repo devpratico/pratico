@@ -1,12 +1,13 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { AttendanceInfoType } from "../../page";
-import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
+import { forwardRef, RefObject, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Json } from "@/supabase/types/database.types";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { FileDown } from "lucide-react";
+import { useFormatter } from "next-intl";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -24,23 +25,10 @@ export type TeacherInfo = {
   }
   
   export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
-	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
-
-	useEffect(() => {
-		const getAttendancesList = () => {
-			if (!sortedAttendances)
-				setSortedAttendances(attendances.sort((a, b) => {
-					const tmpA = a.last_name || '';
-					const tmpB = b.last_name || '';
-					return (tmpA.localeCompare(tmpB));
-				}));
-		}
-		getAttendancesList();
-	}, [attendances, sortedAttendances]);
-
-	
+	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	return (
 		<>
 			{
@@ -123,28 +111,36 @@ export type TeacherInfo = {
 					
 						<tbody style={{backgroundColor: 'white'}}>
 							{
-								!sortedAttendances || !sortedAttendances.length ?
+								!attendances || !attendances.length ?
 								<tr>
 									<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 										<Text >Aucun participant</Text>
 									</td>
 								</tr>
-								: sortedAttendances.map((attendance, index) => (
-									<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1'>{attendance.first_name}</Text>
-										</td>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1'>{attendance.last_name}</Text>
-										</td>
-										<td style={{ maxInlineSize: '100px', padding: '10px' }}>
-											<Text ml='1'>{attendance.connexion}</Text>
-										</td>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
-										</td>
-									</tr>
-								)
+								: attendances.map((attendance, index) => {
+									let connexion = attendance.connexion;
+									if (attendance.connexion)
+									{
+										connexion = formatter.dateTime(new Date(attendance.connexion), {timeStyle: 'medium', timeZone: timezone});
+										if (connexion === "Invalid Date")
+											connexion = attendance.connexion
+									}
+									return (
+										<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.first_name}</Text>
+											</td>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.last_name}</Text>
+											</td>
+											<td style={{ maxInlineSize: '100px', padding: '10px' }}>
+												<Text ml='1'>{connexion}</Text>
+											</td>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
+											</td>
+										</tr>
+									)}
 							)}
 						</tbody>
 					</table>
