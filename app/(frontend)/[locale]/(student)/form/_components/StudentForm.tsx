@@ -20,7 +20,6 @@ export default function StudentForm() {
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
 	const [ error, setError ] = useState<string | null>(null);
-    const [ additionalInfo, setAdditionalInfo ] = useState<string | null>(null);
 
 	const acceptCGU = () => {
 		if (checked.submit)
