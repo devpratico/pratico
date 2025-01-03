@@ -19,7 +19,7 @@ export const fetchAttendance = async (id: number | undefined) => {
         return ({ data: null, error: 'fetchAttendance id missing' });
     }
     const supabase = createClient();
-    const { data, error } = await supabase.from('attendance').select('*').eq('id', id).maybeSingle();
+    const { data, error } = await supabase.from('attendance').select('*').eq('id', id).single();
     if (error) logger.error('supabase:database', `error fetching attendance ${id}...`, error.message)
     return ({ data, error: error?.message });
 };
@@ -49,7 +49,7 @@ export const fetchAttendanceByUser = async (userId: string) => {
 
 export const fetchNamesFromAttendance = async (userId: string) => {
     const supabase = createClient();
-    const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId).maybeSingle();
+    const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId).single();
     if (error || null) {
         logger.log('supabase:database', `no names for user ${userId.slice(0, 5)}...`, error?.message);
         return ({ data: null, error: error ? error : 'No data found, null returned' });

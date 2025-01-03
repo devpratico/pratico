@@ -68,6 +68,7 @@ export type Database = {
       }
       attendance: {
         Row: {
+          additional_info: string | null
           created_at: string
           first_name: string | null
           id: number
@@ -77,6 +78,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          additional_info?: string | null
           created_at?: string
           first_name?: string | null
           id?: number
@@ -86,6 +88,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          additional_info?: string | null
           created_at?: string
           first_name?: string | null
           id?: number
