@@ -64,10 +64,10 @@ export default function StudentForm() {
 			
             const firstName = formData.get('first-name') as string;
             const lastName = formData.get('last-name') as string;
-            let info = formData.get('additional-info') as string;
-            if (info.trim().length === 0)
-                info = "";
-            await createAttendance(firstName, lastName, roomCode, user.id, info);
+            let additionalInfo = formData.get('additional-info') as string;
+            if (additionalInfo.trim().length === 0)
+                additionalInfo = "";
+            await createAttendance(firstName, lastName, roomCode, user.id, additionalInfo);
 			router.push(nextUrl);
             			
         }}>

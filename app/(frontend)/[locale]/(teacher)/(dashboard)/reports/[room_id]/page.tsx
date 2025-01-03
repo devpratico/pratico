@@ -12,6 +12,7 @@ import { CapsuleWidget } from "./_components/CapsuleWidget";
 export type AttendanceInfoType = {
 	first_name: string | null,
 	last_name: string | null,
+	additional_info: string | null,
 	connexion: string | undefined,
 }
 // // TYPE
@@ -43,6 +44,8 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 		{
 			userId = user.id;
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
+			if (roomError)
+				logger.error('supabase:database', 'sessionDetailsPage', 'fetch form rooms error', roomError);
 			if (roomData && roomData.end_of_session)
 				sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
 			if (roomData?.capsule_id)
