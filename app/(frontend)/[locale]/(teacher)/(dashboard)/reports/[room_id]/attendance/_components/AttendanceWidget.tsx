@@ -4,16 +4,21 @@ import { countAttendances } from "@/app/(backend)/api/attendance/attendance.serv
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
 import { AttendanceInfoType } from "../../page";
+import { getUser } from "@/app/(backend)/api/auth/auth.server";
 
 type AttendanceWidgetProps = {
 	roomId: string,
-	userId: string,
 	capsuleTitle: string
 };
 
-export async function AttendanceWidget({ roomId, userId, capsuleTitle }: AttendanceWidgetProps) {
+export async function AttendanceWidget({ roomId, capsuleTitle }: AttendanceWidgetProps) {
 	const supabase = createClient();
 	const attendanceCount = await countAttendances(roomId);
+    const userId = (await getUser()).data?.user?.id;
+    if (!userId) {
+        logger.error('supabase:auth', 'AttendanceWidget', 'No user id');
+        throw new Error('No user id');
+    }
 	let sessionDate: { date: Date, end: Date } | null = null;
 	let data: AttendanceWidgetViewProps["data"];
 	let userInfo: {

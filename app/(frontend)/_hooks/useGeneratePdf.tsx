@@ -1,10 +1,9 @@
 "use client";
 import jsPDF from "jspdf";
 import { useState } from "react";
-import { Editor, exportToBlob, TLShape, TLShapeId } from "tldraw";
+import { Editor, exportToBlob } from "tldraw";
 import { defaultBox } from "../[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
-import { log } from "console";
 
 export function useGeneratePdf(): {
     inProgress: boolean; // True while the PDF is being generated
@@ -18,33 +17,33 @@ export function useGeneratePdf(): {
 	const [error, setError] = useState<string | null>(null);
 
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
-			if (blobs.length === 0)
-			{	
-				setError("Aucun élément à exporter");
-				return ;
-			}
-			setInProgress(false);
-			for (let index = 0; index < blobs.length; index++) {
-				const blob = blobs[index];
-				const base64data = await new Promise<string>((resolve, reject) => {
-					const reader = new FileReader();
-					reader.onload = () => resolve(reader.result as string);
-					reader.onerror = reject;
-					reader.readAsDataURL(blob);
-				});
-			
-				try {
-					pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-					if (index < blobs.length - 1) {
-						pdf.addPage();
-					}
-					setPagesProgress((prev) => ({ loading: index, total: prev?.total }));
-				} catch (error) {
-					logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
-					setError("Une erreur est survenue lors de la création du pdf");
+		if (blobs.length === 0)
+		{	
+			setError("Aucun élément à exporter");
+			return ;
+		}
+		setInProgress(false);
+		for (let index = 0; index < blobs.length; index++) {
+			const blob = blobs[index];
+			const base64data = await new Promise<string>((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result as string);
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+		
+			try {
+				pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+				if (index < blobs.length - 1) {
+					pdf.addPage();
 				}
-				setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+				setPagesProgress((prev) => ({ loading: index, total: prev?.total }));
+			} catch (error) {
+				logger.error("react:hook", "useGeneratePdf", "pdf.addImage", index, error);
+				setError("Une erreur est survenue lors de la création du pdf");
 			}
+			setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+		}
 	};
 
 	const generatePdf = async (editor: Editor) => {
@@ -64,19 +63,15 @@ export function useGeneratePdf(): {
 			setPagesProgress({ loading: 0, total: allPages.length });
 		try {
 			for (let i = 0; i < allPages.length; i++) {
-			  	const shapeIds = editor.getPageShapeIds(allPages[i]);
-				if (shapeIds.size === 0)
+			  	const shapeIds = Array.from(editor.getPageShapeIds(allPages[i]));
+				if (shapeIds.length === 0)
 					continue;
-				const shapeArray = Array.from(shapeIds).filter(id => {
-					const shape = editor.getShape(id);
-					return shape && shape.x && shape.y;
-				});
 				
 				setPagesProgress((prev) => ({ loading: i, total: prev?.total }));
 				try {
 					const blob = await exportToBlob({
 					editor,
-					ids: shapeArray,
+					ids: shapeIds,
 					format: 'webp',
 					opts: {
 						bounds: defaultBox,
@@ -85,7 +80,7 @@ export function useGeneratePdf(): {
 					}
 					});
 					if (!blob || blob.size === 0) {
-						console.error("Blob invalide généré pour les formes :", shapeArray);
+						console.error("Blob invalide généré pour les formes :", shapeIds);
 						continue;
 					}
 					allBlobs.push(blob);
@@ -109,7 +104,7 @@ export function useGeneratePdf(): {
 		setPagesProgress({ loading: 0, total: validBlobs.length });
 		await createPdf(validBlobs, pdf);
 		setProgress(0);
-		return ({ pdf: pdf, error: error });
+		return { pdf, error };
 	};
 
     return { inProgress, pagesProgress, progress, generatePdf };

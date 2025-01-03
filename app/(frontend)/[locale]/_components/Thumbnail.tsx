@@ -82,7 +82,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
             snapshot={snapshot}
             format='png'
             scale={scale}
-            //background={false}
+            background={true}
             pageId={pageId}
             bounds={bounds}
             //preserveAspectRatio={'true'}
