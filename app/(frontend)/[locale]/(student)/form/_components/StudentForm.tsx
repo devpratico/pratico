@@ -1,6 +1,6 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link } from '@radix-ui/themes';
+import { TextField, Button, Flex, Box, Text, Checkbox, Link, TextArea } from '@radix-ui/themes';
 import { signInAnonymously } from '@/app/(backend)/api/auth/auth.client';
 import { fetchUser } from '@/app/(backend)/api/user/user.client';
 import { useState } from 'react';
@@ -20,6 +20,7 @@ export default function StudentForm() {
 	const [checked, setChecked] = useState({accept: false, submit: false}); // accept CGU
 	const [ name, setName ] = useState({firstname: "", lastname: ""});
 	const [ error, setError ] = useState<string | null>(null);
+    const [ additionalInfo, setAdditionalInfo ] = useState({info: ""});
 
 	const acceptCGU = () => {
 		if (checked.submit)
@@ -64,6 +65,8 @@ export default function StudentForm() {
 			
             const firstName = formData.get('first-name') as string;
             const lastName = formData.get('last-name') as string;
+            const info = formData.get('additional-info') as string;
+            console.log('info', info, info.length);
             await createAttendance(firstName, lastName, roomCode, user.id);
 			router.push(nextUrl);
             			
@@ -86,6 +89,16 @@ export default function StudentForm() {
 									setName({...name, lastname: e.target.value})
 							}}
 							placeholder='Nom' required/>
+                    </Form.Control>
+                </Form.Field>
+
+                <Form.Field key='additional-info' name='additional-info'>
+                    <Form.Control asChild>
+                        <TextArea onChange={(e) =>  {
+								if (e.target.value.length < 140)
+									setAdditionalInfo({info: e.target.value})
+							}}
+							placeholder='Informations supplémentaires (Facultatif)'/>
                     </Form.Control>
                 </Form.Field>
 

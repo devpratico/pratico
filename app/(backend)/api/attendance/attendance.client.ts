@@ -9,7 +9,7 @@ import { sendDiscordMessage } from "../discord/discord.server";
 
 export type AttendanceInsert = TablesInsert<'attendance'>
 
-export const createAttendance = async (firstName: string, lastName: string, roomCode: string, userId: string) => {
+export const createAttendance = async (firstName: string, lastName: string, roomCode: string, userId: string, additionalInfo?: string) => {
     const { data: roomData } = await fetchOpenRoomByCode(roomCode);
 
     const attendance: AttendanceInsert = {
