@@ -16,6 +16,7 @@ export const createAttendance = async (firstName: string, lastName: string, room
     if (roomError) logger.error('supabase:database', `error getting room by code "${roomCode}"`, roomError.message)
     if (!additionalInfo)
         logger.log("next:api", "createAttendance", "No additional info provided");
+    logger.log("next:api", "createAttendance", "Creating attendance for user", firstName, lastName, additionalInfo);
     const attendance: AttendanceInsert = {
         user_id: userId,
         first_name: firstName,
