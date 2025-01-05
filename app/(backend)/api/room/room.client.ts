@@ -253,8 +253,8 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
             type: 'quiz',
             activityId: activityId,
             currentQuestionId: firstQuestionId,
-            currentQuestionState: 'answering',
-            answers: {}
+            state: 'answering',
+            answers: []
         }
     } else if (activity.type === 'poll') {
         activitySnapshot = {

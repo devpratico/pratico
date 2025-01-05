@@ -11,7 +11,7 @@ import logger from "@/app/_utils/logger";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
-import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivity";
+import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
 
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {

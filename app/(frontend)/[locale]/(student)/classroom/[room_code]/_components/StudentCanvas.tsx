@@ -1,6 +1,6 @@
 'use client'
 import Canvas from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
-import useBroadcastStore from "@/app/(frontend)/_hooks/contexts/useBroadcastStore";
+import useBroadcastStore from "@/app/(frontend)/_hooks/standalone/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
 import TLToolbar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/AutoSaver";

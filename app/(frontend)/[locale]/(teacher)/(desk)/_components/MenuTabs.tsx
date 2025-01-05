@@ -7,7 +7,7 @@
 'use client'
 import { Flex, Text, Tabs } from "@radix-ui/themes"
 //import { Link } from "@/app/(frontend)/_intl/intlNavigation"
-import useSearchParams from "@/app/(frontend)/_hooks/contexts/useSearchParams"
+import useSearchParams from "@/app/(frontend)/_hooks/standalone/useSearchParams"
 import { useCallback } from "react"
 
 

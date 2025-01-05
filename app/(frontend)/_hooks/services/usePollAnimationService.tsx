@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
-import { useRealtimeActivityContext } from "../contexts/useRealtimeActivity"
+import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
 import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
 

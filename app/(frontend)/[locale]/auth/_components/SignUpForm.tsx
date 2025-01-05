@@ -6,7 +6,7 @@ import { signup } from '@/app/(backend)/api/auth/auth.client';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
 import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import logger from '@/app/_utils/logger';
-import useSearchParams from '@/app/(frontend)/_hooks/contexts/useSearchParams';
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';

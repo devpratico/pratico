@@ -6,7 +6,7 @@ import { usePresences } from "@/app/(frontend)/_hooks/contexts/usePresences"
 import CollabSwitch from "./CollabSwitch"
 import CollabSwitchGlobal from "./CollabSwitchGlobal"
 import { useParams } from "next/navigation"
-import useSearchParams from '@/app/(frontend)/_hooks/contexts/useSearchParams'
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams'
 import { useState } from "react"
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
 import { useUser } from '@/app/(frontend)/_hooks/contexts/useUser';

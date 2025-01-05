@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo, act } from 'react'
-import { useRealtimeActivityContext } from '../contexts/useRealtimeActivity'
+import { useRealtimeActivityContext } from '../contexts/useRealtimeActivityContext'
 import usePollParticipationStore from '../stores/usePollParticipationStore'
 import { PollSnapshot } from '@/app/_types/poll'
 import { useUser } from '../contexts/useUser'

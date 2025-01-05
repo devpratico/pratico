@@ -21,6 +21,7 @@ interface WindowHookType {
     orientation: 'landscape' | 'portrait';
 }
 
+// TODO: use a provider to avoid multiple listeners
 function useWindow(): WindowHookType {
     const [width, setWidth] = useState<number | undefined>(undefined);
     const [height, setHeight] = useState<number | undefined>(undefined);

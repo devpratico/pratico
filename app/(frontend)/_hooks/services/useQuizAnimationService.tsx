@@ -7,7 +7,7 @@ import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useUser } from "../contexts/useUser"
 import logger from "@/app/_utils/logger"
-import { useRealtimeActivityContext } from "../contexts/useRealtimeActivity"
+import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
 
 
 type AsyncOperationResult = { error: string | null }

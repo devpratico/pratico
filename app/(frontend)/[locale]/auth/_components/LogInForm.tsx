@@ -5,7 +5,7 @@ import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
 import { login } from '@/app/(backend)/api/auth/auth.client';
 import logger from '@/app/_utils/logger';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
-import useSearchParams from '@/app/(frontend)/_hooks/contexts/useSearchParams';
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams';
 import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
