@@ -310,9 +310,16 @@ function useSaveRoomActivitySnapshot(): {
     const save = useCallback(async () => {
         if (!roomId) return { error: 'No room id' }
 
+        setIsSaving(true)
+
         const state = useQuizAnimationStore.getState()
-        if (!state.activityId) return { error: 'No activity id' }
-        if (!state.currentQuestionId) return { error: 'No current question id' }
+
+        if (!state.activityId || !state.currentQuestionId) {
+            // Nothing in the store. It means the quiz is closed.
+            const { error } = await saveRoomActivitySnapshot(roomId, null)
+            setIsSaving(false)
+            return { error }
+        }
 
         const snapshot: QuizSnapshot = {
             type: 'quiz',
@@ -322,7 +329,7 @@ function useSaveRoomActivitySnapshot(): {
             answers: state.answers
         }
         
-        setIsSaving(true)
+        
         const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
         setIsSaving(false)
         return { error }

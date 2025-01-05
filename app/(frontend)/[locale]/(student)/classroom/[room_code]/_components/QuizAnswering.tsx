@@ -2,12 +2,13 @@
 import { Container, Section, Flex, Heading, ScrollArea } from "@radix-ui/themes"
 import { QuizAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/room/[room_code]/_components/QuizAnimation"
 import useQuizParticipationStore from "@/app/(frontend)/_hooks/stores/useQuizParticipationStore"
-import useQuizParticipationService from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
+//import useQuizParticipationService from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
 
 export default function QuizAnswering() {
     // Store
     const showCard = useQuizParticipationStore(state => state.quiz !== null)
+    /*
     const quiz = useQuizParticipationStore(state => state.quiz)
     const currentQuestionId = useQuizParticipationStore(state => state.currentQuestionId)
     const questionText = quiz?.questions.find(q => q.id === currentQuestionId)?.text
@@ -42,6 +43,12 @@ export default function QuizAnswering() {
                     </Section>
                 </Container>
             </ScrollArea>
+        </CardDialog>
+    )*/
+
+    return (
+        <CardDialog open={showCard} preventClose topMargin='0'>
+            Hello
         </CardDialog>
     )
 }
