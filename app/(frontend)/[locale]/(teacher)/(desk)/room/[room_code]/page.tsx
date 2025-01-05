@@ -11,6 +11,7 @@ import logger from "@/app/_utils/logger";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
+import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivity";
 
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
@@ -30,7 +31,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
     if (roomData.created_by && user?.id !== roomData?.created_by)
 		redirect(`/classroom/${room_code}`);
     return (
-        <>
+        <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}
 			<TopBarPortal>
 
 			<Flex justify={{initial:'center', xs:'between'}} align='center'>
@@ -76,6 +77,6 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 			<PollAnimation />
             <QuizAnimation />
 
-        </>
+        </RealtimeActivityProvider>
     )
 }

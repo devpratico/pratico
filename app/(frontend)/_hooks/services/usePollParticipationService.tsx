@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import useSyncPollService from './useSyncPollService'
+import { useState, useEffect, useCallback, useMemo, act } from 'react'
+import { useRealtimeActivityContext } from '../contexts/useRealtimeActivity'
 import usePollParticipationStore from '../stores/usePollParticipationStore'
 import { PollSnapshot } from '@/app/_types/poll'
 import { useUser } from '../contexts/useUser'
@@ -84,18 +84,20 @@ export function useSyncParticipationPollService(): {
     error: string | null
 } {
     // Sync remote poll data into the store
-    const { poll, snapshot, isSyncing, error } = useSyncPollService()
+    const { activity, snapshot, isSyncing, error } = useRealtimeActivityContext()
     const { userId } = useUser()
 
     // Put the snapshot in the store
     useEffect(() => {
+        if (snapshot?.type !== 'poll') return
         usePollParticipationStore.getState().setSnapshot(snapshot)
     }, [snapshot, userId])
 
     // Put the poll in the store
     useEffect(() => {
-        usePollParticipationStore.getState().setPoll(poll)
-    }, [poll])
+        if (!activity || activity.type !== 'poll') return
+        usePollParticipationStore.getState().setPoll(activity)
+    }, [activity])
 
     return { isSyncing, error }
 }

@@ -5,15 +5,11 @@ import { produce } from "immer"
 import logger from "@/app/_utils/logger"
 
 
-//type State = Poll & PollSnapshot | null
-
 type State = {
     poll: Poll | null,
-    pollId: number | null,
+    pollId: string | null,
     currentQuestionId: string | null,
     state: PollSnapshot['state'],
-
-    /** These will only be this user's answers */
     answers: PollUserAnswer[]
 }
 
@@ -47,7 +43,7 @@ const usePollParticipationStore = create<Store>((set, get) => ({
             draft.answers = snapshot?.answers || []
             draft.currentQuestionId = snapshot?.currentQuestionId || null
             draft.state = snapshot?.state || 'voting'
-            draft.pollId = snapshot?.activityId || null
+            draft.pollId = snapshot?.activityId ? `${snapshot.activityId}` : null
         }))
     },
 

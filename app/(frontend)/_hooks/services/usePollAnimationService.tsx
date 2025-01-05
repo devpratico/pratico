@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
-import useSyncPollService from "./useSyncPollService"
+import { useRealtimeActivityContext } from "../contexts/useRealtimeActivity"
 import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
 
@@ -259,11 +259,12 @@ export function useSyncAnimationPollService(): {
     error: string | null
 } {
     // Sync remote poll data into the store
-    const { poll, snapshot, isSyncing, error } = useSyncPollService()
+    //const { poll, snapshot, isSyncing, error } = useSyncPollService()
+    const { activity, snapshot, isSyncing, error } = useRealtimeActivityContext()
 
     // Put the snapshot in the store
     useEffect(() => {
-        if (snapshot) {
+        if (snapshot && snapshot.type === 'poll') {
             usePollAnimationStore.getState().setPollId(snapshot.activityId)
             usePollAnimationStore.getState().setQuestionId(snapshot.currentQuestionId)
             usePollAnimationStore.getState().setQuestionState(snapshot.state)
@@ -275,12 +276,12 @@ export function useSyncAnimationPollService(): {
 
     // Put the poll in the store
     useEffect(() => {
-        if (poll) {
-            usePollAnimationStore.getState().setPoll(poll)
+        if (activity && activity.type === 'poll') {
+            usePollAnimationStore.getState().setPoll(activity as Poll)
         } else {
             usePollAnimationStore.getState().closePoll()
         }
-    }, [poll])
+    }, [activity])
 
     return { isSyncing, error }
 }
