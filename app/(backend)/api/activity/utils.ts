@@ -1,7 +1,6 @@
 import { Json } from "@/supabase/types/database.types"
 import { Quiz } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
-import { Quiz as Quiz2 } from "@/app/_types/quiz"
 import logger from "@/app/_utils/logger"
 
 
@@ -9,7 +8,7 @@ import logger from "@/app/_utils/logger"
 // Supabase allows to filter queries by the content of a JSON object field.
 
 export const adapter = {
-    toJson: (activity: Quiz | Poll | Quiz2) => activity as unknown as Json,
+    toJson: (activity: Quiz | Poll ) => activity as unknown as Json,
 
     toQuiz: (json: Json) => {
         if (!json) {
@@ -21,10 +20,8 @@ export const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '2':
-                return rawObject as Quiz
             case '3':
-                return rawObject as Quiz2
+                return rawObject as Quiz
             default:
                 logger.error('supabase:database', 'Error parsing quiz', `Schema version "${schemaVersion}" not supported`)
                 return undefined
