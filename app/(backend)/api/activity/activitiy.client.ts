@@ -2,7 +2,6 @@
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
-import { Quiz as Quiz2 } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
 import { adapter } from "./utils"
 import { TablesInsert, Tables } from "@/supabase/types/database.types"
@@ -54,7 +53,7 @@ export async function duplicateActivity({ id }: DuplicateActivityArgs): Promise<
 
 export interface SaveActivityArgs {
     id?: number
-    activity: Quiz | Poll | Quiz2
+    activity: Quiz | Poll
 }
 
 export interface SaveActivityReturn {
