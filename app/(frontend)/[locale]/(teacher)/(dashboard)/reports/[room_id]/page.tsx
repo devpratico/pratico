@@ -12,6 +12,7 @@ import { CapsuleWidget } from "./_components/CapsuleWidget";
 export type AttendanceInfoType = {
 	first_name: string | null,
 	last_name: string | null,
+	additional_info: string | null,
 	connexion: string | undefined,
 }
 // // TYPE
@@ -26,7 +27,7 @@ export type SessionInfoType = {
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const roomId: string = params.room_id;
-
+    let userId: string | null = null;
     let capsuleTitle = "Sans titre";
     let sessionDateSubtitle = "Date inconnue";
 
@@ -41,6 +42,17 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
     if (sessionDate) {
         const formatter = await getFormatter();
         sessionDateSubtitle = `Session du ${formatter.dateTime(sessionDate, {dateStyle: "short"})}`;
+    }
+        
+    const {data: { user }} = await supabase.auth.getUser();
+		if (user)
+		{
+        userId = user.id;
+    }
+    else
+    {	
+      logger.error('supabase:database', 'CapsuleSessionsReportServer', 'User not found');
+      throw new Error("L'utilisateur n'a pas été trouvé");
     }
 
 	return (
@@ -58,7 +70,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 
                     <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
-                        <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
+                        <CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
                     </Grid>
 
                 </Section>

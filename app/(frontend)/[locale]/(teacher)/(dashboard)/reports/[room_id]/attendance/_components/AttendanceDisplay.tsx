@@ -8,8 +8,8 @@ import { useFormatter } from "next-intl";
 import { AttendanceToPDF } from "./AttendanceToPdf";
 import logger from "@/app/_utils/logger";
 
-export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle}:
-	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string}) {
+export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, capsuleTitle, hideColumnInfo}:
+	{attendances: AttendanceInfoType[], roomId: string, sessionDate: { date: string, end: string | undefined | null }, userInfo: any, capsuleTitle: string, hideColumnInfo: boolean}) {
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	logger.log("react:component", "AttendanceDisplay", "timezone", timezone, attendances.length > 0 && attendances[0].connexion);
@@ -61,6 +61,7 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 					<Table.Row>
 						<Table.ColumnHeaderCell>Prénom</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>Nom</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell hidden={hideColumnInfo}>Information supplémentaire</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>Heure de connexion</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell>Signature</Table.ColumnHeaderCell>
 					</Table.Row>
@@ -77,6 +78,9 @@ export function AttendanceDisplay ({attendances, roomId, sessionDate, userInfo, 
 								</Table.Cell>
 								<Table.Cell>
 									{attendance.last_name}
+								</Table.Cell>
+								<Table.Cell hidden={hideColumnInfo}>
+									{attendance.additional_info}
 								</Table.Cell>
 								<Table.Cell>
 									{formattedConnection}

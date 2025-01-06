@@ -31,7 +31,9 @@ export type AttendanceWidgetViewProps = {
 			first_name: string | null,
 			last_name: string | null,
 			connexion: string | undefined,
+			additional_info: string | null,
 		}[];
+		hideColumnInfo: boolean;
 	}
 };
 
@@ -46,7 +48,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short', timeZone: timezone});
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
 	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
-	
+ 
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
@@ -125,12 +127,13 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 				buttons={buttons}
 			/>
 			<AttendanceToPDF
-				attendances={data.attendances} 
+				attendances={sortedAttendances || data.attendances} 
 				sessionDate={{startDate: date, startTime: start, endDate: dateEnd, endTime: end}}
 				capsuleTitle={data.capsuleTitle}
 				user={{ userInfo: data.userInfo }}
 				backTo="/reports"
 				hideClassname="hidden-on-screen"
+				hideColumnInfo={data.hideColumnInfo}
 				ref={contentRef}  />
 		</>
 		
