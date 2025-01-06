@@ -29,7 +29,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		{
 			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
 			if (error)
-				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
+				logger.log('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (data)
 				userInfo = data;
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();

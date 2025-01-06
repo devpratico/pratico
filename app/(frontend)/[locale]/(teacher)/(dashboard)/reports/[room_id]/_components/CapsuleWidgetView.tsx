@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Heading, Text } from "@radix-ui/themes";
+import { Box, Heading, Text, Flex } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
@@ -18,9 +18,20 @@ interface CapsuleWidgetViewProps {
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const Thumb = () => {
 		return (
-            <Box style={{ borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-4)", width: "100%", aspectRatio: "16/9", overflow: "hidden" }} >	
+            <Flex
+                align={'center'}
+                justify={'center'}
+                style={{
+                    borderRadius: "var(--radius-3)",
+                    boxShadow: "var(--shadow-4)",
+                    width: "190px",
+                    aspectRatio: "16/9",
+                    overflow: "hidden",
+                    backgroundColor: "var(--gray-5)",
+                }}
+            >	
 				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
-			</Box>
+			</Flex>
 		);
 	};
 	const Content = () => {
@@ -28,7 +39,11 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
         return (
 			<Box>
 				<Heading as='h2' size='4' mb='4'>Diaporama</Heading>
-				<Text as="p" size="1" style={{color: "var(--gray-8)"}}>{"Si vous avez modifié la capsule lors de la session (ajout de dessins, de pages, de post-its...), vous pouvez récupérer le résultat au format pdf en cliquant sur le bouton ci-dessous."}</Text>
+				<Text as="p" size="1" style={{color: "var(--gray-8)"}}>
+                    {`Retrouvez le résultat de votre capsule modifiée lors de la session 
+                    (ajout de dessins, de pages, de post-its...) 
+                    au format PDF en cliquant sur le bouton ci-dessous.`}
+                </Text>
 			</Box>
         );
     }
