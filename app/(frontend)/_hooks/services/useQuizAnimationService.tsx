@@ -3,7 +3,7 @@ import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/app/_types/quiz"
 import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
+import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useUser } from "../contexts/useUser"
 import logger from "@/app/_utils/logger"
@@ -20,7 +20,7 @@ export function useQuizAnimationService(): {
     isPending: boolean
     myChoicesIds: string[]
 } {
-    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const { save, isSaving } = useSaveQuizSnapshot()
     const { userId } = useUser()
 
     const addAnswer = useCallback(async (choiceId: string): Promise<AsyncOperationResult> => {
@@ -257,7 +257,7 @@ export function useCloseQuizService(): {
     isPending: boolean
 } {
     const [isPending, setIsPending] = useState(false)
-    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const { save, isSaving } = useSaveQuizSnapshot()
     const roomId = useRoom().room?.id
 
     const close = useCallback(async () => {
@@ -323,7 +323,7 @@ export function useSyncAnimationQuizService(): {
  * Save the current state of the quiz in the store, into the database.
  * Only used by the useQuizAnimationService hook.
  */
-function useSaveRoomActivitySnapshot(): {
+function useSaveQuizSnapshot(): {
     save: () => Promise<AsyncOperationResult>
     isSaving: boolean
 } {
@@ -339,7 +339,7 @@ function useSaveRoomActivitySnapshot(): {
 
         if (!state.activityId || !state.currentQuestionId) {
             // Nothing in the store. It means the quiz is closed.
-            const { error } = await saveRoomActivitySnapshot(roomId, null)
+            const { error } = await saveActivitySnapshot(roomId, null)
             setIsSaving(false)
             return { error }
         }
@@ -353,7 +353,7 @@ function useSaveRoomActivitySnapshot(): {
         }
         
         
-        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        const { error } = await saveActivitySnapshot(roomId, snapshot)
         setIsSaving(false)
         return { error }
     }, [roomId])

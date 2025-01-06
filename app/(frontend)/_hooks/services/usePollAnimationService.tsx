@@ -1,5 +1,5 @@
 import logger from "@/app/_utils/logger"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
+import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
@@ -19,7 +19,7 @@ export function usePollAnimationService(): {
     myChoicesIds: string[]
     isSaving: boolean
 } {
-    const { save, isSaving } = useSaveRoomActivitySnapshot()
+    const { save, isSaving } = useSavePollSnapshot()
     const { userId } = useUser()
 
     const addAnswer = useCallback(async (choiceId: string) => {
@@ -161,68 +161,6 @@ export function usePollAnimationService(): {
 
 
 
-
-/**
- * Open a poll in the store given its id.
- * This function fetches the activity from the database.
- */
-/*
-export function useStartPollService(): {
-    startPoll: (activityId: number | string) => Promise<{ error: string | null }>
-    isPending: boolean
-} {
-    const [isPending, setIsPending] = useState(false)
-    const roomId = useRoom().room?.id
-
-    const startPoll = async (activityId: number | string) => {
-        if (!roomId) {
-            logger.error('supabase:database', 'StartButton', 'Cannot start activity outside of a room')
-            return { error: 'No room id' }
-        }
-        setIsPending(true)
-
-        const id = parseInt(activityId as string)
-
-        const { data, error } = await fetchActivity(id)
-
-        if (error || !data) {
-            logger.error('zustand:store', 'usePollAnimation', 'Error fetching activity', error)
-            setIsPending(false)
-            return { error: 'Error fetching activity: ' + error}
-        }
-
-        if (!(data.type == 'poll')) {
-            logger.error('zustand:store', 'usePollAnimation', 'Activity is not a poll')
-            setIsPending(false)
-            return { error: 'Activity is not a poll' }
-        }
-
-        const poll = data.object as Poll
-
-        // Update the store
-        usePollAnimationStore.getState().setPoll(poll)
-        usePollAnimationStore.getState().setPollId(id)
-        usePollAnimationStore.getState().setQuestionId(poll.questions[0].id)
-
-        // Save in the database
-        const snapshot: PollSnapshot = {
-            type: 'poll',
-            activityId: id,
-            currentQuestionId: poll.questions[0].id,
-            state: 'voting',
-            answers: []
-        }
-
-        const { error: snapshotError } = await saveRoomActivitySnapshot(roomId, snapshot)
-        setIsPending(false)
-
-        return { error: snapshotError }
-    }
-
-    return { startPoll, isPending }
-}*/
-
-
 /**
  * Close a poll activity.
  * This empties the store and removes the activity snapshot
@@ -243,7 +181,7 @@ export function useClosePollService(): {
 
             usePollAnimationStore.getState().closePoll()
 
-            const { error } = await saveRoomActivitySnapshot(roomId, null)
+            const { error } = await saveActivitySnapshot(roomId, null)
             setIsPending(false)
 
             if (error) usePollAnimationStore.setState(previousState) // Rollback
@@ -297,7 +235,7 @@ export function useSyncAnimationPollService(): {
 /**
  * Save the current state of the poll in the store, into the database.
  */
-function useSaveRoomActivitySnapshot() :{
+function useSavePollSnapshot() :{
     save: () => Promise<{ error: string | null }>
     isSaving: boolean
 } {
@@ -320,7 +258,7 @@ function useSaveRoomActivitySnapshot() :{
         }
         
         setIsSaving(true)
-        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        const { error } = await saveActivitySnapshot(roomId, snapshot)
         setIsSaving(false)
         return { error }
     }, [roomId])

@@ -4,7 +4,7 @@ import { useRealtimeActivityContext } from '../contexts/useRealtimeActivityConte
 import usePollParticipationStore from '../stores/usePollParticipationStore'
 import { PollSnapshot } from '@/app/_types/poll'
 import { useUser } from '../contexts/useUser'
-import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
+import { saveActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'
 
 
@@ -54,7 +54,7 @@ export default function usePollParticipationService(): {
             answers: usePollParticipationStore.getState().answers
         }
 
-        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        const { error } = await saveActivitySnapshot(roomId, snapshot)
         if (error) {
             // Rollback the vote
             usePollParticipationStore.getState().setSnapshot(initialSnapshot)

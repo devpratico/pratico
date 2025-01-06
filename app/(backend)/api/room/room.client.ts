@@ -208,10 +208,10 @@ export const saveRoomParams = async (roomId: number, params: RoomParams) => {
 }
 
 
-export const saveRoomActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
+export const saveActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
     const supabase = createClient()
 
-    logger.log('supabase:database', 'saveRoomActivitySnapshot', 'saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
+    logger.log('supabase:database', 'saveActivitySnapshot', 'saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
 
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null
@@ -291,7 +291,7 @@ export const startActivity = async ({ activityId, roomCode }: { activityId: numb
         return { error: roomIdError || 'No roomId found' }
     }
 
-    const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
+    const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
     if (saveError) {
         logger.error('supabase:database', 'startActivity', 'Error saving activity snapshot:', saveError)
         return { error: saveError }

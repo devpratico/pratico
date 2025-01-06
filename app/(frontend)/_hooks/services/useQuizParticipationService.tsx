@@ -4,7 +4,7 @@ import { useRealtimeActivityContext } from '../contexts/useRealtimeActivityConte
 import useQuizParticipationStore from '../stores/useQuizParticipationStore'
 import { QuizSnapshot } from '@/app/_types/quiz'
 import { useUser } from '../contexts/useUser'
-import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
+import { saveActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'
 
 export default function useQuizParticipationService(): {
@@ -53,7 +53,7 @@ export default function useQuizParticipationService(): {
             answers: useQuizParticipationStore.getState().answers
         }
 
-        const { error } = await saveRoomActivitySnapshot(roomId, snapshot)
+        const { error } = await saveActivitySnapshot(roomId, snapshot)
         if (error) {
             // Rollback the answer
             useQuizParticipationStore.getState().setSnapshot(initialSnapshot)

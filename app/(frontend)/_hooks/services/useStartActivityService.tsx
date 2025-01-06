@@ -1,5 +1,6 @@
+'use client'
 import logger from "@/app/_utils/logger"
-import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
+import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useState, useCallback } from "react"
 import { useRoom } from "../contexts/useRoom"
@@ -56,7 +57,7 @@ export function useStartActivityService(): {
 
             logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving quiz snapshot in database', snapshot)
 
-            const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
+            const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
             if (saveError) {
                 logger.error('zustand:store', 'useStartActivityService.tsx', 'Error saving quiz: ' + saveError)
                 state.closeQuiz() // Rollback the store
@@ -84,7 +85,7 @@ export function useStartActivityService(): {
 
             logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving poll snapshot in database', snapshot)
 
-            const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
+            const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
             if (saveError) {
                 logger.error('zustand:store', 'useStartActivityService.tsx', 'Error saving poll: ' + saveError)
                 state.closePoll() // Rollback the store
