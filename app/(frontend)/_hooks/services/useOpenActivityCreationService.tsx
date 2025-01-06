@@ -8,7 +8,7 @@ import { Poll } from '@/app/_types/poll'
 import { Quiz } from '@/app/_types/quiz2'
 
 
-export default function useOpenActivityService(): {
+export default function useOpenActivityCreationService(): {
     openActivity: (activityId: number) => Promise<{error: string | null}>
     isPending: boolean
 } {

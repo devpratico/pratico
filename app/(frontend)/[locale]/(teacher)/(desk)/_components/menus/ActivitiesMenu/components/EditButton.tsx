@@ -4,13 +4,13 @@ import { SquarePen, EllipsisVertical, Trash2, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { deleteActivity, duplicateActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation'
-import useOpenActivityService from '@/app/(frontend)/_hooks/services/useOpenActivityService'
+import useOpenActivityCreationService from '@/app/(frontend)/_hooks/services/useOpenActivityCreationService'
 
 
 export default function EditButton({ activityId }: { activityId: number }) {
     const router = useRouter()
     const [deleteOpen, setDeleteOpen] = useState(false)
-    const { openActivity } = useOpenActivityService()
+    const { openActivity } = useOpenActivityCreationService()
 
 
     async function handleDelete() {

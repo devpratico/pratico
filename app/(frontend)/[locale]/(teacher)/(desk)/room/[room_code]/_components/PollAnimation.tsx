@@ -6,6 +6,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { PollSnapshot } from '@/app/_types/poll'
 import { useSyncAnimationPollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
+import { useMemo } from 'react'
 
 
 export default function PollAnimation() {
@@ -20,6 +21,12 @@ export default function PollAnimation() {
     const questionState = usePollAnimation(state => state.state)
     const currentQuestionIndex = poll?.questions.findIndex(q => q.id == currentQuestionId)
     const answers = usePollAnimation(state => state.answers)
+    const totalVotes = useMemo(() => {
+        const thisQuestionAnswers = answers.filter(a => a.questionId == currentQuestionId)
+        const votersIds = thisQuestionAnswers.map(a => a.userId)
+        const uniqueIds = [...new Set(votersIds)]
+        return uniqueIds.length
+    }, [answers, currentQuestionId])
 
     // Service methods
     const { closePoll } = useClosePollService()
@@ -58,7 +65,7 @@ export default function PollAnimation() {
                         </Flex>
 
                         <Flex mt='3' justify='end'>
-                            <Badge>{'Nombre de votants : ' + '0'}</Badge>
+                            <Badge>{'Nombre de votants : ' + totalVotes}</Badge>
                         </Flex>
 
                     </Section>

@@ -6,6 +6,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
 import { QuizSnapshot } from '@/app/_types/quiz2'
 import { useSyncAnimationQuizService, useCloseQuizService, useQuizAnimationService } from '@/app/(frontend)/_hooks/services/useQuizAnimationService'
+import { useMemo } from 'react'
 
 
 export default function QuizAnimation() {
@@ -20,6 +21,12 @@ export default function QuizAnimation() {
     const questionState = useQuizAnimation(state => state.state)
     const currentQuestionIndex = quiz?.questions.findIndex(q => q.id == currentQuestionId)
     const answers = useQuizAnimation(state => state.answers)
+    const totalVotes = useMemo(() => {
+        const thisQuestionAnswers = answers.filter(a => a.questionId == currentQuestionId)
+        const votersIds = thisQuestionAnswers.map(a => a.userId)
+        const uniqueIds = [...new Set(votersIds)]
+        return uniqueIds.length
+    }, [answers, currentQuestionId])
 
     // Service methods
     const { close } = useCloseQuizService()
@@ -59,7 +66,7 @@ export default function QuizAnimation() {
                         </Flex>
 
                         <Flex mt='3' justify='end'>
-                            <Badge>{'Nombre de votants : ' + '0'}</Badge>
+                            <Badge>{'Nombre de votants : ' + totalVotes}</Badge>
                         </Flex>
 
                     </Section>

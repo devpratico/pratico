@@ -1,6 +1,5 @@
 import logger from "@/app/_utils/logger"
 import { saveRoomActivitySnapshot } from "@/app/(backend)/api/room/room.client"
-import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
@@ -100,7 +99,10 @@ export function usePollAnimationService(): {
         setCurrentQuestionId: async (questionId) => {
             if (isSaving) return { error: 'Saving in progress' }
 
-            const previousQuestionId = usePollAnimationStore.getState().currentQuestionId    
+            const previousQuestionId = usePollAnimationStore.getState().currentQuestionId
+
+            // Set the state to 'answering' to avoid revealing the answer
+            usePollAnimationStore.getState().setQuestionState('voting')
 
             usePollAnimationStore.getState().setQuestionId(questionId)
 
@@ -120,6 +122,9 @@ export function usePollAnimationService(): {
             if (!id) return { error: 'No question id' }
 
             const previousQuestionId = usePollAnimationStore.getState().currentQuestionId
+
+            // Set the state to 'answering' to avoid revealing the answer
+            usePollAnimationStore.getState().setQuestionState('voting')
 
             usePollAnimationStore.getState().setQuestionId(id)
 
