@@ -1,8 +1,8 @@
-import { Quiz } from "@/app/_types/quiz2"
+import { Quiz } from "@/app/_types/quiz"
 import { create } from "zustand"
 import { produce } from "immer"
 import logger from "@/app/_utils/logger"
-import { emptyQuiz } from "@/app/_types/quiz2"
+import { emptyQuiz } from "@/app/_types/quiz"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"
 
 

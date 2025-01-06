@@ -1,6 +1,5 @@
 import { PollSnapshot } from "./poll"
-import { QuizSnapshot } from "./quiz" // TODO: remove
-import { QuizSnapshot as QuizSnapshot2 } from "./quiz2"
+import { QuizSnapshot as QuizSnapshot2 } from "./quiz"
 import { produce } from "immer"
 
 export type ActivityType = 'quiz' | 'poll'

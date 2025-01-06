@@ -5,7 +5,7 @@ import { useState, useCallback } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
-import { Quiz, QuizSnapshot } from "@/app/_types/quiz2"
+import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { Poll, PollSnapshot } from "@/app/_types/poll"
 
 type AsyncOperationResult = { error: string | null }

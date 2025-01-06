@@ -2,7 +2,7 @@
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
-import { Quiz as Quiz2 } from "@/app/_types/quiz2"
+import { Quiz as Quiz2 } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
 import { adapter } from "./utils"
 import { TablesInsert, Tables } from "@/supabase/types/database.types"

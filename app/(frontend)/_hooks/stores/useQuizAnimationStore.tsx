@@ -1,5 +1,5 @@
 'use client'
-import { Quiz, QuizSnapshot, QuizUserAnswer } from "@/app/_types/quiz2"
+import { Quiz, QuizSnapshot, QuizUserAnswer } from "@/app/_types/quiz"
 import { create } from "zustand"
 import { produce } from "immer"
 

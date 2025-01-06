@@ -1,8 +1,8 @@
 'use client'
 import { Poll } from "@/app/_types/poll"
-import { Quiz } from "@/app/_types/quiz2"
+import { Quiz } from "@/app/_types/quiz"
 import { PollSnapshot } from "@/app/_types/poll"
-import { QuizSnapshot } from "@/app/_types/quiz2"
+import { QuizSnapshot } from "@/app/_types/quiz"
 import { useRoom } from "./useRoom"
 import { useState, useEffect, useMemo, createContext, useContext } from "react"
 import logger from "@/app/_utils/logger"

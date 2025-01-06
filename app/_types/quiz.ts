@@ -2,6 +2,7 @@ import { Activity } from './activity'
 
 
 export interface QuizChoice {
+    id: string
     text: string
     /**
      * 'A' for 'Answer A', or an emoji, etc.
@@ -16,19 +17,19 @@ export interface QuizChoice {
 // test
 
 export interface QuizQuestion {
+    id: string
     text: string
     photoUrl?: string
-    choicesIds: string[]
     hint?: string
     canChooseMultiple?: boolean
+    choices: QuizChoice[]
 }
 
 
 export interface Quiz extends Activity {
     type: 'quiz'
-    schemaVersion: '2'
-    questions: { [questionId: string]: QuizQuestion }
-    choices: { [choiceId: string]: QuizChoice }
+    schemaVersion: '3'
+    questions: QuizQuestion[]
 }
 
 /**
@@ -43,10 +44,10 @@ export interface QuizUserAnswer {
 
 export interface QuizSnapshot {
     type:'quiz';
-    activityId: number;
+    activityId: number | string;
     currentQuestionId: string;
-    state: 'answering' | 'results';
-    answers: { [answerId: string]: QuizUserAnswer }
+    state: 'answering' | 'showing results';
+    answers: QuizUserAnswer[]
 }
 
 /**
@@ -54,4 +55,71 @@ export interface QuizSnapshot {
  */
 export function isQuizSnapshot(snapshot: any): snapshot is QuizSnapshot {
     return snapshot?.type === 'quiz'
+}
+
+
+// EXAMPLES
+
+export const emptyQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '3',
+    title: 'Untitled',
+    questions: [
+        {
+            id: 'question-0',
+            text: '',
+            choices: []
+        }
+    ]
+}
+
+
+export const mockQuiz: Quiz = {
+    type: 'quiz',
+    schemaVersion: '3',
+    title: 'Mock Quiz',
+    questions: [
+        {
+            id: 'question-0',
+            text: 'What is the capital of France?',
+            choices: [
+                {
+                    id: 'choice-0',
+                    text: 'Paris',
+                    isCorrect: true
+                },
+                {
+                    id: 'choice-1',
+                    text: 'London',
+                    isCorrect: false
+                },
+                {
+                    id: 'choice-2',
+                    text: 'Berlin',
+                    isCorrect: false
+                }
+            ]
+        },
+        {
+            id: 'question-1',
+            text: 'What is the capital of Germany?',
+            choices: [
+                {
+                    id: 'choice-3',
+                    text: 'Paris',
+                    isCorrect: false
+                },
+                {
+                    id: 'choice-4',
+                    text: 'London',
+                    isCorrect: false
+                },
+                {
+                    id: 'choice-5',
+                    text: 'Berlin',
+                    isCorrect: true
+                }
+            ]
+        }
+    ]
 }

@@ -3,7 +3,7 @@ import { useState, useCallback } from "react"
 import { saveActivity, fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import logger from "@/app/_utils/logger"
 import useQuizCreationStore from "../stores/useQuizCreationStore"
-import { Quiz } from "@/app/_types/quiz2"
+import { Quiz } from "@/app/_types/quiz"
 
 
 export function useSaveQuizService(): {

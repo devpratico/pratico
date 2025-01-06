@@ -5,7 +5,7 @@ import usePollCreationStore from '../stores/usePollCreationStore'
 import useQuizCreationStore from '../stores/useQuizCreationStore'
 import logger from '@/app/_utils/logger'
 import { Poll } from '@/app/_types/poll'
-import { Quiz } from '@/app/_types/quiz2'
+import { Quiz } from '@/app/_types/quiz'
 
 
 export default function useOpenActivityCreationService(): {

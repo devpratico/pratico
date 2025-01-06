@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRealtimeActivityContext } from '../contexts/useRealtimeActivityContext'
 import useQuizParticipationStore from '../stores/useQuizParticipationStore'
-import { QuizSnapshot } from '@/app/_types/quiz2'
+import { QuizSnapshot } from '@/app/_types/quiz'
 import { useUser } from '../contexts/useUser'
 import { saveRoomActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'
