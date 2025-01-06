@@ -6,8 +6,11 @@ import { SessionInfoType } from "../[room_id]/page";
 import { Users } from "lucide-react";
 import logger from "@/app/_utils/logger";
 import { useState } from "react";
+import { useFormatter } from "next-intl";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
+	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const [ reports, setReports ] = useState<SessionInfoType[]>(sessions);
 	const sortedSessions = order
 		? [...reports].sort((a, b) => {
@@ -37,7 +40,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						<TableCell
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
-							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: session.created_at, status: session.status === "open" ? "En cours" : "Terminé"}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone}), status: session.status === "open" ? "En cours" : "Terminé"}}
 							onDelete={(roomId) => setReports(reports.filter((r) => r.id !== roomId))}
 						/>
 					);

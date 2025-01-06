@@ -1,11 +1,10 @@
 "use client";
 
-import { Badge, IconButton, Table, Text } from "@radix-ui/themes";
+import { Badge, Table, Text } from "@radix-ui/themes";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
-import { Trash2 } from "lucide-react";
-import { useFormatter } from "next-intl";
+import { RemoveReportAlertDialog } from "./RemoveReportAlertDialog";
 import createClient from "@/supabase/clients/client";
 
 export type ReportsProps = {
@@ -22,10 +21,9 @@ export type TableCellProps = {
 
 export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
 	const router = useRouter();
-	const formatter = useFormatter();
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const supabase = createClient();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
+	const [ deleteOk, setDeleteOk ] = useState(false);
 
 	useEffect(() => {
 		setIsClosed(infos.roomClosed);
@@ -43,18 +41,25 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 		}
 	};
 
-	const handleRemoveReport = async (e: React.MouseEvent) => {
-		e.stopPropagation();
-		logger.log("next:page", "CapsuleSessionReportPage", "handleRemoveReport: remove report");
-		await supabase.from('rooms').delete().eq('id', navigationsIds.roomId);
-		onDelete(navigationsIds.roomId);
-	};
+	useEffect(() => {
+		const handleRemoveReport = async () => {
+			logger.log("next:page", "CapsuleSessionReportPage", "handleRemoveReport: remove report");
+			if (deleteOk)
+			{
+				await supabase.from('rooms').delete().eq('id', navigationsIds.roomId);
+				onDelete(navigationsIds.roomId);
+				setDeleteOk(false);
+			};
+		};
+		if (deleteOk)
+			handleRemoveReport();
+	}, [deleteOk, navigationsIds.roomId, onDelete, supabase]);
 
 	return (
 		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
 			<Table.Cell>
-				{formatter.dateTime(new Date(infos.date), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone})}
+				{infos.date}
 			</Table.Cell>
 			<Table.Cell>
 				{
@@ -70,10 +75,8 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 			<Table.Cell>
 				<Text>{navigationsIds.nbParticipant}</Text>
 			</Table.Cell>
-			<Table.Cell style={{ display: 'flex', justifyContent: 'flex-end', gap: '2' }}>	
-				<IconButton onClick={handleRemoveReport} variant="ghost">
-					<Trash2 size="20" />
-				</IconButton>
+			<Table.Cell style={{ display: 'flex', justifyContent: 'flex-end', gap: '2' }} onClick={(e) => e.stopPropagation()}>	
+				<RemoveReportAlertDialog date={infos.date} setDeleteOk={setDeleteOk} />
 			</Table.Cell>
 		</Table.Row>
 	);
