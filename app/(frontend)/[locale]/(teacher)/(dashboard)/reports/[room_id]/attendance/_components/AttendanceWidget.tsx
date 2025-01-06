@@ -26,6 +26,8 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 		organization: null,
 	  };
 	let attendances: AttendanceInfoType[] = [];
+	let hideColumnInfo = true;
+
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
@@ -53,14 +55,17 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 		{
 			await Promise.all(
 				attendanceData.map(async (attendance) => {
-					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
+					const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).single();
 					if (!data || error) {
 						logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 					}
+					if (attendance.additional_info)
+						hideColumnInfo = false;
 					const infos: AttendanceInfoType = {
 						first_name: attendance.first_name,
 						last_name: attendance.last_name,
 						connexion: attendance.created_at,
+						additional_info: attendance.additional_info,
 					};
 					attendances.push(infos);
 				})
@@ -80,7 +85,8 @@ export async function AttendanceWidget({ roomId, userId, capsuleTitle }: Attenda
 		nextUrl: `/reports/${roomId}/attendance`,
 		roomId: roomId.toString(),
 		attendances: attendances,
-		capsuleTitle: capsuleTitle
+		capsuleTitle: capsuleTitle,
+		hideColumnInfo: hideColumnInfo
 	};
 	
 	return (
