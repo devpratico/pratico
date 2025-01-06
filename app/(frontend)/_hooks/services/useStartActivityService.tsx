@@ -18,6 +18,7 @@ export function useStartActivityService(): {
     const roomId = useRoom().room?.id
 
     const start = useCallback(async (activityId: string | number) => {
+        logger.log('zustand:store', 'useStartActivityService.tsx', 'Starting activity', activityId)
         if (!roomId) {
             logger.error('zustand:store', 'useStartActivityService.tsx', 'No room id')
             return { error: 'No room id' }
@@ -26,6 +27,7 @@ export function useStartActivityService(): {
         setIsPending(true)
 
         const id = parseInt(activityId as string)
+        logger.log('zustand:store', 'useStartActivityService.tsx', 'Fetching activity', id)
         const { data, error } = await fetchActivity(id)
 
         if (error || !data) {
@@ -51,6 +53,8 @@ export function useStartActivityService(): {
                 state: 'answering',
                 answers: []
             }
+
+            logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving quiz snapshot in database', snapshot)
 
             const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
             if (saveError) {
@@ -78,6 +82,8 @@ export function useStartActivityService(): {
                 answers: []
             }
 
+            logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving poll snapshot in database', snapshot)
+
             const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
             if (saveError) {
                 logger.error('zustand:store', 'useStartActivityService.tsx', 'Error saving poll: ' + saveError)
@@ -90,6 +96,8 @@ export function useStartActivityService(): {
             setIsPending(false)
             return { error: 'Unknown activity type' }
         }
+
+        logger.log('zustand:store', 'useStartActivityService.tsx', 'Activity snapshot successfully saved')
 
         setIsPending(false)
         return { error: null }
