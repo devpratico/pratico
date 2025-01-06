@@ -24,16 +24,32 @@ export function useQuizAnimationService(): {
     const { userId } = useUser()
 
     const addAnswer = useCallback(async (choiceId: string): Promise<AsyncOperationResult> => {
-        if (isSaving) return { error: 'Saving in progress' }
-        if (!userId) return { error: 'No user id' }
+        if (isSaving) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'Saving in progress')
+            return { error: 'Saving in progress' }
+        }
+        if (!userId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No user id')
+            return { error: 'No user id' }
+        }
 
         const state = useQuizAnimationStore.getState()
 
-        if (!state.currentQuestionId) return { error: 'No current question id' }
+        if (!state.currentQuestionId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No current question id')
+            return { error: 'No current question id' }
+        }
 
-        // Check if the user has already answered this question
-        const hasAlreadyAnswered = state.answers.some(answer => answer.userId === userId && answer.questionId === state.currentQuestionId)
-        if (hasAlreadyAnswered) return { error: 'Already answered' }
+        // Check if the user has already answered this choice for this question
+        const hasAlreadyAnswered = state.answers.some(answer =>
+            answer.userId === userId &&
+            answer.questionId === state.currentQuestionId &&
+            answer.choiceId === choiceId
+        )
+        if (hasAlreadyAnswered) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'Already answered')
+            return { error: 'Already answered' }
+        }
 
         // Save the current answers in case of rollback
         const previousAnswers = state.answers
@@ -94,7 +110,11 @@ export function useQuizAnimationService(): {
 
     const toggleAnswer = useCallback(async (choiceId: string) => {
         const state = useQuizAnimationStore.getState()
-        const hasAnswered = state.answers.some(answer => answer.userId === userId && answer.questionId === state.currentQuestionId)
+        const hasAnswered = state.answers.some(answer =>
+            answer.userId === userId &&
+            answer.questionId === state.currentQuestionId &&
+            answer.choiceId === choiceId
+        )
         if (hasAnswered) {
             return removeAnswer(choiceId)
         } else {
