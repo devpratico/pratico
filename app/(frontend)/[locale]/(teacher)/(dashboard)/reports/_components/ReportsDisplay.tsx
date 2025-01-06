@@ -20,6 +20,7 @@ export function ReportsDisplay ({sessions}: {sessions: SessionInfoType[]}) {
 				setDisplay(<Chronological sessions={sessions} order={false} />);
 		};
 	}, [option, sessions]);
+
 	return (
 		<>
 			<Flex justify={"between"}>

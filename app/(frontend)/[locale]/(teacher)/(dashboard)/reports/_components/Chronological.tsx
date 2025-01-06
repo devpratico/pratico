@@ -4,11 +4,12 @@ import { Table } from "@radix-ui/themes";
 import { TableCell } from "./TableCell";
 import { SessionInfoType } from "../[room_id]/page";
 import { Users } from "lucide-react";
-import logger from "@/app/_utils/logger";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormatter } from "next-intl";
+import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
+	const router = useRouter();
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const [ reports, setReports ] = useState<SessionInfoType[]>(sessions);
@@ -20,7 +21,13 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 		return (new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 	});
 
-	logger.log("next:page", "ReportsPage", "sortedSessions", sortedSessions);
+	useEffect(() => {
+		if (sortedSessions.length === 0)
+		{
+			router.refresh();
+		}
+	}, [sortedSessions, router]);
+
 	return (
 		<Table.Root variant="surface">
 			<Table.Header>
