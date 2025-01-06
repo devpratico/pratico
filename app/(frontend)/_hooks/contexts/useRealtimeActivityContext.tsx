@@ -49,7 +49,7 @@ function useRealtimeSnapshot(): {
     useEffect(() => {
         if (!roomId) return
         const supabase = createClient()
-        const channel = supabase.channel(roomId + "_realtime")
+        const channel = supabase.channel(roomId + "_realtimeActivity")
         const roomUpdate = {
             event: 'UPDATE',
             schema: 'public',
