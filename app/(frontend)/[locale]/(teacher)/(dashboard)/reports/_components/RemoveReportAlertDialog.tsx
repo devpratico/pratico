@@ -16,6 +16,7 @@ export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, set
             <AlertDialog.Content>
                 <Flex direction="column" gap="3" justify="center">
                     <AlertDialog.Title align="center">{`Supprimer le rapport du ${date} ?`}</AlertDialog.Title>
+                    <AlertDialog.Description />
                     <Flex gap="5" justify="center">
                         <Button onClick={() => {
                             setDeleteOk(true);
