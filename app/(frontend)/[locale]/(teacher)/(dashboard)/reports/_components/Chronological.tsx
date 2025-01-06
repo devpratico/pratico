@@ -3,6 +3,7 @@ import { Table } from "@radix-ui/themes";
 import { TableCell } from "./TableCell";
 import { SessionInfoType } from "../[room_id]/page";
 import { useFormatter } from "next-intl";
+import { Users } from "lucide-react";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
 	const formatter = useFormatter();
@@ -22,7 +23,8 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 				<Table.Row>
 					<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Début de la session</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell>Status</Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell>Statut</Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell><Users size="21" /></Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell></Table.ColumnHeaderCell>
 				</Table.Row>
 			</Table.Header>
