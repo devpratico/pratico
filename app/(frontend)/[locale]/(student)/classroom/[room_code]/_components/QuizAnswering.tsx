@@ -2,13 +2,15 @@
 import { Container, Section, Flex, Heading, ScrollArea } from "@radix-ui/themes"
 import { QuizAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/room/[room_code]/_components/QuizAnimation"
 import useQuizParticipationStore from "@/app/(frontend)/_hooks/stores/useQuizParticipationStore"
-//import useQuizParticipationService from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
+import useQuizParticipationService, { useSyncParticipationQuizService } from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
 
 export default function QuizAnswering() {
+    // Sync store state with remote answers
+    const { isSyncing, error } = useSyncParticipationQuizService()
+
     // Store
     const showCard = useQuizParticipationStore(state => state.quiz !== null)
-    /*
     const quiz = useQuizParticipationStore(state => state.quiz)
     const currentQuestionId = useQuizParticipationStore(state => state.currentQuestionId)
     const questionText = quiz?.questions.find(q => q.id === currentQuestionId)?.text
@@ -33,6 +35,7 @@ export default function QuizAnswering() {
                                 <QuizAnswerRow
                                     key={`${index}-${choice.text}`}
                                     text={choice.text}
+                                    isCorrect={choice.isCorrect}
                                     votes={answers.filter(a => a.choiceId === choice.id).length}
                                     questionState={questionState}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
@@ -43,12 +46,6 @@ export default function QuizAnswering() {
                     </Section>
                 </Container>
             </ScrollArea>
-        </CardDialog>
-    )*/
-
-    return (
-        <CardDialog open={showCard} preventClose topMargin='0'>
-            Hello
         </CardDialog>
     )
 }

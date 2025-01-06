@@ -5,6 +5,8 @@ import { TLEditorProvider } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { Viewport } from 'next'
 import { Grid } from '@radix-ui/themes'
 import PollAnswering from './_components/PollAnswering'
+import QuizAnswering from './_components/QuizAnswering'
+import { RealtimeActivityProvider } from '@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext'
 
 
 export const viewport: Viewport = {
@@ -23,14 +25,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             style={{backgroundColor:'black'}}
         >
             <RoomProvider>
-                <PresencesProvider>
-                    <TLEditorProvider>
-                        <NavProvider>
-                            {children}
-                            <PollAnswering />
-                        </NavProvider>
-                    </TLEditorProvider>
-                </PresencesProvider>
+                <RealtimeActivityProvider>
+                    <PresencesProvider>
+                        <TLEditorProvider>
+                            <NavProvider>
+                                {children}
+                                <PollAnswering />
+                                <QuizAnswering />
+                            </NavProvider>
+                        </TLEditorProvider>
+                    </PresencesProvider>
+                </RealtimeActivityProvider>
             </RoomProvider>
         </Grid>
     )

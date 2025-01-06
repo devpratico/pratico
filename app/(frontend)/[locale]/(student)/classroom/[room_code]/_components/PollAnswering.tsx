@@ -4,10 +4,14 @@ import { PollAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/room/[
 import usePollParticipationStore from "@/app/(frontend)/_hooks/stores/usePollParticipationStore"
 import usePollParticipationService from "@/app/(frontend)/_hooks/services/usePollParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
+import { useSyncParticipationPollService } from "@/app/(frontend)/_hooks/services/usePollParticipationService"
 
 
 
 export default function PollAnswering() {
+    // Sync store state with remote answers
+    const { isSyncing, error } = useSyncParticipationPollService()
+
     // Store
     const showCard = usePollParticipationStore(state => state.poll !== null)
     const poll = usePollParticipationStore(state => state.poll)
