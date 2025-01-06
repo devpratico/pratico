@@ -159,8 +159,6 @@ export default function PollCreation() {
                                 ))}
                             </Flex>
 
-                            <Separator size='4' />
-
                             <NewChoice onConfirm={(newChoiceText) => addChoice(currentQuestionId, { text: newChoiceText })}/>
 
                         </Flex>

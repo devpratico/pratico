@@ -1,13 +1,30 @@
 'use client'
-import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card, Tooltip, Switch } from '@radix-ui/themes'
+import { Grid, Button, Flex, IconButton, TextField, Container, Section, TextArea, Card, Tooltip, Switch, Badge } from '@radix-ui/themes'
 import Title from './Title'
 import CancelButton from './CancelButton'
 import Navigator from './Navigator'
-import { Copy, Plus, Trash2 } from 'lucide-react'
+import { Copy, Plus, X, Trash2, Check } from 'lucide-react'
 import CardDialog from '../../../CardDialog'
 import useQuizCreationStore from '@/app/(frontend)/_hooks/stores/useQuizCreationStore'
 import { useSaveQuizService } from '@/app/(frontend)/_hooks/services/useQuizCreationService'
 import { useRef } from 'react'
+
+
+function TrueFalseSwitch(props: {
+    value: boolean
+    onChange: (newValue: boolean) => void
+}) {
+    const { value, onChange } = props
+    const badgeTxt = value ? 'Vrai' : 'Faux'
+    const badgeCol = value ? 'green' : 'gray'
+
+    return (
+        <Flex align='center' gap='1' width='80px'>
+            <Switch checked={value} onCheckedChange={onChange} color='green'/>
+            <Badge radius='full' color={badgeCol}>{badgeTxt}</Badge>
+        </Flex>
+    )
+}
 
 
 function ChoiceRow(props: {
@@ -27,9 +44,9 @@ function ChoiceRow(props: {
                 onChange={(event) => onTextChange(event.target.value)}
                 placeholder="Ajouter une réponse"
             />
-            <Switch checked={isCorrect} onCheckedChange={onCorrectChange} />
+            <TrueFalseSwitch value={isCorrect} onChange={onCorrectChange} />
             <IconButton size='2' variant="ghost" color='gray' radius='full' onClick={onDelete}>
-                <Trash2 size={18} strokeWidth={2} absoluteStrokeWidth />
+                <X size={18} strokeWidth={2} absoluteStrokeWidth />
             </IconButton>
         </Flex>
     )
@@ -68,7 +85,7 @@ function NewChoice(props: {
                 onKeyDown={onKeyDown}
             />
             <IconButton size='2' radius='full' onClick={onClick}>
-                <Plus size={18} strokeWidth={2} absoluteStrokeWidth />
+                <Check size={18} strokeWidth={2} absoluteStrokeWidth />
             </IconButton>
         </Flex>
     )
