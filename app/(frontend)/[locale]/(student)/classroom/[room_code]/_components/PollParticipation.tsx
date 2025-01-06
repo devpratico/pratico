@@ -8,7 +8,7 @@ import { useSyncParticipationPollService } from "@/app/(frontend)/_hooks/service
 
 
 
-export default function PollAnswering() {
+export default function PollParticipation() {
     // Sync store state with remote answers
     const { isSyncing, error } = useSyncParticipationPollService()
 

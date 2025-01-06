@@ -5,7 +5,7 @@ import useQuizParticipationStore from "@/app/(frontend)/_hooks/stores/useQuizPar
 import useQuizParticipationService, { useSyncParticipationQuizService } from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
 
-export default function QuizAnswering() {
+export default function QuizParticipation() {
     // Sync store state with remote answers
     const { isSyncing, error } = useSyncParticipationQuizService()
 

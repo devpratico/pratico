@@ -89,13 +89,21 @@ export function useSyncParticipationPollService(): {
 
     // Put the snapshot in the store
     useEffect(() => {
-        if (snapshot?.type !== 'poll') return
+        if (snapshot?.type !== 'poll') {
+            // Clear the store
+            usePollParticipationStore.getState().setSnapshot(null)
+            return
+        }
         usePollParticipationStore.getState().setSnapshot(snapshot)
     }, [snapshot, userId])
 
     // Put the poll in the store
     useEffect(() => {
-        if (!activity || activity.type !== 'poll') return
+        if (!activity || activity.type !== 'poll') {
+            // Clear
+            usePollParticipationStore.getState().setPoll(null)
+            return
+        }
         usePollParticipationStore.getState().setPoll(activity)
     }, [activity])
 

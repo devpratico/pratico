@@ -4,8 +4,8 @@ import { NavProvider } from '@/app/(frontend)/_hooks/contexts/useNav'
 import { TLEditorProvider } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { Viewport } from 'next'
 import { Grid } from '@radix-ui/themes'
-import PollAnswering from './_components/PollAnswering'
-import QuizAnswering from './_components/QuizAnswering'
+import PollParticipation from './_components/PollParticipation'
+import QuizParticipation from './_components/QuizParticipation'
 import { RealtimeActivityProvider } from '@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext'
 
 
@@ -30,8 +30,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <TLEditorProvider>
                             <NavProvider>
                                 {children}
-                                <PollAnswering />
-                                <QuizAnswering />
+                                <PollParticipation />
+                                <QuizParticipation />
                             </NavProvider>
                         </TLEditorProvider>
                     </PresencesProvider>

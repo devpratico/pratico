@@ -86,13 +86,19 @@ export function useSyncParticipationQuizService(): {
 
     // Put the snapshot in the store
     useEffect(() => {
-        if (snapshot?.type !== 'quiz') return
+        if (snapshot?.type !== 'quiz') {
+            useQuizParticipationStore.getState().setSnapshot(null)
+            return
+        }
         useQuizParticipationStore.getState().setSnapshot(snapshot)
     }, [snapshot, userId])
 
     // Put the quiz in the store
     useEffect(() => {
-        if (!activity || activity.type !== 'quiz') return
+        if (!activity || activity.type !== 'quiz') {
+            useQuizParticipationStore.getState().setQuiz(null)
+            return
+        }
         useQuizParticipationStore.getState().setQuiz(activity)
     }, [activity])
 
