@@ -1,5 +1,5 @@
 import logger from "@/app/_utils/logger";
-import { Container, Flex, Grid, ScrollArea, Section, Text, Heading } from "@radix-ui/themes";
+import { Container, Grid, ScrollArea, Section, Text, Heading } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
@@ -43,18 +43,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         const formatter = await getFormatter();
         sessionDateSubtitle = `Session du ${formatter.dateTime(sessionDate, {dateStyle: "short"})}`;
     }
-        
-    const {data: { user }} = await supabase.auth.getUser();
-		if (user)
-		{
-        userId = user.id;
-    }
-    else
-    {	
-      logger.error('supabase:database', 'CapsuleSessionsReportServer', 'User not found');
-      throw new Error("L'utilisateur n'a pas été trouvé");
-    }
-
+    
 	return (
 		<ScrollArea>
 			<Container>
@@ -70,7 +59,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 
                     <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
-                        <CapsuleWidget userId={userId} capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
+                        <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
                     </Grid>
 
                 </Section>

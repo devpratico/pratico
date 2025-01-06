@@ -15,13 +15,12 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
     const userId = (await getUser()).data?.user?.id;
     if (!userId) {
         logger.error('supabase:auth', 'CapsuleWidget', 'No user id');
-        throw new Error('No user id');
+		throw new Error("L'utilisateur n'a pas été trouvé");
     }
-
 
 	logger.log('supabase:database', 'CapsuleWidget', 'userId', userId, 'capsuleId', capsuleId);
 	if (!capsuleId)
-		throw new Error("capsuleId is missing");
+		throw new Error("capsuleId n'existe pas");
 	const { data: capsuleData } = await supabase.from('capsules').select('created_at').eq("created_by", userId).eq('id', capsuleId).single();
 	if (capsuleData)
 	{
