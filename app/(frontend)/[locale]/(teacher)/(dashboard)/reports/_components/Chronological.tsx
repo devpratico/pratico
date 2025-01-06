@@ -1,22 +1,23 @@
 "use client";
+
 import { Table } from "@radix-ui/themes";
 import { TableCell } from "./TableCell";
 import { SessionInfoType } from "../[room_id]/page";
-import { useFormatter } from "next-intl";
 import { Users } from "lucide-react";
+import logger from "@/app/_utils/logger";
+import { useState } from "react";
 
 export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
-	const formatter = useFormatter();
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const [ reports, setReports ] = useState<SessionInfoType[]>(sessions);
 	const sortedSessions = order
-		? [...sessions].sort((a, b) => {
+		? [...reports].sort((a, b) => {
 			return (new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 		})
-		: [...sessions].sort((a, b) => {
+		: [...reports].sort((a, b) => {
 		return (new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 	});
 
-
+	logger.log("next:page", "ReportsPage", "sortedSessions", sortedSessions);
 	return (
 		<Table.Root variant="surface">
 			<Table.Header>
@@ -36,7 +37,8 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						<TableCell
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
-							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: "short", timeStyle: "short", timeZone: timezone }), status: session.status === "open" ? "En cours" : "Terminé"}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: session.created_at, status: session.status === "open" ? "En cours" : "Terminé"}}
+							onDelete={(roomId) => setReports(reports.filter((r) => r.id !== roomId))}
 						/>
 					);
 				})

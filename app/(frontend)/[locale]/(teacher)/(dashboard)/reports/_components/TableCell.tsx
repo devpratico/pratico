@@ -5,10 +5,12 @@ import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Trash2 } from "lucide-react";
+import { useFormatter } from "next-intl";
+import createClient from "@/supabase/clients/client";
 
 export type ReportsProps = {
 	roomId: string,
-	nbParticipant: number
+	nbParticipant: number,
 }
 
 export type TableCellProps = {
@@ -18,9 +20,13 @@ export type TableCellProps = {
 	status: string, //  "En cours" | "Terminé"
 }
 
-export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProps, infos: TableCellProps}) {
+export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
 	const router = useRouter();
+	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const supabase = createClient();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
+
 	useEffect(() => {
 		setIsClosed(infos.roomClosed);
 	  }, [infos.roomClosed]);
@@ -37,16 +43,18 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 		}
 	};
 
-	const handleRemoveReport = (e: React.MouseEvent) => {
+	const handleRemoveReport = async (e: React.MouseEvent) => {
 		e.stopPropagation();
 		logger.log("next:page", "CapsuleSessionReportPage", "handleRemoveReport: remove report");
+		await supabase.from('rooms').delete().eq('id', navigationsIds.roomId);
+		onDelete(navigationsIds.roomId);
 	};
 
 	return (
 		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
 			<Table.Cell>
-					{infos.date}
+				{formatter.dateTime(new Date(infos.date), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone})}
 			</Table.Cell>
 			<Table.Cell>
 				{

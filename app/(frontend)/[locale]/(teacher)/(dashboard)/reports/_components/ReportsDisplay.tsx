@@ -10,6 +10,7 @@ export function ReportsDisplay ({sessions}: {sessions: SessionInfoType[]}) {
 	const options = ["+ récent", "- récent"];
 	const [ option, setOption ] = useState("+ récent");
 	const [ display, setDisplay ] = useState(<></>);
+
 	useEffect(() => {
 		switch (option) {
 			case "- récent":
@@ -17,7 +18,6 @@ export function ReportsDisplay ({sessions}: {sessions: SessionInfoType[]}) {
 				break ;
 			default:
 				setDisplay(<Chronological sessions={sessions} order={false} />);
-
 		};
 	}, [option, sessions]);
 	return (
