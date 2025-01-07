@@ -27,7 +27,6 @@ export type SessionInfoType = {
 
 export default async function SessionDetailsPage ({ params }: { params: Params }) {
 	const roomId: string = params.room_id;
-    let userId: string | null = null;
     let capsuleTitle = "Sans titre";
     let sessionDateSubtitle = "Date inconnue";
 
