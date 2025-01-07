@@ -78,18 +78,18 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
                     {children}
                 </AspectRatio>
             </Card>
-			<Flex direction="column" gap='1'>
-				<Heading as='h2' size='3'>{title}</Heading>
-				<Flex justify="between" align="center" gap='1'>
+			<Flex justify="between" align="end" gap='1'>
+				<Flex direction="column" gap='1'>
+					<Heading as='h2' size='3'>{title}</Heading>
 					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
-					{
-						roomOpen
-						? <Tooltip content="Session en cours">
-							 <Radio color="var(--red-9)" />
-						</Tooltip>
-						: null
-					}
 				</Flex>
+				{
+					roomOpen
+					? <Tooltip content="Session en cours">
+						<Radio color="var(--red-9)" />
+					</Tooltip>
+					: null
+				}
 			</Flex>			
         </Flex>
     )

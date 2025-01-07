@@ -20,7 +20,7 @@ export type TableCellProps = {
 	status: string, //  "En cours" | "Terminé"
 }
 
-export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
+export function TableRow ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
 	const router = useRouter();
 	const supabase = createClient();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
@@ -66,7 +66,7 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 				{
 					infos.status === "en cours"
 					? <Badge color="red" variant="soft" radius="full">
-						<Radio color="var(--red-9)" size="15" />{infos.status}
+						<Radio size="15" />{infos.status}
 					</Badge>
 					: <Badge color="gray" variant="soft" radius="full">
 						{infos.status}

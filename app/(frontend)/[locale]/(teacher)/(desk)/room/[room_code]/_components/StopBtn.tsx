@@ -37,14 +37,11 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
                 setDisabled(true)
                 if (!roomId || !capsuleId) return
                 try {
-                    const {data} = await supabase.from('rooms').select('*').eq('id', roomId).single();
-                    if (data)
-                    {
-                        const roomsCopy = {...data,
-                            end_of_session: new Date().toISOString()
-                        }
-                        await supabase.from('rooms').update(roomsCopy).eq('id', roomId);
-                    }
+                    
+                    const end_of_session = new Date().toISOString()
+                    const { error } = await supabase.from('rooms').update({end_of_session}).eq('id', roomId);
+                    if (error)
+                        logger.error('supabase:database', 'Error stopping session', error);
                     await stopRoom(roomId)
                     router.push(`/capsule/${capsuleId}`)
                 } catch (error) {

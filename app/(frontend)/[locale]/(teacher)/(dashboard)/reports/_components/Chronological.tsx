@@ -1,7 +1,7 @@
 "use client";
 
 import { Table } from "@radix-ui/themes";
-import { TableCell } from "./TableCell";
+import { TableRow } from "./TableRow";
 import { SessionInfoType } from "../[room_id]/page";
 import { Users } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 			{
 				sortedSessions?.map((session, index) => {
 					return (
-						<TableCell
+						<TableRow
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
 							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone}), status: session.status === "open" ? "en cours" : "terminé"}}
