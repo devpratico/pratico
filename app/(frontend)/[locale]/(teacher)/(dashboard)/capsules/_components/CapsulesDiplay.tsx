@@ -1,6 +1,6 @@
 "use client";
+
 import { AspectRatio, Box, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
-import { CapsuleType } from "../../reports/page";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import Menu from "./Menu";
@@ -8,8 +8,10 @@ import { TLEditorSnapshot } from "tldraw";
 import { useEffect, useState } from "react";
 import { OptionsMenu } from "../../_components/OptionsMenu";
 import CreateCapsuleBtn from "./CreateCapsuleBtn";
+import { Radio } from "lucide-react";
+import { ExtendedCapsuleType } from "../page";
 
-export function CapsulesDisplay ({capsules}: {capsules: CapsuleType[] | any[]}) {
+export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | any[]}) {
 	const options = ["+ récent", "- récent"];
 	const [ option, setOption ] = useState("+ récent");
 	const [ sortedCapsules, setSortedCapsules ] = useState(capsules);
@@ -27,6 +29,7 @@ export function CapsulesDisplay ({capsules}: {capsules: CapsuleType[] | any[]}) 
 
 	}, [option, capsules]);
 
+	console.log("capsules", capsules);
 	return (
 		<>
 			<Flex justify={"between"} mb='4'>
@@ -40,13 +43,13 @@ export function CapsulesDisplay ({capsules}: {capsules: CapsuleType[] | any[]}) 
 						const title = cap.title || "Sans titre"
 						const created_at = new Date(cap.created_at)
 						const snap = cap.tld_snapshot?.[0] as TLEditorSnapshot | undefined// as TLStoreSnapshot | undefined
-
+						const roomOpen = cap.roomOpen
 						let url = `/capsule/${id}`
 
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
-									<Miniature title={title} createdAt={created_at}>
+									<Miniature title={title} createdAt={created_at} roomOpen={roomOpen}>
 										{snap && <Thumbnail snapshot={snap} scale={0.2} />}
 									</Miniature>
 								</Link>
@@ -62,11 +65,12 @@ export function CapsulesDisplay ({capsules}: {capsules: CapsuleType[] | any[]}) 
 interface MiniatureProps {
     title?: string;
     createdAt?: Date;
+	roomOpen?: boolean;
     children?: React.ReactNode;
 }
 
 
-function Miniature({ title, createdAt, children }: MiniatureProps) {
+function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
     return (
         <Flex direction='column' gap='1'>
             <Card style={{padding:'0'}}>
@@ -74,8 +78,17 @@ function Miniature({ title, createdAt, children }: MiniatureProps) {
                     {children}
                 </AspectRatio>
             </Card>
-            <Heading as='h2' size='3'>{title}</Heading>
-            <Text size='1'>{createdAt?.toLocaleDateString()}</Text>
+			<Flex direction="column" gap='1'>
+				<Heading as='h2' size='3'>{title}</Heading>
+				<Flex justify="between" align="center" gap='1'>
+					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
+					{
+						roomOpen
+						? <Radio color="var(--red-9)" />
+						: null
+					}
+				</Flex>
+			</Flex>			
         </Flex>
     )
 }

@@ -9,15 +9,26 @@ import Menu from "./_components/Menu";
 import CreateCapsuleBtn from "./_components/CreateCapsuleBtn";
 import { CapsulesDisplay } from "./_components/CapsulesDiplay";
 import { CapsuleType } from "../reports/page";
+import createClient from "@/supabase/clients/server";
 
-
+export type ExtendedCapsuleType = CapsuleType & { roomOpen: boolean }
 export default async function Page() {
     const { user, error } = await fetchUser()
+    const supabase = createClient();
 
-    let capsules: CapsuleType[] = []
+    let capsules: ExtendedCapsuleType[] = []
     if (user) {
         const { data, error } = await fetchCapsulesData(user.id)
-        if (data) capsules = data
+        if (data) {
+            await Promise.all(data.map(async (capsule) => {
+                const { data: roomOpen } = await supabase.from('rooms').select('status').eq('capsule_id', capsule.id).eq('status', 'open');
+                if (roomOpen && roomOpen.length > 0) {
+                    capsules.push({ ...capsule, roomOpen: true })
+                } else {
+                    capsules.push({ ...capsule, roomOpen: false })
+                }
+            }));
+        }
     }
 
     return (
