@@ -31,7 +31,7 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
             radius='large'
             loading={loading}
             style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
-            disabled={disabled}
+            //disabled={disabled}
             onClick={async () => { 
                 setLoading(true)
                 setDisabled(true)
