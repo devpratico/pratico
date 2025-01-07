@@ -7,6 +7,7 @@ import { stopRoom } from "@/app/(backend)/api/room/room.client";
 import { useState } from "react";
 import { useDisable } from "@/app/(frontend)/_hooks/useDisable";
 import createClient from "@/supabase/clients/client";
+import { Radio } from "lucide-react";
 
 interface StopBtnProps {
     message?: string;
@@ -36,14 +37,14 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
                 setDisabled(true)
                 if (!roomId || !capsuleId) return
                 try {
-					const {data} = await supabase.from('rooms').select('*').eq('id', roomId).single();
-					if (data)
-					{
-						const roomsCopy = {...data,
-							end_of_session: new Date().toISOString()
-						}
-						await supabase.from('rooms').update(roomsCopy).eq('id', roomId);
-					}
+                    const {data} = await supabase.from('rooms').select('*').eq('id', roomId).single();
+                    if (data)
+                    {
+                        const roomsCopy = {...data,
+                            end_of_session: new Date().toISOString()
+                        }
+                        await supabase.from('rooms').update(roomsCopy).eq('id', roomId);
+                    }
                     await stopRoom(roomId)
                     router.push(`/capsule/${capsuleId}`)
                 } catch (error) {
@@ -54,6 +55,7 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
                 }
             }}
         >
+            <Radio color="var(--red-9)" /> 
             {message}
         </Button>
     )
