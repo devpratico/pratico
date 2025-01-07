@@ -179,7 +179,12 @@ const usePollCreationStore = create<PollCreationStore>((set, get) => ({
             const currentPoll = state.currentPoll!
             const question = currentPoll.poll.questions.find(q => q.id === id)
             if (question) {
-                const newQuestion = { ...question, id: newQuestionId }
+
+                // Duplicate the choices, and change all of their ids
+                const newChoices = question.choices.map(choice => ({ ...choice, id: uniqueTimestampId('choice-') }))
+
+                const newQuestion: PollQuestion = { id: newQuestionId, text: question.text, choices: newChoices }
+                
                 const index = currentPoll.poll.questions.findIndex(q => q.id === id)
                 currentPoll.poll.questions.splice(index + 1, 0, newQuestion)
 

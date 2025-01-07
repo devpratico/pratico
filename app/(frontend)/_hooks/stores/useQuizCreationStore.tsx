@@ -140,7 +140,11 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
         set(produce<QuizCreationStore>(state => {
             const question = state.quiz!.questions.find(q => q.id === id)
             if (question) {
-                const newQuestion = { ...question, id: newQuestionId }
+                // Duplicate the choices, and change all of their ids
+                const newChoices = question.choices.map(choice => ({ ...choice, id: uniqueTimestampId('choice-') }))
+                
+                const newQuestion = { ...question, id: newQuestionId, choices: newChoices }
+
                 const index = state.quiz!.questions.findIndex(q => q.id === id)
                 state.quiz!.questions.splice(index + 1, 0, newQuestion)
                 state.currentQuestionId = newQuestionId
