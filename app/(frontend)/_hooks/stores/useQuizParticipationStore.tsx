@@ -70,7 +70,7 @@ const useQuizParticipationStore = create<Store>((set, get) => ({
 
         set(produce<State>(draft => {
             draft.answers = draft.answers.filter(a =>
-                !(a.choiceId == choiceId) && (a.userId == userId)
+                !((a.choiceId == choiceId) && (a.userId == userId))
             )
         }))
     }
