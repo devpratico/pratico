@@ -1,3 +1,6 @@
+import { random } from "lodash";
+
+
 /**
  * 
  * @param date the date to format
@@ -50,5 +53,5 @@ export const sanitizeUuid = (uuid: string | null | undefined) => {
 }
 
 export function uniqueTimestampId(prefix: string): string {
-    return prefix + Date.now().toString()
+    return prefix + Date.now().toString() + '-' + random(1000, 9999).toString();
 }
