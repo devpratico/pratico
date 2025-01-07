@@ -27,8 +27,7 @@ export default function Error({ error, reset}: { error: Error & { digest?: strin
 								</Callout.Icon>
 								<Callout.Text>
 									{
-                                        // process.env.NODE_ENV === 'development' ? error.message : error.digest
-										error.message
+                                        process.env.NODE_ENV === 'development' ? error.message : error.digest
 									}
 								</Callout.Text>
 							</Callout.Root>
