@@ -208,10 +208,11 @@ export const saveRoomParams = async (roomId: number, params: RoomParams) => {
 }
 
 
+// TODO: remove this to use a mutation hook
 export const saveActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
     const supabase = createClient()
 
-    logger.log('supabase:database', 'saveActivitySnapshot', 'saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
+    logger.log('supabase:database', 'saveActivitySnapshot', '⭐️ saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
 
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null

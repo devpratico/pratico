@@ -61,7 +61,7 @@ export interface SaveActivityReturn {
     error: string | null
 }
 
-
+// TODO: remove this to use a mutation hook
 export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<SaveActivityReturn> {
     const supabase = createClient()
 
@@ -86,7 +86,7 @@ export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<
     return { data, error: null }
 }
 
-
+// TODO: Remove this to use a queries hook
 export async function fetchActivity(id: number) {
     return await fetchActivityServer(id)
 }

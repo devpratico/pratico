@@ -1,5 +1,4 @@
 import logger from "@/app/_utils/logger"
-import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
 import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
@@ -7,6 +6,7 @@ import { useRoom } from "../contexts/useRoom"
 import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
 import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
+import { useRoomMutation } from "../mutations/useRoomMutation"
 
 
 export function usePollAnimationService(): {
@@ -34,7 +34,7 @@ export function usePollAnimationService(): {
 
         const newAnswer: PollUserAnswer = {
             userId: userId,
-            questionId: currentQuestionId,
+            questionId: currentQuestionId, 
             choiceId: choiceId,
             timestamp: Date.now()
         }
@@ -172,6 +172,7 @@ export function useClosePollService(): {
 } {
     const [isPending, setIsPending] = useState(false)
     const roomId = useRoom().room?.id
+    const { saveActivitySnapshot } = useRoomMutation()
 
     return {
         closePoll: async () => {
@@ -181,12 +182,12 @@ export function useClosePollService(): {
 
             usePollAnimationStore.getState().closePoll()
 
-            const { error } = await saveActivitySnapshot(roomId, null)
+            const { error } = await saveActivitySnapshot(`${roomId}`, null)
             setIsPending(false)
 
             if (error) usePollAnimationStore.setState(previousState) // Rollback
 
-            return { error }
+            return { error: error?.message || null }
         },
 
         isPending: isPending
@@ -241,6 +242,7 @@ function useSavePollSnapshot() :{
 } {
     const [isSaving, setIsSaving] = useState(false)
     const roomId = useRoom().room?.id
+    const { saveActivitySnapshot } = useRoomMutation()
 
     const save = useCallback(async () => {
         if (!roomId) return { error: 'No room id'}
@@ -258,9 +260,9 @@ function useSavePollSnapshot() :{
         }
         
         setIsSaving(true)
-        const { error } = await saveActivitySnapshot(roomId, snapshot)
+        const { error } = await saveActivitySnapshot(`${roomId}`, snapshot)
         setIsSaving(false)
-        return { error }
+        return { error: error?.message || null }
     }, [roomId])
 
     return { save, isSaving }

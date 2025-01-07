@@ -1,11 +1,12 @@
+'use client'
 import { useCallback, useState } from 'react'
 import { Activity } from '@/app/_types/activity'
-import { fetchActivity } from '@/app/(backend)/api/activity/activitiy.client'
 import usePollCreationStore from '../stores/usePollCreationStore'
 import useQuizCreationStore from '../stores/useQuizCreationStore'
 import logger from '@/app/_utils/logger'
 import { Poll } from '@/app/_types/poll'
 import { Quiz } from '@/app/_types/quiz'
+import useActivityQuery from '../queries/useActivityQuery'
 
 
 export default function useOpenActivityCreationService(): {
@@ -13,6 +14,7 @@ export default function useOpenActivityCreationService(): {
     isPending: boolean
 } {
     const [isPending, setIsPending] = useState(false)
+    const { fetchActivity } = useActivityQuery()
 
     const openActivity = useCallback(async (activityId: number) => {
         setIsPending(true)
@@ -21,7 +23,7 @@ export default function useOpenActivityCreationService(): {
 
         if (error || !data?.object) {
             logger.error('supabase:database', `Error opening activity ${activityId}`, error)
-            return { error: error ?? 'No data found' }
+            return { error: error?.message ?? 'No data found' }
         }
 
         const activity = data.object as Activity

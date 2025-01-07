@@ -1,13 +1,14 @@
 'use client'
 import logger from "@/app/_utils/logger"
-import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
-import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useState, useCallback } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { Poll, PollSnapshot } from "@/app/_types/poll"
+import useActivityQuery from "../queries/useActivityQuery"
+import { useRoomMutation } from "../mutations/useRoomMutation"
+
 
 type AsyncOperationResult = { error: string | null }
 
@@ -17,6 +18,8 @@ export function useStartActivityService(): {
 } {
     const [isPending, setIsPending] = useState(false)
     const roomId = useRoom().room?.id
+    const { fetchActivity } = useActivityQuery()
+    const { saveActivitySnapshot } = useRoomMutation()
 
     const start = useCallback(async (activityId: string | number) => {
         logger.log('zustand:store', 'useStartActivityService.tsx', 'Starting activity', activityId)
@@ -41,10 +44,12 @@ export function useStartActivityService(): {
             const quiz = data.object as Quiz
             const state = useQuizAnimationStore.getState()
 
-            // Update the store
+
+            // Update the store            
+            state.setQuestionId(quiz.questions[0].id)
             state.setQuiz(quiz)
             state.setActivityId(id)
-            state.setQuestionId(quiz.questions[0].id)
+
 
             // Save the new state in the database
             const snapshot: QuizSnapshot = {
@@ -57,13 +62,14 @@ export function useStartActivityService(): {
 
             logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving quiz snapshot in database', snapshot)
 
-            const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
+            const { error: saveError } = await saveActivitySnapshot(`${roomId}`, snapshot)
             if (saveError) {
                 logger.error('zustand:store', 'useStartActivityService.tsx', 'Error saving quiz: ' + saveError)
                 state.closeQuiz() // Rollback the store
                 setIsPending(false)
                 return { error: 'Error saving quiz: ' + saveError }
             }
+
             
         } else if (data.type === 'poll') {
             const poll = data.object as Poll
@@ -85,7 +91,7 @@ export function useStartActivityService(): {
 
             logger.log('zustand:store', 'useStartActivityService.tsx', 'Saving poll snapshot in database', snapshot)
 
-            const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
+            const { error: saveError } = await saveActivitySnapshot(`${roomId}`, snapshot)
             if (saveError) {
                 logger.error('zustand:store', 'useStartActivityService.tsx', 'Error saving poll: ' + saveError)
                 state.closePoll() // Rollback the store
@@ -106,3 +112,5 @@ export function useStartActivityService(): {
 
     return { start, isPending }
 }
+
+

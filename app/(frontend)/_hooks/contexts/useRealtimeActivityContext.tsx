@@ -1,8 +1,6 @@
 'use client'
-import { Poll } from "@/app/_types/poll"
-import { Quiz } from "@/app/_types/quiz"
-import { PollSnapshot } from "@/app/_types/poll"
-import { QuizSnapshot } from "@/app/_types/quiz"
+import { Poll, PollSnapshot } from "@/app/_types/poll"
+import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { useRoom } from "./useRoom"
 import { useState, useEffect, useMemo, createContext, useContext } from "react"
 import logger from "@/app/_utils/logger"
@@ -41,6 +39,7 @@ function useRealtimeSnapshot(): {
                 return
             }
             const _snapshot = data!.activity_snapshot as unknown as ActivitySnapshot
+            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', _snapshot)
             setSnapshot(_snapshot)
         })
     }, [roomId])
@@ -63,6 +62,7 @@ function useRealtimeSnapshot(): {
             setError(null)
 
             const newSnapshot = payload.new.activity_snapshot as unknown as ActivitySnapshot | null
+            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Realtime snapshot set to', newSnapshot)
             setSnapshot(newSnapshot)
             
         }).subscribe()
@@ -92,20 +92,26 @@ function useRealtimeActivity(): {
     // When activityId change in the snapshot, fetch the new activity
     useEffect(() => {
         setError(null)
+        logger.log('react:hook', 'useRealtimeActivity.tsx', 'Activity id changed to', activityId)
 
         if (!activityId) {
             setActivity(null)
             return
         }
         setIsSyncing(true)
+
+        // TODO : use a route handler
         fetchActivity(activityId).then(({data, error}) => {
+            console.log('⭐️')
             setIsSyncing(false)
             if (error) {
+                logger.error('react:hook', 'useRealtimeActivity.tsx', 'Error fetching activity', error)
                 setError(error)
                 return
             }
             const _activity = data!.object as Poll | Quiz | null
             setActivity(_activity)
+            logger.log('react:hook', 'useRealtimeActivity.tsx', 'Activity set to', _activity)
         })
 
     }, [activityId])

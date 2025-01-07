@@ -1,6 +1,6 @@
 'use client'
 import CardDialog from '@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog'
-import useQuizAnimation from '@/app/(frontend)/_hooks/stores/useQuizAnimationStore'
+import useQuizAnimationStore from '@/app/(frontend)/_hooks/stores/useQuizAnimationStore'
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card, ButtonProps } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
@@ -14,13 +14,13 @@ export default function QuizAnimation() {
     const { isSyncing, error } = useSyncAnimationQuizService()
 
     // Store state
-    const shouldShowQuiz = useQuizAnimation(state => state.activityId != null)
-    const quiz = useQuizAnimation(state => state.quiz)
-    const currentQuestionId = useQuizAnimation(state => state.currentQuestionId)
+    const shouldShowQuiz = useQuizAnimationStore(state => state.activityId != null)
+    const quiz = useQuizAnimationStore(state => state.quiz)
+    const currentQuestionId = useQuizAnimationStore(state => state.currentQuestionId)
     const currentQuestion = quiz?.questions.find(q => q.id == currentQuestionId)
-    const questionState = useQuizAnimation(state => state.state)
+    const questionState = useQuizAnimationStore(state => state.state)
     const currentQuestionIndex = quiz?.questions.findIndex(q => q.id == currentQuestionId)
-    const answers = useQuizAnimation(state => state.answers)
+    const answers = useQuizAnimationStore(state => state.answers)
     const totalVotes = useMemo(() => {
         const thisQuestionAnswers = answers.filter(a => a.questionId == currentQuestionId)
         const votersIds = thisQuestionAnswers.map(a => a.userId)

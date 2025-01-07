@@ -1,9 +1,8 @@
 'use client'
-import { saveActivity, fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import { saveActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import usePollCreationStore from "../stores/usePollCreationStore"
 import logger from "@/app/_utils/logger"
 import { useState } from "react"
-import { Poll } from "@/app/_types/poll"
 
 
 /**
