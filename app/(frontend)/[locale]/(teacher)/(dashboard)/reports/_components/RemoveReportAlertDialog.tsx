@@ -21,14 +21,12 @@ export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, set
 
                 <Flex gap="3" mt="4" justify="end">
                     <AlertDialog.Cancel>
-                        <Button variant="soft" color="gray" onClick={() => setOpen(false)}>
+                        <Button variant="soft" color="gray">
                             Annuler
                         </Button>
                     </AlertDialog.Cancel>
                     <AlertDialog.Action>
-                        <Button color="red" onClick={() => {
-                            setDeleteOk(true);
-                            setOpen(false);}}>
+                        <Button color="red" onClick={() => setDeleteOk(true)}>
                             Supprimer
                         </Button>
                     </AlertDialog.Action>
