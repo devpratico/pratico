@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { RemoveReportAlertDialog } from "./RemoveReportAlertDialog";
 import createClient from "@/supabase/clients/client";
+import { Radio } from "lucide-react";
 
 export type ReportsProps = {
 	roomId: string,
@@ -63,12 +64,12 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 			</Table.Cell>
 			<Table.Cell>
 				{
-					infos.status === "En cours"
-					? <Badge color="violet" variant="soft" radius="full">
-						{infos.status}
+					infos.status === "en cours"
+					? <Badge color="red" variant="soft" radius="full">
+						<Radio color="var(--red-9)" size="15" />{infos.status}
 					</Badge>
-					: <Badge color="jade" variant="soft" radius="full">
-							{infos.status}
+					: <Badge color="gray" variant="soft" radius="full">
+						{infos.status}
 					</Badge>
 				}				
 			</Table.Cell>

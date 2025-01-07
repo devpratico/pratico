@@ -47,7 +47,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 						<TableCell
 							key={index}
 							navigationsIds={{roomId: session.id, nbParticipant: session.numberOfParticipant}}
-							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone}), status: session.status === "open" ? "En cours" : "Terminé"}}
+							infos={{roomClosed: session.status === "closed", title: session.capsule_title || "", date: formatter.dateTime(new Date(session.created_at), { dateStyle: 'short', timeStyle: 'short', timeZone: timezone}), status: session.status === "open" ? "en cours" : "terminé"}}
 							onDelete={(roomId) => setReports(reports.filter((r) => r.id !== roomId))}
 						/>
 					);

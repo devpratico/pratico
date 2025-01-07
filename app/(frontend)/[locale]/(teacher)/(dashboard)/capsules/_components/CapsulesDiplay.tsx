@@ -1,6 +1,6 @@
 "use client";
 
-import { AspectRatio, Box, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
+import { AspectRatio, Box, Card, Flex, Grid, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import Menu from "./Menu";
@@ -84,7 +84,9 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
 					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
 					{
 						roomOpen
-						? <Radio color="var(--red-9)" />
+						? <Tooltip content="Session en cours">
+							 <Radio color="var(--red-9)" />
+						</Tooltip>
 						: null
 					}
 				</Flex>
