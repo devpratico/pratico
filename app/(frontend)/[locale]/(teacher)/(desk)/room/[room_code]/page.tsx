@@ -27,8 +27,9 @@ export default async function Page({ params: { room_code } }: { params: { room_c
     }
     if (roomData && roomData.created_by && user?.id !== roomData?.created_by)
 		redirect(`/classroom/${room_code}`);
-	else
+	else if (!roomData)
 		throw new Error("La session est terminée ou n'existe pas");
+
     return (
         <>
 			<TopBarPortal>
