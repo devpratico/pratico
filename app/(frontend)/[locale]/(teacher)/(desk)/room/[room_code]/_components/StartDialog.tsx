@@ -10,10 +10,6 @@ import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useUser } from "@/app/(frontend)/_hooks/useUser";
 import GoPremiumBtn from "../../../../_components/GoPremiumBtn";
-import createClient from "@/supabase/clients/client";
-import logger from "@/app/_utils/logger";
-import { SessionInfoType } from "../../../../(dashboard)/reports/[room_id]/page";
-
 
 export default function StartDialog() {
     const { room_code } = useParams() as { room_code: string }
@@ -22,34 +18,6 @@ export default function StartDialog() {
     const [copyMessage, setCopyMessage] = useState('Copier')
     const [open, setOpen] = useState(true)
     const { isSubscribed } = useUser()
-    const supabase = createClient();
-    const { user } = useUser();
-
-    useEffect(() => {
-        const getReportData = async () => {
-            if (!user)
-                return;
-            let capsuleTitle: string | null = null;
-            const { data: roomData, error: roomError } = await supabase.from('rooms').select('id, created_at, status, capsule_id').eq("created_by", user.id).eq('code', room_code).single();
-            if (roomError) {
-                logger.log("next:page", "TeacherViewPage", "room error", roomError);
-                throw (roomError);
-            }
-            if (roomData)
-            {
-                if (roomData.capsule_id)
-                {
-                    const { data: capsuleData, error: capsuleError } = await supabase.from("capsules").select("title").eq("id", roomData.capsule_id).single();
-                    if (!capsuleData || capsuleError)
-                        logger.error('supabase:database', 'ReportsPage', capsuleError ? capsuleError : 'No capsule data');
-                    else
-                        capsuleTitle = capsuleData.title;
-                }
-                const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('id').eq('room_id', roomData.id);
-            }
-        };
-        getReportData();
-    }, [room_code, supabase, user]);
 
     const link = baseUrl + '/' + room_code
     const linkWithoutProtocol = link.replace(/^https?:\/\//, '')

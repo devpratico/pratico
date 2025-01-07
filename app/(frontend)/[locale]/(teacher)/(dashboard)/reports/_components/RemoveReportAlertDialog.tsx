@@ -14,17 +14,24 @@ export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, set
                 </IconButton>
             </AlertDialog.Trigger>
             <AlertDialog.Content>
-                <Flex direction="column" gap="3" justify="center">
-                    <AlertDialog.Title align="center">{`Supprimer le rapport du ${date} ?`}</AlertDialog.Title>
-                    <AlertDialog.Description />
-                    <Flex gap="5" justify="center">
-                        <Button onClick={() => {
+                <AlertDialog.Title>{`Supprimer le rapport du ${date}`}</AlertDialog.Title>
+                <AlertDialog.Description>
+                    Etes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible.
+                </AlertDialog.Description>
+
+                <Flex gap="3" mt="4" justify="end">
+                    <AlertDialog.Cancel>
+                        <Button variant="soft" color="gray" onClick={() => setOpen(false)}>
+                            Annuler
+                        </Button>
+                    </AlertDialog.Cancel>
+                    <AlertDialog.Action>
+                        <Button color="red" onClick={() => {
                             setDeleteOk(true);
-                            setOpen(false);
-                        }}>Supprimer</Button>
-                        <Button variant="ghost" color="red" style={{ margin: "0px" }}
-                            onClick={() => setOpen(false)}>Annuler</Button>
-                    </Flex>       
+                            setOpen(false);}}>
+                            Supprimer
+                        </Button>
+                    </AlertDialog.Action>
                 </Flex>
             </AlertDialog.Content>
         </AlertDialog.Root>
