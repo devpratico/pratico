@@ -1,6 +1,6 @@
 'use client'
 import { Grid, Heading, Flex, Button, Text, Code, Box, IconButton, VisuallyHidden, Callout, Strong } from "@radix-ui/themes";
-import { Copy, QrCode, Star } from "lucide-react";
+import { Copy, QrCode } from "lucide-react";
 import QRCode from 'react-qr-code';
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -9,9 +9,7 @@ import { useParams } from "next/navigation";
 import CardDialog from "../../../_components/CardDialog";
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useUser } from "@/app/(frontend)/_hooks/useUser";
-import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton";
 import GoPremiumBtn from "../../../../_components/GoPremiumBtn";
-
 
 export default function StartDialog() {
     const { room_code } = useParams() as { room_code: string }

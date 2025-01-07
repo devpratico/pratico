@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useDisable } from "@/app/(frontend)/_hooks/useDisable";
 import createClient from "@/supabase/clients/client";
 
-
 interface StopBtnProps {
     message?: string;
     variant?: "surface" | "outline" | "classic" | "solid" | "soft" | "ghost"
@@ -32,7 +31,7 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
             loading={loading}
             style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
             disabled={disabled}
-            onClick={async () => { 
+            onClick={async () => {
                 setLoading(true)
                 setDisabled(true)
                 if (!roomId || !capsuleId) return
@@ -44,7 +43,6 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
 							end_of_session: new Date().toISOString()
 						}
 						await supabase.from('rooms').update(roomsCopy).eq('id', roomId);
-
 					}
                     await stopRoom(roomId)
                     router.push(`/capsule/${capsuleId}`)

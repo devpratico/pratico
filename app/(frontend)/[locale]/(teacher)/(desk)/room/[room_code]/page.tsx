@@ -20,13 +20,16 @@ export default async function Page({ params: { room_code } }: { params: { room_c
         logger.log('next:page', 'User info missing or error fetchingUser', userError ? userError : null);
         return (null);
     }
-    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).single()
+    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).eq("status", "open").maybeSingle()
     if (roomError) {
         logger.log("next:page", "TeacherViewPage", "room error", roomError);
         throw (roomError);
     }
-    if (roomData.created_by && user?.id !== roomData?.created_by)
+    if (roomData && roomData.created_by && user?.id !== roomData?.created_by)
 		redirect(`/classroom/${room_code}`);
+	else if (!roomData)
+		throw new Error("La session est terminée ou n'existe pas");
+
     return (
         <>
 			<TopBarPortal>

@@ -1,14 +1,15 @@
 "use client";
 
-import { Badge, Flex, Table, Text } from "@radix-ui/themes";
+import { Badge, Table, Text } from "@radix-ui/themes";
 import logger from "@/app/_utils/logger";
 import { useEffect, useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
-import { User, Users } from "lucide-react";
+import { RemoveReportAlertDialog } from "./RemoveReportAlertDialog";
+import createClient from "@/supabase/clients/client";
 
 export type ReportsProps = {
 	roomId: string,
-	nbParticipant: number
+	nbParticipant: number,
 }
 
 export type TableCellProps = {
@@ -18,12 +19,16 @@ export type TableCellProps = {
 	status: string, //  "En cours" | "Terminé"
 }
 
-export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProps, infos: TableCellProps}) {
+export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
 	const router = useRouter();
+	const supabase = createClient();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
+	const [ deleteOk, setDeleteOk ] = useState(false);
+
 	useEffect(() => {
 		setIsClosed(infos.roomClosed);
 	  }, [infos.roomClosed]);
+
 	const handleClick = () => {
 		if (navigationsIds.roomId && infos.roomClosed)
 			router.push(`/reports/${navigationsIds.roomId}`);
@@ -35,11 +40,26 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 				logger.log("next:page", "CapsuleSessionReportPage", "handle click: The session is already opened");
 		}
 	};
+
+	useEffect(() => {
+		const handleRemoveReport = async () => {
+			logger.log("next:page", "CapsuleSessionReportPage", "handleRemoveReport: remove report");
+			if (deleteOk)
+			{
+				await supabase.from('rooms').delete().eq('id', navigationsIds.roomId);
+				onDelete(navigationsIds.roomId);
+				setDeleteOk(false);
+			};
+		};
+		if (deleteOk)
+			handleRemoveReport();
+	}, [deleteOk, navigationsIds.roomId, onDelete, supabase]);
+
 	return (
 		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
 			<Table.Cell>
-					{infos.date}
+				{infos.date}
 			</Table.Cell>
 			<Table.Cell>
 				{
@@ -52,12 +72,11 @@ export function TableCell ({navigationsIds, infos}: {navigationsIds: ReportsProp
 					</Badge>
 				}				
 			</Table.Cell>
-			<Table.Cell>
-				{
-					navigationsIds.nbParticipant > 1
-					? <Flex gap="1"><Text>{navigationsIds.nbParticipant}</Text><Users size="20" /></Flex>
-					: <Flex gap="1"><Text>{navigationsIds.nbParticipant}</Text><User size="20" /></Flex>
-				}
+			<Table.Cell align="center">
+				<Text>{navigationsIds.nbParticipant}</Text>
+			</Table.Cell>
+			<Table.Cell justify="end" onClick={(e) => e.stopPropagation()}>	
+				<RemoveReportAlertDialog date={infos.date} setDeleteOk={setDeleteOk} />
 			</Table.Cell>
 		</Table.Row>
 	);

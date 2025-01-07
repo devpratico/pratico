@@ -33,7 +33,7 @@ export default async function ReportsPage() {
 		}
 		await Promise.all(
 			roomData.map(async (elem) => {
-				const { data, error } = await supabase.from('attendance').select('*').eq('room_id', elem.id);
+				const { data, error } = await supabase.from('attendance').select('id').eq('room_id', elem.id);
 				if (!data || error) {
 					logger.error('supabase:database', 'ReportsPage', error ? error : 'No attendance data for this room');
 				}
