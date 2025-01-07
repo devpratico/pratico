@@ -35,7 +35,7 @@ export function Chronological ({sessions, order}: {sessions: SessionInfoType[], 
 					<Table.ColumnHeaderCell>Titre de la capsule</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Début de la session</Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell>Statut</Table.ColumnHeaderCell>
-					<Table.ColumnHeaderCell><Users size="16" /></Table.ColumnHeaderCell>
+					<Table.ColumnHeaderCell align="center"><Users size="16" /></Table.ColumnHeaderCell>
 					<Table.ColumnHeaderCell></Table.ColumnHeaderCell>
 				</Table.Row>
 			</Table.Header>

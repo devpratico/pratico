@@ -72,10 +72,10 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 					</Badge>
 				}				
 			</Table.Cell>
-			<Table.Cell>
+			<Table.Cell align="center">
 				<Text>{navigationsIds.nbParticipant}</Text>
 			</Table.Cell>
-			<Table.Cell style={{ display: 'flex', justifyContent: 'flex-end', gap: '2' }} onClick={(e) => e.stopPropagation()}>	
+			<Table.Cell justify="end" onClick={(e) => e.stopPropagation()}>	
 				<RemoveReportAlertDialog date={infos.date} setDeleteOk={setDeleteOk} />
 			</Table.Cell>
 		</Table.Row>
