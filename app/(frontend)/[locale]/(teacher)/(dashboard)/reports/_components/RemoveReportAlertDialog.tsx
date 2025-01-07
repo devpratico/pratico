@@ -1,13 +1,11 @@
 
-import { AlertDialog, Button, Flex, IconButton, Text } from "@radix-ui/themes";
+import { AlertDialog, Button, Flex, IconButton } from "@radix-ui/themes";
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
 
 export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, setDeleteOk: (deleteOk: boolean) => void}) {
-    const [ open, setOpen ] = useState(false);
 
     return (
-        <AlertDialog.Root open={open} onOpenChange={setOpen}>
+        <AlertDialog.Root>
             <AlertDialog.Trigger>
                 <IconButton variant="ghost">
                     <Trash2 size="20" />
@@ -18,7 +16,6 @@ export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, set
                 <AlertDialog.Description>
                     Etes-vous sûr de vouloir supprimer ce rapport ? Cette action est irréversible.
                 </AlertDialog.Description>
-
                 <Flex gap="3" mt="4" justify="end">
                     <AlertDialog.Cancel>
                         <Button variant="soft" color="gray">
