@@ -81,7 +81,7 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
 			<Flex direction="column" gap='1'>
 				<Heading as='h2' size='3'>{title}</Heading>
 				<Flex justify="between" align="baseline">
-					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
+					<Text color="gray" size='1'>{createdAt?.toLocaleDateString()}</Text>
 					{
 						roomOpen
 						? <Tooltip content="Session en cours, vous pouvez la relancer">

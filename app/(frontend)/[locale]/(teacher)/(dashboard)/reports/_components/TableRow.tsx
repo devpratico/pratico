@@ -61,7 +61,7 @@ export function TableRow ({navigationsIds, infos, onDelete}: {navigationsIds: Re
 		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
 			<Table.Cell >
-				<Text color="gray">{infos.date}</Text>
+				{infos.date}
 			</Table.Cell>
 			<Table.Cell>
 				{
