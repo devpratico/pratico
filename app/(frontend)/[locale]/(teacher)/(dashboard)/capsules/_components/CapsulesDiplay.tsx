@@ -1,6 +1,6 @@
 "use client";
 
-import { AspectRatio, Box, Card, Flex, Grid, Heading, Text, Tooltip } from "@radix-ui/themes";
+import { AspectRatio, Badge, Box, Card, Flex, Grid, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import Menu from "./Menu";
@@ -85,8 +85,10 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
 				</Flex>
 				{
 					roomOpen
-					? <Tooltip content="Session en cours">
-						<Radio style={{ "flexShrink": "0" }} color="var(--red-9)" />
+					? <Tooltip content="Session en cours, vous pouvez la relancer">
+						<Badge color="red" variant="soft" radius="full">
+							<Radio style={{ flexShrink: 0 }} size="15" />{"en cours"}
+						</Badge>
 					</Tooltip>
 					: null
 				}
