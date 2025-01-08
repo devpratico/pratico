@@ -25,14 +25,11 @@ export default function TryAnonymousBtn(props: ButtonProps) {
         
         // If already logged in a anonymously, don't sign in again (otherwise it creates a new anon account)
         if (isAnon) {
-            setIsLoading(false);
-            setDisabled(false);
+            
             router.push(nextUrl || '/capsules');
 
         } else {
             const { data, error } = await signInAnonymously();
-            setIsLoading(false);
-            setDisabled(false);
 
             if (error) {
                 logger.error('supabase:auth', 'Error signing in anonymously', error);
@@ -42,6 +39,8 @@ export default function TryAnonymousBtn(props: ButtonProps) {
                 router.push(nextUrl || '/capsules');
             }
         }
+        setIsLoading(false);
+        setDisabled(false);
     }
 
     return (

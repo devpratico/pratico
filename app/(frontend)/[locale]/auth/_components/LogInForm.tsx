@@ -34,12 +34,11 @@ export default function LogInForm() {
 
         logger.log('supabase:auth', 'Signing in with email', email);
         const { user, error } = await login({ email, password });
+        
 
         if (error || !user) {
             logger.error('supabase:auth', 'Error signing in with email', error);
             setErrorMessage(error || 'error signing in');
-            setDisabled(false);
-            setIsLoading(false);
             
         } else {
             //sendDiscordMessage(`🔑 **Connexion** de __${email}__`);
@@ -49,6 +48,9 @@ export default function LogInForm() {
                 router.push(nextUrl || '/capsules');
             }
         }
+
+        setDisabled(false);
+        setIsLoading(false);
     }
 
 

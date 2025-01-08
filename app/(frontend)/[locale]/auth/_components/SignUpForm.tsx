@@ -46,8 +46,6 @@ export default function SignUpForm() {
         if (error || !user) {
             logger.error('supabase:auth', 'Error signing up with email', error);
             setErrorMessage(error || 'error signing up');
-            setIsLoading(false);
-            setDisabled(false);
 
         } else {
             await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
@@ -59,6 +57,9 @@ export default function SignUpForm() {
                 router.push(nextUrl || '/capsules');
             }
         }
+
+        setIsLoading(false);
+        setDisabled(false);
     }
 
 
