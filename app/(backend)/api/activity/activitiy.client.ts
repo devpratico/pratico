@@ -92,6 +92,7 @@ export async function fetchActivity(id: number) {
 }
 
 
+// TODO: Remove this to use a queries hook
 export async function fetchSnapshot(id: number) {
     return await fetchSnapshotServer(id)
 }
