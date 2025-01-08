@@ -25,13 +25,13 @@ type ReturnType = {
 
 
 export default function useActivityQuery(): {
-    fetchActivity: (id: number) => Promise<ReturnType>
+    fetchActivity: (activityId: number) => Promise<ReturnType>
     isPending: boolean
 } {
 
-    const fetcher = useCallback(async (id: number) => {
+    const fetcher = useCallback(async (activityId: number) => {
         const supabase = createClient()
-        const { data, error } = await supabase.from('activities').select('*').eq('id', id).single()
+        const { data, error } = await supabase.from('activities').select('*').eq('id', activityId).single()
 
         if (error) return { data: null, error: error }
 
