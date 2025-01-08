@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useFormatter } from "next-intl";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 
-export function Chronological ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
+export function ReportsTable ({sessions, order}: {sessions: SessionInfoType[], order: boolean}) {
 	const router = useRouter();
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

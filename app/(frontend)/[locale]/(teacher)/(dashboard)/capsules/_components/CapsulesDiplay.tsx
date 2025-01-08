@@ -86,7 +86,7 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
 				{
 					roomOpen
 					? <Tooltip content="Session en cours">
-						<Radio color="var(--red-9)" />
+						<Radio style={{ "flexShrink": "0" }} color="var(--red-9)" />
 					</Tooltip>
 					: null
 				}
