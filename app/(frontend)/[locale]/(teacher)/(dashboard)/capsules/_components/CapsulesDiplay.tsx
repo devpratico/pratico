@@ -36,7 +36,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 				<CreateCapsuleBtn message='Créer' />
 				<OptionsMenu setOption={setOption} label="Trier par" options={options} />
 			</Flex>
-			<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='3'>
+			<Grid columns='repeat(auto-fill, minmax(200px, 1fr))' gap='5'>
 				{
 					sortedCapsules.map((cap) => {
 						const id = cap.id
@@ -78,20 +78,20 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
                     {children}
                 </AspectRatio>
             </Card>
-			<Flex justify="between" align="end" gap='1'>
-				<Flex direction="column" gap='1'>
-					<Heading as='h2' size='3'>{title}</Heading>
+			<Flex direction="column" gap='1'>
+				<Heading as='h2' size='3'>{title}</Heading>
+				<Flex justify="between">
 					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
+					{
+						roomOpen
+						? <Tooltip content="Session en cours, vous pouvez la relancer">
+							<Badge color="red" variant="soft" radius="full">
+								<Radio style={{ flexShrink: 0 }} size="15" />en cours
+							</Badge>
+						</Tooltip>
+						: null
+					}
 				</Flex>
-				{
-					roomOpen
-					? <Tooltip content="Session en cours, vous pouvez la relancer">
-						<Badge color="red" variant="soft" radius="full">
-							<Radio style={{ flexShrink: 0 }} size="15" />{"en cours"}
-						</Badge>
-					</Tooltip>
-					: null
-				}
 			</Flex>			
         </Flex>
     )
