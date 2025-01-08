@@ -80,7 +80,7 @@ function Miniature({ title, createdAt, roomOpen, children }: MiniatureProps) {
             </Card>
 			<Flex direction="column" gap='1'>
 				<Heading as='h2' size='3'>{title}</Heading>
-				<Flex justify="between">
+				<Flex justify="between" align="baseline">
 					<Text size='1'>{createdAt?.toLocaleDateString()}</Text>
 					{
 						roomOpen
