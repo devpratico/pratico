@@ -1,15 +1,9 @@
-import { ScrollArea, Grid, Card, Container, Section, AspectRatio, SegmentedControl, Flex, TextField, Box, IconButton, Heading, Text } from "@radix-ui/themes"
+import { ScrollArea, Container, Section, SegmentedControl, Flex, TextField, Box, IconButton } from "@radix-ui/themes"
 import { LayoutGrid, List, Search } from "lucide-react"
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
-import { fetchCapsulesDataAndRoomStatus, fetchCapsulesData } from "@/app/(backend)/api/capsule/capsule.server";
-import { TLEditorSnapshot } from "tldraw";
-import { Link } from "@/app/(frontend)/_intl/intlNavigation";
-import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
-import Menu from "./_components/Menu";
-import CreateCapsuleBtn from "./_components/CreateCapsuleBtn";
+import { fetchCapsulesDataAndRoomStatus } from "@/app/(backend)/api/capsule/capsule.server";
 import { CapsulesDisplay } from "./_components/CapsulesDiplay";
 import { CapsuleType } from "../reports/page";
-import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
 
 export type ExtendedCapsuleType = CapsuleType & { roomOpen: boolean }
