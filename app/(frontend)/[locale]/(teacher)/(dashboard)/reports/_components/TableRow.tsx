@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { RemoveReportAlertDialog } from "./RemoveReportAlertDialog";
 import createClient from "@/supabase/clients/client";
+import { Radio } from "lucide-react";
 
 export type ReportsProps = {
 	roomId: string,
@@ -19,11 +20,12 @@ export type TableCellProps = {
 	status: string, //  "En cours" | "Terminé"
 }
 
-export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
+export function TableRow ({navigationsIds, infos, onDelete}: {navigationsIds: ReportsProps, infos: TableCellProps, onDelete: (roomId: string) => void,}) {
 	const router = useRouter();
 	const supabase = createClient();
 	const [ isClosed, setIsClosed ] = useState(infos.roomClosed);
 	const [ deleteOk, setDeleteOk ] = useState(false);
+	const roomOpen = infos.status === "en cours";
 
 	useEffect(() => {
 		setIsClosed(infos.roomClosed);
@@ -58,17 +60,17 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 	return (
 		<Table.Row style={{cursor: infos.roomClosed ? 'pointer' : 'default', backgroundColor: isClosed ? 'var(--white-4)': 'var(--gray-3)'}} onClick={handleClick}>
 			<Table.RowHeaderCell>{infos.title}</Table.RowHeaderCell>
-			<Table.Cell>
+			<Table.Cell >
 				{infos.date}
 			</Table.Cell>
 			<Table.Cell>
 				{
-					infos.status === "En cours"
-					? <Badge color="violet" variant="soft" radius="full">
-						{infos.status}
+					roomOpen
+					? <Badge color="red" variant="soft" radius="full">
+						<Radio size="15" />{infos.status}
 					</Badge>
-					: <Badge color="jade" variant="soft" radius="full">
-							{infos.status}
+					: <Badge color="gray" variant="soft" radius="full">
+						{infos.status}
 					</Badge>
 				}				
 			</Table.Cell>
@@ -76,7 +78,7 @@ export function TableCell ({navigationsIds, infos, onDelete}: {navigationsIds: R
 				<Text>{navigationsIds.nbParticipant}</Text>
 			</Table.Cell>
 			<Table.Cell justify="end" onClick={(e) => e.stopPropagation()}>	
-				<RemoveReportAlertDialog date={infos.date} setDeleteOk={setDeleteOk} />
+				<RemoveReportAlertDialog roomOpen={roomOpen} date={infos.date} setDeleteOk={setDeleteOk} />
 			</Table.Cell>
 		</Table.Row>
 	);

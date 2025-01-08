@@ -2,12 +2,12 @@
 import { AlertDialog, Button, Flex, IconButton } from "@radix-ui/themes";
 import { Trash2 } from "lucide-react";
 
-export function RemoveReportAlertDialog ({date, setDeleteOk}: {date: string, setDeleteOk: (deleteOk: boolean) => void}) {
+export function RemoveReportAlertDialog ({roomOpen, date, setDeleteOk}: {roomOpen: boolean, date: string, setDeleteOk: (deleteOk: boolean) => void}) {
 
     return (
         <AlertDialog.Root>
             <AlertDialog.Trigger>
-                <IconButton variant="ghost">
+                <IconButton disabled={roomOpen} variant="ghost">
                     <Trash2 size="20" />
                 </IconButton>
             </AlertDialog.Trigger>
