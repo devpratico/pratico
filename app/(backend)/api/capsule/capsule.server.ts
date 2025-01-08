@@ -27,16 +27,16 @@ export const fetchCapsulesData = cache(async (userId: string) => {
 
 export const fetchCapsulesDataAndRoomStatus = cache(async (userId: string) => {
     const supabase = createClient();
-    const { data, error } = await supabase.from('capsules').select('*, rooms(status)').eq('created_by', userId);
+    const { data, error } = await supabase.from('capsules').select('*, rooms(status, code)').eq('created_by', userId);
     if (error)
     {
         logger.error('supabase:database', 'fetchCapsulesAndRoomStatus', 'Error fetching capsules', error.message, 'for user', userId);
         return ({ data: null, error: error?.message });
     }
-    console.log("Data fetchCapsulesAndRoomStatus: ", data);
     const capsules = data.map(capsule => ({
         ...capsule,
         roomOpen: capsule.rooms.some(room => room.status === 'open'), // Check if any room is 'open'
+        roomCode: capsule.rooms.find(room => room.status === 'open')?.code // Get the code of the open room
     }));
     return ({ data: capsules, error: null });
 });

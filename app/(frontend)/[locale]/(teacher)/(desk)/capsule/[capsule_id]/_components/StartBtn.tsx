@@ -34,7 +34,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 			logger.error("supabase:database", "startBtn user not found");
 			return ;
 		}
-		const { data, error: existedRoomError } = await supabase.from("rooms").select("*").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
+		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
 
 		if (existedRoomError)
 			logger.error("supabase:database", "StartBtn for session", "error while getting data", existedRoomError, "discord");

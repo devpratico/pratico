@@ -6,7 +6,7 @@ import { CapsulesDisplay } from "./_components/CapsulesDiplay";
 import { CapsuleType } from "../reports/page";
 import logger from "@/app/_utils/logger";
 
-export type ExtendedCapsuleType = CapsuleType & { roomOpen: boolean }
+export type ExtendedCapsuleType = CapsuleType & { roomOpen: boolean, roomCode: string | null | undefined }
 export default async function Page() {
     const { user, error: userError } = await fetchUser()
     if (userError)
