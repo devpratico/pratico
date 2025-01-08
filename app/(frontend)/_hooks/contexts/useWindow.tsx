@@ -22,6 +22,7 @@ interface WindowHookType {
 }
 
 // TODO: use a provider to avoid multiple listeners
+// TODO: all those useEffects look suspicious
 function useWindow(): WindowHookType {
     const [width, setWidth] = useState<number | undefined>(undefined);
     const [height, setHeight] = useState<number | undefined>(undefined);
