@@ -122,10 +122,17 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
     },
 
     removeQuestion: (id) => {
-        if (!get().quiz) {
+        if (!(get().quiz)) {
             logger.error('zustand:action', 'Cannot remove a question from a non-existing quiz')
             return
         }
+
+        // If there is only one question left, don't delete
+        if (get().quiz!.questions.length === 1) {
+            logger.error('zustand:action', 'Cannot remove the last question from a quiz')
+            return
+        }
+
         set(produce<QuizCreationStore>(state => {
             
             // Store the current index, we'll need it later

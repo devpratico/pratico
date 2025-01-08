@@ -155,6 +155,14 @@ const usePollCreationStore = create<PollCreationStore>((set, get) => ({
             logger.error('zustand:action', 'Cannot delete a question from a non-existing poll')
             return
         }
+
+        // If there is only one question left in the poll, don't delete
+        if (get().currentPoll!.poll.questions.length === 1) {
+            logger.error('zustand:action', 'Cannot delete the only question in the poll')
+            return
+        }
+
+
         const index = get().currentPoll!.poll.questions.findIndex(q => q.id === id) // We'll need this later
 
         set(produce<PollCreationStore>(state => {
