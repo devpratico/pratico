@@ -4,10 +4,10 @@ import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { useRoom } from "./useRoom"
 import { useState, useEffect, useMemo, createContext, useContext } from "react"
 import logger from "@/app/_utils/logger"
-import { fetchSnapshot } from '@/app/(backend)/api/activity/activitiy.client'
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
-import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
+import useActivityQuery from "../queries/useActivityQuery"
+import useActivitySnapshotQuery from "../queries/useActivitySnapshotQuery"
 
 
 type ActivitySnapshot = PollSnapshot | QuizSnapshot
@@ -25,6 +25,7 @@ function useRealtimeSnapshot(): {
     const [snapshot, setSnapshot] = useState<ActivitySnapshot | null>(null)
     const [isSyncing, setIsSyncing] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const { fetchSnapshot } = useActivitySnapshotQuery()
 
     // Fetch initial data
     useEffect(() => {
@@ -32,17 +33,16 @@ function useRealtimeSnapshot(): {
         setIsSyncing(true)
         setError(null)
 
-        fetchSnapshot(roomId).then(({data, error}) => {
+        fetchSnapshot(`${roomId}`).then(({data, error}) => {
             setIsSyncing(false)
             if (error) {
-                setError(error)
+                setError(error.message)
                 return
             }
-            const _snapshot = data!.activity_snapshot as unknown as ActivitySnapshot
-            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', _snapshot)
-            setSnapshot(_snapshot)
+            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
+            setSnapshot(data)
         })
-    }, [roomId])
+    }, [roomId, fetchSnapshot])
 
     // Sync with database real-time
     useEffect(() => {
@@ -84,6 +84,7 @@ function useRealtimeActivity(): {
     error: string | null
 } {
     const { snapshot, isSyncing: isSnapshotSyncing, error: snapshotError } = useRealtimeSnapshot()
+    const { fetchActivity } = useActivityQuery()
     const [activity, setActivity] = useState<Poll | Quiz | null>(null)
     const [isSyncing, setIsSyncing] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -100,13 +101,12 @@ function useRealtimeActivity(): {
         }
         setIsSyncing(true)
 
-        // TODO : use a route handler
         fetchActivity(activityId).then(({data, error}) => {
             console.log('⭐️')
             setIsSyncing(false)
             if (error) {
                 logger.error('react:hook', 'useRealtimeActivity.tsx', 'Error fetching activity', error)
-                setError(error)
+                setError(error.message)
                 return
             }
             const _activity = data!.object as Poll | Quiz | null
@@ -114,7 +114,7 @@ function useRealtimeActivity(): {
             logger.log('react:hook', 'useRealtimeActivity.tsx', 'Activity set to', _activity)
         })
 
-    }, [activityId])
+    }, [activityId, fetchActivity])
     
 
     return {
