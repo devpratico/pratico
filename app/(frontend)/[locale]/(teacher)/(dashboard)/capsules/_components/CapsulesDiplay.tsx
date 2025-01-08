@@ -43,8 +43,9 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const title = cap.title || "Sans titre"
 						const created_at = new Date(cap.created_at)
 						const snap = cap.tld_snapshot?.[0] as TLEditorSnapshot | undefined// as TLStoreSnapshot | undefined
-						const roomOpen = cap.roomOpen
-						let url = `/capsule/${id}`
+						const roomOpen = cap.roomOpen;
+						const roomCode = cap.roomCode;
+						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
 
 						return (
 							<Box position='relative' key={id}>
