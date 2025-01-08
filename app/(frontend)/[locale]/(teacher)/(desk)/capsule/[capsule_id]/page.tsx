@@ -8,11 +8,23 @@ import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
 import DoneBtn from './_components/DoneBtn';
 import StartBtn from './_components/StartBtn';
+import createClient from '@/supabase/clients/server';
+import { fetchUser } from '@/app/(backend)/api/user/user.server';
+import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
 
 
 
-export default function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
+export default async function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
     const logoScale = 0.25
+    const supabase = createClient();
+
+    const { user, error } = await fetchUser();
+    if (!user || error)
+        throw new Error("User not found");
+
+    const { data } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("capsule_id", capsule_id).eq("status", "open").order('created_at', { ascending: false }).limit(1);
+    if (data && data.length > 0 && data[0].code)
+        redirect(`/room/${data[0].code}`);
 
     return (
         <>

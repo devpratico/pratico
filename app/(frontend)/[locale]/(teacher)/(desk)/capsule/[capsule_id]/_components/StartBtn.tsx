@@ -6,7 +6,6 @@ import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { useState } from "react";
 import { Play } from "lucide-react";
-import createClient from "@/supabase/clients/client";
 import { useUser } from "@/app/(frontend)/_hooks/useUser";
 
 
@@ -19,7 +18,6 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
-	const supabase = createClient();
 	const { user } = useUser();
 
 
@@ -34,28 +32,13 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 			logger.error("supabase:database", "startBtn user not found");
 			return ;
 		}
-		const { data, error: existedRoomError } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("capsule_id", capsuleId).eq("status", "open").order('created_at', { ascending: false }).limit(1);
+		
+		// Start the session and get the room that is created
+		const { room: createdRoom, error} = await createRoom(capsuleId)
+		logger.log("react:component", "startBtn no data", "create a room", createdRoom, error);
 
-		if (existedRoomError)
-			logger.error("supabase:database", "StartBtn for session", "error while getting data", existedRoomError, "discord");
-		else
-			logger.log("supabase:database",  "StartBtn for session data", data);
-
-		if (!data?.length)
-		{
-			// Start the session and get the room that is created
-			const { room: createdRoom, error} = await createRoom(capsuleId)
-			logger.log("react:component", "startBtn no data", "create a room", createdRoom, error);
-
-			// Redirect to the room page
-			if (createdRoom) router.push(`/room/${createdRoom.code}`)
-		}
-		else
-		{
-			logger.log("react:component", "startBtn no data", "get to an existing room", data);
-			router.push(`/room/${data[0].code}`);
-		}
-  
+		// Redirect to the room page
+		if (createdRoom) router.push(`/room/${createdRoom.code}`)
     }
 
     return (
