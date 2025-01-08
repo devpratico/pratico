@@ -26,6 +26,7 @@ function useRealtimeSnapshot(): {
     const [isSyncing, setIsSyncing] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const { fetchSnapshot } = useActivitySnapshotQuery()
+    const supabase = useMemo(() => createClient(), [])
 
     // Fetch initial data
     useEffect(() => {
@@ -47,7 +48,6 @@ function useRealtimeSnapshot(): {
     // Sync with database real-time
     useEffect(() => {
         if (!roomId) return
-        const supabase = createClient()
         const channel = supabase.channel(roomId + "_realtimeActivity")
         const roomUpdate = {
             event: 'UPDATE',
@@ -68,7 +68,7 @@ function useRealtimeSnapshot(): {
         }).subscribe()
 
         return () => { supabase.removeChannel(channel)}
-    }, [roomId])
+    }, [roomId, supabase])
 
     return { snapshot, isSyncing, error }
 }
@@ -102,7 +102,6 @@ function useRealtimeActivity(): {
         setIsSyncing(true)
 
         fetchActivity(activityId).then(({data, error}) => {
-            console.log('⭐️')
             setIsSyncing(false)
             if (error) {
                 logger.error('react:hook', 'useRealtimeActivity.tsx', 'Error fetching activity', error)

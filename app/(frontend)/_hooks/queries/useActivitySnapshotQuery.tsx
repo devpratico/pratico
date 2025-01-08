@@ -4,6 +4,7 @@ import { QuizSnapshot } from "@/app/_types/quiz"
 import { PostgrestError } from "@supabase/supabase-js"
 import useFetch from "./useFetch"
 import createClient from "@/supabase/clients/client"
+import { useCallback } from "react"
 
 
 type ReturnedType = {
@@ -18,7 +19,7 @@ export default function useActivitySnapshotQuery(): {
     fetchSnapshot: (roomId: string) =>Promise<ReturnedType>
     isPending: boolean
 } {
-    const { fetch, isPending } = useFetch(async (roomId: string) => {
+    const fetcher = useCallback(async (roomId: string) => {
         const supabase = createClient()
         const { data, error } = await supabase
             .from('rooms')
@@ -42,7 +43,9 @@ export default function useActivitySnapshotQuery(): {
         } else {
             return { data: null, error: new Error('Unknown snapshot type') };
         }
-    })
+    }, [])
+
+    const { fetch, isPending } = useFetch(fetcher)
 
     return { fetchSnapshot: fetch, isPending }
 }

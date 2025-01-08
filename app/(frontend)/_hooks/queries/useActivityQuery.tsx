@@ -6,6 +6,7 @@ import { Quiz } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
 import { PostgrestError } from "@supabase/supabase-js"
 import { Tables } from "@/supabase/types/database.types"
+import { useCallback } from "react"
 
 
 // Supabase returns `Json` instead of `Quiz` or `Poll` objects
@@ -27,7 +28,8 @@ export default function useActivityQuery(): {
     fetchActivity: (id: number) => Promise<ReturnType>
     isPending: boolean
 } {
-    const { fetch, isPending } = useFetch(async (id: number) => {
+
+    const fetcher = useCallback(async (id: number) => {
         const supabase = createClient()
         const { data, error } = await supabase.from('activities').select('*').eq('id', id).single()
 
@@ -53,7 +55,10 @@ export default function useActivityQuery(): {
             default:
                 return { data: null, error: new Error('Unknown activity type') }
         }
-    })
+    }, [])
+
+
+    const { fetch, isPending } = useFetch(fetcher)
 
     return { fetchActivity: fetch, isPending }
 }
