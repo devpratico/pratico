@@ -23,11 +23,12 @@ export default function useQuizParticipationService(): {
 
         const initialState = useQuizParticipationStore.getState()
         if (!initialState.currentQuestionId) return { error: 'No current question' }
+        if (!initialState.quizId) return { error: 'No quiz id' }
 
         // Save this for later in case we need to rollback
         const initialSnapshot: QuizSnapshot = {
             type: 'quiz',
-            activityId: roomId,
+            activityId: initialState.quizId,
             currentQuestionId: initialState.currentQuestionId,
             state: 'answering',
             answers: initialState.answers
@@ -47,7 +48,7 @@ export default function useQuizParticipationService(): {
         // Save the snapshot to the database
         const snapshot: QuizSnapshot = {
             type: 'quiz',
-            activityId: roomId,
+            activityId: initialState.quizId,
             currentQuestionId: initialState.currentQuestionId,
             state: 'answering',
             answers: useQuizParticipationStore.getState().answers

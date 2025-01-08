@@ -24,11 +24,12 @@ export default function usePollParticipationService(): {
 
         const initialState = usePollParticipationStore.getState()
         if (!initialState.currentQuestionId) return { error: 'No current question' }
+        if (!initialState.pollId) return { error: 'No poll id' }
 
         // Save this for later in case we need to rollback
         const initialSnapshot: PollSnapshot = {
             type: 'poll',
-            activityId: roomId,
+            activityId: initialState.pollId,
             currentQuestionId: initialState.currentQuestionId,
             state: 'voting',
             answers: initialState.answers
@@ -48,7 +49,7 @@ export default function usePollParticipationService(): {
         // Save the snapshot to the database
         const snapshot: PollSnapshot = {
             type: 'poll',
-            activityId: roomId,
+            activityId: initialState.pollId,
             currentQuestionId: initialState.currentQuestionId,
             state: 'voting',
             answers: usePollParticipationStore.getState().answers
