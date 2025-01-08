@@ -63,7 +63,7 @@ export function isQuizSnapshot(snapshot: any): snapshot is QuizSnapshot {
 export const emptyQuiz: Quiz = {
     type: 'quiz',
     schemaVersion: '3',
-    title: 'Untitled',
+    title: 'Sans titre',
     questions: [
         {
             id: 'question-0',

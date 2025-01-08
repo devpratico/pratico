@@ -74,7 +74,7 @@ export function isPollSnapshot(snapshot: any): snapshot is PollSnapshot {
 export const emptyPoll: Poll = {
     type: 'poll',
     schemaVersion: '3',
-    title: 'Untitled',
+    title: 'Sans titre',
     questions: [
         {
             id: 'question-01',
