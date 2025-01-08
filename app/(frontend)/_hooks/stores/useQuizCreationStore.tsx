@@ -1,6 +1,6 @@
 import { Quiz } from "@/app/_types/quiz"
 import { create } from "zustand"
-import { produce } from "immer"
+import { current, produce } from "immer"
 import logger from "@/app/_utils/logger"
 import { emptyQuiz } from "@/app/_types/quiz"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"
@@ -127,7 +127,27 @@ const useQuizCreationStore = create<QuizCreationStore>((set, get) => ({
             return
         }
         set(produce<QuizCreationStore>(state => {
+            
+            // Store the current index, we'll need it later
+            const deletedQuestionIndex = state.quiz!.questions.findIndex(q => q.id === id)
+            
+            // Remove the question
             state.quiz!.questions = state.quiz!.questions.filter(q => q.id !== id)
+
+            // We have probably removed the current question. If so, currentQuestionId is now invalid.
+            if (state.currentQuestionId == id) {
+                // We should set the currentQuestionId to an existing question.
+                // Let's choose the question that now sits at the same index as the removed question.
+                let newIndex = deletedQuestionIndex
+                // There's a chance that the removed question was the last one.
+                // In that case, there is no question anymore at that index.
+                if (newIndex >= state.quiz!.questions.length) {
+                    // In that case, we'll set the index to the last question.
+                    newIndex = state.quiz!.questions.length - 1
+                }
+                // Set the new currentQuestionId
+                state.currentQuestionId = state.quiz!.questions[newIndex].id
+            }
         }))
     },
 
