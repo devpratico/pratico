@@ -1,7 +1,7 @@
 'use client'
 import { ActivitySnapshot } from "@/app/_types/activity"
 import createClient from "@/supabase/clients/client"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Json } from "@/supabase/types/database.types"
 import { PostgrestError } from "@supabase/supabase-js"
 import logger from "@/app/_utils/logger"
@@ -16,7 +16,7 @@ export function useRoomMutation(): {
     const [isPending, setIsPending] = useState(false)
     const [error, setError] = useState<PostgrestError | null>(null)
 
-    const saveActivitySnapshot = async (roomId: string, snapshot: ActivitySnapshot | null) => {
+    const saveActivitySnapshot = useCallback(async (roomId: string, snapshot: ActivitySnapshot | null) => {
         setIsPending(true)
         const supabase = createClient()
         const { error } = await supabase
@@ -31,7 +31,7 @@ export function useRoomMutation(): {
         }
         setIsPending(false)
         return { error }
-    }
+    }, [])
 
     return { saveActivitySnapshot, isPending, error }
 }
