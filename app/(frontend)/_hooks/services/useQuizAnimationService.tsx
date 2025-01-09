@@ -4,10 +4,10 @@ import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import { saveActivitySnapshot } from "@/app/(backend)/api/room/room.client"
-import { fetchActivity } from "@/app/(backend)/api/activity/activitiy.client"
 import { useUser } from "../contexts/useUser"
 import logger from "@/app/_utils/logger"
 import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
+import useAnswerActivityMutation from "../mutations/useAnswerActivityMutation"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -20,17 +20,20 @@ export function useQuizAnimationService(): {
     isPending: boolean
     myChoicesIds: string[]
 } {
-    const { save, isSaving } = useSaveQuizSnapshot()
     const { userId } = useUser()
+    const { room } = useRoom()
+    const { save, isSaving } = useSaveQuizSnapshot()
+    const { addAnswer: addAnswerMutation, removeAnswer: removeAnswerMutation } = useAnswerActivityMutation()
 
     const addAnswer = useCallback(async (choiceId: string): Promise<AsyncOperationResult> => {
-        if (isSaving) {
-            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'Saving in progress')
-            return { error: 'Saving in progress' }
-        }
         if (!userId) {
             logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No user id')
             return { error: 'No user id' }
+        }
+
+        if (!room?.id) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No room id')
+            return { error: 'No room id' }
         }
 
         const state = useQuizAnimationStore.getState()
@@ -40,73 +43,72 @@ export function useQuizAnimationService(): {
             return { error: 'No current question id' }
         }
 
-        // Check if the user has already answered this choice for this question
-        const hasAlreadyAnswered = state.answers.some(answer =>
-            answer.userId === userId &&
-            answer.questionId === state.currentQuestionId &&
-            answer.choiceId === choiceId
-        )
-        if (hasAlreadyAnswered) {
-            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'Already answered')
-            return { error: 'Already answered' }
-        }
-
-        // Save the current answers in case of rollback
-        const previousAnswers = state.answers
-
-        // Add the answer optimistically in the store
         const newAnswer: QuizUserAnswer = {
             userId,
-            questionId: state.currentQuestionId,
             choiceId,
-            timestamp: Date.now()
+            questionId: state.currentQuestionId,
+            timestamp: new Date().getTime()
         }
 
+        // Update the store immediately
         state.addAnswer(newAnswer)
 
         // Save the new state in the database
-        const { error } = await save()
+        const { error } = await addAnswerMutation(`${room.id}`, newAnswer)
 
         if (error) {
-            // Rollback the store if the save failed
-            state.setAnswers(previousAnswers)
-            return { error }
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', error)
+            return { error: error.message }
         }
+
+
         return { error: null }
-    }, [userId, save, isSaving])
+
+    }, [userId, room, addAnswerMutation])
 
     const removeAnswer = useCallback(async (choiceId: string): Promise<AsyncOperationResult> => {
-        if (isSaving) return { error: 'Saving in progress' }
-        if (!userId) return { error: 'No user id' }
+        if (!userId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No user id')
+            return { error: 'No user id' }
+        }
+
+        if (!room?.id) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No room id')
+            return { error: 'No room id' }
+        }
 
         const state = useQuizAnimationStore.getState()
 
-        if (!state.currentQuestionId) return { error: 'No current question id' }
+        if (!state.currentQuestionId) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'addAnswer', 'No current question id')
+            return { error: 'No current question id' }
+        }
 
-        // Check if the user has answered this question
-        const answer = state.answers.find(answer => 
-            answer.userId === userId && 
-            answer.questionId === state.currentQuestionId &&
-            answer.choiceId === choiceId
+        const answerToRemove = state.answers.find(a =>
+            a.userId === userId &&
+            a.questionId === state.currentQuestionId &&
+            a.choiceId === choiceId
         )
-        if (!answer) return { error: 'No answer to remove' }
 
-        // Save the current answers in case of rollback
-        const previousAnswers = state.answers
+        if (!answerToRemove) {
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'removeAnswer', 'Answer to remove not found with choice id', choiceId)
+            return { error: 'No answer to remove' }
+        }
 
-        // Remove the answer optimistically in the store
-        state.removeAnswer(answer)
+        // Update the store immediately
+        state.removeAnswer(answerToRemove)
 
         // Save the new state in the database
-        const { error } = await save()
+        const { error } = await removeAnswerMutation(`${room.id}`, answerToRemove)
 
         if (error) {
-            // Rollback the store if the save failed
-            state.setAnswers(previousAnswers)
-            return { error }
+            logger.error('zustand:store', 'useQuizAnimationService.tsx', 'removeAnswer', error)
+            return { error: error.message }
         }
+
         return { error: null }
-    }, [userId, save, isSaving])
+
+    }, [userId, room, removeAnswerMutation])
 
     const toggleAnswer = useCallback(async (choiceId: string) => {
         const state = useQuizAnimationStore.getState()

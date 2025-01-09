@@ -1,5 +1,5 @@
 import logger from "@/app/_utils/logger"
-import { useEffect } from "react"
+import { use, useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
@@ -7,6 +7,7 @@ import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityConte
 import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
 import { useRoomMutation } from "../mutations/useRoomMutation"
+import useAnswerActivityMutation from "../mutations/useAnswerActivityMutation"
 
 
 export function usePollAnimationService(): {
@@ -21,16 +22,16 @@ export function usePollAnimationService(): {
 } {
     const { save, isSaving } = useSavePollSnapshot()
     const { userId } = useUser()
+    const { room } = useRoom()
+    const { addAnswer: addAnswerMutation, removeAnswer: removeAnswerMutation } = useAnswerActivityMutation()
+
 
     const addAnswer = useCallback(async (choiceId: string) => {
-        if (isSaving) return { error: 'Saving in progress '}
         if (!userId) return { error: 'No user id' }
+        if (!room?.id) return { error: 'No room id' }
 
         const currentQuestionId = usePollAnimationStore.getState().currentQuestionId
         if (!currentQuestionId) return { error: 'No current question id' }
-
-        // Save the current answers in case of rollback
-        const originalAnswers = usePollAnimationStore.getState().answers
 
         const newAnswer: PollUserAnswer = {
             userId: userId,
@@ -39,41 +40,65 @@ export function usePollAnimationService(): {
             timestamp: Date.now()
         }
 
+        // Update the store immediately (optimistic update)
         usePollAnimationStore.getState().addAnswer(newAnswer)
 
-        const { error } = await save()
+        // Add the answer to the database
+        const { error } = await addAnswerMutation(`${room.id}`, newAnswer)
 
         if (error) {
-            usePollAnimationStore.getState().setAnswers(originalAnswers)
             logger.error('zustand:store', 'usePollAnimation.tsx', 'Error saving answer', error)
+            return { error: error.message }
         }
-        return { error }
-    }, [userId, save, isSaving])
+
+        return { error: null }
+
+
+    }, [userId, room, addAnswerMutation])
 
     const removeAnswer = useCallback(async (choiceId: string) => {
-        if (isSaving) return { error: 'Saving in progress' }
-        if (!userId) return { error: 'No user id' }
+        if (!userId) {
+            logger.error('zustand:store', 'usePollAnimationService.tsx', 'addAnswer', 'No user id')
+            return { error: 'No user id' }
+        }
 
-        const currentQuestionId = usePollAnimationStore.getState().currentQuestionId
-        if (!currentQuestionId) return { error: 'No current question id' }
+        if (!room?.id) {
+            logger.error('zustand:store', 'usePollAnimationService.tsx', 'addAnswer', 'No room id')
+            return { error: 'No room id' }
+        }
 
-        // Save the current answers in case of rollback
-        const originalAnswers = usePollAnimationStore.getState().answers
+        const state = usePollAnimationStore.getState()
 
-        usePollAnimationStore.getState().removeAnswer({
-            userId: userId,
-            questionId: currentQuestionId,
-            choiceId: choiceId
-        })
+        if (!state.currentQuestionId) {
+            logger.error('zustand:store', 'usePollAnimationService.tsx', 'addAnswer', 'No current question id')
+            return { error: 'No current question id' }
+        }
 
-        const { error } = await save()
+        const answerToRemove = state.answers.find(a =>
+            a.userId === userId &&
+            a.questionId === state.currentQuestionId &&
+            a.choiceId === choiceId
+        )
+
+        if (!answerToRemove) {
+            logger.error('zustand:store', 'usePollAnimationService.tsx', 'removeAnswer', 'Answer to remove not found with choice id', choiceId)
+            return { error: 'No answer to remove' }
+        }
+
+        // Update the store immediately
+        state.removeAnswer(answerToRemove)
+
+        // Save the new state in the database
+        const { error } = await removeAnswerMutation(`${room.id}`, answerToRemove)
 
         if (error) {
-            usePollAnimationStore.getState().setAnswers(originalAnswers)
-            logger.error('zustand:store', 'usePollAnimation.tsx', 'Error saving answer', error)
+            logger.error('zustand:store', 'usePollAnimationService.tsx', 'removeAnswer', error)
+            return { error: error.message }
         }
-        return { error }
-    }, [save, isSaving, userId])
+
+        return { error: null }
+
+    }, [userId, room, removeAnswerMutation])
 
     const answers = usePollAnimationStore(state => state.answers)
 
@@ -250,6 +275,14 @@ function useSavePollSnapshot() :{
         const state = usePollAnimationStore.getState()
         if (!state.id) return { error: 'No activity id'}
         if (!state.currentQuestionId) return { error: 'No current question id'}
+
+        if (!state.id) {
+            // Store is empty. It means we want to delete the snapshot
+            setIsSaving(true)
+            const { error } = await saveActivitySnapshot(`${roomId}`, null)
+            setIsSaving(false)
+            return { error: error?.message || null }
+        }
         
         const snapshot: PollSnapshot = {
             type: 'poll',
@@ -263,7 +296,7 @@ function useSavePollSnapshot() :{
         const { error } = await saveActivitySnapshot(`${roomId}`, snapshot)
         setIsSaving(false)
         return { error: error?.message || null }
-    }, [roomId])
+    }, [roomId, saveActivitySnapshot])
 
     return { save, isSaving }
 }
