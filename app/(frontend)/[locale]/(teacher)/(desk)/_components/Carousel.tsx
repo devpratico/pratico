@@ -103,25 +103,26 @@ export default function Carousel() {
 	}, [activeZone]);
 
     return (
-		<FocusZone id='focusZoneCarrousel'>
-			<DndContext autoScroll={{
-					threshold: {
-					x: 0.05,
-					y: 0.05
-					},
-					layoutShiftCompensation: false,
-					activator: AutoScrollActivator.Pointer,
-					enabled: true,
-					acceleration: 25,
-					interval: 5
-				}}
-				sensors={sensors}
-				collisionDetection={pointerWithin}
-				onDragStart={handleDragStart}
-				onDragMove={handleDragMove}
-				onDragEnd={handleDragEnd}>
+		<DndContext autoScroll={{
+				threshold: {
+				x: 0.05,
+				y: 0.05
+				},
+				layoutShiftCompensation: false,
+				activator: AutoScrollActivator.Pointer,
+				enabled: true,
+				acceleration: 25,
+				interval: 5
+			}}
+			sensors={sensors}
+			collisionDetection={pointerWithin}
+			onDragStart={handleDragStart}
+			onDragMove={handleDragMove}
+			onDragEnd={handleDragEnd}>
 
-			<SnapshotProvider>
+		<SnapshotProvider>
+			<FocusZone id='focusZoneCarrousel'>
+
 				<Card variant='classic' style={{ padding: '0' }} asChild>
 					<ScrollArea ref={scrollContainerRef}>
 						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
@@ -142,19 +143,20 @@ export default function Carousel() {
 						</Flex>
 					</ScrollArea>
 				</Card>
-			</SnapshotProvider>
-			<DragOverlay>
-				{activeId ? (
-					<MemoizedMiniature
-						pageId={activeId}
-						onClick={() => {}}
-						isGrabbing={isGrabbing}
-						isActiveZone={isActiveZone}
-					/>
-				) : null}
-				</DragOverlay>
-			</DndContext>
-		</FocusZone>
+				
+			</FocusZone>
+		</SnapshotProvider>
+		<DragOverlay>
+			{activeId ? (
+				<MemoizedMiniature
+					pageId={activeId}
+					onClick={() => {}}
+					isGrabbing={isGrabbing}
+					isActiveZone={isActiveZone}
+				/>
+			) : null}
+			</DragOverlay>
+		</DndContext>
     )
 }
 
