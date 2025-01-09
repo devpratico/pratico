@@ -12,6 +12,8 @@ import { Droppable } from './drag-n-drop/Droppable'
 import { Draggable } from './drag-n-drop/Draggable'
 import { FocusZone, useFocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
 import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_hooks/useKeyboardShortcuts'
+import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
+import { set } from 'lodash'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -31,11 +33,16 @@ export default function Carousel() {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
-	const { activeZone } = useFocusZone();
+	const { activeZone, setActiveZone } = useFocusZone();
 	const [ isActiveZone, setIsActiveZone ] = useState(activeZone === "focusZoneCarrousel");
 	const { goPrevPage, goNextPage } = useNav();
+	const { isFullscreen } = useFullscreen();
 	const shortcuts: KeyboardShortcutType = {
 		"focusZoneCarrousel": {
+			"ArrowLeft": () => goPrevPage(),
+			"ArrowRight": () => goNextPage()
+		},
+		"focusZoneCarrouselFullscreen": {
 			"ArrowLeft": () => goPrevPage(),
 			"ArrowRight": () => goNextPage()
 		}
@@ -99,8 +106,14 @@ export default function Carousel() {
     }, [currentPageId, pageIds]);
 
 	useEffect(() => {
-		setIsActiveZone(activeZone === "focusZoneCarrousel");
-	}, [activeZone]);
+		if (!isFullscreen && activeZone === "focusZoneCarrouselFullscreen")
+			setActiveZone(null);
+		else if (isFullscreen && activeZone !== "focusZoneCarrouselFullscreen")
+			setActiveZone("focusZoneCarrouselFullscreen");
+		else
+			setIsActiveZone(activeZone === "focusZoneCarrousel");
+
+	}, [activeZone, isFullscreen, setActiveZone]);
 
     return (
 		<DndContext autoScroll={{
@@ -122,28 +135,28 @@ export default function Carousel() {
 
 		<SnapshotProvider>
 
-				<Card variant='classic' style={{ padding: '0' }} asChild>
-					<ScrollArea ref={scrollContainerRef}>
-						<FocusZone id='focusZoneCarrousel'>
-							<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-								{pageIds.map((id) => (
-									<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
-									<Droppable key={`droppable-${id}`} id={id}>
-										<MemoizedMiniature
-											key={id}
-											pageId={id}
-											onClick={() => setCurrentPage(id)}
-											isGrabbing={isGrabbing}
-											isActiveZone={isActiveZone}
-										/>
-									</Droppable>
-									</Draggable>
-								))}
-								{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
-							</Flex>
-						</FocusZone>
-					</ScrollArea>
-				</Card>
+			<Card variant='classic' style={{ padding: '0' }} asChild>
+				<ScrollArea ref={scrollContainerRef}>
+					<FocusZone id='focusZoneCarrousel'>
+						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+							{pageIds.map((id) => (
+								<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
+								<Droppable key={`droppable-${id}`} id={id}>
+									<MemoizedMiniature
+										key={id}
+										pageId={id}
+										onClick={() => setCurrentPage(id)}
+										isGrabbing={isGrabbing}
+										isActiveZone={isActiveZone}
+									/>
+								</Droppable>
+								</Draggable>
+							))}
+							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+						</Flex>
+					</FocusZone>
+				</ScrollArea>
+			</Card>
 
 		</SnapshotProvider>
 		<DragOverlay>

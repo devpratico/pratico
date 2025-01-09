@@ -15,17 +15,16 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	const doc = typeof document !== 'undefined' ? document : null;
 	const activityOn = room?.activity_snapshot;
 	const classNameToFullscreen = 'tldraw-canvas';
-	const elementToFullscreen = doc ? doc.getElementsByClassName(classNameToFullscreen)[0] : null;
 	const [isFullscreen, _setIsFullscreen] = useState(false);
 
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
 			if (e.key === 'Escape')
 			{
+				_setIsFullscreen(false);
 				if (document.fullscreenElement)
 				{	
 					document.exitFullscreen()
-						.then(() => _setIsFullscreen(false))
 						.catch((error) => logger.error("react:hook", "useFullcreen", "ExitFullscreen escape", error))
 				}
 		  	}
@@ -38,7 +37,20 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	useEffect(() => {
-		if (activityOn)
+		const handleFullscreenChange = () => {
+			_setIsFullscreen(!!document.fullscreenElement);
+		};
+	
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+	
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+		};
+	}, []);
+	
+
+	useEffect(() => {
+		if (activityOn && isFullscreen)
 		{
 			if (doc?.fullscreenElement)
 			{	
@@ -47,15 +59,16 @@ export const FullscreenProvider = ({ children }: { children: React.ReactNode }) 
 					.catch((error) => logger.error("react:hook", "useFullcreen", "ExitFullscreen", error));
 			}
 		}
-	}, [activityOn, doc?.fullscreenElement, isFullscreen, elementToFullscreen, doc]);
+	}, [activityOn, doc?.fullscreenElement, isFullscreen, doc]);
 
 	const setFullscreenOn = useCallback(() => {
 		logger.log("react:hook", "useFullcreen", "setFullscreenOn", classNameToFullscreen);
+		const elementToFullscreen = doc ? doc.getElementsByClassName(classNameToFullscreen)[0] : null;
 		if (elementToFullscreen)
 			elementToFullscreen.requestFullscreen()
 			.then(() => _setIsFullscreen(true))
 			.catch((error) => logger.error("react:hook", "useFullcreen", "requestFullscreen 0", error))
-	}, [elementToFullscreen]);
+	}, [doc]);
 
     return (
         <FullscreenContext.Provider value={{ setFullscreenOn, isFullscreen }}>

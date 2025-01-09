@@ -3,6 +3,7 @@ import React, { useState, useContext, createContext, ReactNode } from 'react';
 
 const FocusZoneContext = createContext({
 	activeZone: null as string | null,
+  setActiveZone: (zoneId: string | null) => {},
 	registerZone: (zoneId: string) => () => {},
 	unregisterZone: () => {}
 });
@@ -18,7 +19,7 @@ const FocusZoneProvider = ({ children }: { children: ReactNode }) => {
   const unregisterZone = () => setActiveZone(null);
 
   return (
-    <FocusZoneContext.Provider value={{ activeZone, registerZone, unregisterZone }}>
+    <FocusZoneContext.Provider value={{ activeZone, setActiveZone, registerZone, unregisterZone }}>
       {children}
     </FocusZoneContext.Provider>
   );
