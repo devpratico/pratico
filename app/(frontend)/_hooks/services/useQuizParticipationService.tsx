@@ -1,21 +1,20 @@
 'use client'
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 import { useRealtimeActivityContext } from '../contexts/useRealtimeActivityContext'
 import useQuizParticipationStore from '../stores/useQuizParticipationStore'
-import { QuizSnapshot } from '@/app/_types/quiz'
 import { useUser } from '../contexts/useUser'
-import { saveActivitySnapshot } from '@/app/(backend)/api/room/room.client'
 import { useRoom } from '../contexts/useRoom'
+import useAnswerActivityMutation from '../mutations/useAnswerActivityMutation'
 
 export default function useQuizParticipationService(): {
     toggleAnswer: (choiceId: string) => Promise<{ error: string | null }>
     myChoicesIds: string[]
     isPending: boolean
 } {
-    const [isPending, setIsPending] = useState(false)
     const { userId } = useUser()
     const roomId = useRoom().room?.id
     const answers = useQuizParticipationStore(state => state.answers)
+    const { addAnswer, removeAnswer, isPending } = useAnswerActivityMutation()
 
     const toggleAnswer = useCallback(async (choiceId: string) => {
         if (!userId) return { error: 'No user id' }
@@ -25,46 +24,37 @@ export default function useQuizParticipationService(): {
         if (!initialState.currentQuestionId) return { error: 'No current question' }
         if (!initialState.quizId) return { error: 'No quiz id' }
 
-        // Save this for later in case we need to rollback
-        const initialSnapshot: QuizSnapshot = {
-            type: 'quiz',
-            activityId: initialState.quizId,
-            currentQuestionId: initialState.currentQuestionId,
-            state: 'answering',
-            answers: initialState.answers
-        }
-
-        setIsPending(true)
-
         // Check if the user has already answered this choice
         const hasAnswered = initialState.answers.some(a => a.userId === userId && a.choiceId === choiceId)
 
         if (hasAnswered) {
             useQuizParticipationStore.getState().removeAnswer({ choiceId, userId })
+
+            const { error } = await removeAnswer(`${roomId}`, {
+                userId,
+                choiceId,
+                timestamp: new Date().getTime(), // We actually don't need this
+                questionId: initialState.currentQuestionId
+            })
+
+            if (error) return { error: error.message }
+
         } else {
             useQuizParticipationStore.getState().answer({ choiceId, userId })
+
+            const { error } = await addAnswer(`${roomId}`, {
+                userId,
+                choiceId,
+                timestamp: new Date().getTime(),
+                questionId: initialState.currentQuestionId
+            })
+
+            if (error) return { error: error.message }
         }
 
-        // Save the snapshot to the database
-        const snapshot: QuizSnapshot = {
-            type: 'quiz',
-            activityId: initialState.quizId,
-            currentQuestionId: initialState.currentQuestionId,
-            state: 'answering',
-            answers: useQuizParticipationStore.getState().answers
-        }
 
-        const { error } = await saveActivitySnapshot(roomId, snapshot)
-        if (error) {
-            // Rollback the answer
-            useQuizParticipationStore.getState().setSnapshot(initialSnapshot)
-            setIsPending(false)
-            return { error }
-        }
-
-        setIsPending(false)
         return { error: null }
-    }, [userId, roomId])
+    }, [userId, roomId, addAnswer, removeAnswer])
 
     const myChoicesIds = useMemo(() =>
         answers.filter(a => a.userId === userId).map(a => a.choiceId)
