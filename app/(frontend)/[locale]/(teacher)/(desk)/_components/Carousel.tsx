@@ -10,13 +10,14 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, poi
 import { DragMoveEvent } from '@dnd-kit/core/dist/types'
 import { Droppable } from './drag-n-drop/Droppable'
 import { Draggable } from './drag-n-drop/Draggable'
-import { FocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
+import { FocusZone, useFocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
 import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_hooks/useKeyboardShortcuts'
 
 interface MiniatureProps {
     pageId: TLPageId
     onClick: () => void
 	isGrabbing: boolean
+	isActiveZone: boolean
 }
 
 const MemoizedThumbnail = memo(Thumbnail)
@@ -30,6 +31,8 @@ export default function Carousel() {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
+	const { activeZone } = useFocusZone();
+	const [ isActiveZone, setIsActiveZone ] = useState(activeZone === "focusZoneCarrousel");
 	const { goPrevPage, goNextPage } = useNav();
 	const shortcuts: KeyboardShortcutType = {
 		"focusZoneCarrousel": {
@@ -95,71 +98,79 @@ export default function Carousel() {
         }
     }, [currentPageId, pageIds]);
 
+	useEffect(() => {
+		setIsActiveZone(activeZone === "focusZoneCarrousel");
+	}, [activeZone]);
+
     return (
 		<FocusZone id='focusZoneCarrousel'>
-		<DndContext autoScroll={{
-				threshold: {
-				x: 0.05,
-				y: 0.05
-				},
-				layoutShiftCompensation: false,
-				activator: AutoScrollActivator.Pointer,
-				enabled: true,
-				acceleration: 25,
-				interval: 5
-			}}
-			sensors={sensors}
-			collisionDetection={pointerWithin}
-			onDragStart={handleDragStart}
-			onDragMove={handleDragMove}
-			onDragEnd={handleDragEnd}>
+			<DndContext autoScroll={{
+					threshold: {
+					x: 0.05,
+					y: 0.05
+					},
+					layoutShiftCompensation: false,
+					activator: AutoScrollActivator.Pointer,
+					enabled: true,
+					acceleration: 25,
+					interval: 5
+				}}
+				sensors={sensors}
+				collisionDetection={pointerWithin}
+				onDragStart={handleDragStart}
+				onDragMove={handleDragMove}
+				onDragEnd={handleDragEnd}>
 
-        <SnapshotProvider>
-            <Card variant='classic' style={{ padding: '0' }} asChild>
-                <ScrollArea ref={scrollContainerRef}>
-                    <Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-                        {pageIds.map((id) => (
-							<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
-							<Droppable key={`droppable-${id}`} id={id}>
-								<MemoizedMiniature
-									key={id}
-									pageId={id}
-									onClick={() => setCurrentPage(id)}
-									isGrabbing={isGrabbing}
-								/>
-							</Droppable>
-							</Draggable>
-                        ))}
-						{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
-                    </Flex>
-                </ScrollArea>
-            </Card>
-        </SnapshotProvider>
-		<DragOverlay>
-			{activeId ? (
-				<MemoizedMiniature
-					pageId={activeId}
-					onClick={() => {}}
-					isGrabbing={isGrabbing}
-				/>
-			) : null}
-            </DragOverlay>
-		</DndContext>
+			<SnapshotProvider>
+				<Card variant='classic' style={{ padding: '0' }} asChild>
+					<ScrollArea ref={scrollContainerRef}>
+						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+							{pageIds.map((id) => (
+								<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
+								<Droppable key={`droppable-${id}`} id={id}>
+									<MemoizedMiniature
+										key={id}
+										pageId={id}
+										onClick={() => setCurrentPage(id)}
+										isGrabbing={isGrabbing}
+										isActiveZone={isActiveZone}
+									/>
+								</Droppable>
+								</Draggable>
+							))}
+							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+						</Flex>
+					</ScrollArea>
+				</Card>
+			</SnapshotProvider>
+			<DragOverlay>
+				{activeId ? (
+					<MemoizedMiniature
+						pageId={activeId}
+						onClick={() => {}}
+						isGrabbing={isGrabbing}
+						isActiveZone={isActiveZone}
+					/>
+				) : null}
+				</DragOverlay>
+			</DndContext>
 		</FocusZone>
     )
 }
 
 
-function Miniature({ pageId, onClick, isGrabbing }: MiniatureProps) {
+function Miniature({ pageId, onClick, isGrabbing, isActiveZone }: MiniatureProps) {
     const [showEllipsis, setShowEllipsis] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const { currentPageId, nextPageId, prevPageId, goNextPage, goPrevPage, deletePage } = useNav()
 	const [ clicked, setClicked ] = useState(isGrabbing)
     const shadow = useMemo(() => {
+		if (!isActiveZone && currentPageId === pageId)
+			return ('0 0 0 3px var(--gray-6)');
 		if (isGrabbing && currentPageId === pageId)
-			return ('0 0 0 3px var(--accent-8)')
+			return ('0 0 0 3px var(--accent-8)');
         return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
-    }, [currentPageId, pageId, isGrabbing]);
+    }, [currentPageId, pageId, isGrabbing, isActiveZone]);
 
     const onSelect = useCallback(() => {
         if (currentPageId === pageId) {
