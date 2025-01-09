@@ -13,7 +13,6 @@ import { Draggable } from './drag-n-drop/Draggable'
 import { FocusZone, useFocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
 import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_hooks/useKeyboardShortcuts'
 import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
-import { set } from 'lodash'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -115,6 +114,14 @@ export default function Carousel() {
 
 	}, [activeZone, isFullscreen, setActiveZone]);
 
+	useEffect(() => {
+		if (!currentPageId)
+			return ;
+		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
+		if (currentThumbnail && document.activeElement !== currentThumbnail)
+			currentThumbnail.focus();
+	}, [currentPageId]);
+
     return (
 		<DndContext autoScroll={{
 				threshold: {
@@ -214,6 +221,7 @@ function Miniature({ pageId, onClick, isGrabbing, isActiveZone }: MiniatureProps
 			onMouseLeave={() => setShowEllipsis(showMenu)}
 			onMouseUp={() => setClicked(false)}
 			draggable
+			tabIndex={0}
 		>
 			<Box
 				style={{
