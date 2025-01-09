@@ -121,30 +121,30 @@ export default function Carousel() {
 			onDragEnd={handleDragEnd}>
 
 		<SnapshotProvider>
-			<FocusZone id='focusZoneCarrousel'>
 
 				<Card variant='classic' style={{ padding: '0' }} asChild>
 					<ScrollArea ref={scrollContainerRef}>
-						<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
-							{pageIds.map((id) => (
-								<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
-								<Droppable key={`droppable-${id}`} id={id}>
-									<MemoizedMiniature
-										key={id}
-										pageId={id}
-										onClick={() => setCurrentPage(id)}
-										isGrabbing={isGrabbing}
-										isActiveZone={isActiveZone}
-									/>
-								</Droppable>
-								</Draggable>
-							))}
-							{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
-						</Flex>
+						<FocusZone id='focusZoneCarrousel'>
+							<Flex key={JSON.stringify(pageIds)} gap='3' p='3' height='100%' align='center'>
+								{pageIds.map((id) => (
+									<Draggable key={`draggable-${id}`} id={id} isDragging={true}>
+									<Droppable key={`droppable-${id}`} id={id}>
+										<MemoizedMiniature
+											key={id}
+											pageId={id}
+											onClick={() => setCurrentPage(id)}
+											isGrabbing={isGrabbing}
+											isActiveZone={isActiveZone}
+										/>
+									</Droppable>
+									</Draggable>
+								))}
+								{indicatorPosition !== null && <Indicator position={indicatorPosition} />}
+							</Flex>
+						</FocusZone>
 					</ScrollArea>
 				</Card>
-				
-			</FocusZone>
+
 		</SnapshotProvider>
 		<DragOverlay>
 			{activeId ? (
