@@ -5,6 +5,7 @@ import { PostgrestError } from "@supabase/supabase-js"
 import { useState, useCallback, useMemo } from "react"
 import createClient from "@/supabase/clients/client"
 import { Json } from "@/supabase/types/database.types"
+import logger from "@/app/_utils/logger"
 
 
 type ReturnType = { error: PostgrestError | Error | null }
@@ -27,7 +28,10 @@ export default function useAnswerActivityMutation(): {
         setIsPending(true)
         
         const roomIdToInt = parseInt(roomId)
-        if (isNaN(roomIdToInt)) return {error: new Error('Invalid room id')}
+        if (isNaN(roomIdToInt)) {
+            logger.error('react:hook', 'useAnswerActivityMutation.tsx', 'Cannot call addAnswer() because : Invalid room id')
+            return {error: new Error('Invalid room id')}
+        }
 
         const { error } = await supabase.rpc('add_activity_answer', {
             room_id: roomIdToInt,
@@ -35,6 +39,8 @@ export default function useAnswerActivityMutation(): {
         })
 
         setIsPending(false)
+
+        if (error) logger.error('react:hook', 'useAnswerActivityMutation.tsx', 'Error adding answer', error)
 
         return { error: error || null }
     }, [supabase])
@@ -44,7 +50,10 @@ export default function useAnswerActivityMutation(): {
         setIsPending(true)
         
         const roomIdToInt = parseInt(roomId)
-        if (isNaN(roomIdToInt)) return {error: new Error('Invalid room id')}
+        if (isNaN(roomIdToInt)) {
+            logger.error('react:hook', 'useAnswerActivityMutation.tsx', 'Cannot call removeAnswer() because : Invalid room id')
+            return {error: new Error('Invalid room id')}
+        }
 
         const { error } = await supabase.rpc('remove_activity_answer', {
             room_id: roomIdToInt,
@@ -54,6 +63,9 @@ export default function useAnswerActivityMutation(): {
         })
 
         setIsPending(false)
+
+        if (error) logger.error('react:hook', 'useAnswerActivityMutation.tsx', 'Error removing answer', error)
+            
         return { error: error || null }
     }, [supabase])
 
