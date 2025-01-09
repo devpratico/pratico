@@ -29,7 +29,7 @@ export default function useAnswerActivityMutation(): {
         const roomIdToInt = parseInt(roomId)
         if (isNaN(roomIdToInt)) return {error: new Error('Invalid room id')}
 
-        const { data, error } = await supabase.rpc('add_activity_answer', {
+        const { error } = await supabase.rpc('add_activity_answer', {
             room_id: roomIdToInt,
             answer: answer as unknown as Json
         })
@@ -46,7 +46,7 @@ export default function useAnswerActivityMutation(): {
         const roomIdToInt = parseInt(roomId)
         if (isNaN(roomIdToInt)) return {error: new Error('Invalid room id')}
 
-        const { data, error } = await supabase.rpc('remove_activity_answer', {
+        const { error } = await supabase.rpc('remove_activity_answer', {
             room_id: roomIdToInt,
             user_id: answer.userId,
             question_id: answer.questionId,
