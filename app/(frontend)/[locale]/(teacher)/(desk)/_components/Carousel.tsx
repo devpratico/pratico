@@ -10,6 +10,8 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, poi
 import { DragMoveEvent } from '@dnd-kit/core/dist/types'
 import { Droppable } from './drag-n-drop/Droppable'
 import { Draggable } from './drag-n-drop/Draggable'
+import { FocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
+import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_hooks/useKeyboardShortcuts'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -20,7 +22,6 @@ interface MiniatureProps {
 const MemoizedThumbnail = memo(Thumbnail)
 const MemoizedMiniature = memo(Miniature)
 
-
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
 	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
@@ -29,6 +30,14 @@ export default function Carousel() {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 	const [ nearestPage, setNearestPage ] = useState<Over>();
 	const [ indicatorPosition, setIndicatorPosition ] = useState<number | null>(null);
+	const { goPrevPage, goNextPage } = useNav();
+	const shortcuts: KeyboardShortcutType = {
+		"focusZoneCarrousel": {
+			"ArrowLeft": () => goPrevPage(),
+			"ArrowRight": () => goNextPage()
+		}
+	};
+	useKeyboardShortcuts(shortcuts);
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
@@ -87,6 +96,7 @@ export default function Carousel() {
     }, [currentPageId, pageIds]);
 
     return (
+		<FocusZone id='focusZoneCarrousel'>
 		<DndContext autoScroll={{
 				threshold: {
 				x: 0.05,
@@ -135,6 +145,7 @@ export default function Carousel() {
 			) : null}
             </DragOverlay>
 		</DndContext>
+		</FocusZone>
     )
 }
 
@@ -227,7 +238,7 @@ const Indicator = ({ position }: {position: number}) => {
 				left: position,
 				height: '42px',
 				width: '5px',
-				backgroundColor: 'var(--violet-8)',
+				backgroundColor: 'var(--violet-8)'
 			}}
 		/>
 	);
