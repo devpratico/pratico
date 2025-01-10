@@ -6,6 +6,7 @@ import TextTool from '../TextTool/TextTool';
 import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
+import { DefaultToolbar, DefaultToolbarContent, TldrawUiMenuItem, useTools } from 'tldraw';
 
 
 interface ToolBarProps {
@@ -47,4 +48,20 @@ const blankState: ToolBarState = {
         shape: "rectangle",
         style: "empty",
     }
+}
+
+export function CustomTlToolbar() {
+	const tools = useTools()
+	const praticoTools = Object.entries(tools).filter(([toolKey]) => {
+        return (!["hand"].includes(toolKey))
+    })
+	return (
+        <DefaultToolbar>
+        {
+            praticoTools.map(([toolKey, tool]) => (
+                <TldrawUiMenuItem key={toolKey} {...tool} />
+            ))
+        }		
+        </DefaultToolbar>
+	);
 }

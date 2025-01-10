@@ -8,8 +8,7 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts,
-    TldrawUi,
+    useKeyboardShortcuts
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -19,6 +18,7 @@ import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar/ToolBar'
 
 export interface CanvasUser {
     id: string
@@ -55,9 +55,9 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             onMount(editor)
         }
 
-        // editor.setCameraOptions({
-        //     wheelBehavior: 'none',
-        // })
+        editor.setCameraOptions({
+            wheelBehavior: 'none',
+        })
 
         /**
          * Set the user preferences
@@ -85,6 +85,8 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 	const components = useMemo(() => ({
 		Background,
 		OnTheCanvas: CanvasArea,
+		DebugPanel: null, // needed
+		Toolbar: CustomTlToolbar,
 		ContextMenu: null,
 		ActionsMenu: null,
 		HelpMenu: null,
@@ -96,12 +98,11 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		KeyboardShortcutsDialog: null,
 		QuickActions: null,
 		HelperButtons: null,
-		DebugPanel: null, // needed
 		DebugMenu: null,
 		SharePanel: null,
 		MenuPanel: null,
 		TopPanel: null,
-		CursorChatBubble: null,
+		CursorChatBubble: null
 	 }), [])
     return (
 		<Tldraw
