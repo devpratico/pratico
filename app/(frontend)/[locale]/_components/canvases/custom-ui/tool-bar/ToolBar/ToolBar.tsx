@@ -7,6 +7,7 @@ import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
 import { DefaultToolbar, DefaultToolbarContent, TldrawUiMenuItem, useTools } from 'tldraw';
+import { Box } from '@radix-ui/themes';
 
 
 interface ToolBarProps {
@@ -53,15 +54,31 @@ const blankState: ToolBarState = {
 export function CustomTlToolbar() {
 	const tools = useTools()
 	const praticoTools = Object.entries(tools).filter(([toolKey]) => {
-        return (!["hand"].includes(toolKey))
+        return (!["hand", "frame"].includes(toolKey))
     })
 	return (
-        <DefaultToolbar>
-        {
-            praticoTools.map(([toolKey, tool]) => (
-                <TldrawUiMenuItem key={toolKey} {...tool} />
-            ))
-        }		
-        </DefaultToolbar>
+        <Box style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            gap: "8px",
+            position: "fixed",
+            top: "50px",
+            left: "10px",
+            backgroundColor: "#f5f5f5",
+            padding: "10px",
+            borderRadius: "8px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+        }}>
+           <DefaultToolbar>
+            {
+                praticoTools.map(([toolKey, tool]) => (
+                    <TldrawUiMenuItem key={toolKey} {...tool} />
+                ))
+            }		
+            </DefaultToolbar>   
+        </Box>
+      
 	);
 }
