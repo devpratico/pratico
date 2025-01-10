@@ -12,7 +12,7 @@ import { Droppable } from './drag-n-drop/Droppable'
 import { Draggable } from './drag-n-drop/Draggable'
 import { FocusZone, useFocusZone } from '@/app/(frontend)/_hooks/useFocusZone'
 import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_hooks/useKeyboardShortcuts'
-import { useFullscreen } from '@/app/(frontend)/_hooks/useFullscreen'
+import { useFullscreen } from '@/app/(frontend)/_hooks/contexts/useFullscreen'
 
 interface MiniatureProps {
     pageId: TLPageId
