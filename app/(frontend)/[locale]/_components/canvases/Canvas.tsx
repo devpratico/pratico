@@ -9,6 +9,7 @@ import {
     StoreSnapshot,
     TLRecord,
     useKeyboardShortcuts,
+    TldrawUi,
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -54,9 +55,9 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             onMount(editor)
         }
 
-        editor.setCameraOptions({
-            wheelBehavior: 'none',
-        })
+        // editor.setCameraOptions({
+        //     wheelBehavior: 'none',
+        // })
 
         /**
          * Set the user preferences
@@ -81,19 +82,40 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     }, [setEditor, onMount])
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
-
+	const components = useMemo(() => ({
+		Background,
+		OnTheCanvas: CanvasArea,
+		ContextMenu: null,
+		ActionsMenu: null,
+		HelpMenu: null,
+		ZoomMenu: null,
+		MainMenu: null,
+		Minimap: null,
+		PageMenu: null,
+		NavigationPanel: null,
+		KeyboardShortcutsDialog: null,
+		QuickActions: null,
+		HelperButtons: null,
+		DebugPanel: null, // needed
+		DebugMenu: null,
+		SharePanel: null,
+		MenuPanel: null,
+		TopPanel: null,
+		CursorChatBubble: null,
+	 }), [])
     return (
 		<Tldraw
 			className='tldraw-canvas'
-			hideUi={true}
+			// hideUi={true}
 			onMount={handleMount}
-			components={{ Background: Background, OnTheCanvas: CanvasArea }}
+			components={components}
 			store={store}
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
-			options={options}
+			options={options}		
 		>
-			{children}
+                {children}
+	
 			{/* <Resizer/> */}
 			<EmbedHint/>
 			<KeyboardShortcuts/>

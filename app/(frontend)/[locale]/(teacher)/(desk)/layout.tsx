@@ -54,12 +54,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
 
                 {/* Main content. Canvas will go here */}
-                <Flex gap='3' overflowY='clip'>
+                {/* <Flex gap='3' overflowY='clip'>
                     <Flex direction='column' gap='3' justify='center' display={{ initial: 'none', xs: 'flex' }} style={{zIndex:'1'}}>
                         <TLToolbar />
-                    </Flex>
+                    </Flex> */}
                     {children}
-                </Flex>
+                {/* </Flex> */}
 
                 
 
