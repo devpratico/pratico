@@ -1,12 +1,13 @@
 "use client";
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
-import { AttendanceInfoType } from "../[room_id]/page";
-import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
+import { AttendanceInfoType } from "../../page";
+import { forwardRef, RefObject, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { janifera, luciole } from "@/app/(frontend)/Fonts";
 import { Json } from "@/supabase/types/database.types";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { FileDown } from "lucide-react";
+import { useFormatter } from "next-intl";
 /// TYPE
 export type TeacherInfo = {
 	first_name: string | null,
@@ -21,34 +22,40 @@ export type TeacherInfo = {
 	user: { userInfo: { first_name: string | null; last_name: string | null; organization: Json | null} | null };
 	backTo: string;
 	hideClassname?: string;
+	hideColumnInfo?: boolean;
   }
+
+  const getTeachersName = (teacher: TeacherInfo | null) => {
+	if (teacher === null)
+		return (null);
+	if (teacher.first_name && teacher.last_name)
+		return `${teacher.first_name} ${teacher.last_name}`;
+	else if (teacher.first_name)
+		return teacher.first_name;
+	else if (teacher.last_name)
+		return teacher.last_name;
+	return (null);
+  };
   
-  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname }, ref) => {
-	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
+  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname, hideColumnInfo }, ref) => {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
+	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const teacherName = getTeachersName(userInfo);
 
-	useEffect(() => {
-		const getAttendancesList = () => {
-			if (!sortedAttendances)
-				setSortedAttendances(attendances.sort((a, b) => {
-					const tmpA = a.last_name || '';
-					const tmpB = b.last_name || '';
-					return (tmpA.localeCompare(tmpB));
-				}));
-		}
-		getAttendancesList();
-	}, [attendances, sortedAttendances]);
-
-	
 	return (
 		<>
-			<Flex mb="5" justify='between' className={hideClassname || ""}>
-				<BackButton	backTo={backTo} />
-				<Button onClick={() => reactToPrint()}>
-					<FileDown size="20"/> Imprimer / Exporter PDF
-				</Button>
-			</Flex>
+			{
+				hideClassname === "hidden-on-screen"
+				?	<></>
+				:	<Flex mb="5" justify='between'>
+						<BackButton	backTo={backTo} />
+						<Button onClick={() => reactToPrint()}>
+							<FileDown size="20"/> Imprimer / Exporter PDF
+						</Button>
+					</Flex>
+  			}
 			<style jsx global>{`
 				.hidden-on-screen {
 					display: none;
@@ -56,16 +63,16 @@ export type TeacherInfo = {
 
 				@media print {
 					.hidden-on-screen {
-					display: block !important;
+						display: block !important;
 					}
 
 					@page {
-					margin: 10mm 30mm;
+						margin: 10mm 20mm;
 					}
 				}
 			`}</style>
-			<Card mt='5' className={"hidden-on-screen"}>
-				<div style={{fontSize: '12px', margin: '20px'}} ref={ref || contentRef} className={luciole.className} >
+			<Card mt='5' className={"hidden-on-screen"} style={{display: "none"}}>
+				<div style={{fontSize: '12px'}} ref={ref || contentRef} className={luciole.className} >
 					<p>Pratico</p>
 					<h2 style={{ fontSize: '18px', textAlign: 'center', margin: "50px "}}>Fiche de présence</h2>
 					<h2 style={{ fontSize: '14px'}}>{`${capsuleTitle !== "Sans titre" ? capsuleTitle : ""}`}</h2>
@@ -84,12 +91,12 @@ export type TeacherInfo = {
 								? <Text >{`${userInfo.organization.toString()} `}</Text>
 								: <></>
 							}
-							<Text as='div'>
+							<Text hidden={!teacherName} as='div'>
 								<Text style={{ fontSize: '12px', fontWeight: 'bold'}}>Animateur: </Text>
-								<Text >{`${userInfo.first_name}, ${userInfo.last_name}`}</Text>
+								<Text >{teacherName}</Text>
 							</Text>	
 							
-							<Text as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
+							<Text hidden={!teacherName} as='div' style={{ fontSize: '25px', marginLeft: "20px" }} className={janifera.className}>{`${teacherName}`}</Text>
 						</>
 						: ""
 					}
@@ -108,6 +115,9 @@ export type TeacherInfo = {
 								<th style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
 									<Text ml='1'>Nom</Text>
 								</th>
+								<th hidden={hideColumnInfo} style={{ maxInlineSize: '200px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)'}}>
+									<Text ml='1'>Information supplémentaire</Text>
+								</th>
 								<th style={{ maxInlineSize: '100px', padding: '10px', textAlign: 'left', borderBottom: '1px solid  var(--gray-3)' }}>
 									<Text  ml='1'>{"Heure d'arrivée"}</Text>
 								</th>
@@ -119,28 +129,39 @@ export type TeacherInfo = {
 					
 						<tbody style={{backgroundColor: 'white'}}>
 							{
-								!sortedAttendances || !sortedAttendances.length ?
+								!attendances || !attendances.length ?
 								<tr>
 									<td colSpan={4} style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid var(--gray-3)' }}>
 										<Text >Aucun participant</Text>
 									</td>
 								</tr>
-								: sortedAttendances.map((attendance, index) => (
-									<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1'>{attendance.first_name}</Text>
-										</td>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1'>{attendance.last_name}</Text>
-										</td>
-										<td style={{ maxInlineSize: '100px', padding: '10px' }}>
-											<Text ml='1'>{attendance.connexion}</Text>
-										</td>
-										<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-											<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
-										</td>
-									</tr>
-								)
+								: attendances.map((attendance, index) => {
+									let connexion = attendance.connexion;
+									if (attendance.connexion)
+									{
+										connexion = formatter.dateTime(new Date(attendance.connexion), {timeStyle: 'medium', timeZone: timezone});
+										if (connexion === "Invalid Date")
+											connexion = attendance.connexion
+									}
+									return (
+										<tr className={index === 0 ? "test" : "none"} key={index} style={{ pageBreakInside: 'avoid', borderBottom: '1px solid  var(--gray-3)' }}>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.first_name}</Text>
+											</td>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.last_name}</Text>
+											</td>
+											<td hidden={hideColumnInfo} style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1'>{attendance.additional_info}</Text>
+											</td>
+											<td style={{ maxInlineSize: '100px', padding: '10px' }}>
+												<Text ml='1'>{connexion}</Text>
+											</td>
+											<td style={{ maxInlineSize: '200px', padding: '10px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+												<Text ml='1' className={janifera.className}>{`${attendance.first_name} ${attendance.last_name}`}</Text>
+											</td>
+										</tr>
+									)}
 							)}
 						</tbody>
 					</table>

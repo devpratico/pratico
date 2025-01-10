@@ -1,116 +1,42 @@
-'use client';
-import { Flex, Text } from "@radix-ui/themes";
-import DnD from "../(teacher)/(desk)/_components/menus/ActivitiesMenu/components/DnDFlex";
-
+"use client";
 
 export default function PlayGround () {
-	//if (process.env.NODE_ENV === 'production') return (null);
+	if (process.env.NODE_ENV === 'production') {
+		return (null);
+	}
+
+	const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+	const userLocale = typeof navigator !== 'undefined' ? navigator.language : 'fr-FR';
+
+	const now = new Date();
+	const usDate = new Intl.DateTimeFormat('en-US', {
+		timeZone: 'America/New_York',
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+	}).format(now);
+
+	const userFormatter = new Intl.DateTimeFormat(userLocale, {
+		timeZone: userTimeZone,
+		dateStyle: 'long',
+		timeStyle: 'long',
+	});
+
+	const formattedUserDate = userFormatter.format(now);
 
 	return (
-        <DnD.Flex direction="column" gap="3" p='3'>
-
-            <DnD.Item id="item-1">
-
-                <DnD.Normal>
-                    <Flex>
-                        <Text>Normal 1</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grab</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Normal>
-
-                <DnD.Active>
-                    <Flex>
-                        <Text>Active 1</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grab</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Active>
-
-                <DnD.Overlay>
-                    <Flex>
-                        <Text>Overlay 1</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grabo</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Overlay>
-
-            </DnD.Item>
-
-            <DnD.Item id="item-2">
-
-                <DnD.Normal>
-                    <Flex>
-                        <Text>Normal 2</Text>
-                    </Flex>
-                </DnD.Normal>
-
-                <DnD.Active>
-                    <Flex>
-                        <Text>Active 2</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grab</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Active>
-
-                <DnD.Overlay>
-                    <Flex>
-                        <Text>Overlay 2</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grabo</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Overlay>
-
-            </DnD.Item>
-
-            <DnD.Item id="item-3">
-
-                <DnD.Normal>
-                    <Flex>
-                        <Text>Normal 3</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grab</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Normal>
-
-                <DnD.Overlay>
-                    <Flex>
-                        <Text>Overlay 3</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grabo</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Overlay>
-
-            </DnD.Item>
-
-            <DnD.Item id="item-4">
-
-                <DnD.Normal>
-                    <Flex>
-                        <Text>Normal 4</Text>
-                        <DnD.GrabHandle>
-                            <Text>Grab</Text>
-                        </DnD.GrabHandle>
-                    </Flex>
-                </DnD.Normal>
-
-
-
-
-
-            </DnD.Item>
-
-
-
-
-        </DnD.Flex>
-    )
+		<div style={{position: 'absolute', inset: 0 }}>
+			<p>
+				Hello
+			</p>
+			<p>
+				{usDate} - {userTimeZone} - {userLocale} -  {formattedUserDate}
+			</p>
+		</div>
+	)
 };
 

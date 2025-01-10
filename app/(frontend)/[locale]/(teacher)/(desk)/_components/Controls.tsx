@@ -31,22 +31,6 @@ export default function Controls() {
     const [openImport, setOpenImport] = useState(false)
     const numberOfPages = useMemo(() => pageIds ? Array.from(pageIds).length : 0, [pageIds])
 
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === 'ArrowRight') {
-				e.preventDefault();
-				goNextPage();
-			} else if (e.key === 'ArrowLeft') {
-				e.preventDefault();
-				goPrevPage();
-			}
-		};
-		window.addEventListener('keydown', handleKeyDown);
-		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
-		};
-	}, [goNextPage, goPrevPage]);
-
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
             if (pages == 1) {

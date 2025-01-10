@@ -9,6 +9,7 @@ import { UserContextProvider } from '@/app/(frontend)/_hooks/contexts/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 import { NextIntlClientProvider } from 'next-intl';
+import FocusZoneProvider from '../_hooks/useFocusZone';
 
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ interface RootLayoutProps {
 
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
     const supabase = createClient()
-
+    
     const { data, error } = await supabase.auth.getUser()
     let firstName: string | undefined
     let lastName: string | undefined
@@ -43,20 +44,13 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     }
 
     const isSubscribed = await customerIsSubscribed(data?.user?.id)
-
-    const userData = {
-        user: data?.user || undefined,
-        firstName,
-        lastName,
-        isSubscribed
-    }
     
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
                 <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
-                        <UserContextProvider {...userData}>
+                        <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
 							<NextIntlClientProvider>
 						 	   {children}
 							</NextIntlClientProvider>

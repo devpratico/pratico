@@ -44,14 +44,14 @@ export default function ActivitiesMenu() {
             </Section>
             
 
-            <Section size='1'>
+            {/* <Section size='1'>
                 <Flex align='center' gap='2' mb='2'>
                     <Star size={18}/><Heading size='3' trim='end'>Favoris</Heading>
                 </Flex>
                 <Callout.Root color='gray'>
                     <Callout.Text>Aucun favori</Callout.Text>
                 </Callout.Root>
-            </Section>
+            </Section> */}
 
 
             <Section size='1'>

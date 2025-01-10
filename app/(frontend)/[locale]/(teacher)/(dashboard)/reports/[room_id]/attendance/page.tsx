@@ -3,13 +3,11 @@ import { Container, ScrollArea, Section } from "@radix-ui/themes";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
-import { AttendanceDisplay } from "../_components/AttendanceDisplay";
-import { getFormatter } from "next-intl/server";
+import { AttendanceDisplay } from "./_components/AttendanceDisplay";
 
 export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
 	const supabase = createClient();
 	const roomId = params.room_id;
-	const formatter = await getFormatter();
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
@@ -17,6 +15,8 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		end: ""
 	};
 	let userInfo: any = null;
+	let hideColumnInfo = true;
+
 	if (!(roomId))
 	{
 		logger.error("next:page", "SessionDetailsPage", "roomId or capsuleId missing");
@@ -29,7 +29,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		{
 			const { data, error } = await supabase.from('user_profiles').select('first_name, last_name, organization').eq('id', user?.id).single();
 			if (error)
-				logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
+				logger.log('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (data)
 				userInfo = data;
 			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
@@ -53,15 +53,17 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 			{
 				await Promise.all(
 					attendanceData.map(async (attendance) => {
-						const { data, error } = await supabase.from('attendance').select('*').eq('id', attendance.id).maybeSingle();
+						const { data, error } = await supabase.from('attendance').select('first_name, last_name, additional_info, created_at').eq('id', attendance.id).single();
 						if (!data || error) {
 							logger.error('supabase:database', 'CapsuleSessionsReportServer', error ? error : 'No attendance data for this attendance');
 						}
-			
+						if (attendance.additional_info)
+							hideColumnInfo = false;
 						const infos: AttendanceInfoType = {
 							first_name: attendance.first_name,
 							last_name: attendance.last_name,
-							connexion: formatter.dateTime(new Date(attendance.created_at), { timeStyle: 'medium' }),
+							additional_info: attendance.additional_info,
+							connexion: attendance.created_at,
 						};
 						attendances.push(infos);
 					})
@@ -76,7 +78,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<AttendanceDisplay attendances={attendances} roomId={roomId} sessionDate={sessionDate} userInfo={userInfo} capsuleTitle={capsuleTitle} />
+					<AttendanceDisplay attendances={attendances} roomId={roomId} sessionDate={sessionDate} userInfo={userInfo} capsuleTitle={capsuleTitle} hideColumnInfo={hideColumnInfo}/>
 				</Container>
 			</Section>	
 		</ScrollArea>

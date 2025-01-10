@@ -1,20 +1,20 @@
 "use client";
-
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import jsPDF from "jspdf";
 import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import createClient from "@/supabase/clients/client";
 import logger from "@/app/_utils/logger";
-import { formatDate } from "@/app/_utils/utils_functions";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useFormatter } from "next-intl";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
 {
-	const editor = useTLEditor().editor;
+	const { editor } = useTLEditor();
 	const supabase = createClient();
+	const formatter = useFormatter();
 	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);
 	const [ filename, setFilename ] = useState("capsule.pdf");
@@ -22,33 +22,6 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ openDialog, setOpenDialog ] = useState(false);
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
-
-	useEffect(() => {
-		const getCapsuleData = async () => {
-			const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
-			if (error)
-				logger.error("react:component", "CapsuleToPDFBtn", "getCapsuleData", error);
-			else
-				return (data);
-		};
-		(async () => {
-			if (!isRoom) {
-				const data = await getCapsuleData();
-				if (data?.title) {
-					if (data?.title === "Sans titre")
-						setFilename(`capsule-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
-					else
-					{
-						const title = data?.title
-							.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
-							.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
-							.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-						setFilename(`${title}-${formatDate(data.created_at, "fr-FR", undefined, true)}.pdf`);
-					}
-				}
-			}
-		})();
-	}, [isRoom, capsuleId, supabase]);
 
 	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
 		const processBlob = async (index: number) => {
@@ -92,7 +65,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			logger.error("react:component", "CapsuleToPDFBtn", "createPdf", error);
 			setState('error');
 		};
-	}
+	};
 
 	const handleExportAllPages = async () => {
 		if (!editor)
@@ -163,18 +136,44 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 		setProgress(0);
 		await createPdf(validBlobs, pdf);
 	};
-	  
+
+	useEffect(() => {
+		const getCapsuleData = async () => {
+			const { data, error } = await supabase.from('capsules').select("title, created_at").eq('id', capsuleId).single();
+			if (error)
+				logger.error("react:component", "CapsuleToPDFBtn", "getCapsuleData", error);
+			else
+				return (data);
+		};
+		(async () => {
+			if (!isRoom) {
+				const data = await getCapsuleData();
+				if (data?.title) {
+					if (data?.title === "Sans titre")
+						setFilename(`capsule-${formatter.dateTime(new Date(data.created_at), {dateStyle: 'short', timeStyle: 'short'})
+  							.replace(/[\/:]/g, '').replace(' ', '-')}.pdf`);
+					else
+					{
+						const title = data?.title
+							.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
+							.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
+							.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
+						setFilename(`${title}-${formatter.dateTime(new Date(data.created_at), {dateStyle: 'short', timeStyle: 'short'})
+							.replace(/[\/:]/g, '').replace(' ', '-')}.pdf`);
+					}
+				}
+			}
+		})();
+	}, [isRoom, capsuleId, supabase, formatter]);
 
 	return (
 			<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
-
 				<AlertDialog.Trigger>
-					<Button style={{ width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages} disabled={disabled}>
+					<Button style={{  width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages} disabled={disabled}>
 						<FileDown size='20' style={{ marginRight: '5px' }} />
 						<Text>Télécharger en PDF</Text>
 					</Button>
 				</AlertDialog.Trigger>
-
 				<AlertDialog.Content>
 					<AlertDialog.Title>Génération de votre capsule en PDF</AlertDialog.Title>
 					

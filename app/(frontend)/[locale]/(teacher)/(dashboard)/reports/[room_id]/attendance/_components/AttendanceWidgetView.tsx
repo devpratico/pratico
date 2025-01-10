@@ -1,15 +1,16 @@
 "use client";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import { Json } from "@/supabase/types/database.types";
-import { WidgetThumb } from "./WidgetThumb";
-import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { Button, DataList, IconButton, Strong, Tooltip } from "@radix-ui/themes";
-import { useFormatter } from "next-intl";
+import { WidgetThumb } from "../../_components/WidgetThumb";
+import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
+import { Button, DataList, IconButton, Tooltip, Heading, Box } from "@radix-ui/themes";
+import { useFormatter, useLocale } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { AttendanceInfoType } from "../page";
+import { AttendanceInfoType } from "../../page";
 import { FileDown } from "lucide-react";
-import { AttendanceToPDF } from "../../_components/AttendanceToPdf";
+import { AttendanceToPDF } from "./AttendanceToPdf";
+import logger from "@/app/_utils/logger";
 
 export type AttendanceWidgetViewProps = {
 	data: {
@@ -30,7 +31,9 @@ export type AttendanceWidgetViewProps = {
 			first_name: string | null,
 			last_name: string | null,
 			connexion: string | undefined,
+			additional_info: string | null,
 		}[];
+		hideColumnInfo: boolean;
 	}
 };
 
@@ -38,13 +41,14 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef});
 	const formatter = useFormatter();
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const locale = useLocale();
 	const [ sortedAttendances, setSortedAttendances ] = useState<AttendanceInfoType[]>();
 	const date = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short'});
-	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short'});
+	const start = formatter.dateTime(data.sessionDate.startDate, {timeStyle:'short', timeZone: timezone});
 	const dateEnd = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {dateStyle: 'short'}) : undefined;
-	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short'}) : undefined; 
-	
-
+	const end = data.sessionDate.endDate ? formatter.dateTime(data.sessionDate.endDate, {timeStyle: 'short', timeZone: timezone}) : undefined; 
+ 
 	useEffect(() => {
 		const getAttendancesList = () => {
 			if (!sortedAttendances)
@@ -72,12 +76,13 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
             fullName = "Utilisateur anonyme";
         }
 
-        const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short'});
-        const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short'});
-
-        return (
-			<>
-				<Strong>Présence</Strong>
+        const startDate = formatter.dateTime(data.sessionDate.startDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
+        const endDate = formatter.dateTime(data.sessionDate.endDate, {dateStyle:'short', timeStyle:'short', timeZone: timezone});
+		
+		logger.log("react:component","AttendanceWidgetView" ,"Date", startDate, endDate, locale, timezone);
+		return (
+			<Box>
+                <Heading as='h2' size='4' mb='4'>Présence</Heading>
 				<DataList.Root size='1'>
 					<DataList.Item>
 						<DataList.Label>Animateur</DataList.Label>
@@ -94,7 +99,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 						<DataList.Value>{endDate}</DataList.Value>
 					</DataList.Item>
 				</DataList.Root>
-			</>
+			</Box>
             
         );
     }
@@ -122,12 +127,13 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 				buttons={buttons}
 			/>
 			<AttendanceToPDF
-				attendances={data.attendances} 
+				attendances={sortedAttendances || data.attendances} 
 				sessionDate={{startDate: date, startTime: start, endDate: dateEnd, endTime: end}}
 				capsuleTitle={data.capsuleTitle}
 				user={{ userInfo: data.userInfo }}
 				backTo="/reports"
 				hideClassname="hidden-on-screen"
+				hideColumnInfo={data.hideColumnInfo}
 				ref={contentRef}  />
 		</>
 		
