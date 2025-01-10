@@ -57,28 +57,23 @@ export function CustomTlToolbar() {
         return (!["hand", "frame"].includes(toolKey))
     })
 	return (
-        <Box style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: "8px",
-            position: "fixed",
-            top: "50px",
-            left: "10px",
-            backgroundColor: "#f5f5f5",
-            padding: "10px",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-        }}>
-           <DefaultToolbar>
-            {
-                praticoTools.map(([toolKey, tool]) => (
-                    <TldrawUiMenuItem key={toolKey} {...tool} />
-                ))
-            }		
-            </DefaultToolbar>   
-        </Box>
-      
+        <DefaultToolbar>
+            <Box style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                position: "fixed",
+                top: "50px",
+                left: "10px",
+                boxShadow: "var(--shadow-5)",
+            }}>
+                {
+                    praticoTools.map(([toolKey, tool]) => (
+                        <TldrawUiMenuItem key={toolKey} {...tool} />
+                    ))
+                }		
+            </Box>
+        </DefaultToolbar>
 	);
 }
