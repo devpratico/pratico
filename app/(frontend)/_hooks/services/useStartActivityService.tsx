@@ -108,7 +108,7 @@ export function useStartActivityService(): {
 
         setIsPending(false)
         return { error: null }
-    }, [roomId])
+    }, [roomId, fetchActivity, saveActivitySnapshot])
 
     return { start, isPending }
 }

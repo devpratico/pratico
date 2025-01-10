@@ -41,7 +41,7 @@ export default function useOpenActivityCreationService(): {
         }
 
         return { error: null }
-    }, [])
+    }, [fetchActivity])
 
     return { openActivity, isPending }
 }
