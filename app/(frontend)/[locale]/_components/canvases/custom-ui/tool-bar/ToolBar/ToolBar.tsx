@@ -7,7 +7,8 @@ import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
 import { DefaultToolbar, TldrawUiMenuItem, useTools } from 'tldraw';
-import { Box, DropdownMenu, IconButton } from '@radix-ui/themes';
+import { Box, DropdownMenu, Grid, IconButton, Popover } from '@radix-ui/themes';
+import { ChevronRight } from 'lucide-react';
 
 
 interface ToolBarProps {
@@ -52,44 +53,91 @@ const blankState: ToolBarState = {
 }
 
 export function CustomTlToolbar() {
-	const tools = useTools()
+	const tools = useTools();
+	const favorites = ["select", "eraser", "draw", "text", "note"];
 	const praticoTools = Object.entries(tools).filter(([toolKey]) => {
 		return (!["hand", "frame"].includes(toolKey))
-	})
+	});
+	praticoTools.sort(([toolKeyA], [toolKeyB]) => {
+		const indexA = favorites.indexOf(toolKeyA);
+		const indexB = favorites.indexOf(toolKeyB);
+
+		if (indexA === -1 && indexB === -1) return (0);
+		if (indexA === -1) return (1);
+		if (indexB === -1) return (-1);
+
+  		return (indexA - indexB);
+	});
+
 	const [mainTools, extraTools] = praticoTools.length > 5
     ? [praticoTools.slice(0, 5), praticoTools.slice(5)]
     : [praticoTools, []];
 
   return (
-    <DefaultToolbar>
-      	<Box 
-		className={`${styles.container}`}
-		style={{
-			position: "fixed",
-			top: "50px",
-			left: "10px"
-		}}>
-        {mainTools.map(([toolKey, tool]) => (
-          	<TldrawUiMenuItem key={toolKey} {...tool} />
-        ))}
 
-        {extraTools.length > 0 && (
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
+    <DefaultToolbar  >
+			{mainTools.map(([toolKey, tool]) => (
+				<TldrawUiMenuItem key={toolKey} {...tool} />
+			))}
+
+		<style>{`
+				.tlui-toolbar__tools {
+					flex-direction: column !important;
+				}
+
+				.tlui-toolbar__tools__list {
+					flex-direction: column !important;
+				}
+
+				.tlui-toolbar {
+				 	justify-content: flex-start !important;
+					margin-left: 0.5rem;
+				}
+
+				.tlui-layout {
+					display: flex !important;
+					flex-direction: row-reverse !important;
+					justify-content: flex-end !important;
+					align-items: center !important;
+				}
+		`}</style>
+			<Popover.Root>
+				<Popover.Trigger>
 					<IconButton variant="soft" size="4" style={{width: "100%"}}>
-						<DropdownMenu.TriggerIcon />
+						<ChevronRight size="15" />
 					</IconButton>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content side="bottom" align="start">
-				{extraTools.map(([toolKey, tool]) => (
-					<DropdownMenu.Item key={toolKey}>
-						<TldrawUiMenuItem {...tool} />
-					</DropdownMenu.Item>
-				))}
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
-        )}
-      	</Box>
+				</Popover.Trigger>
+				<Popover.Content side="right">
+					<Grid columns="4fr 4fr 4fr 4fr">
+					{extraTools.map(([toolKey, tool]) => (
+						<Grid rows="auto" key={toolKey}>
+							<TldrawUiMenuItem {...tool} />
+						</Grid>
+					))}
+					</Grid>
+				</Popover.Content>
+			</Popover.Root>
+
+			{/* {extraTools.length > 0 && (
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger>
+						<IconButton variant="soft" size="4" style={{width: "100%"}}>
+							<DropdownMenu.TriggerIcon />
+							<ChevronRight size="15" />
+						</IconButton>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content side="right">
+
+						{extraTools.map(([toolKey, tool]) => (
+							<DropdownMenu.Item key={toolKey}>
+								<TldrawUiMenuItem {...tool} />
+							</DropdownMenu.Item>
+						))}
+
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			)} */}
+      	{/* </Box> */}
     </DefaultToolbar>
 	);
 }

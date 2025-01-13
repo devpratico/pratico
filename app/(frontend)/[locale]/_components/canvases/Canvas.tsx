@@ -8,7 +8,8 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts
+    useKeyboardShortcuts,
+    T
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -19,6 +20,7 @@ import { useCallback, useMemo } from 'react'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
 import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar/ToolBar'
+import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
 
 export interface CanvasUser {
     id: string
@@ -85,8 +87,9 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 	const components = useMemo(() => ({
 		Background,
 		OnTheCanvas: CanvasArea,
+        Toolbar: CustomTlToolbar,
+        StylePanel: CustomTlStylePanel,
 		DebugPanel: null, // needed
-		Toolbar: CustomTlToolbar,
 		ContextMenu: null,
 		ActionsMenu: null,
 		HelpMenu: null,
@@ -102,8 +105,8 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		SharePanel: null,
 		MenuPanel: null,
 		TopPanel: null,
-		CursorChatBubble: null
-	 }), [])
+		CursorChatBubble: null,
+	 }), []);
     return (
 		<Tldraw
 			className='tldraw-canvas'
