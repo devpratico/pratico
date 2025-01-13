@@ -7,7 +7,7 @@ import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
 import { DefaultToolbar, TldrawUiMenuItem, useTools } from 'tldraw';
-import { Box, DropdownMenu, Grid, IconButton, Popover } from '@radix-ui/themes';
+import { Grid, IconButton, Popover } from '@radix-ui/themes';
 import { ChevronRight } from 'lucide-react';
 
 
@@ -108,36 +108,13 @@ export function CustomTlToolbar() {
 					</IconButton>
 				</Popover.Trigger>
 				<Popover.Content side="right">
-					<Grid columns="4fr 4fr 4fr 4fr">
-					{extraTools.map(([toolKey, tool]) => (
-						<Grid rows="auto" key={toolKey}>
-							<TldrawUiMenuItem {...tool} />
-						</Grid>
-					))}
+					<Grid columns="4" rows="repeat(auto-fill, 1fr)">
+						{extraTools.map(([toolKey, tool]) => (
+							<TldrawUiMenuItem key={toolKey} {...tool} />
+						))}
 					</Grid>
 				</Popover.Content>
 			</Popover.Root>
-
-			{/* {extraTools.length > 0 && (
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger>
-						<IconButton variant="soft" size="4" style={{width: "100%"}}>
-							<DropdownMenu.TriggerIcon />
-							<ChevronRight size="15" />
-						</IconButton>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content side="right">
-
-						{extraTools.map(([toolKey, tool]) => (
-							<DropdownMenu.Item key={toolKey}>
-								<TldrawUiMenuItem {...tool} />
-							</DropdownMenu.Item>
-						))}
-
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
-			)} */}
-      	{/* </Box> */}
     </DefaultToolbar>
 	);
 }
