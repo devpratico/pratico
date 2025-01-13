@@ -1,6 +1,6 @@
 'use client'
 import { useEditor, useComputed, useValue } from 'tldraw'
-import { useRoom } from '@/app/(frontend)/_hooks/useRoom'
+import { useRoom } from '@/app/(frontend)/_hooks/contexts/useRoom'
 import { useEffect, useMemo } from 'react'
 import logger from '@/app/_utils/logger'
 

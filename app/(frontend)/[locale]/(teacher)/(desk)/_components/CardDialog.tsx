@@ -1,7 +1,7 @@
 'use client'
 import * as Dialog from '@radix-ui/react-dialog';
-import { Theme, VisuallyHidden } from '@radix-ui/themes';
-import useWindow from '@/app/(frontend)/_hooks/useWindow';
+import { Theme } from '@radix-ui/themes';
+import useWindow from '@/app/(frontend)/_hooks/contexts/useWindow';
 import { useCallback } from 'react';
 
 
@@ -34,6 +34,8 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
 
 	const resetPointerEvents = useCallback(() => {
         if (typeof document !== 'undefined') {
+            //document.body.style.pointerEvents = 'auto'
+            document.body.style.removeProperty('pointer-events')
             //document.body.style.pointerEvents = 'auto'
             document.body.style.removeProperty('pointer-events')
         }

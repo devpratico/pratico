@@ -260,7 +260,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      add_activity_answer: {
+        Args: {
+          room_id: number
+          answer: Json
+        }
+        Returns: string
+      }
+      remove_activity_answer: {
+        Args: {
+          room_id: number
+          user_id: string
+          question_id: string
+          choice_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       Role: "pratico_admin"

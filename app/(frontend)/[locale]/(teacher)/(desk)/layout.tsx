@@ -4,26 +4,29 @@ import MenuDialog from "./_components/MenuDialog"
 import MenuSelector from "./_components/MenuSelector"
 import Carousel from "./_components/Carousel"
 import Controls from "./_components/Controls"
-import { TLEditorProvider } from "@/app/(frontend)/_hooks/useTLEditor"
-import { NavProvider } from "@/app/(frontend)/_hooks/useNav"
+import { TLEditorProvider } from "@/app/(frontend)/_hooks/contexts/useTLEditor"
+import { NavProvider } from "@/app/(frontend)/_hooks/contexts/useNav"
 import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 import MobileControls from "./_components/MobileControls"
-import { PresencesProvider } from "@/app/(frontend)/_hooks/usePresences"
-import { RoomProvider } from "@/app/(frontend)/_hooks/useRoom"
+import { PresencesProvider } from "@/app/(frontend)/_hooks/contexts/usePresences"
+import { RoomProvider } from "@/app/(frontend)/_hooks/contexts/useRoom"
 import ActivitiesMenu from "./_components/menus/ActivitiesMenu/ActivitiesMenu"
-import AllQuizesMenu from "./_components/menus/ActivitiesMenu/AllQuizesMenu"
-import AllPollsMenu from "./_components/menus/ActivitiesMenu/AllPollsMenu"
+import AllQuizesMenu from "./_components/menus/ActivitiesMenu/components/AllQuizesMenu"
+import AllPollsMenu from "./_components/menus/ActivitiesMenu/components/AllPollsMenu"
 import ParticipantsMenu from "./_components/menus/ParticipantsMenu/ParticipantsMenu"
 import DefilementMenu from "./_components/menus/ParticipantsMenu/DefilementMenu"
 import ChatMenu from "./_components/menus/ChatMenu"
 import MoreMenu from "./_components/menus/MoreMenu"
-import { CardDialogProvider } from "@/app/(frontend)/_hooks/useCardDialog"
+import { CardDialogProvider } from "@/app/(frontend)/_hooks/contexts/useCardDialog"
 import GlobalCardDialog from "./_components/GlobalCardDialog"
-import { FullscreenProvider } from "@/app/(frontend)/_hooks/useFullscreen"
+import { FullscreenProvider } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
+import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
+import QuizCreation from "./_components/menus/ActivitiesMenu/components/QuizCreation"
 
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+
     return (
         <TLEditorProvider>
         <NavProvider>
@@ -96,6 +99,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Box position='absolute'>
                     <GlobalCardDialog/>
                 </Box>
+
+                {/* Poll creation dialog */}
+                <PollCreation/>
+                
+                {/* Quiz creation dialog */}
+                <QuizCreation/>
 
                 
 

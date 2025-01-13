@@ -4,9 +4,9 @@ import logger from "@/app/_utils/logger"
 import { Quiz } from "@/app/_types/quiz"
 import { Poll } from "@/app/_types/poll"
 import { adapter } from "./utils"
-import { TablesInsert } from "@/supabase/types/database.types"
+import { TablesInsert, Tables } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"
-import { fetchActivity } from "./activity.server"
+import { fetchActivity as fetchActivityServer, fetchSnapshot as fetchSnapshotServer } from "./activity.server"
 
 
 export async function deleteActivity(id: number) {
@@ -57,11 +57,11 @@ export interface SaveActivityArgs {
 }
 
 export interface SaveActivityReturn {
-    data: any // TODO: Define the type of data
+    data: Tables<'activities'> | null
     error: string | null
 }
 
-
+// TODO: remove this to use a mutation hook
 export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<SaveActivityReturn> {
     const supabase = createClient()
 
@@ -86,4 +86,13 @@ export async function saveActivity({ id, activity }: SaveActivityArgs): Promise<
     return { data, error: null }
 }
 
+// TODO: Remove this to use a queries hook
+export async function fetchActivity(id: number) {
+    return await fetchActivityServer(id)
+}
 
+
+// TODO: Remove this to use a queries hook
+export async function fetchSnapshot(id: number) {
+    return await fetchSnapshotServer(id)
+}
