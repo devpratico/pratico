@@ -110,13 +110,13 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     return (
 		<Tldraw
 			className='tldraw-canvas'
-			// hideUi={true}
 			onMount={handleMount}
 			components={components}
 			store={store}
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
-			options={options}		
+			options={options}
+            forceMobile	
 		>
                 {children}
 	

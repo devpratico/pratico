@@ -96,9 +96,16 @@ export function CustomTlToolbar() {
 
 				.tlui-layout {
 					display: flex !important;
-					flex-direction: row-reverse !important;
+					flex-direction: column !important;
+					justify-content: flex-start !important;
+					align-items: flex-start !important;
+				}
+
+				.tlui-toolbar__inner {
+					display: flex !important;
+					flex-direction: reverse-column !important;
 					justify-content: flex-end !important;
-					align-items: center !important;
+					align-items: flex-start !important;
 				}
 		`}</style>
 			<Popover.Root>
