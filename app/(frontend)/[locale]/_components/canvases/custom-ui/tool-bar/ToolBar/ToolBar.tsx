@@ -75,7 +75,7 @@ export function CustomTlToolbar() {
 
   return (
 
-    <DefaultToolbar  >
+    <DefaultToolbar>
 			{mainTools.map(([toolKey, tool]) => (
 				<TldrawUiMenuItem key={toolKey} {...tool} />
 			))}
@@ -97,8 +97,8 @@ export function CustomTlToolbar() {
 				.tlui-layout {
 					display: flex !important;
 					flex-direction: column !important;
-					justify-content: flex-start !important;
-					align-items: flex-start !important;
+					justify-content: center !important;
+					align-items: start !important;
 				}
 
 				.tlui-toolbar__inner {
