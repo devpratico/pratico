@@ -103,14 +103,19 @@ export function CustomTlToolbar() {
 
 				.tlui-toolbar__inner {
 					display: flex !important;
-					flex-direction: reverse-column !important;
+					flex-direction: column-reverse !important;
 					justify-content: flex-end !important;
 					align-items: flex-start !important;
+					margin-top: 0.5rem;
+				}
+
+				.tlui-toolbar__extras {
+					display: none !important;
 				}
 		`}</style>
 			<Popover.Root>
 				<Popover.Trigger>
-					<IconButton variant="soft" size="4" style={{width: "100%"}}>
+					<IconButton m="4" variant="ghost" size="4" style={{width: "100%"}}>
 						<ChevronRight size="15" />
 					</IconButton>
 				</Popover.Trigger>
