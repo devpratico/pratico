@@ -28,7 +28,7 @@ const iconsMap: Record<ToolId, JSX.Element> = {
 
 interface ToolButtonProps {
     toolId: ToolId;
-    onClick: () => void;
+    onClick?: () => void;
     active: boolean;
     tooltipContent?: JSX.Element;
 }

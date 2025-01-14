@@ -9,7 +9,8 @@ import {
     StoreSnapshot,
     TLRecord,
     useKeyboardShortcuts,
-    T
+    T,
+    TldrawUi
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
@@ -85,11 +86,11 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
 	const components = useMemo(() => ({
-		Background,
-		OnTheCanvas: CanvasArea,
+        Background,
+        OnTheCanvas: CanvasArea,
         Toolbar: CustomTlToolbar,
         StylePanel: CustomTlStylePanel,
-		DebugPanel: null, // needed
+        DebugPanel: null, // needed
 		ContextMenu: null,
 		ActionsMenu: null,
 		HelpMenu: null,
@@ -111,15 +112,14 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		<Tldraw
 			className='tldraw-canvas'
 			onMount={handleMount}
-			components={components}
+            components={components}
 			store={store}
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
 			options={options}
-            forceMobile	
+           	forceMobile
 		>
-                {children}
-	
+            {children}
 			{/* <Resizer/> */}
 			<EmbedHint/>
 			<KeyboardShortcuts/>

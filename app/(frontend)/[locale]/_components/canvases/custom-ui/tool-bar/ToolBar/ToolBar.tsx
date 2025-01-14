@@ -6,9 +6,10 @@ import TextTool from '../TextTool/TextTool';
 import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
-import { DefaultToolbar, TldrawUiMenuItem, useTools } from 'tldraw';
-import { Grid, IconButton, Popover } from '@radix-ui/themes';
+import { DefaultToolbar, TldrawUiMenuItem, useEditor, useTools } from 'tldraw';
+import { Button, Grid, IconButton, Popover } from '@radix-ui/themes';
 import { ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 
 interface ToolBarProps {
@@ -54,7 +55,10 @@ const blankState: ToolBarState = {
 
 export function CustomTlToolbar() {
 	const tools = useTools();
-	const favorites = ["select", "eraser", "draw", "text", "note"];
+	const editor = useEditor();
+	const currentToolId = editor.getCurrentToolId();
+	const [selectedToolId, setSelectedToolId] = useState(currentToolId);
+	const [ favorites, setFavorites ] = useState(["select", "eraser", "draw", "text", "note", "other"]);
 	const praticoTools = Object.entries(tools).filter(([toolKey]) => {
 		return (!["hand", "frame"].includes(toolKey))
 	});
@@ -70,15 +74,39 @@ export function CustomTlToolbar() {
 	});
 
 	const [mainTools, extraTools] = praticoTools.length > 5
-    ? [praticoTools.slice(0, 5), praticoTools.slice(5)]
+    ? [praticoTools.slice(0, 6), praticoTools.slice(6)]
     : [praticoTools, []];
 
+
+	useEffect(() => {
+		const isMainToolSelected = Object.keys(mainTools).find(tool => {
+			return (tool === currentToolId);
+		});
+		if (!isMainToolSelected && currentToolId !== favorites[5]) {
+			const newFavorites = [...favorites];
+			newFavorites.splice(newFavorites.indexOf(currentToolId), 1);
+			newFavorites.push(currentToolId);
+			console.log("newFavorites", newFavorites);
+			setFavorites(newFavorites);
+		}
+		console.log("favorites", favorites);
+	}, [editor, favorites, currentToolId, mainTools]);
+
+	useEffect(() => {
+		console.log("selectedToolId", selectedToolId);
+	}, [selectedToolId]);
   return (
 
     <DefaultToolbar>
-			{mainTools.map(([toolKey, tool]) => (
+		{mainTools.map(([toolKey, tool]) =>  (
+			<IconButton key={toolKey} asChild color={selectedToolId === tool.id ? "green" : "lime"} onClick={() => {
+				console.log("toolKey", toolKey, tool);
+				setSelectedToolId(tool.id);
+			}}>
 				<TldrawUiMenuItem key={toolKey} {...tool} />
-			))}
+			</IconButton>
+			
+		))}
 
 		<style>{`
 				.tlui-toolbar__tools {
