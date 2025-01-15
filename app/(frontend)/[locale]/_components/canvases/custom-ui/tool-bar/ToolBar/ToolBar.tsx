@@ -140,6 +140,10 @@ export function CustomTlToolbar() {
 				.tlui-toolbar__extras {
 					display: none !important;
 				}
+				.tlui-button__tool:focus {
+					background-color: var(--accent-5) !important;
+					border-radius: 8px !important;
+				}
 		`}</style>
 			<Popover.Root>
 				<Popover.Trigger>
