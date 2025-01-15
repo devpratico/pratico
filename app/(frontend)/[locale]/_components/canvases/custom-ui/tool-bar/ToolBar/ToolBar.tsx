@@ -142,6 +142,7 @@ export function CustomTlToolbar() {
 				}
 				.tlui-button__tool:focus {
 					background-color: var(--accent-5) !important;
+					color: var(--accent-10) !important;
 					border-radius: 8px !important;
 				}
 		`}</style>
