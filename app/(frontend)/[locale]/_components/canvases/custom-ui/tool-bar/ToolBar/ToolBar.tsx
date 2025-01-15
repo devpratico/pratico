@@ -6,9 +6,10 @@ import TextTool from '../TextTool/TextTool';
 import MediaTool from '../media-tool/MediaTool/MediaTool';
 import ShapeTool from '../ShapeTool/ShapeTool';
 import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
-import { DefaultToolbar, TldrawUiMenuItem, useTools } from 'tldraw';
+import { DefaultToolbar, TldrawUiMenuItem, useEditor, useTools, defaultTools, DefaultToolbarContent, StarToolbarItem, SelectToolbarItem, EraserToolbarItem, DrawToolbarItem, TextToolbarItem, NoteToolbarItem, AssetToolbarItem, ToolbarItem } from 'tldraw';
 import { Grid, IconButton, Popover } from '@radix-ui/themes';
 import { ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface ToolBarProps {
 	className?: string;
@@ -53,7 +54,20 @@ const blankState: ToolBarState = {
 
 export function CustomTlToolbar() {
 	const tools = useTools();
+	const editor = useEditor();
 	const favorites = ["select", "eraser", "draw", "text", "note", "asset"];
+
+	const extraTools2 = defaultTools.filter((tool) => {
+		// Remove favorites
+		return (!favorites.includes(tool.name));
+	}).map((tool) => {
+		return tool.id;
+	});
+
+	console.log("extraTools2", extraTools2);
+
+
+	const [ selectedTool, setSelectedTool ] = useState("select");
 	const praticoTools = Object.entries(tools).filter(([toolKey]) => {
 		return (!["hand", "frame"].includes(toolKey))
 	});
@@ -72,12 +86,48 @@ export function CustomTlToolbar() {
     ? [praticoTools.slice(0, 6), praticoTools.slice(6)]
     : [praticoTools, []];
 
+	// useEffect(() => {
+	// 	setSelectedTool(editor.getCurrentToolId());
+	// 	console.log("selectedTool", selectedTool, editor.getCurrentToolId());
+	// }, [selectedTool, editor]);
+
+
   return (
 
     <DefaultToolbar>
-		{mainTools.map(([toolKey, tool]) =>  (
-			<TldrawUiMenuItem key={toolKey} {...tool} />
-		))}
+		
+		{/* {mainTools.map(([toolKey, tool]) =>  (
+			<TldrawUiMenuItem
+				key={toolKey}
+				id={tool.id}
+				icon={tool.icon}
+				label={tool.label}
+				onSelect={tool.onSelect}
+				kbd={tool.kbd}
+				//isSelected={toolKey === selectedTool}
+			/>
+		))} */}
+
+		{/* <DefaultToolbarContent /> */}
+
+		{/* <StarToolbarItem /> */}
+
+		{/* <SelectToolbarItem />
+		<EraserToolbarItem />
+		<DrawToolbarItem />
+		<TextToolbarItem />
+		<NoteToolbarItem />
+		<AssetToolbarItem />
+
+		<ToolbarItem tool="star"/> */}
+
+		{
+			favorites.map((toolKey) => {
+				return <ToolbarItem tool={toolKey} key={toolKey}/>
+			})
+		}
+
+
 
 		<style>{`
 				.tlui-toolbar__tools {
@@ -93,7 +143,7 @@ export function CustomTlToolbar() {
 					margin-left: 0.5rem;
 				}
 
-				.tlui-layout {
+				/*.tlui-layout {
 					display: flex !important;
 					flex-direction: column !important;
 					justify-content: center !important;
@@ -131,9 +181,14 @@ export function CustomTlToolbar() {
 				</Popover.Trigger>
 				<Popover.Content side="right">
 					<Grid columns="4" rows="repeat(auto-fill, 1fr)">
-						{extraTools.map(([toolKey, tool]) => (
+						{/* {extraTools.map(([toolKey, tool]) => (
 							<TldrawUiMenuItem key={toolKey} {...tool} />
-						))}
+						))} */}
+						{
+							extraTools2.map((tool) => {
+								return <ToolbarItem tool={tool} key={tool}/>
+							})
+						}
 					</Grid>
 				</Popover.Content>
 			</Popover.Root>

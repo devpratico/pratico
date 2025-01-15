@@ -118,6 +118,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			persistenceKey={persistenceKey}
 			options={options}
            	forceMobile
+            
 		>
             {children}
 			{/* <Resizer/> */}
