@@ -127,7 +127,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     )
 }
 
-
 const KeyboardShortcuts = () => {
     useKeyboardShortcuts()
     return null
