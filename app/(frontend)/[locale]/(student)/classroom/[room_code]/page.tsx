@@ -37,6 +37,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     // Fetch user names
     const { data } = await fetchNamesFromAttendance(user!.id);
 
+    logger.log("next:page", "StudentViewPage", "user data", data);
     const canvasUser: CanvasUser = {
         id: user!.id,
         name: `${data?.first_name} ${data?.last_name}`,

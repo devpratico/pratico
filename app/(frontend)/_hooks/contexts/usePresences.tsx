@@ -89,7 +89,7 @@ export function PresencesProvider({ children }: PresencesProviderProps) {
         .subscribe(async (status) => {
             logger.log('supabase:realtime', room_code + "_presence", 'Presence status', status)
             if (status !== 'SUBSCRIBED') { return }
-
+			logger.log('supabase:realtime', 'usePresence', 'Firstname Lastname', firstName, lastName, 'userPreference Tldraw', getUserPreferences());
             const myPresence: PresenceState = {
                 id: userId || 'unknown',
                 color: getUserPreferences().color || getRandomColor(),
