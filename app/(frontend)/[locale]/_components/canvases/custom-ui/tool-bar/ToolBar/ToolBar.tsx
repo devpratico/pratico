@@ -111,6 +111,12 @@ export function CustomTlToolbar() {
 				.tlui-toolbar__extras {
 					display: none !important;
 				}
+
+				.tlui-button__tool {
+					height: 2rem !important;
+					width: 2rem !important;
+				}
+
 				.tlui-button__tool:focus {
 					background-color: var(--accent-5) !important;
 					color: var(--accent-10) !important;
@@ -119,7 +125,7 @@ export function CustomTlToolbar() {
 		`}</style>
 			<Popover.Root>
 				<Popover.Trigger>
-					<IconButton m="4" variant="ghost" size="4" style={{width: "100%"}}>
+					<IconButton m="3" variant="ghost" size="4" style={{width: "100%"}}>
 						<ChevronRight size="15" />
 					</IconButton>
 				</Popover.Trigger>
