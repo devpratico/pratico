@@ -49,13 +49,14 @@ export const fetchAttendanceByUser = async (userId: string) => {
 
 export const fetchNamesFromAttendance = async (userId: string) => {
     const supabase = createClient();
-    const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId).single();
+    const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId);
     if (error || null) {
         logger.log('supabase:database', `no names for user ${userId.slice(0, 5)}...`, error?.message);
         return ({ data: null, error: error ? error : 'No data found, null returned' });
     } else {
-        logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data?.first_name, data?.last_name);
-        return ({ data, error: null });
+        logger.log('supabase:database', `fetched names for user ${userId.slice(0, 5)}...`, data[0]?.first_name, data[0]?.last_name);
+        const sendData = { first_name: data[0]?.first_name, last_name: data[0]?.last_name };
+        return ({ data: sendData, error: null });
     }
 };
 
