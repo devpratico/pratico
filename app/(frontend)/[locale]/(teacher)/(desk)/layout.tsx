@@ -22,6 +22,7 @@ import GlobalCardDialog from "./_components/GlobalCardDialog"
 import { FullscreenProvider } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
 import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
 import QuizCreation from "./_components/menus/ActivitiesMenu/components/QuizCreation"
+import FocusZoneProvider from "@/app/(frontend)/_hooks/useFocusZone"
 
 
 
@@ -31,6 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <TLEditorProvider>
         <NavProvider>
         <PresencesProvider>
+        <FocusZoneProvider>
         <RoomProvider>
 		<FullscreenProvider>
         <CardDialogProvider>
@@ -112,6 +114,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </CardDialogProvider>
 		</FullscreenProvider>
         </RoomProvider>
+        </FocusZoneProvider>
         </PresencesProvider>
         </NavProvider>
         </TLEditorProvider>

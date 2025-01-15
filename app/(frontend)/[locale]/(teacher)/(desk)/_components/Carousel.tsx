@@ -26,7 +26,7 @@ const MemoizedMiniature = memo(Miniature)
 
 export default function Carousel() {
     const { pageIds, setCurrentPage, currentPageId, movePage } = useNav()
-	const [ activeId, setActiveId ] = useState<TLPageId | undefined>();
+	const [ activeId, setActiveId ] = useState<TLPageId | undefined>(currentPageId);
 	const [ isGrabbing, setIsGrabbing ] = useState(false);
 	const sensors = useSensors(useSensor(MouseSensor, {activationConstraint: {distance: 10}}), useSensor(TouchSensor));
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -47,6 +47,10 @@ export default function Carousel() {
 		}
 	};
 	useKeyboardShortcuts(shortcuts);
+	useEffect(() => {
+		if (currentPageId && activeId !== currentPageId)
+			setCurrentPage(currentPageId);
+	}, [currentPageId, activeId, setCurrentPage]);
 
 	const handleDragStart = (e: DragStartEvent) => {
 		if (!isGrabbing)
@@ -64,7 +68,6 @@ export default function Carousel() {
 				setIndicatorPosition(e.over.rect.right);
 			else if (nearestPage && nearestPage?.rect.right > e.over.rect.right)
 				setIndicatorPosition(e.over.rect.left);
-
 		}
 	}
 
@@ -112,7 +115,7 @@ export default function Carousel() {
 		else
 			setIsActiveZone(activeZone === "focusZoneCarrousel");
 
-	}, [activeZone, isFullscreen, setActiveZone]);
+	}, [activeZone, isFullscreen, setActiveZone, isActiveZone]);
 
 	useEffect(() => {
 		if (!currentPageId)
@@ -120,7 +123,7 @@ export default function Carousel() {
 		const currentThumbnail = document.getElementById(`${currentPageId}-id`);
 		if (currentThumbnail && document.activeElement !== currentThumbnail)
 			currentThumbnail.focus();
-	}, [currentPageId]);
+	}, [currentPageId, activeId]);
 
     return (
 		<DndContext autoScroll={{
@@ -191,7 +194,7 @@ function Miniature({ pageId, onClick, isGrabbing, isActiveZone }: MiniatureProps
 			return ('0 0 0 3px var(--gray-6)');
 		if (isGrabbing && currentPageId === pageId)
 			return ('0 0 0 3px var(--accent-8)');
-        return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)'
+        return currentPageId == pageId ? '0 0 0 3px var(--accent-10)' : 'var(--shadow-2)';
     }, [currentPageId, pageId, isGrabbing, isActiveZone]);
 
     const onSelect = useCallback(() => {
