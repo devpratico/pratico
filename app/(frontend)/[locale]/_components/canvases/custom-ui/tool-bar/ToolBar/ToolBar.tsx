@@ -99,12 +99,12 @@ export function CustomTlToolbar() {
 
     <DefaultToolbar>
 		{mainTools.map(([toolKey, tool]) =>  (
-			<IconButton key={toolKey} asChild color={selectedToolId === tool.id ? "green" : "lime"} onClick={() => {
-				console.log("toolKey", toolKey, tool);
-				setSelectedToolId(tool.id);
-			}}>
+			// <IconButton key={toolKey} asChild color={selectedToolId === tool.id ? "green" : "lime"} onClick={() => {
+			// 	console.log("toolKey", toolKey, tool);
+			// 	setSelectedToolId(tool.id);
+			// }}>
 				<TldrawUiMenuItem key={toolKey} {...tool} />
-			</IconButton>
+			// </IconButton>
 			
 		))}
 

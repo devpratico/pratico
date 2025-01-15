@@ -5,9 +5,8 @@ export function CustomTlStylePanel(props: TLUiStylePanelProps) {
 	const styles = useRelevantStyles();
 
 	return (
-		<DefaultStylePanel isMobile>
+		<DefaultStylePanel {...props}>
 			<DefaultStylePanelContent styles={styles} />
 		</DefaultStylePanel>
-
 	)
 }
