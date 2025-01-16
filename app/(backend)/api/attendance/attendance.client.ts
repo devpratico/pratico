@@ -91,7 +91,7 @@ export async function submitAttendanceForm(prevState: any, formData: FormData) {
     let user: User
 
     const { user: fetchedUser, error: userError } = await fetchUser()
-    if (userError) return { error: userError };
+    //if (userError) return { error: userError }; // Commented this because when no user, there is an error (even though it's expected)
 
     if (fetchedUser) {
         user = fetchedUser

@@ -1,11 +1,11 @@
 'use client'
 import * as Form from '@radix-ui/react-form';
-import { TextField, Button, Flex, Box, Text, Checkbox, Link, TextArea } from '@radix-ui/themes';
+import { TextField, Button, Flex, Text, Checkbox, Link, TextArea } from '@radix-ui/themes';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { janifera } from '@/app/(frontend)/Fonts';
 import { submitAttendanceForm } from '@/app/(backend)/api/attendance/attendance.client';
-import { useFormState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 
 const cguLink = "https://www.pratico.live/conditions-generales-dutilisation-et-de-vente"
@@ -19,7 +19,7 @@ export default function StudentForm() {
     const [lastName, setLastName] = useState('');
     const fullName = `${firstName} ${lastName}`;
 
-    const [state, action, isPending] = useFormState(submitAttendanceForm, { error: null });
+    const [state, action] = useFormState(submitAttendanceForm, { error: null });
 
     if (!nextUrl) throw new Error('nextUrl not found in query params');
     if (!roomCode) throw new Error('Room code not found in query params');
@@ -59,21 +59,22 @@ export default function StudentForm() {
                     </Form.Control>
                 </Form.Field>
 
-				<Box maxWidth="250px">
+
+                <Form.Field key='accept-cgu' name='accept-cgu'>
                     <Text as="label">
-                        <Flex gap="2">
-                            <Checkbox required />
-                            {"J'accepte les"}
-                            <Link href={cguLink} target="_blank">
-                                {"conditions générales d'utilisation"}
-                            </Link>
+                        <Flex gap='2' align={'center'}>
+                            <Checkbox required/>
+                            <Text as='span' size='1' trim='end'>
+                                {"J'accepte les "}<Link href={cguLink} target="_blank">{"conditions générales d'utilisation"}</Link>
+                            </Text>
                         </Flex>
                     </Text>
-				</Box>
+                </Form.Field>
+
 
 				<Flex mt='5' justify='between' height='20px'>
 					<Text mr='5' size='8' className={janifera.className}>{fullName}</Text>
-					<Button type="submit" loading={isPending}>OK</Button>
+					<SubmitButton/>
 				</Flex>
 
                 {state.error && (
@@ -82,5 +83,17 @@ export default function StudentForm() {
 
             </Flex>
         </Form.Root>
+    )
+}
+
+
+
+function SubmitButton() {
+    const { pending } = useFormStatus()
+
+    return (
+        <Button type="submit" disabled={pending}>
+            {'Rejoindre la session'}
+        </Button>
     )
 }

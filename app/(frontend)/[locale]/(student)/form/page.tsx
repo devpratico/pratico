@@ -1,27 +1,22 @@
 import StudentForm from "./_components/StudentForm"
-import { Flex, Card, Heading, Separator } from "@radix-ui/themes"
-import { Viewport } from "next"
+import { Card, Heading, Container, Section, Box } from "@radix-ui/themes"
+import Image from "next/image"
 
-export const viewport: Viewport = {
-    themeColor: 'black',
-    maximumScale: 1,
-    userScalable: false,
-}
 
 export default function formPage() {
     return (
-        <main style={{ height: '100dvh' }}>
-            <Flex align='center' justify='center' height='100%' >
-                <Card size='5' style={{minWidth:'400px'}}>
-					<Flex align='center' justify='center' height='100%'>
-						<Heading size='5'>Bienvenue !</Heading>
-					</Flex>
-					<Flex align='center' justify='center' height='100%'>
-						<Separator size='3' my='4' />
-					</Flex>
-                    <StudentForm />
-                </Card>
-            </Flex>
+        <main style={{backgroundColor:'var(--accent-3)', minHeight:'100vh'}}>
+            <Container size='1' p='1'>
+                <Section>
+                    <Card size='5'>
+                        <Box position='relative' width='100%' height='200px'>
+                            <Image src='/illustrations/door.svg' alt='rocket' layout='fill' objectFit='contain' />
+                        </Box>
+                        <Heading size='8' align='center' mb='5'>Bienvenue !</Heading>
+                        <StudentForm />
+                    </Card>
+                </Section>
+            </Container>
         </main>
     )
 }
