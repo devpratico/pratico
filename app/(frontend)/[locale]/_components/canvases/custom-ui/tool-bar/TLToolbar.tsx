@@ -4,7 +4,7 @@ import getTldrawState from "@/app/_utils/tldraw/tldDrawState"
 import { toolBarStateFrom } from "@/app/_utils/tldraw/toolBarState"
 import * as tlDispatch from '@/app/_utils/tldraw/toolbarDispatch'
 import ToolBar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar/ToolBar"
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor"
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor"
 import { useCallback } from "react"
 import logger from "@/app/_utils/logger"
 

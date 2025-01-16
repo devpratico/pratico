@@ -2,14 +2,14 @@
 import { Section, Text, Flex, Table, Badge, Box, Button, SegmentedControl, Callout, VisuallyHidden, Strong } from '@radix-ui/themes'
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Pen, Coins, ChevronRight, Info, TriangleAlertIcon } from "lucide-react"
-import { usePresences } from "@/app/(frontend)/_hooks/usePresences"
+import { usePresences } from "@/app/(frontend)/_hooks/contexts/usePresences"
 import CollabSwitch from "./CollabSwitch"
 import CollabSwitchGlobal from "./CollabSwitchGlobal"
 import { useParams } from "next/navigation"
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams'
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams'
 import { useState } from "react"
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
-import { useUser } from '@/app/(frontend)/_hooks/useUser';
+import { useUser } from '@/app/(frontend)/_hooks/contexts/useUser';
 import GoPremiumBtn from '../../../../_components/GoPremiumBtn';
 
 

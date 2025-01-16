@@ -5,7 +5,7 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 import { signInAnonymously } from "@/app/(backend)/api/auth/auth.client"
 import { saveCapsule } from "@/app/(backend)/api/capsule/capsule.client"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { useUser } from "@/app/(frontend)/_hooks/useUser"
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser"
 
 
 export default function WelcomeDialog() {

@@ -2,8 +2,8 @@ import { Section, Button, Flex, Heading, Callout, VisuallyHidden } from '@radix-
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {  ChevronRight, Star, Clock} from 'lucide-react'
 import SearchParamLink from '../../SearchParamLink'
-import CreateActivityBtn from './CreateActivityBtn'
-import ActivitiesTable from './ActivitiesTable'
+import CreateActivityBtn from './components/CreateActivityBtn'
+import ActivitiesTable from './components/ActivitiesTable'
 
 
 export default function ActivitiesMenu() {

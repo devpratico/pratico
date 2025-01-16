@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from "react"
 import { useEditor, Box } from "tldraw"
 import zoomToBounds from "@/app/_utils/tldraw/zoomToBounds"
 import logger from "@/app/_utils/logger"
-import { useNav } from "@/app/(frontend)/_hooks/useNav"
+import { useNav } from "@/app/(frontend)/_hooks/contexts/useNav"
 
 
 

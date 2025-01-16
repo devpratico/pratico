@@ -1,4 +1,3 @@
-import ActivityCard from "./_components/ActivityCard";
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { Flex, Box, Text } from "@radix-ui/themes"
 import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
@@ -10,6 +9,10 @@ import MenuTabs from "../../_components/MenuTabs";
 import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
+import PollAnimation from "./_components/PollAnimation";
+import QuizAnimation from "./_components/QuizAnimation";
+import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
+
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25;
@@ -20,7 +23,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
         logger.log('next:page', 'User info missing or error fetchingUser', userError ? userError : null);
         return (null);
     }
-    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).eq("status", "open").maybeSingle()
+    const { data: roomData, error: roomError } = await supabase.from('rooms').select('created_by').eq('code', room_code).single()
     if (roomError) {
         logger.log("next:page", "TeacherViewPage", "room error", roomError);
         throw (roomError);
@@ -31,7 +34,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 		throw new Error("La session est terminée ou n'existe pas");
 
     return (
-        <>
+        <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}
 			<TopBarPortal>
 
 			<Flex justify={{initial:'center', xs:'between'}} align='center'>
@@ -74,7 +77,9 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 			<TeacherCanvas roomCode={room_code} />
 
 			{/* Activity Card, that automatically opens when an activity is running */}
-			<ActivityCard />
-        </>
+			<PollAnimation />
+            <QuizAnimation />
+
+        </RealtimeActivityProvider>
     )
 }

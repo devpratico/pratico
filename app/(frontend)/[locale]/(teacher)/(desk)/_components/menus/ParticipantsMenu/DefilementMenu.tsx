@@ -2,7 +2,7 @@
 import { Section, RadioCards, Flex, Text, Box, Badge, Button } from '@radix-ui/themes'
 import { ChevronLeft } from 'lucide-react'
 import { Link } from '@/app/(frontend)/_intl/intlNavigation'
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams'
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams'
 
 
 export default function DefilementMenu() {

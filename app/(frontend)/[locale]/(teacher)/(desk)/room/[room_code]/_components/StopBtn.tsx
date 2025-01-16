@@ -1,11 +1,11 @@
 'use client'
 import logger from "@/app/_utils/logger";
-import { useRoom } from "@/app/(frontend)/_hooks/useRoom";
+import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { stopRoom } from "@/app/(backend)/api/room/room.client";
 import { useState } from "react";
-import { useDisable } from "@/app/(frontend)/_hooks/useDisable";
+import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable";
 import createClient from "@/supabase/clients/client";
 import { Radio } from "lucide-react";
 

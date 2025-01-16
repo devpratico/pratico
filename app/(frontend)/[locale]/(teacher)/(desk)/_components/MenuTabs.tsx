@@ -5,20 +5,24 @@
  * When no query parameter is present, none of the tabs are active.
  */
 'use client'
-import { TabNav, Flex, Text } from "@radix-ui/themes"
-import { Link } from "@/app/(frontend)/_intl/intlNavigation"
-import useSearchParams from "@/app/(frontend)/_hooks/useSearchParams"
+import { Flex, Text, Tabs } from "@radix-ui/themes"
+//import { Link } from "@/app/(frontend)/_intl/intlNavigation"
+import useSearchParams from "@/app/(frontend)/_hooks/standalone/useSearchParams"
+import { useCallback } from "react"
 
 
 function TabElement({ menu, children }: { menu: string, children: React.ReactNode }) {
-    const { searchParams, getPathnameWithSearchParamToggled } = useSearchParams()
+    //const { searchParams, getPathnameWithSearchParamToggled } = useSearchParams()
 
     return (
-        <TabNav.Link active={searchParams.get('menu') == menu} asChild>
+        /*<TabNav.Link active={searchParams.get('menu') == menu} asChild>
             <Link href={getPathnameWithSearchParamToggled('menu', menu)} shallow={true} prefetch>
                 {children}
             </Link>
-        </TabNav.Link>
+        </TabNav.Link>*/
+        <Tabs.Trigger value={menu}>
+            {children}
+        </Tabs.Trigger>
     )
 }
 
@@ -26,14 +30,17 @@ function TabElement({ menu, children }: { menu: string, children: React.ReactNod
  * A tab element for when no menu is selected.
  */
 function HomeTabElement({ children }: { children: React.ReactNode }) {
-    const { searchParams, getPathnameWithoutSearchParam } = useSearchParams()
+    //const { searchParams, getPathnameWithoutSearchParam } = useSearchParams()
 
     return (
-        <TabNav.Link active={!searchParams.get('menu')} asChild>
+        /*<TabNav.Link active={!searchParams.get('menu')} asChild>
             <Link href={getPathnameWithoutSearchParam('menu')} shallow={true} prefetch>
                 {children}
             </Link>
-        </TabNav.Link>
+        </TabNav.Link>*/
+        <Tabs.Trigger value={'home'}>
+            {children}
+        </Tabs.Trigger>
     )
 }
 
@@ -52,10 +59,18 @@ interface MenuTabsProps {
 
 export default function MenuTabs({ padding, tabs }: MenuTabsProps) {
 
+    const { searchParams, setSearchParam } = useSearchParams()
+    const onValueChange = useCallback((value: string) => {
+        setSearchParam('menu', value)
+    }, [setSearchParam])
+
+
 
     return (
-        <TabNav.Root className="dark" id='menu-tabs'>
+        <Tabs.Root className="dark" id='menu-tabs' defaultValue="home" value={searchParams.get('menu') || 'home'} onValueChange={onValueChange}>
             <CustomTabStyle padding={padding} />
+
+            <Tabs.List>
 
             {tabs.map(tab => {
                 // If a menu ("chat", "activities", etc.) is defined, use the TabElement
@@ -78,9 +93,10 @@ export default function MenuTabs({ padding, tabs }: MenuTabsProps) {
                         </HomeTabElement>
                     )
                 }
-        })}
+            })}
+            </Tabs.List>
 
-        </TabNav.Root>
+        </Tabs.Root>
     )
 }
 
