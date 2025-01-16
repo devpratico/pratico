@@ -6,6 +6,7 @@
 // import MediaTool from '../media-tool/MediaTool/MediaTool';
 // import ShapeTool from '../ShapeTool/ShapeTool';
 // import { ToolBarState } from '@/app/_utils/tldraw/toolBarState';
+import { ScrollArea } from '@radix-ui/themes';
 import { DefaultToolbar, ToolbarItem, useTools } from 'tldraw';
 
 // interface ToolBarProps {
@@ -64,8 +65,8 @@ export function CustomTlToolbar() {
 			return (indexA - indexB);
 		});
 	return (
-
 		<DefaultToolbar>
+		
 
 			{
 				myTools.map((toolKey) => {
@@ -100,8 +101,12 @@ export function CustomTlToolbar() {
 					justify-content: flex-end !important;
 					align-items: flex-start !important;
 				}
-
+				
+				.tl-theme__light {
+					--color-selected: var(--accent-9) !important;
+				}
 			`}</style>
+			
 		</DefaultToolbar>
 	);
 }
