@@ -1,6 +1,6 @@
 'use client'
 import { Flex, Tabs, Container, Section, Card } from '@radix-ui/themes';
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams';
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams';
 import SignUpForm from './_components/SignUpForm';
 import LogInForm from './_components/LogInForm';
 import RecoveryForm from './_components/RecoveryForm';

@@ -8,7 +8,7 @@ import logger from "@/app/_utils/logger"
 // Supabase allows to filter queries by the content of a JSON object field.
 
 export const adapter = {
-    toJson: (activity: Quiz | Poll) => activity as unknown as Json,
+    toJson: (activity: Quiz | Poll ) => activity as unknown as Json,
 
     toQuiz: (json: Json) => {
         if (!json) {
@@ -20,10 +20,10 @@ export const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '2':
+            case '3':
                 return rawObject as Quiz
             default:
-                logger.error('supabase:database', 'Error parsing quiz', 'Unknown schema version')
+                logger.error('supabase:database', 'Error parsing quiz', `Schema version "${schemaVersion}" not supported`)
                 return undefined
         }
     },
@@ -38,10 +38,10 @@ export const adapter = {
         const schemaVersion = rawObject.schemaVersion as string
 
         switch (schemaVersion) {
-            case '2':
+            case '3':
                 return rawObject as Poll
             default:
-                logger.error('supabase:database', 'Error parsing poll', 'Unknown schema version')
+                logger.error('supabase:database', 'Error parsing poll', `Schema version "${schemaVersion}" not supported`)
                 return undefined
         }
     }

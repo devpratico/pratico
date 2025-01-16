@@ -1,10 +1,12 @@
-import { RoomProvider } from '@/app/(frontend)/_hooks/useRoom'
-import { PresencesProvider } from '@/app/(frontend)/_hooks/usePresences'
-import { NavProvider } from '@/app/(frontend)/_hooks/useNav'
-import { TLEditorProvider } from '@/app/(frontend)/_hooks/useTLEditor'
+import { RoomProvider } from '@/app/(frontend)/_hooks/contexts/useRoom'
+import { PresencesProvider } from '@/app/(frontend)/_hooks/contexts/usePresences'
+import { NavProvider } from '@/app/(frontend)/_hooks/contexts/useNav'
+import { TLEditorProvider } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { Viewport } from 'next'
 import { Grid } from '@radix-ui/themes'
-import ActivityCard from './_components/ActivityCard'
+import PollParticipation from './_components/PollParticipation'
+import QuizParticipation from './_components/QuizParticipation'
+import { RealtimeActivityProvider } from '@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext'
 
 
 export const viewport: Viewport = {
@@ -23,14 +25,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             style={{backgroundColor:'black'}}
         >
             <RoomProvider>
-                <PresencesProvider>
-                    <TLEditorProvider>
-                        <NavProvider>
-                            {children}
-                            <ActivityCard />
-                        </NavProvider>
-                    </TLEditorProvider>
-                </PresencesProvider>
+                <RealtimeActivityProvider>
+                    <PresencesProvider>
+                        <TLEditorProvider>
+                            <NavProvider>
+                                {children}
+                                <PollParticipation />
+                                <QuizParticipation />
+                            </NavProvider>
+                        </TLEditorProvider>
+                    </PresencesProvider>
+                </RealtimeActivityProvider>
             </RoomProvider>
         </Grid>
     )

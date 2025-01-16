@@ -4,8 +4,8 @@ import '../colors.css'
 import '../globals.css'
 import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
-import { DisableProvider } from '@/app/(frontend)/_hooks/useDisable';
-import { UserContextProvider } from '../_hooks/useUser';
+import { DisableProvider } from '@/app/(frontend)/_hooks/contexts/useDisable';
+import { UserContextProvider } from '@/app/(frontend)/_hooks/contexts/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 import { NextIntlClientProvider } from 'next-intl';
@@ -44,20 +44,18 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     }
 
     const isSubscribed = await customerIsSubscribed(data?.user?.id)
-
+    
     return (
         <html lang={locale} data-theme="pratico">
             <body className={luciole.className}>
                 <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
-                    <FocusZoneProvider>
-                        <DisableProvider>
-                            <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
-                                <NextIntlClientProvider>
-                                {children}
-                                </NextIntlClientProvider>
-                            </UserContextProvider>
-                        </DisableProvider>
-                    </FocusZoneProvider>
+                    <DisableProvider>
+                        <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
+							<NextIntlClientProvider>
+						 	   {children}
+							</NextIntlClientProvider>
+                        </UserContextProvider>
+                    </DisableProvider>
                 </Theme>
             </body>
         </html>

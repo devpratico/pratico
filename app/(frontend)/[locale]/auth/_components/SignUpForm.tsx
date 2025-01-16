@@ -4,9 +4,9 @@ import * as Form from '@radix-ui/react-form';
 import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
 import { signup } from '@/app/(backend)/api/auth/auth.client';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
-import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
+import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import logger from '@/app/_utils/logger';
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams';
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
@@ -46,14 +46,10 @@ export default function SignUpForm() {
         if (error || !user) {
             logger.error('supabase:auth', 'Error signing up with email', error);
             setErrorMessage(error || 'error signing up');
-            setIsLoading(false);
-            setDisabled(false);
 
         } else {
             await setNames({ id: user.id, first_name: (formData.firstname as string), last_name: (formData.lastname as string) });
             sendDiscordMessage(`🎉 **Nouvel inscrit !** ${formData.firstname} ${formData.lastname} (${formData.email})`);
-            setIsLoading(false);
-            setDisabled(false);
 
             if (nextUrl == '/capsule') {
                 router.push('/capsules');
@@ -61,6 +57,9 @@ export default function SignUpForm() {
                 router.push(nextUrl || '/capsules');
             }
         }
+
+        setIsLoading(false);
+        setDisabled(false);
     }
 
 

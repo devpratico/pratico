@@ -42,7 +42,8 @@
     "react-to-print": "^3.0.1",
     "server-only": "^0.0.1",
     "stripe": "^16.8.0",
-    "tldraw": "^2.4.4"
+    "tldraw": "^2.4.4",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@types/eslint": "^9.6.0",

@@ -1,5 +1,5 @@
 "use client";
-
+import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import jsPDF from "jspdf";
 import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
@@ -8,7 +8,6 @@ import logger from "@/app/_utils/logger";
 import { Flex, Button, Progress, AlertDialog, Card, Text, Box } from "@radix-ui/themes"
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTLEditor } from "@/app/(frontend)/_hooks/useTLEditor";
 import { useFormatter } from "next-intl";
 
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})

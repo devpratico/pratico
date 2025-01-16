@@ -38,9 +38,9 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                     await saveRoomSnapshot(_id, snapshot)
                     break
             }
-            logger.log('supabase:database', `Saved snapshot to ${saveTo.destination} ${_id}`)
+            logger.log('supabase:database', `Saved capsule snapshot to ${saveTo.destination} ${_id}`)
         } catch (error) {
-            logger.error('supabase:database', 'Error saving snapshot', (error as Error).message)
+            logger.error('supabase:database', 'Error saving capsule snapshot', (error as Error).message)
         }
     }, [saveTo])
 

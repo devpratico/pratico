@@ -208,10 +208,11 @@ export const saveRoomParams = async (roomId: number, params: RoomParams) => {
 }
 
 
-export const saveRoomActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
+// TODO: remove this to use a mutation hook
+export const saveActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
     const supabase = createClient()
 
-    logger.log('supabase:database', 'saveRoomActivitySnapshot', 'saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
+    logger.log('supabase:database', 'saveActivitySnapshot', '⭐️ saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
 
     const { data, error } = await supabase.from('rooms').update({
         activity_snapshot: snapshot ? snapshot as unknown as Json : null
@@ -253,16 +254,16 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
             type: 'quiz',
             activityId: activityId,
             currentQuestionId: firstQuestionId,
-            currentQuestionState: 'answering',
-            answers: {}
+            state: 'answering',
+            answers: []
         }
     } else if (activity.type === 'poll') {
         activitySnapshot = {
             type: 'poll',
             activityId: activityId,
             currentQuestionId: firstQuestionId,
-            currentQuestionState: 'answering',
-            answers: {}
+            state: 'voting',
+            answers: []
         }
     } else {
         logger.log('react:component', 'StartButton', 'Impossible to set activity snapshot, type not recognized:', activity.type)
@@ -291,7 +292,7 @@ export const startActivity = async ({ activityId, roomCode }: { activityId: numb
         return { error: roomIdError || 'No roomId found' }
     }
 
-    const { error: saveError } = await saveRoomActivitySnapshot(roomId, snapshot)
+    const { error: saveError } = await saveActivitySnapshot(roomId, snapshot)
     if (saveError) {
         logger.error('supabase:database', 'startActivity', 'Error saving activity snapshot:', saveError)
         return { error: saveError }

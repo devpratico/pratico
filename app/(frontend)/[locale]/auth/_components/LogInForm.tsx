@@ -5,8 +5,8 @@ import { Mail, RectangleEllipsis, TriangleAlert } from 'lucide-react';
 import { login } from '@/app/(backend)/api/auth/auth.client';
 import logger from '@/app/_utils/logger';
 import { useRouter } from '@/app/(frontend)/_intl/intlNavigation';
-import useSearchParams from '@/app/(frontend)/_hooks/useSearchParams';
-import { useDisable } from '@/app/(frontend)/_hooks/useDisable';
+import useSearchParams from '@/app/(frontend)/_hooks/standalone/useSearchParams';
+import { useDisable } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import TryAnonymousBtn from './TryAnonymousBtn';
 import { useState } from 'react';
 import Feedback from './Feedback';
@@ -34,8 +34,7 @@ export default function LogInForm() {
 
         logger.log('supabase:auth', 'Signing in with email', email);
         const { user, error } = await login({ email, password });
-        setDisabled(false);
-        setIsLoading(false);
+        
 
         if (error || !user) {
             logger.error('supabase:auth', 'Error signing in with email', error);
@@ -49,6 +48,9 @@ export default function LogInForm() {
                 router.push(nextUrl || '/capsules');
             }
         }
+
+        setDisabled(false);
+        setIsLoading(false);
     }
 
 

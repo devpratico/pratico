@@ -1,5 +1,5 @@
 'use client'
-import useSearchParams from "@/app/(frontend)/_hooks/useSearchParams"
+import useSearchParams from "@/app/(frontend)/_hooks/standalone/useSearchParams"
 import { Link } from "@/app/(frontend)/_intl/intlNavigation"
 //import { Link as RadixLink } from "@radix-ui/themes"
 

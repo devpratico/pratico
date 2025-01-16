@@ -2,7 +2,7 @@
 import { Flex, Grid, Text, Card, IconButton, Popover, Box } from '@radix-ui/themes'
 import {  Plus, ChevronRight, ChevronLeft } from 'lucide-react'
 import AddMenu from './menus/AddMenu'
-import { useNav } from '@/app/(frontend)/_hooks/useNav'
+import { useNav } from '@/app/(frontend)/_hooks/contexts/useNav'
 import Thumbnail from '@/app/(frontend)/[locale]/_components/Thumbnail'
 import MobileToolbar from './MobileToolbar'
 

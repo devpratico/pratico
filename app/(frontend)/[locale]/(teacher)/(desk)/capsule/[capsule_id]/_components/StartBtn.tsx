@@ -6,7 +6,7 @@ import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { useState } from "react";
 import { Play } from "lucide-react";
-import { useUser } from "@/app/(frontend)/_hooks/useUser";
+import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser";
 
 
 interface StartBtnProps {
