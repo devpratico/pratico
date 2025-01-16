@@ -8,15 +8,13 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts,
-    T,
-    TldrawUi
+    useKeyboardShortcuts
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'

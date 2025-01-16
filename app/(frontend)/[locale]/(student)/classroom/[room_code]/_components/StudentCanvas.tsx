@@ -51,9 +51,9 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
 
     return (
         <>
-            <ToolBarBox>
-                {canCollab && (widerThan('xs') ? <Box p='2'><TLToolbar /></Box> : <MobileToolbar />)}
-            </ToolBarBox>
+            {/* <ToolBarBox>
+                {canCollab && (widerThan('xs') ? null : <MobileToolbar />)}
+            </ToolBarBox> */}
 
             <Canvas store={store}>
                 <Resizer />
