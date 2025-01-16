@@ -105,6 +105,10 @@ export function CustomTlToolbar() {
 				.tl-theme__light {
 					--color-selected: var(--accent-9) !important;
 				}
+
+				.tlui-toolbar__extras {
+					display: none !important;
+				}
 			`}</style>
 			
 		</DefaultToolbar>
