@@ -92,7 +92,7 @@ function SubmitButton() {
     const { pending } = useFormStatus()
 
     return (
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" loading={pending}>
             {'Rejoindre la session'}
         </Button>
     )
