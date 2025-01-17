@@ -6,23 +6,20 @@ import { DefaultToolbar, ToolbarItem, useTools } from 'tldraw';
 export function CustomTlToolbar() {
 	const tools = useTools();
 	const { user } = useUser();
-	const myTmpTools = Object.keys(tools).filter((toolKey) => !["hand", "frame"].includes(toolKey));
+	const myTmpTools: string[] = Object.keys(tools).filter((toolKey) => !["hand", "frame"].includes(toolKey));
 	const [ myTools, setMyTools ] = useState<string[]>(myTmpTools);
-	const [ studentCheck, setStudentCheck ] = useState<boolean>(false);
 
 	useEffect(() => {
 		const isStudentView = async () => {
 			if (!user) return;
 			const supabase = createClient();
 			const favorites = ["select", "eraser", "draw", "text", "note", "asset"];
-
 			const { count, error } = await supabase.from("rooms").select("id", {head: true, count: "exact"})
 				.eq("created_by", user.id)
 				.eq("status", "open");
-				console.log(count, error);
 			if (!count || error)
 				setMyTools((prev) => prev.filter((toolKey) => !["select", "laser"].includes(toolKey)));
-			setStudentCheck(true);
+	
 			setMyTools((prev) => prev.sort((toolKeyA, toolKeyB) => {
 				const indexA = favorites.indexOf(toolKeyA);
 				const indexB = favorites.indexOf(toolKeyB);
@@ -34,10 +31,9 @@ export function CustomTlToolbar() {
 				return (indexA - indexB);
 			}));
 		}
-		if (!studentCheck)
-			isStudentView();
+		isStudentView();
 		
-	}, [user, studentCheck]);
+	}, [user]);
 
 	
 	return (

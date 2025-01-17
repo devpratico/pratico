@@ -10,12 +10,8 @@ import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
 import { useEffect } from "react";
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
-import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
 import logger from "@/app/_utils/logger";
-import ToolBarBox from "./ToolBarBox";
-import { Box, Flex } from "@radix-ui/themes";
-import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar/ToolBar";
-import MobileToolbar from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/MobileToolbar";
+import {Flex } from "@radix-ui/themes";
 
 
 interface StudentCanvasProps {
@@ -26,7 +22,6 @@ interface StudentCanvasProps {
 
 // TODO: Put the toolbar in the page or a layout
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
-    const { widerThan } = useWindow()
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
