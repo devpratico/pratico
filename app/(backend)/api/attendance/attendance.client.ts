@@ -28,7 +28,6 @@ export const createAttendance = async (firstName: string, lastName: string, room
         user_id: userId,
         first_name: firstName,
         last_name: lastName,
-        signature: true,
         room_id: roomData?.id,
         additional_info: additionalInfo
     };
