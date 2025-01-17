@@ -87,6 +87,16 @@ export const fetchUserHasSignedAttendance = async (roomId: number, userId: strin
     return false
 };
 
+export async function fetchUserAttendanceData(roomId: number, userId: string) {
+    const supabase = createClient();
+    const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId).eq('user_id', userId).single();
+    if (error) {
+        logger.error('supabase:database', 'fetchUserAttendanceData', 'error fetching user attendance data', error.message);
+    }
+
+    return { data, error }
+}
+
 export async function countAttendances(roomId: string | number) {
     const supabase = createClient()
     const response = await supabase.from('attendance').select('id').eq('room_id', roomId)
