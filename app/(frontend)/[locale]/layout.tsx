@@ -50,11 +50,13 @@ export default async function RootLayout({children, params: { locale }}: RootLay
             <body className={luciole.className}>
                 <Theme accentColor="violet" appearance='light' panelBackground='translucent' grayColor='mauve'>
                     <DisableProvider>
-                        <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
-							<NextIntlClientProvider>
-						 	   {children}
-							</NextIntlClientProvider>
-                        </UserContextProvider>
+                        <FocusZoneProvider>
+                            <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
+                                <NextIntlClientProvider>
+                                {children}
+                                </NextIntlClientProvider>
+                            </UserContextProvider>
+                        </FocusZoneProvider>
                     </DisableProvider>
                 </Theme>
             </body>
