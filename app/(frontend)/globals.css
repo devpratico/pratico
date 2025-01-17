@@ -30,37 +30,7 @@
     vector-effect: non-scaling-stroke;
 }*/
 
-.tlui-toolbar__tools {
-    flex-direction: column !important;
-}
-
-.tlui-toolbar__tools__list {
-    flex-direction: column !important;
-}
-
-.tlui-toolbar {
-    justify-content: flex-start !important;
-    margin-left: 0.5rem;
-}
-
-.tlui-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: start !important;
-}
-
-.tlui-toolbar__inner {
-    display: flex !important;
-    flex-direction: column-reverse !important;
-    justify-content: flex-end !important;
-    align-items: flex-start !important;
-}
-
 .tl-theme__light {
     --color-selected: var(--accent-9) !important;
 }
 
-.tlui-toolbar__extras {
-    display: none !important;
-}

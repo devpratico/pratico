@@ -12,6 +12,7 @@ import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import logger from "@/app/_utils/logger";
 import {Flex } from "@radix-ui/themes";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 
 
 interface StudentCanvasProps {
@@ -45,13 +46,16 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     }, [canCollab, editor])
 
     return (
-        <>
-            <Flex gridRow={{ initial: '2', xs: '1' }} align='center' />
-            <Canvas store={store}>
-                <Resizer />
-                <NavigatorSync />
-                { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
-            </Canvas>
-        </>
+        <Canvas store={store}>
+            {
+                canCollab
+                ? <CustomTlToolbar />
+                : null
+            
+            }
+            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab ? 60 : 0}} />
+            <NavigatorSync />
+            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
+        </Canvas>
     )
 }

@@ -43,7 +43,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 					
 					<Flex align='center'>
 						<Image src='/images/logolien.png' width={500 * logoScale} height={105 * logoScale} alt="Pratico" />
-						<Text size='6' style={{ color: 'var(--background)', opacity: '0.5' }}>{`/${room_code}`}</Text>
+						<Text size='6' style={{ color: 'var(--accent-1)', opacity: '0.5' }}>{`/${room_code}`}</Text>
 					</Flex>
 					<StartDialog/>
 					<StopBtn message='Arrêter la session' />

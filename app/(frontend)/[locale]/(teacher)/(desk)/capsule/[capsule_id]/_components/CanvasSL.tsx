@@ -7,6 +7,7 @@ import { fetchCapsuleSnapshot } from "@/app/(backend)/api/capsule/capsule.client
 import { useEffect, useState } from "react";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 
 
 
@@ -71,7 +72,8 @@ export default function CanvasSL() {
     
     return (
         <Canvas initialSnapshot={initialSnapshot}>
-            <Resizer insets={{top: 0, right: 0, bottom: 0, left: 65}} margin={0} />
+            <CustomTlToolbar />
+            <Resizer insets={{top: 0, right: 0, bottom: 0, left: 60}} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>
     )

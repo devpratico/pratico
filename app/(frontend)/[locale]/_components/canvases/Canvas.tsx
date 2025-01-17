@@ -18,7 +18,7 @@ import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
-import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar/ToolBar'
+import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar'
 import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
 
 export interface CanvasUser {
@@ -86,7 +86,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 	const components = useMemo(() => ({
         Background,
         OnTheCanvas: CanvasArea,
-        Toolbar: CustomTlToolbar,
+        Toolbar: null,
         StylePanel: CustomTlStylePanel,
         DebugPanel: null, // needed
 		ContextMenu: null,
@@ -116,6 +116,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			persistenceKey={persistenceKey}
 			options={options}
            	forceMobile
+            hideUi
             
 		>
             {children}

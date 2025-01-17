@@ -49,7 +49,7 @@ export default function DoneBtn({ message }: DoneBtnProps) {
             variant="soft"
             onClick={handleClick}
             loading={loading}
-            style={{ color: 'var(--background)', backgroundColor: 'hsla(var(--background-h), var(--background-s), var(--background-l), 0.2)' }}
+            style={{ color: 'var(--accent-1)', backgroundColor: 'var(--accent-9)' }}
         >
             {message}
         </Button>
