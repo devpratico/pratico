@@ -40,6 +40,9 @@ const myTLTools = [
 	"draw",
 	"note",
 	"asset",
+	"text",
+	"laser",
+	"highlight",
 	"cloud",
 	"rectangle",
 	"ellipse",
@@ -62,10 +65,8 @@ const myTLTools = [
 	"heart",
 	"arrow",
 	"line",
-	"text",
-	"laser",
 	"embed",
-	"highlight"
+
 ];
 
 export function CustomTlToolbar() {

@@ -89,7 +89,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         Toolbar: null,
         StylePanel: CustomTlStylePanel,
         DebugPanel: null, // needed
-		ContextMenu: null,
 		ActionsMenu: null,
 		HelpMenu: null,
 		ZoomMenu: null,
@@ -104,7 +103,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		SharePanel: null,
 		MenuPanel: null,
 		TopPanel: null,
-		CursorChatBubble: null,
+		CursorChatBubble: null
 	 }), []);
     return (
 		<Tldraw
@@ -116,8 +115,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			persistenceKey={persistenceKey}
 			options={options}
            	forceMobile
-            hideUi
-            
 		>
             {children}
 			{/* <Resizer/> */}
