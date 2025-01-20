@@ -8,16 +8,18 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts,
+    useKeyboardShortcuts
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 //import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar'
+import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
 
 export interface CanvasUser {
     id: string
@@ -81,26 +83,46 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     }, [setEditor, onMount])
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
-
+	const components = useMemo(() => ({
+        Background,
+        OnTheCanvas: CanvasArea,
+        Toolbar: null,
+        StylePanel: CustomTlStylePanel,
+        DebugPanel: null, // needed
+		ActionsMenu: null,
+		HelpMenu: null,
+		ZoomMenu: null,
+		MainMenu: null,
+		Minimap: null,
+		PageMenu: null,
+		NavigationPanel: null,
+		KeyboardShortcutsDialog: null,
+		QuickActions: null,
+		HelperButtons: null,
+		DebugMenu: null,
+		SharePanel: null,
+		MenuPanel: null,
+		TopPanel: null,
+		CursorChatBubble: null
+	 }), []);
     return (
 		<Tldraw
 			className='tldraw-canvas'
-			hideUi={true}
 			onMount={handleMount}
-			components={{ Background: Background, OnTheCanvas: CanvasArea }}
+            components={components}
 			store={store}
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
 			options={options}
+           	forceMobile
 		>
-			{children}
+            {children}
 			{/* <Resizer/> */}
 			<EmbedHint/>
 			<KeyboardShortcuts/>
 		</Tldraw>
     )
 }
-
 
 const KeyboardShortcuts = () => {
     useKeyboardShortcuts()
