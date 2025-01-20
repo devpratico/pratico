@@ -14,12 +14,12 @@ export default function Page({ params }: { params: { room_id: string } }) {
                 <Heading size='8' align='center' mb='5'>Session terminée</Heading>
             </Section>
 
-            <Section>
+            {/* <Section>
                 <Flex direction='column' justify='center' gap='5' align='center'>
                     <Button size='4'><FileDown/>Télécharger le support en pdf</Button>
-                    {/* <Button variant='ghost' color='gray'>Signaler un problème</Button> */}
+                    <Button variant='ghost' color='gray'>Signaler un problème</Button>
                 </Flex>
-            </Section>
+            </Section> */}
         </Container>
     )
 }
