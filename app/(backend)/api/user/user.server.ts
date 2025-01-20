@@ -2,6 +2,7 @@ import 'server-only'
 import createClient from '@/supabase/clients/server'
 import logger from "@/app/_utils/logger";
 import { cache } from 'react';
+import { revalidatePath } from 'next/cache';
 
 
 export interface Names {
@@ -15,6 +16,16 @@ export const fetchUser = async () => {
     if (error) logger.error('supabase:auth', `error fetching user`, error.message)
     if (user) logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
     return ({ user, error: error?.message || null })
+}
+
+export const signInAnonymously = async () => {
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signInAnonymously({})
+
+    if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
+    revalidatePath('/', 'layout')
+
+    return { data, error: error?.message }
 }
 
 
