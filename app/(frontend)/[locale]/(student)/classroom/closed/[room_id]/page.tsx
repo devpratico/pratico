@@ -1,17 +1,22 @@
-import { Container, Section, Box, Heading, Flex } from "@radix-ui/themes"
+import { Container, Section, Box, Heading, Flex, Button } from "@radix-ui/themes"
 import Image from "next/image"
-import { DownloadPDFBtn } from "./_components/DownloadPDFBtn"
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
+import { FileDown } from "lucide-react"
+import { CapsuleToPdfBtn } from "@/app/(frontend)/[locale]/_components/CapsuleToPdfBtn"
+import { getFormatter } from "next-intl/server"
 
 export default async function ClosedRoomPage({ params }: { params: { room_id: string } }) {
-    const supabase = createClient()
-    const { data, error } = await supabase.from("rooms").select("capsules(tld_snapshot)").eq("id", params.room_id).single();
+    const supabase = createClient();
+    const formatter = await getFormatter();
+    const { data, error } = await supabase.from("rooms").select("capsules(tld_snapshot, title, created_at)").eq("id", params.room_id).single();
     if (error || !data || !data.capsules || !data.capsules.tld_snapshot)
     {
         logger.error("supabase:database", "ClosedRoomPage", error ? `Error fetching room ${error.message}` : "No data found");
         throw (error);
     }
+    const title = data.capsules.title || "Sans titre";
+    const capsuleDate = formatter.dateTime(new Date(data.capsules.created_at), { dateStyle: "short" });
     return (
         <Container>
             <Section>
@@ -23,7 +28,11 @@ export default async function ClosedRoomPage({ params }: { params: { room_id: st
 
             <Section>
                 <Flex direction='column' justify='center' gap='5' align='center'>
-                    <DownloadPDFBtn capsuleSnapshot={data.capsules.tld_snapshot} />
+                    <CapsuleToPdfBtn snapshot={data.capsules.tld_snapshot} title={title} capsuleDate={capsuleDate}>
+                        <Button size='4'>
+                            <FileDown />Télécharger le support en pdf
+                        </Button>
+                    </CapsuleToPdfBtn>
                     {/* <Button variant='ghost' color='gray'>Signaler un problème</Button> */}
                 </Flex>
             </Section>

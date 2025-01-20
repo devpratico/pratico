@@ -52,7 +52,7 @@ export function useGeneratePdf(): {
 		const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
-		
+		console.log("ALL PAGES", allPages);
 		setPagesProgress({ loading: 0, total: allPages.length });
 		if (allPages.length === 0)
 		{	
@@ -80,7 +80,7 @@ export function useGeneratePdf(): {
 					}
 					});
 					if (!blob || blob.size === 0) {
-						console.error("Blob invalide généré pour les formes :", shapeIds);
+						logger.error("react:hook", "useGeneratePDF", "Blob invalid for shapes:", shapeIds);
 						continue;
 					}
 					allBlobs.push(blob);

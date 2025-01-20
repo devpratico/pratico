@@ -4,7 +4,7 @@ import { Box, Heading, Text, Flex, IconButton, Tooltip } from "@radix-ui/themes"
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
-import { CapsuleToPdfBtn } from "./CapsuleToPdfShorcutBtn";
+import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { FileDown } from "lucide-react";
 
@@ -51,15 +51,15 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	const buttons = 
 	
 	<CapsuleToPdfBtn
-		snapshot={data.capsuleSnapshot as TLEditorSnapshot}
+		snapshot={data.capsuleSnapshot}
 		title={data.capsuleTitle}
 		capsuleDate={data.capsuleDate}
 	>
-		<Tooltip content='Télécharger le diaporama modifié en PDF'>
-			<IconButton variant='ghost'>
+		{/* <Tooltip content='Télécharger le diaporama modifié en PDF'> */}
+			<IconButton variant='ghost' onClick={() => {}}>
 				<FileDown />
 			</IconButton>
-		</Tooltip>
+		{/* </Tooltip> */}
 	</CapsuleToPdfBtn>
 
 	return (

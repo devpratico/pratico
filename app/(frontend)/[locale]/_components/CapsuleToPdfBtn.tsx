@@ -1,20 +1,21 @@
+"use client";
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
+import { Json } from "@/supabase/types/database.types";
 import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useEffect, useState, cloneElement, ReactElement, ReactNode, isValidElement } from "react";
+import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement, ReactNode } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-//export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate, tooltip, ...btnProps }: { snapshot: TLEditorSnapshot, title: string, capsuleDate: string }) {
+// CAPSULE TO PDF WITHOUT A CANVAS EDITOR
 export function CapsuleToPdfBtn(props: {
-	snapshot: TLEditorSnapshot,
+	snapshot: TLEditorSnapshot | Json,
 	title: string,
 	capsuleDate: string,
 	children?: ReactElement<{onClick: React.MouseEventHandler<HTMLButtonElement>}>,
 } & ButtonProps) {
-	const { snapshot, title, capsuleDate, children, ...btnProps} = props;
-
+	const { title, snapshot, capsuleDate, children, ...btnProps} = props;
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -22,7 +23,6 @@ export function CapsuleToPdfBtn(props: {
 	const [ filename, setFilename ] = useState("capsule.pdf");
 	const [ state, setState ] = useState<'idle' | 'loading' | 'downloading'  | 'error'>('idle');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
-
 	useEffect(() => {
 		if (title) {
 			if (title === "Sans titre")
@@ -52,7 +52,8 @@ export function CapsuleToPdfBtn(props: {
 			setState('downloading');
 	}, [editor, inProgress, progress, errorMsg]);
 
-	const handleClick = async () => {
+	const handleClick = useCallback(async () => {
+		console.log("handleClick", editor, snapshot);
 		if (!editor)
 			return ;
 		setOpenDialog(true);
@@ -76,39 +77,41 @@ export function CapsuleToPdfBtn(props: {
 			setState('idle');
 			setOpenDialog(false);	
 		}
-	};
+	}, [editor, snapshot, filename, generatePdf]);
 
 	const handleMount = useCallback((newEditor: Editor) => {
 		setEditor(newEditor);
     }, []);
 
+
+	// const theRightOnClick = (children: ReactNode) => {
+	// 	if (children && isValidElement(children)) {
+	// 		const element = children as ReactElement;
+	// 		console.log("element", element);
+	// 		if (element.props.onClick) {
+	// 			return (handleClick);
+	// 		} else
+	// 			theRightOnClick(element.props.children);
+	// 	}
+	// };
+	
 	return (
         <>
 
             {/* Hidden Tldraw component, needed to download the pdf */}
             <Box height='0' width='0' style={{opacity: 0}} overflow='hidden'>
-                <Tldraw hideUi onMount={handleMount} snapshot={snapshot} />
+                <Tldraw hideUi onMount={handleMount} snapshot={snapshot as TLEditorSnapshot} />
             </Box>
 
-
-            {/* <Tooltip content={tooltip}>
-                <Button variant="ghost" onClick={handleClick} {...btnProps}>
-                    <FileDown />
-                </Button>
-            </Tooltip> */}
-
 			{
-				children
+				children && isValidElement(children)
 				?
-				cloneElement(children, { onClick: handleClick })
+					cloneElement(children, { onClick: handleClick }) // PENSER A GERER TOOLTIP DANS REPORT
 				:
 				<Button onClick={handleClick} {...btnProps}>
 					<FileDown size={21}/>Télécharger le diaporama en PDF
 				</Button>
 			}
-
-
-
 
             <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
@@ -160,4 +163,4 @@ export function CapsuleToPdfBtn(props: {
         </>
 	);
 }
-  
+
