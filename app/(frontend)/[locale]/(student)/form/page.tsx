@@ -1,7 +1,13 @@
 import StudentForm from "./_components/StudentForm"
 import { Card, Heading, Container, Section, Box } from "@radix-ui/themes"
 import Image from "next/image"
+import { Viewport } from "next"
 
+
+export const viewport: Viewport = {
+    maximumScale: 1,
+    userScalable: false,
+}
 
 export default function formPage() {
     return (
