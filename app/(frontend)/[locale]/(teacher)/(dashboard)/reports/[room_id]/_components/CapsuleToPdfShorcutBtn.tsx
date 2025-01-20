@@ -1,12 +1,20 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
-import { AlertDialog, Box, Card, Flex, IconButton, Progress, Text, Tooltip } from "@radix-ui/themes";
+import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, cloneElement, ReactElement, ReactNode, isValidElement } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snapshot: TLEditorSnapshot, title: string, capsuleDate: string }) {
+//export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate, tooltip, ...btnProps }: { snapshot: TLEditorSnapshot, title: string, capsuleDate: string }) {
+export function CapsuleToPdfBtn(props: {
+	snapshot: TLEditorSnapshot,
+	title: string,
+	capsuleDate: string,
+	children?: ReactElement<{onClick: React.MouseEventHandler<HTMLButtonElement>}>,
+} & ButtonProps) {
+	const { snapshot, title, capsuleDate, children, ...btnProps} = props;
+
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -83,11 +91,23 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
             </Box>
 
 
-            <Tooltip content="Exporter la capsule modifiée en PDF">
-                <IconButton variant="ghost" onClick={handleClick} >
+            {/* <Tooltip content={tooltip}>
+                <Button variant="ghost" onClick={handleClick} {...btnProps}>
                     <FileDown />
-                </IconButton>
-            </Tooltip>
+                </Button>
+            </Tooltip> */}
+
+			{
+				children
+				?
+				cloneElement(children, { onClick: handleClick })
+				:
+				<Button onClick={handleClick} {...btnProps}>
+					<FileDown size={21}/>Télécharger le diaporama en PDF
+				</Button>
+			}
+
+
 
 
             <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
@@ -140,3 +160,4 @@ export function CapsuleToPdfShortcutBtn({ snapshot, title, capsuleDate }: { snap
         </>
 	);
 }
+  
