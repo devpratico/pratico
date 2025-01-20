@@ -4,7 +4,7 @@ import logger from "@/app/_utils/logger";
 import { fetchOpenRoomByCode, roomCreatorIsPaidCustomer } from "../room/room.server";
 import { countAttendances } from "./attendance.server";
 import { sendDiscordMessage } from "../discord/discord.server";
-import { TablesInsert } from "@/supabase/types/database.types";
+import { TablesInsert, TablesUpdate } from "@/supabase/types/database.types";
 import { fetchUser } from "../user/user.server";
 import { User } from "@supabase/supabase-js";
 import { signInAnonymously } from "../user/user.server";
@@ -13,30 +13,103 @@ import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 // TODO: rename this kind of files "actions"
 
 
+async function insertAttendance(args: {
+    first_name: string,
+    last_name: string,
+    room_code: string,
+    user_id: string,
+    additional_info?: string
+}):
+    Promise<{ error: string | null }>
+{
 
-export type AttendanceInsert = TablesInsert<'attendance'>
+    const supabase = createClient();
 
-export const createAttendance = async (firstName: string, lastName: string, roomCode: string, userId: string, additionalInfo?: string) => {
-    const supabase = createClient()
-    const { data: roomData, error: roomError } = await supabase.from('rooms').select('id').eq('code', roomCode).eq('status', 'open').single()
-    logger.log('supabase:database', 'roomData:', roomData);
-    if (roomError) logger.error('supabase:database', `error getting room by code "${roomCode}"`, roomError.message)
-    if (!additionalInfo)
-        logger.log("next:api", "createAttendance", "No additional info provided");
-    logger.log("next:api", "createAttendance", "Creating attendance for user", firstName, lastName, additionalInfo);
-    const attendance: AttendanceInsert = {
-        user_id: userId,
-        first_name: firstName,
-        last_name: lastName,
-        room_id: roomData?.id,
-        additional_info: additionalInfo
+    // Fetch the room id
+    const { data: roomData, error: getIdError } = await supabase
+        .from('rooms')
+        .select('id')
+        .eq('code', args.room_code)
+        .eq('status', 'open')
+        .single();
+
+    if (getIdError) {
+        logger.error(
+            'next:api',
+            'attendance.client.ts',
+            'insertAttendance',
+            'fetchOpenRoomByCode returned an error. Cannot get room id. Cannot insert an attendance.',
+            getIdError
+        );
+        return { error: getIdError.message };
+    }
+
+    const room_id = roomData?.id;
+
+    if (!room_id) {
+        logger.error(
+            'next:api',
+            'attendance.client.ts',
+            'insertAttendance',
+            'fetchOpenRoomByCode returned no room id. Cannot insert an attendance.'
+        );
+        return { error: 'No room id found' };
+    }
+
+    const attendanceInsert: TablesInsert<'attendance'> = {
+        first_name: args.first_name,
+        last_name: args.last_name,
+        room_id: room_id,
+        user_id: args.user_id,
+        additional_info: args.additional_info
     };
-    logger.log('supabase:database', 'createAttendance:', attendance);
 
-    const { error } = await supabase.from('attendance').insert(attendance);
-    if (error) logger.error('supabase:database', 'Error creating attendance', error.message)
-    return ({ error: error?.message });
-};
+    // Check the existence of an already existing attendance for this user id and room id
+    const { data: attendanceData, error: getAttendanceError } = await supabase
+        .from('attendance')
+        .select('id')
+        .eq('room_id', room_id)
+        .eq('user_id', args.user_id)
+        .maybeSingle();
+
+    if (getAttendanceError) {
+        logger.error(
+            'next:api',
+            'attendance.client.ts',
+            'insertAttendance',
+            'fetching attendance data returned an error. Cannot insert an attendance.',
+            getAttendanceError
+        );
+        return { error: getAttendanceError.message };
+    }
+
+    // If the attendance already exists, update it
+    if (attendanceData) {
+        const attendanceUpdate: TablesUpdate<'attendance'> = {
+            first_name: args.first_name,
+            last_name: args.last_name,
+            additional_info: args.additional_info
+        };
+
+        const { error } = await supabase
+            .from('attendance')
+            .update(attendanceUpdate)
+            .eq('id', attendanceData.id);
+
+        return { error: error?.message || null };
+    }
+
+    // If the attendance does not exist already, insert it
+    const { error } =  await supabase
+        .from('attendance')
+        .insert(attendanceInsert);
+
+    return { error: error?.message || null };
+}
+
+
+
+
 
 /**
  * Check if the maximum number of people in the room is reached
@@ -102,8 +175,14 @@ export async function submitAttendanceForm(prevState: any, formData: FormData) {
     }
 
     // Create attendance
-    const { error: attendanceError } = await createAttendance(firstName, lastName, roomCode, user.id, additionalInfo);
-    if (attendanceError) return {error: attendanceError };
+    const { error: attendanceError } = await insertAttendance({
+        first_name: firstName,
+        last_name: lastName,
+        room_code: roomCode,
+        user_id: user.id,
+        additional_info: additionalInfo
+    });
+    if (attendanceError) return { error: attendanceError };
 
     // Redirect to nextUrl
     redirect(nextUrl);
