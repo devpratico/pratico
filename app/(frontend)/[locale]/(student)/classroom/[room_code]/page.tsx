@@ -6,6 +6,7 @@ import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
 import { fetchUserAttendanceData } from '@/app/(backend)/api/attendance/attendance.server'
+import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
@@ -43,6 +44,8 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     const snapshot = roomData?.capsule_snapshot || undefined as any
 	 
     return (
-		<StudentCanvas user={canvasUser} snapshot={snapshot} />
+        <RedirectIfRoomClosed roomId={roomData.id.toString()}>
+            <StudentCanvas user={canvasUser} snapshot={snapshot} />
+        </RedirectIfRoomClosed>
 	);
 }
