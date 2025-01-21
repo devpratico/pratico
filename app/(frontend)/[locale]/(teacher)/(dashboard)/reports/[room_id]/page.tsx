@@ -6,6 +6,8 @@ import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
+import QuizWidget from "./activities/QuizWidget";
+import { ActivityWidget } from "./activities/ActityWidget";
 
 
 // TYPE
@@ -42,6 +44,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         const formatter = await getFormatter();
         sessionDateSubtitle = `Session du ${formatter.dateTime(sessionDate, {dateStyle: "short"})}`;
     }
+    const activities = Array.from({length: 3}, (_, i) => ({type: i % 2 === 0 ? 'quiz' : 'poll', id: i}));
     
 	return (
 		<ScrollArea>
@@ -59,6 +62,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                     <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
                         <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
+                        {activities.map((activity) => <ActivityWidget key={activity.id} {...activity} />)}
                     </Grid>
 
                 </Section>

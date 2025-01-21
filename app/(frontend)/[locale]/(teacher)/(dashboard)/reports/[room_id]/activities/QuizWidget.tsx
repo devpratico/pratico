@@ -1,23 +1,21 @@
 "use client";
 
 import { Box, Button, DataList, Grid, Heading } from "@radix-ui/themes";
-import ReportWidgetTemplate from "../(teacher)/(dashboard)/reports/[room_id]/_components/ReportWidgetTemplate";
-import { WidgetThumb } from "../(teacher)/(dashboard)/reports/[room_id]/_components/WidgetThumb";
-import { Link } from "../../_intl/intlNavigation";
+import { WidgetThumb } from "../_components/WidgetThumb";
+import ReportWidgetTemplate from "../_components/ReportWidgetTemplate";
+import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 
-export default function PlayGround () {
-	if (process.env.NODE_ENV === 'production') {
-		return (null);
-	}
-	const Thumb = () => <WidgetThumb bigText={"100%"} smallText={"de participation"} color="green" />;
+export default function QuizWidget () {
+
+	const Thumb = () => <WidgetThumb bigText={"20%"} smallText={"de réussite"} color="green" />;
 	
 	const Content = () => {
 		return (	<Box>
-			<Heading as='h2' size='4' mb='4'>Sondage: Titre du sondage</Heading>
+			<Heading as='h2' size='4' mb='4'>Quiz: Titre du quiz</Heading>
 			<DataList.Root size='1'>
 				<DataList.Item>
 					<DataList.Label>Nb de questions</DataList.Label>
-					<DataList.Value>3</DataList.Value>
+					<DataList.Value>3678</DataList.Value>
 				</DataList.Item>
 
 				<DataList.Item>
@@ -49,4 +47,3 @@ export default function PlayGround () {
 		</Grid>
 	)
 };
-
