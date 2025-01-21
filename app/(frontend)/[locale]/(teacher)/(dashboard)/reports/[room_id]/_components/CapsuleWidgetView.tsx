@@ -7,7 +7,6 @@ import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { FileDown } from "lucide-react";
-import { useRef } from "react";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -18,7 +17,6 @@ interface CapsuleWidgetViewProps {
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
-	const iconBtnRef = useRef(null);
 	const Thumb = () => {
 		return (
             <Flex
@@ -55,10 +53,9 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 			snapshot={data.capsuleSnapshot}
 			title={data.capsuleTitle}
 			capsuleDate={data.capsuleDate}
-			ref={iconBtnRef}
 			tooltip = 'Télécharger le diaporama modifié en PDF'
 		>			
-			<IconButton ref={iconBtnRef} variant='ghost'>
+			<IconButton variant='ghost'>
 				<FileDown />
 			</IconButton>
 		</CapsuleToPdfBtn>

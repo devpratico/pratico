@@ -5,19 +5,18 @@ import { Json } from "@/supabase/types/database.types";
 import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps, Tooltip } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement, ReactNode, forwardRef } from "react";
+import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-type CapsuleToPdfBtnProps = {
+// CAPSULE TO PDF WITHOUT A CANVAS EDITOR
+export function CapsuleToPdfBtn(props: {
 	snapshot: TLEditorSnapshot | Json,
 	title: string,
 	capsuleDate: string,
 	tooltip?: string,
 	children?: ReactElement<{onClick: React.MouseEventHandler<HTMLButtonElement>}>,
-} & ButtonProps
-
-// CAPSULE TO PDF WITHOUT A CANVAS EDITOR
-export const CapsuleToPdfBtn = forwardRef<HTMLButtonElement, CapsuleToPdfBtnProps>(({ snapshot, title, capsuleDate, tooltip, children, ...btnProps}, ref) => {
+} & ButtonProps) {
+	const { title, snapshot, capsuleDate, tooltip, children, ...btnProps} = props;
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -81,18 +80,11 @@ export const CapsuleToPdfBtn = forwardRef<HTMLButtonElement, CapsuleToPdfBtnProp
 	const handleMount = useCallback((newEditor: Editor) => {
 		setEditor(newEditor);
     }, []);
-	
+
 	const theButton =
 		children && isValidElement(children)
 		?
-			
-			cloneElement(children, {
-				ref,
-					onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-					handleClick();
-					children.props.onClick?.(event);
-				},
-			})
+			cloneElement(children, { onClick: handleClick})
 		:
 		<Button onClick={handleClick} {...btnProps}>
 			<FileDown size={21}/>Télécharger le diaporama en PDF
@@ -159,6 +151,4 @@ export const CapsuleToPdfBtn = forwardRef<HTMLButtonElement, CapsuleToPdfBtnProp
         </>
 	);
 }
-);
 
-CapsuleToPdfBtn.displayName = "CapsuleToPdfBtn";
