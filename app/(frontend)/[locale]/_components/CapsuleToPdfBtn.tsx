@@ -25,10 +25,10 @@ export function CapsuleToPdfBtn(props: {
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 	useEffect(() => {
 		if (title) {
+			const date = capsuleDate.length > 0 ? `-${capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"))}` : "";	
 			if (title === "Sans titre")
 			{
-				const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));	
-				setFilename(`capsule-${date}.pdf`);
+				setFilename(`capsule${date}.pdf`);
 			}
 			else
 			{
@@ -36,8 +36,6 @@ export function CapsuleToPdfBtn(props: {
 					.normalize('NFD') // Decomposes accented characters into base characters and diacritical marks
 					.replace(/[\u0300-\u036f]/g, '') // Removes diacritical marks
 					.replace(/[^a-zA-Z0-9]/g, '_'); // Replaces non-alphanumeric characters with underscores
-				const date = capsuleDate.replace(/[^a-zA-Z0-9]/g, ''.split(" ").join("-"));
-
 				setFilename(`${validTitle}-${date}.pdf`);
 			}
 		}
@@ -53,7 +51,6 @@ export function CapsuleToPdfBtn(props: {
 	}, [editor, inProgress, progress, errorMsg]);
 
 	const handleClick = useCallback(async () => {
-		console.log("handleClick", editor, snapshot);
 		if (!editor)
 			return ;
 		setOpenDialog(true);
