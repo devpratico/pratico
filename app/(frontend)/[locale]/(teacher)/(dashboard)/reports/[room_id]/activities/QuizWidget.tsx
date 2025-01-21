@@ -7,25 +7,26 @@ import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 
 export default function QuizWidget () {
 
-	const Thumb = () => <WidgetThumb bigText={"20%"} smallText={"de réussite"} color="green" />;
+	const Thumb = () => <WidgetThumb bigText={"20%"} smallText={"de réussite"} color="red" />;
 	
 	const Content = () => {
 		return (	<Box>
-			<Heading as='h2' size='4' mb='4'>Quiz: Titre du quiz</Heading>
+			<Heading as='h2' size='2'mb="2" color="gray">Quiz</Heading>
+			<Heading as='h3' size='4' mb='4'>Titre du quiz</Heading>
 			<DataList.Root size='1'>
 				<DataList.Item>
-					<DataList.Label>Nb de questions</DataList.Label>
+					<DataList.Label>Questions</DataList.Label>
 					<DataList.Value>3678</DataList.Value>
 				</DataList.Item>
 
 				<DataList.Item>
 					<DataList.Label>Début</DataList.Label>
-					<DataList.Value>13/02/1956 13:07:17</DataList.Value>
+					<DataList.Value>13:07:17</DataList.Value>
 				</DataList.Item>
 
 				<DataList.Item>
 					<DataList.Label>Fin</DataList.Label>
-					<DataList.Value>11/01/2025 05:10:26</DataList.Value>
+					<DataList.Value>05:10:26</DataList.Value>
 				</DataList.Item>
 			</DataList.Root>
 		</Box>);
