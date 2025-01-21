@@ -2,20 +2,22 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
-import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps } from "@radix-ui/themes";
+import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps, Tooltip } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
-import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement, ReactNode } from "react";
+import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement, ReactNode, forwardRef } from "react";
 import { Editor, Tldraw, TLEditorSnapshot } from "tldraw";
 
-// CAPSULE TO PDF WITHOUT A CANVAS EDITOR
-export function CapsuleToPdfBtn(props: {
+type CapsuleToPdfBtnProps = {
 	snapshot: TLEditorSnapshot | Json,
 	title: string,
 	capsuleDate: string,
+	tooltip?: string,
 	children?: ReactElement<{onClick: React.MouseEventHandler<HTMLButtonElement>}>,
-} & ButtonProps) {
-	const { title, snapshot, capsuleDate, children, ...btnProps} = props;
+} & ButtonProps
+
+// CAPSULE TO PDF WITHOUT A CANVAS EDITOR
+export const CapsuleToPdfBtn = forwardRef<HTMLButtonElement, CapsuleToPdfBtnProps>(({ snapshot, title, capsuleDate, tooltip, children, ...btnProps}, ref) => {
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -74,24 +76,27 @@ export function CapsuleToPdfBtn(props: {
 			setState('idle');
 			setOpenDialog(false);	
 		}
-	}, [editor, snapshot, filename, generatePdf]);
+	}, [editor, filename, generatePdf]);
 
 	const handleMount = useCallback((newEditor: Editor) => {
 		setEditor(newEditor);
     }, []);
-
-
-	// const theRightOnClick = (children: ReactNode) => {
-	// 	if (children && isValidElement(children)) {
-	// 		const element = children as ReactElement;
-	// 		console.log("element", element);
-	// 		if (element.props.onClick) {
-	// 			return (handleClick);
-	// 		} else
-	// 			theRightOnClick(element.props.children);
-	// 	}
-	// };
 	
+	const theButton =
+		children && isValidElement(children)
+		?
+			
+			cloneElement(children, {
+				ref,
+					onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+					handleClick();
+					children.props.onClick?.(event);
+				},
+			})
+		:
+		<Button onClick={handleClick} {...btnProps}>
+			<FileDown size={21}/>Télécharger le diaporama en PDF
+		</Button>
 	return (
         <>
 
@@ -100,15 +105,9 @@ export function CapsuleToPdfBtn(props: {
                 <Tldraw hideUi onMount={handleMount} snapshot={snapshot as TLEditorSnapshot} />
             </Box>
 
-			{
-				children && isValidElement(children)
-				?
-					cloneElement(children, { onClick: handleClick }) // PENSER A GERER TOOLTIP DANS REPORT
-				:
-				<Button onClick={handleClick} {...btnProps}>
-					<FileDown size={21}/>Télécharger le diaporama en PDF
-				</Button>
-			}
+			<Tooltip hidden={!tooltip} content={tooltip}>
+				{theButton}
+			</Tooltip>
 
             <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
@@ -160,4 +159,6 @@ export function CapsuleToPdfBtn(props: {
         </>
 	);
 }
+);
 
+CapsuleToPdfBtn.displayName = "CapsuleToPdfBtn";

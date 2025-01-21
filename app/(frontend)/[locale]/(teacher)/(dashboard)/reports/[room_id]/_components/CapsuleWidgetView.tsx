@@ -1,12 +1,13 @@
 "use client";
 
-import { Box, Heading, Text, Flex, IconButton, Tooltip } from "@radix-ui/themes";
+import { Box, Heading, Text, Flex, IconButton } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { FileDown } from "lucide-react";
+import { useRef } from "react";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -17,6 +18,7 @@ interface CapsuleWidgetViewProps {
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
+	const iconBtnRef = useRef(null);
 	const Thumb = () => {
 		return (
             <Flex
@@ -48,20 +50,19 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 			</Box>
         );
     }
-	const buttons = 
-	
-	<CapsuleToPdfBtn
-		snapshot={data.capsuleSnapshot}
-		title={data.capsuleTitle}
-		capsuleDate={data.capsuleDate}
-	>
-		{/* <Tooltip content='Télécharger le diaporama modifié en PDF'> */}
-			<IconButton variant='ghost' onClick={() => {}}>
+	const buttons =
+		<CapsuleToPdfBtn
+			snapshot={data.capsuleSnapshot}
+			title={data.capsuleTitle}
+			capsuleDate={data.capsuleDate}
+			ref={iconBtnRef}
+			tooltip = 'Télécharger le diaporama modifié en PDF'
+		>			
+			<IconButton ref={iconBtnRef} variant='ghost'>
 				<FileDown />
 			</IconButton>
-		{/* </Tooltip> */}
-	</CapsuleToPdfBtn>
-
+		</CapsuleToPdfBtn>
+	
 	return (
 		<ReportWidgetTemplate thumb={<Thumb />} content={<Content />} buttons={buttons} />
 	);
