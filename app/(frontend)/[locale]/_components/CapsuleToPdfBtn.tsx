@@ -63,7 +63,7 @@ export function CapsuleToPdfBtn(props: {
 			const { pdf, error } = result;
 			if (error)
 			{
-				logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", error);
+				logger.error("react:component", "CapsuleToPDFBtn", "handleClick", error);
 				setErrorMsg(error);
 				return ;
 			}
@@ -73,7 +73,7 @@ export function CapsuleToPdfBtn(props: {
 		}
 		else
 		{	
-			logger.error("react:component", "CapsuleToPDFShortcutBtn", "handleClick", "no result");
+			logger.error("react:component", "CapsuleToPDFBtn", "handleClick", "no result");
 			setState('idle');
 			setOpenDialog(false);	
 		}

@@ -28,7 +28,7 @@ export default async function ClosedRoomPage({ params }: { params: { room_id: st
 
             <Section>
                 <Flex direction='column' justify='center' gap='5' align='center'>
-                    <CapsuleToPdfBtn snapshot={data.capsules.tld_snapshot} title={title} capsuleDate={capsuleDate}>
+                    <CapsuleToPdfBtn snapshot={data.capsules.tld_snapshot[0]} title={title} capsuleDate={capsuleDate}>
                         <Button size='4'>
                             <FileDown />Télécharger le support en pdf
                         </Button>
