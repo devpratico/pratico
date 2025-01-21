@@ -1,9 +1,5 @@
-type RoomEventType = 'start activity' 
-
-
-
-interface RoomEvent {
-    type: string
+export interface RoomEvent {
+    type: string //'start activity' | 'end-activity' 
     payload: any
-    room_id: number
+    room_id: string
 }
