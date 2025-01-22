@@ -105,7 +105,7 @@ export const TMPfetchActivitiesWidgetData = async (data: ActivityTypeTable[]) =>
     await new Promise(resolve => setTimeout(resolve, 1000))  ;
     return ({ data: activities, error: null });
 };
-
+// A revoir ou supprimer
 export const fetchActivitiesWidgetData = async (roomId: number) => {
     const supabase = createClient()
     logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`)

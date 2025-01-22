@@ -221,7 +221,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                     <Heading as='h1' size="7" color='violet'>{capsuleTitle}</Heading>
                     <Text size="2" color='gray'>{sessionDateSubtitle}</Text> 
 
-                    <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
+                    <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='5' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
                         <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
                         {

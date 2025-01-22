@@ -16,7 +16,7 @@ export function ActivityWidgetView({ color, activity}
 		const title = (activity.title ==  "Sans titre") ? `${titleType} sans titre` : activity.title;
 		return (
 			<Box>
-				<Heading as='h2' size='2'mb="2" color="gray">{titleType}</Heading>
+				<Heading style={{fontWeight: "lighter"}} as='h2' size='2' mb="1" color="gray">{titleType}</Heading>
 				<Heading as='h3' size='4' mb='4'>{title}</Heading>
 				<DataList.Root size='1'>
 					<DataList.Item>
@@ -43,13 +43,11 @@ export function ActivityWidgetView({ color, activity}
 	</Button>;
 
 	return (
-		<Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
 			<ReportWidgetTemplate 
 				thumb={<Thumb />}
 				content={<Content />}
 				buttons={buttons}
 			/>
-		</Grid>
 	)
 }
 
