@@ -3,7 +3,6 @@ import { WidgetThumb } from "../_components/WidgetThumb";
 import { Box, Button, DataList, Grid, Heading } from "@radix-ui/themes";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import ReportWidgetTemplate from "../_components/ReportWidgetTemplate";
-import { useFormatter } from "next-intl";
 
 export function ActivityWidgetView({ color, activity}
 	: { color: string | undefined, activity: ActivityTypeWidget }) {
@@ -56,11 +55,17 @@ export function ActivityWidgetView({ color, activity}
 
 
 export function formatEventDates(start: Date, end: Date): { startDate: string, endDate: string } {
-    const formatter = useFormatter();
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const isSameDay = start.getDay() === end.getDay() && start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
-    const startDate = formatter.dateTime(start, { dateStyle: isSameDay ? undefined : "short", timeStyle: "medium", timeZone: timezone });
-    const endDate = formatter.dateTime(end, { dateStyle: isSameDay ? undefined : "short", timeStyle: "medium", timeZone: timezone });
+	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const isSameDay = start.getDate() === end.getDate() && start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
 
-    return ({ startDate, endDate });
+	const dateOptions: Intl.DateTimeFormatOptions = {
+		dateStyle: isSameDay ? undefined : "short",
+		timeStyle: "medium",
+		timeZone: timezone,
+	};
+
+	const startDate = new Intl.DateTimeFormat("fr-FR", dateOptions).format(start);
+	const endDate = new Intl.DateTimeFormat("fr-FR", dateOptions).format(end);
+
+	return { startDate, endDate };
 }
