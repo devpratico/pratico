@@ -46,7 +46,7 @@ export const fetchActivity = async (id: number) => {
 }
 
 // TO REMOVE WHEN THE API IS READY
-export const TMPfetchActivitiesWidgetData = (data: ActivityTypeTable[]) => {
+export const TMPfetchActivitiesWidgetData = async (data: ActivityTypeTable[]) => {
     logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for ${data.length} activities ...`)
 
     const getSuccessRate = (questions: any) => {
@@ -95,17 +95,15 @@ export const TMPfetchActivitiesWidgetData = (data: ActivityTypeTable[]) => {
             id: item.id,
             type: item.type,
             title: title,
-            launched_at: new Date().toISOString(),
+            launched_at: new Date().toString(),
+            stopped_at: new Date().toString(),
             percentage: percentage,
             nbQuestions: nbQuestions
         }
         return (activity);
     }));
-    const timeout = setTimeout(() => {}, 1000);
-    return (
-        clearTimeout(timeout),
-        { data: activities, error: null }
-    );
+    await new Promise(resolve => setTimeout(resolve, 1000))  ;
+    return ({ data: activities, error: null });
 };
 
 export const fetchActivitiesWidgetData = async (roomId: number) => {

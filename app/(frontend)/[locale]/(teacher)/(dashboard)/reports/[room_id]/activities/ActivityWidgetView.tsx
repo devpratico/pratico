@@ -7,13 +7,10 @@ import { useFormatter } from "next-intl";
 
 export function ActivityWidgetView({ color, activity}
 	: { color: string | undefined, activity: ActivityTypeWidget }) {
-	const formatter = useFormatter();
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const startTime = formatter.dateTime(new Date(activity.launched_at), {timeStyle: "medium", timeZone: timezone});
-	const endTime = formatter.dateTime(new Date(activity.launched_at), {timeStyle: "medium", timeZone: timezone});
+	const { startDate, endDate } = formatEventDates(new Date(activity.launched_at), new Date(activity.stopped_at)); 
 	const thumbSmallText = activity.type === "poll" ? "de participation" : "de réussite";
 	console.log("STart time", activity.launched_at);
-	const Thumb = () => <WidgetThumb bigText={`${activity.percentage.toString()}%`} smallText={thumbSmallText} color={color} />;
+	const Thumb = () => <WidgetThumb bigText={`${activity.percentage.toString()}`} bigTextOption="%" smallText={thumbSmallText} color={color} />;
 	
 	const Content = () => {
 		const titleType = activity.type === "poll" ? "Sondage" : "Quiz";
@@ -30,12 +27,12 @@ export function ActivityWidgetView({ color, activity}
 
 					<DataList.Item>
 						<DataList.Label>Début</DataList.Label>
-						<DataList.Value>{startTime}</DataList.Value>
+						<DataList.Value>{startDate}</DataList.Value>
 					</DataList.Item>
 
 					<DataList.Item>
 						<DataList.Label>Fin</DataList.Label>
-						<DataList.Value>{endTime}</DataList.Value>
+						<DataList.Value>{endDate}</DataList.Value>
 					</DataList.Item>
 				</DataList.Root>
 			</Box>);
@@ -55,4 +52,15 @@ export function ActivityWidgetView({ color, activity}
 			/>
 		</Grid>
 	)
+}
+
+
+export function formatEventDates(start: Date, end: Date): { startDate: string, endDate: string } {
+    const formatter = useFormatter();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const isSameDay = start.getDay() === end.getDay() && start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    const startDate = formatter.dateTime(start, { dateStyle: isSameDay ? undefined : "short", timeStyle: "medium", timeZone: timezone });
+    const endDate = formatter.dateTime(end, { dateStyle: isSameDay ? undefined : "short", timeStyle: "medium", timeZone: timezone });
+
+    return ({ startDate, endDate });
 }

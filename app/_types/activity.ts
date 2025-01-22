@@ -12,6 +12,7 @@ export type ActivityTypeWidget = {
     type: string,
     title: string | undefined,
     launched_at: string,
+    stopped_at: string,
     percentage: number,
     nbQuestions: number
 }
