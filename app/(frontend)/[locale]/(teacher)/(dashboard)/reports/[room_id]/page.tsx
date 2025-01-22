@@ -6,8 +6,9 @@ import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
-import QuizWidget from "./activities/QuizWidget";
 import { ActivityWidget } from "./activities/ActityWidget";
+import { ActivityTypeWidget } from "@/app/_types/activity";
+import { fetchActivitiesWidgetData, TMPfetchActivitiesWidgetData } from "@/app/(backend)/api/activity/activity.server";
 
 
 // TYPE
@@ -44,7 +45,53 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         const formatter = await getFormatter();
         sessionDateSubtitle = `Session du ${formatter.dateTime(sessionDate, {dateStyle: "short"})}`;
     }
-    const activities = Array.from({length: 3}, (_, i) => ({type: i % 2 === 0 ? 'quiz' : 'poll', id: i}));
+
+    const activitiesTemplate = Array.from(({length: 4}), (_, i) => {
+        return ({
+            type: i % 2 === 0 ? 'quiz' : 'poll',
+            id: i,
+            object: {
+                "type": "poll",
+                    "schemaVersion": "3",
+                    "title": "Voici un sondage",
+                    "questions": [
+                        {
+                        "id": "question-01",
+                        "text": "Etes vous satisfaits du quiz que nous avons vu ?",
+                        "choices": [
+                            {
+                            "id": "choice-1737538473427-2768",
+                            "text": "Ouais"
+                            },
+                            {
+                            "id": "choice-1737538476312-1833",
+                            "text": "Nan"
+                            }
+                        ]
+                        },
+                        {
+                        "id": "question-1737538478306-5797",
+                        "text": "Salut",
+                        "choices": [
+                            {
+                            "id": "choice-1737538484205-5317",
+                            "text": "Bonjour"
+                            },
+                            {
+                            "id": "choice-1737538488530-1628",
+                            "text": "Tamayre"
+                            }
+                        ]
+                        }
+                    ]
+            },
+            created_at: new Date().toISOString(),
+            created_by: "Johanna"}
+        );
+    });
+
+    // const activities: ActivityTypeWidget[] = fetchActivitiesWidgetData(roomId);
+    const { data: activities } = TMPfetchActivitiesWidgetData(activitiesTemplate);
     
 	return (
 		<ScrollArea>
@@ -62,7 +109,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                     <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
                         <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
-                        {activities.map((activity) => <ActivityWidget key={activity.id} {...activity} />)}
+                        {activities.map((activity) => <ActivityWidget key={activity.id} activity={activity} />)}
                     </Grid>
 
                 </Section>

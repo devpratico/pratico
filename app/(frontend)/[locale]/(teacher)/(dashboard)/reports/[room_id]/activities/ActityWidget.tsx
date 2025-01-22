@@ -1,16 +1,28 @@
+import { ActivityTypeWidget } from "@/app/_types/activity";
+import { ActivityWidgetView } from "./ActivityWidgetView";
 import logger from "@/app/_utils/logger";
-import QuizWidget from "./QuizWidget";
-import PollWidget from "./PollWidget";
 
-export function ActivityWidget (data: any) {
+const getParticipationColor = (rate: number) => {
+	if (rate < 50) return ("var(--amber-9)");
 
-	switch (data.type) {
-		case 'quiz':
-			return (<QuizWidget />);
-		case 'poll':
-			return (<PollWidget />);
+	return ("var(--grass-9)");
+};
+export async function ActivityWidget ({activity}
+	: {activity: ActivityTypeWidget}) {
+	const color = activity.type === "poll" ? undefined : getParticipationColor(activity.percentage);
+
+	switch (activity.type) {
+		case "poll":
+			
+			break ;
+		case "quiz":
+			
+			break ;
 		default:
-			logger.warn("react:component", "ActivityWidet", "Unknown activity type", data.type);
+			logger.error("react:component", "ActivityWidget", "Unknown activity type", activity.type);
 	}
-	return (null);
+
+	return (
+		<ActivityWidgetView color={color} activity={activity} />
+	)
 }

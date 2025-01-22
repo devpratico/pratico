@@ -1,8 +1,20 @@
+import { Tables } from "@/supabase/types/database.types";
 import { PollSnapshot } from "./poll"
 import { QuizSnapshot as QuizSnapshot2 } from "./quiz"
 import { produce } from "immer"
 
 export type ActivityType = 'quiz' | 'poll'
+
+export type ActivityTypeTable = Tables<'activities'>;
+
+export type ActivityTypeWidget = {
+    id: number,
+    type: string,
+    title: string | undefined,
+    launched_at: string,
+    percentage: number,
+    nbQuestions: number
+}
 
 export interface Activity {
     type: ActivityType

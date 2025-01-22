@@ -63,7 +63,7 @@ export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 
     // Thumb
     const smallText = data.attendanceCount > 1 ? "PARTICIPANTS" : "PARTICIPANT";
-	const Thumb = () => <WidgetThumb bigText={data.attendanceCount.toString()} smallText={smallText} color="violet" />;
+	const Thumb = () => <WidgetThumb bigText={data.attendanceCount.toString()} smallText={smallText} color="var(--violet-9)" />;
 
 
     // Content
