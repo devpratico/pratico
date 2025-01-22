@@ -91,7 +91,7 @@ export async function fetchUserAttendanceData(roomId: number, userId: string) {
     const supabase = createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId).eq('user_id', userId).single();
     if (error) {
-        logger.error('supabase:database', 'fetchUserAttendanceData', 'error fetching user attendance data', error.message);
+        logger.log('supabase:database', 'fetchUserAttendanceData', 'No attendance (or more than one) found', error.message);
     }
 
     return { data, error }
