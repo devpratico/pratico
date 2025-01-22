@@ -147,7 +147,7 @@ const isAttendancesLimitReached = async (roomCode: string): Promise<{ isReached:
 };
 
 
-export async function submitAttendanceForm(prevState: any, formData: FormData) {
+export async function submitAttendanceForm(prevState: any, formData: FormData): Promise<{ error: string | null }> {
     const roomCode = formData.get('room-code') as string // Hidden input
     const nextUrl = formData.get('next-url') as string // Hidden input
     const firstName = formData.get('first-name') as string;
@@ -157,20 +157,31 @@ export async function submitAttendanceForm(prevState: any, formData: FormData) {
     // Check if the maximum number of people in the room is reached
     const { isReached, error } = await isAttendancesLimitReached(roomCode);
     if (error) return { error: error };
-    if (isReached) return { error: 'Limite de participants atteinte' };
+    if (isReached) {
+        logger.log('next:api', 'attendance.client.ts', 'submitAttendanceForm', 'Return error because limit of participants reached');
+        return { error: 'Limite de participants atteinte' };
+    }
 
     // Check if user logged in, otherwise sign in anonymously
     let user: User
 
     const { user: fetchedUser, error: userError } = await fetchUser()
-    //if (userError) return { error: userError }; // Commented this because when no user, there is an error (even though it's expected)
+
 
     if (fetchedUser) {
         user = fetchedUser
     } else {
+        logger.log('next:api', 'attendance.client.ts', 'submitAttendanceForm', 'User not found. Signing in anonymously');
+        
         const { data, error: anonymousError } = await signInAnonymously()
-        if (anonymousError) return {error: anonymousError};
-        if (!data?.user) return { error: 'User not found after sign in anonymously' };
+        if (anonymousError) {
+            logger.error('next:api', 'attendance.client.ts', 'submitAttendanceForm', 'Error signing in anonymously', anonymousError);
+            return {error: anonymousError};
+        }
+        if (!data?.user) {
+            logger.error('next:api', 'attendance.client.ts', 'submitAttendanceForm', 'User not found after sign in anonymously (no error)');
+            return { error: 'User not found after sign in anonymously' };
+        }
         user = data.user
     }
 
@@ -182,7 +193,10 @@ export async function submitAttendanceForm(prevState: any, formData: FormData) {
         user_id: user.id,
         additional_info: additionalInfo
     });
-    if (attendanceError) return { error: attendanceError };
+    if (attendanceError) {
+        logger.error('next:api', 'attendance.client.ts', 'submitAttendanceForm', 'Error inserting attendance', attendanceError);
+        return { error: attendanceError };
+    }
 
     // Redirect to nextUrl
     redirect(nextUrl);

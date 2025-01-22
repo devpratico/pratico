@@ -21,18 +21,20 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     // Check user is logged in (can be anonymous)
 	const { user, error } = await fetchUser();
 	if (!user || error) {
-		logger.log('next:page', 'StudentViewPage', 'User not found', error);
+		logger.log('next:page', 'StudentViewPage', 'Student not logged in. Redirecting to form page', error);
 		const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        return null;
 	}
 
     // Check user attendance data (if none, it means the user has not signed attendance yet)
     const { data: attendanceData, error: attendanceError } = await fetchUserAttendanceData(roomData.id, user!.id);
 
     if (attendanceError) { // If none found or more than one found, supabase will return an error
-        logger.error('next:page', 'StudentViewPage', 'Error fetching attendance data', attendanceError);
+        logger.log('next:page', 'StudentViewPage', 'Student has not signed attendance yet. Redirecting to form page', user!.id, attendanceError);
         const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        return null;
     }
 
     const canvasUser: CanvasUser = {
