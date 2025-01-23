@@ -23,11 +23,9 @@ export default async function ClosedRoomPage({ params }: { params: { room_id: st
                 <Box position='relative' width='100%' height='400px'>
                     <Image src='/illustrations/finished.svg' alt='rocket' layout='fill' objectFit='contain' />
                 </Box>
-                <Heading size='8' align='center' mb='5'>Session terminée</Heading>
-            </Section>
-
-            <Section>
-                <Flex direction='column' justify='center' gap='5' align='center'>
+                <Heading size='8' mb="9" align='center'>Session terminée</Heading>
+  
+                <Flex direction='column' justify='center' align='center'>
                     <CapsuleToPdfBtn snapshot={data.capsule_snapshot} title={title} capsuleDate={capsuleDate}>
                         <Button size='4'>
                             <FileDown />Télécharger le support en pdf
