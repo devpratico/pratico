@@ -15,6 +15,10 @@ function ToolbarStyle ({isMobile}: {isMobile: boolean}) {
 				}
 				.tlui-toolbar {
 					margin-bottom: 0.5rem; !important;
+					z-index: 1 !important;
+				}
+				.tlui-button__tool {
+					align-items: center !important;
 				}
 			`}
 			</style>
@@ -28,6 +32,8 @@ function ToolbarStyle ({isMobile}: {isMobile: boolean}) {
 
 			.tlui-toolbar__tools__list {
 				flex-direction: column !important;
+				justify-content: flex-start !important;
+				align-items: center !important;
 			}
 
 			.tlui-toolbar {
@@ -35,7 +41,6 @@ function ToolbarStyle ({isMobile}: {isMobile: boolean}) {
 				height: 100% !important;
 				margin-left: 0.5rem;
 			}
-
 			.tlui-toolbar__inner {
 				display: flex !important;
 				flex-direction: column-reverse !important;
@@ -89,7 +94,7 @@ const myTLTools = [
 export function CustomTlToolbar() {
 	const { widerThan } = useWindow();
 	const { editor } = useTLEditor();
-
+	
     useEffect(() => {
         editor?.setStyleForNextShapes(DefaultColorStyle, 'violet');
     }, [editor])
@@ -97,10 +102,7 @@ export function CustomTlToolbar() {
 		<DefaultToolbar>
 			<ToolbarStyle isMobile={!widerThan('xs')}/>
 			{
-				myTLTools.map((tool) => {
-					
-					return <ToolbarItem tool={tool} key={tool}/>
-				})
+				myTLTools.map((tool) => <ToolbarItem tool={tool} key={tool}/>)
 			}
 		</DefaultToolbar>
 	);

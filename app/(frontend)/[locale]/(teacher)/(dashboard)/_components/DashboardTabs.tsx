@@ -35,10 +35,10 @@ export default function DashboardTabs() {
                 <Text as='label' size='1'>Capsules</Text>
             </TabElement>
 
-            <TabElement href='/activities'>
+            {/* <TabElement href='/activities'>
                 <Puzzle size='21' />
                 <Text as='label' size='1'>Activités</Text>
-            </TabElement>
+            </TabElement> */}
 
             <TabElement href='/reports'>
                 <NotepadText size='21' />
