@@ -1,14 +1,19 @@
 import { ActivityTypeWidget } from "@/app/_types/activity";
-import { WidgetThumb } from "../_components/WidgetThumb";
-import { Box, Button, DataList, Grid, Heading } from "@radix-ui/themes";
+import { WidgetThumb } from "../../_components/WidgetThumb";
+import { Box, Button, DataList, Heading, IconButton, Tooltip } from "@radix-ui/themes";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
-import ReportWidgetTemplate from "../_components/ReportWidgetTemplate";
+import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
+import { FileDown } from "lucide-react";
 
 export function ActivityWidgetView({ color, activity}
 	: { color: string | undefined, activity: ActivityTypeWidget }) {
 	const { startDate, endDate } = formatEventDates(new Date(activity.launched_at), new Date(activity.stopped_at)); 
 	const thumbSmallText = activity.type === "poll" ? "de participation" : "de réussite";
-	console.log("STart time", activity.launched_at);
+
+	const handleDownloadCSV = () => {
+		console.log("Download CSV");
+	};
+
 	const Thumb = () => <WidgetThumb bigText={`${activity.percentage.toString()}`} bigTextOption="%" smallText={thumbSmallText} color={color} />;
 	
 	const Content = () => {
@@ -36,18 +41,24 @@ export function ActivityWidgetView({ color, activity}
 				</DataList.Root>
 			</Box>);
 	};
-	const buttons = <Button radius="full" asChild>
-		<Link href={"#"}>
-			Détails
-		</Link>
-	</Button>;
-
+	const buttons = <>
+		{/* <Tooltip content="Télécharger les résultats de l'activité en csv" side="top">
+			<IconButton variant="ghost" onClick={handleDownloadCSV}>
+				<FileDown />
+			</IconButton>
+		</Tooltip>
+		<Button radius="full" asChild>
+			<Link href={"#"}>
+				Détails
+			</Link>
+		</Button>; */}
+	</>
 	return (
-			<ReportWidgetTemplate 
-				thumb={<Thumb />}
-				content={<Content />}
-				buttons={buttons}
-			/>
+		<ReportWidgetTemplate 
+			thumb={<Thumb />}
+			content={<Content />}
+			buttons={buttons}
+		/>
 	)
 }
 

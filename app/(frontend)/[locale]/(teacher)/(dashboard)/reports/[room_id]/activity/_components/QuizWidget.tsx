@@ -1,8 +1,8 @@
 "use client";
 
 import { Box, Button, DataList, Grid, Heading } from "@radix-ui/themes";
-import { WidgetThumb } from "../_components/WidgetThumb";
-import ReportWidgetTemplate from "../_components/ReportWidgetTemplate";
+import { WidgetThumb } from "../../_components/WidgetThumb";
+import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 
 export default function QuizWidget () {
