@@ -1,3 +1,4 @@
+"use client";
 import { ActivityTypeWidget } from "@/app/_types/activity";
 import { WidgetThumb } from "../../_components/WidgetThumb";
 import { Box, Button, DataList, Heading, IconButton, Tooltip } from "@radix-ui/themes";
@@ -42,7 +43,7 @@ export function ActivityWidgetView({ color, activity}
 			</Box>);
 	};
 	const buttons = <>
-		{/* <Tooltip content="Télécharger les résultats de l'activité en csv" side="top">
+		<Tooltip content="Télécharger les résultats de l'activité en csv" side="top">
 			<IconButton variant="ghost" onClick={handleDownloadCSV}>
 				<FileDown />
 			</IconButton>
@@ -51,7 +52,7 @@ export function ActivityWidgetView({ color, activity}
 			<Link href={"#"}>
 				Détails
 			</Link>
-		</Button>; */}
+		</Button>;
 	</>
 	return (
 		<ReportWidgetTemplate 
