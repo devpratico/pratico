@@ -8,6 +8,8 @@ import { useState, useCallback, useMemo } from "react"
 import { useUser } from "../contexts/useUser"
 import { useRoomMutation } from "../mutations/useRoomMutation"
 import useAnswerActivityMutation from "../mutations/useAnswerActivityMutation"
+import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
+import { add } from "lodash"
 
 
 export function usePollAnimationService(): {
@@ -198,6 +200,7 @@ export function useClosePollService(): {
     const [isPending, setIsPending] = useState(false)
     const roomId = useRoom().room?.id
     const { saveActivitySnapshot } = useRoomMutation()
+    const { addEndActivityEvent } = useRoomEventsMutation(`${roomId}`)
 
     return {
         closePoll: async () => {
@@ -211,6 +214,14 @@ export function useClosePollService(): {
             setIsPending(false)
 
             if (error) usePollAnimationStore.setState(previousState) // Rollback
+
+            if (!error) {
+                addEndActivityEvent({
+                    type: 'poll',
+                    activityId: `${previousState.id}`,
+                    answers: previousState.answers
+                })
+            }
 
             return { error: error?.message || null }
         },
