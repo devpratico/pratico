@@ -73,9 +73,9 @@ export type Database = {
           first_name: string | null
           id: number
           last_name: string | null
-          room_id: number | null
+          room_id: number
           signature: boolean
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           additional_info?: string | null
@@ -83,9 +83,9 @@ export type Database = {
           first_name?: string | null
           id?: number
           last_name?: string | null
-          room_id?: number | null
+          room_id: number
           signature?: boolean
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           additional_info?: string | null
@@ -93,9 +93,9 @@ export type Database = {
           first_name?: string | null
           id?: number
           last_name?: string | null
-          room_id?: number | null
+          room_id?: number
           signature?: boolean
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -134,24 +134,24 @@ export type Database = {
       room_events: {
         Row: {
           id: number
-          payload: Json | null
+          payload: Json
           room_id: number
           timestamp: string
-          type: string | null
+          type: string
         }
         Insert: {
           id?: number
-          payload?: Json | null
+          payload: Json
           room_id: number
           timestamp?: string
-          type?: string | null
+          type: string
         }
         Update: {
           id?: number
-          payload?: Json | null
+          payload?: Json
           room_id?: number
           timestamp?: string
-          type?: string | null
+          type?: string
         }
         Relationships: [
           {
