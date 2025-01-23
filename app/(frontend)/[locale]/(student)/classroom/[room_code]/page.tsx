@@ -5,8 +5,8 @@ import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canva
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
-import { fetchUserHasSignedAttendance } from '@/app/(backend)/api/attendance/attendance.server'
-import { fetchNamesFromAttendance } from '@/app/(backend)/api/attendance/attendance.server'
+import { fetchUserAttendanceData } from '@/app/(backend)/api/attendance/attendance.server'
+import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
 
 
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
@@ -21,31 +21,33 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     // Check user is logged in (can be anonymous)
 	const { user, error } = await fetchUser();
 	if (!user || error) {
-		logger.log('next:page', 'StudentViewPage', 'User not found', error);
+		logger.log('next:page', 'StudentViewPage', 'Student not logged in. Redirecting to form page', error);
 		const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        return null;
 	}
 
-    // Check user has signed attendance
-	const hasSignedAttendance = await fetchUserHasSignedAttendance(roomData.id, user!.id);
-	if (!hasSignedAttendance) {
-        logger.log('next:page', 'User has not signed attendance, redirecting to form');
+    // Check user attendance data (if none, it means the user has not signed attendance yet)
+    const { data: attendanceData, error: attendanceError } = await fetchUserAttendanceData(roomData.id, user!.id);
+
+    if (attendanceError) { // If none found or more than one found, supabase will return an error
+        logger.log('next:page', 'StudentViewPage', 'Student has not signed attendance yet. Redirecting to form page', user!.id, attendanceError);
         const nextUrl = `/classroom/${params.room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        return null;
     }
-
-    // Fetch user names
-    const { data } = await fetchNamesFromAttendance(user!.id);
 
     const canvasUser: CanvasUser = {
         id: user!.id,
-        name: `${data?.first_name} ${data?.last_name}`,
+        name: `${attendanceData!.first_name} ${attendanceData!.last_name}`,
         color: getRandomColor(),
     }
   
     const snapshot = roomData?.capsule_snapshot || undefined as any
 	 
     return (
-		<StudentCanvas user={canvasUser} snapshot={snapshot} />
+        <RedirectIfRoomClosed roomId={roomData.id.toString()}>
+            <StudentCanvas user={canvasUser} snapshot={snapshot} />
+        </RedirectIfRoomClosed>
 	);
 }

@@ -2,6 +2,7 @@ import 'server-only'
 import createClient from '@/supabase/clients/server'
 import logger from "@/app/_utils/logger";
 import { cache } from 'react';
+import { revalidatePath } from 'next/cache';
 
 
 export interface Names {
@@ -15,6 +16,16 @@ export const fetchUser = async () => {
     if (error) logger.error('supabase:auth', `error fetching user`, error.message)
     if (user) logger.log('supabase:auth', `fetched user`, user.email || user.is_anonymous && "Anonymous " + user.id)
     return ({ user, error: error?.message || null })
+}
+
+export const signInAnonymously = async () => {
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signInAnonymously({})
+
+    if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
+    revalidatePath('/', 'layout')
+
+    return { data, error: error?.message }
 }
 
 
@@ -36,7 +47,7 @@ export const fetchNames = cache(async (userId: string): Promise<Names> => {
  */
 export const fetchProfile = cache(async (userId: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).limit(1).single()
+    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).maybeSingle()
     if (error) logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
     return { data, error: error?.message }
 })
@@ -47,7 +58,7 @@ export const fetchProfile = cache(async (userId: string) => {
  */
 export const fetchStripeId = cache(async (userId: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
+    const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).maybeSingle()
     if (error) logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error.message)
     return { data, error: error?.message }
 })
