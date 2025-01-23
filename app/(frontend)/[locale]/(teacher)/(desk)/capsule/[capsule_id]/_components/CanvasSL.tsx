@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
 import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
 
 
 
@@ -19,6 +20,7 @@ import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
+    const { widerThan } = useWindow();
     console.log('capsuleId', capsuleId)
 
     // Get the user
@@ -73,7 +75,7 @@ export default function CanvasSL() {
     return (
         <Canvas initialSnapshot={initialSnapshot}>
             <CustomTlToolbar />
-            <Resizer insets={{top: 0, right: 0, bottom: 0, left: 60}} margin={0} />
+            <Resizer insets={{top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 60 : 0}} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>
     )

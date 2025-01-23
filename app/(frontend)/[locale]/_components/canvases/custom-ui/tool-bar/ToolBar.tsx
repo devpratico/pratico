@@ -1,7 +1,24 @@
-import { DefaultToolbar, ToolbarItem } from 'tldraw';
+import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor';
+import useWindow from '@/app/(frontend)/_hooks/contexts/useWindow';
+import { useEffect } from 'react';
+import { DefaultColorStyle, DefaultToolbar, ToolbarItem } from 'tldraw';
 
-function ToolbarStyle () {
-
+function ToolbarStyle ({isMobile}: {isMobile: boolean}) {
+	if (isMobile)
+		return (
+			<style>
+			{`
+				.tl-container {
+					display: flex !important;
+					justify-content: column-reverse !important;
+					align-items: flex-end !important;
+				}
+				.tlui-toolbar {
+					margin-bottom: 0.5rem; !important;
+				}
+			`}
+			</style>
+	);
 	return (
 		<style>
 		{`
@@ -70,10 +87,15 @@ const myTLTools = [
 ];
 
 export function CustomTlToolbar() {
+	const { widerThan } = useWindow();
+	const { editor } = useTLEditor();
 
+    useEffect(() => {
+        editor?.setStyleForNextShapes(DefaultColorStyle, 'violet');
+    }, [editor])
 	return (
 		<DefaultToolbar>
-			<ToolbarStyle />
+			<ToolbarStyle isMobile={!widerThan('xs')}/>
 			{
 				myTLTools.map((tool) => {
 					

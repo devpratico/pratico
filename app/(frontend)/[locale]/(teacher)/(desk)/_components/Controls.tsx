@@ -9,6 +9,7 @@ import { useState, useEffect, useMemo } from "react"
 import { debounce } from "lodash"
 import logger from "@/app/_utils/logger"
 import { useFullscreen } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow"
 
 
 
@@ -17,7 +18,7 @@ const iconSize = '30'
 
 export default function Controls() {
 	const { setFullscreenOn } = useFullscreen();
-
+    const { widerThan } = useWindow(); 
     const {
         pageIds,
         currentPageId,
@@ -33,7 +34,7 @@ export default function Controls() {
 
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
-            if (pages == 1) {
+            if (pages == 1 && widerThan('xs')) {
                 setOpenImport(true)
             } else {
                 setOpenImport(false)
@@ -45,7 +46,7 @@ export default function Controls() {
         return () => {
             debouncedSetOpenImport.cancel()
         }
-    }, [numberOfPages])
+    }, [numberOfPages, widerThan])
 
 	const handleFullscreen = () => {
 		setFullscreenOn();
