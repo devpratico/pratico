@@ -2,7 +2,7 @@
 import { useGeneratePdf } from "@/app/(frontend)/_hooks/useGeneratePdf";
 import logger from "@/app/_utils/logger";
 import { Json } from "@/supabase/types/database.types";
-import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps, Tooltip } from "@radix-ui/themes";
+import { AlertDialog, Box, Card, Flex, Progress, Text, Button, ButtonProps, Tooltip, IconButton } from "@radix-ui/themes";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
 import { useCallback, useEffect, useState, cloneElement, ReactElement, isValidElement } from "react";
@@ -13,10 +13,10 @@ export function CapsuleToPdfBtn(props: {
 	snapshot: TLEditorSnapshot | Json,
 	title: string,
 	capsuleDate: string,
-	tooltip?: string,
+	component?: "Button" | "IconButton"
 	children?: ReactElement<{onClick: React.MouseEventHandler<HTMLButtonElement>}>,
 } & ButtonProps) {
-	const { title, snapshot, capsuleDate, tooltip, children, ...btnProps} = props;
+	const { title, snapshot, capsuleDate, component, children, ...btnProps} = props;
 	const { generatePdf, inProgress, progress, pagesProgress } = useGeneratePdf ();
 	const [editor, setEditor] = useState<Editor | null>(null);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -80,13 +80,10 @@ export function CapsuleToPdfBtn(props: {
 	const handleMount = useCallback((newEditor: Editor) => {
 		setEditor(newEditor);
     }, []);
-
-	const theButton =
-		children && isValidElement(children)
-		?
-			cloneElement(children, { onClick: handleClick})
-		:
-		<Button onClick={handleClick} {...btnProps}>
+	
+	const theButton = component === "IconButton"
+		? <IconButton onClick={handleClick} >{children}</IconButton>
+		: <Button onClick={handleClick} {...btnProps}>
 			<FileDown size={21}/>Télécharger le diaporama en PDF
 		</Button>
 	return (
@@ -97,9 +94,7 @@ export function CapsuleToPdfBtn(props: {
                 <Tldraw hideUi onMount={handleMount} snapshot={snapshot as TLEditorSnapshot} />
             </Box>
 
-			<Tooltip hidden={!tooltip} content={tooltip}>
-				{theButton}
-			</Tooltip>
+			{theButton}
 
             <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
