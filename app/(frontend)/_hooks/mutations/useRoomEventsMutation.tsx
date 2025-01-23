@@ -84,20 +84,28 @@ export default function useRoomEventsMutation(roomId: string): {
             .select('id')
             .eq('room_id', roomId)
             .eq('type', 'start ' + args.type)
-            .eq('payload:activityId', args.activityId)
-            .order('created_at', { ascending: false })
-            .single()
+            .eq('payload->>activityId', args.activityId)
+            .order('timestamp', { ascending: false })
+            .limit(1)
 
         setIsPending(false)
 
-        if (error) {
-            logger.error('supabase:database', 'useRoomEventsMutation.tsx', 'addStartActivityEvent', 'Error fetching start event', error)
+        if (error || data.length === 0) {
+            logger.error(
+                'supabase:database',
+                'useRoomEventsMutation.tsx',
+                `addEndActivityEvent(${JSON.stringify(args)})`,
+                'Error fetching start event',
+                error || 'No data found'
+            )
             return { error }
         }
 
+        const latestEvent = data[0]
+
         logger.log('react:hook', 'useRoomEventsMutation.tsx', 'addEndActivityEvent', 'Found corresponding start event', data)
 
-        const startEventId = data.id.toString()
+        const startEventId = latestEvent.id.toString()
 
         const eventType = args.type === 'poll' ? 'end poll' : 'end quiz'
 
