@@ -1,12 +1,12 @@
 'use client'
 import { createContext, useContext, } from 'react';
-import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.client';
 import { Room } from '@/app/(backend)/api/room/types';
 import { useState, useEffect } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 import { isEqual } from 'lodash';
+
 
 
 // TODO: There's a trick 🚩 here to only update the room when the params change - and do nothing
@@ -31,24 +31,32 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
-    // Fetch the initial room data (happens once)
     useEffect(() => {
-        if (!room_code) return;
-        logger.log('react:hook', 'useRoom.tsx', 'Fetch initial room data', room_code)
-        fetchOpenRoomByCode(room_code).then(({data, error}) => {
-            if (error || !data) return
-            const _room = data as Room
-            setRoom(_room)
-        })
-            //.catch((error) => {logger.log('react:hook', `No room found for "${room_code}"`)})
-    }, [room_code]);
+        if (!room_code) return
 
-    // Subscribe to room params changes
-    useEffect(() => {
-        logger.log('supabase:realtime', "useRoom", "Listening to room table realtime")
         const supabase = createClient();
-        const channel = supabase.channel(room_code + "_realtime");
-        channel
+
+        // Fetch initial room data
+        supabase
+            .from('rooms')
+            .select('*')
+            .eq('code', room_code)
+            .eq('status', 'open')
+            .single<Room>()
+            .then(({ data, error }) => {
+                if (error) {
+                    logger.log('supabase:database', 'useRoom.tsx', `error fetching room ${room_code}...`, error.message)
+                    return
+                }
+                logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data)
+                setRoom(data)
+            })
+
+
+        logger.log('supabase:realtime','useRoom.tsx', "Listening to room table realtime")
+
+        const channel = supabase
+            .channel(room_code + "_realtime")
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `code=eq.${room_code}` },
                 (payload): void => {
                     const newRecord = payload.new as Room

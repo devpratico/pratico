@@ -1,11 +1,12 @@
 "use client";
 
-import { Box, Heading, Text, Flex } from "@radix-ui/themes";
+import { Box, Heading, Text, Flex, IconButton } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
-import { CapsuleToPdfShortcutBtn } from "./CapsuleToPdfShorcutBtn";
+import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
+import { FileDown } from "lucide-react";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -47,8 +48,18 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 			</Box>
         );
     }
-	const buttons = <CapsuleToPdfShortcutBtn snapshot={data.capsuleSnapshot as TLEditorSnapshot} title={data.capsuleTitle} capsuleDate={data.capsuleDate} />;
-
+	const buttons =
+		<CapsuleToPdfBtn
+			snapshot={data.capsuleSnapshot}
+			title={data.capsuleTitle}
+			capsuleDate={data.capsuleDate}
+			tooltip = 'Télécharger le diaporama modifié en PDF'
+		>			
+			<IconButton variant='ghost'>
+				<FileDown />
+			</IconButton>
+		</CapsuleToPdfBtn>
+	
 	return (
 		<ReportWidgetTemplate thumb={<Thumb />} content={<Content />} buttons={buttons} />
 	);

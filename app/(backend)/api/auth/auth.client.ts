@@ -44,7 +44,7 @@ export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpRet
     return { user: data?.user, error: error?.message || null }
 }
 
-
+// TODO: delete
 export const signInAnonymously = async () => {
     const supabase = createClient()
     const { data, error } = await supabase.auth.signInAnonymously({})
