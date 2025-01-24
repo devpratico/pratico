@@ -1,7 +1,5 @@
-import { ActivityTypeTable, ActivityTypeWidget } from "@/app/_types/activity";
+import { ActivityTypeWidget } from "@/app/_types/activity";
 import { ActivityWidgetView } from "./ActivityWidgetView";
-import logger from "@/app/_utils/logger";
-import { fetchActivitiesDoneInRoom } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 import { fetchActivitiesWidgetData } from "@/app/(backend)/api/activity/activity.server";
 
 const getParticipationColor = (rate: number) => {
