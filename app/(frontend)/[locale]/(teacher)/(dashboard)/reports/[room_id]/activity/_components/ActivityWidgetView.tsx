@@ -8,7 +8,7 @@ import { FileDown } from "lucide-react";
 
 export function ActivityWidgetView({ color, activity}
 	: { color: string | undefined, activity: ActivityTypeWidget }) {
-	const { startDate, endDate } = formatEventDates(new Date(activity.launched_at), new Date(activity.stopped_at)); 
+	const { startDate, endDate } = formatEventDates(activity.started_at, activity.stopped_at); 
 	const thumbSmallText = activity.type === "poll" ? "de participation" : "de réussite";
 
 	const handleDownloadCSV = () => {

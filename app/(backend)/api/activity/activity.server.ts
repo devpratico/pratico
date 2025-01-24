@@ -7,6 +7,7 @@ import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
 import { ActivityTypeTable, ActivityTypeWidget } from '@/app/_types/activity'
+import { fetchActivitiesDoneInRoom } from './fetchActivitiesDoneInRoom'
 
 
 
@@ -45,80 +46,24 @@ export const fetchActivity = async (id: number) => {
     }
 }
 
-// TO REMOVE WHEN THE API IS READY
-export const TMPfetchActivitiesWidgetData = async (data: ActivityTypeTable[]) => {
-    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for ${data.length} activities ...`)
-
-    const getSuccessRate = (questions: any) => {
-        let correct = 0;
-        questions.map((question: any) => {
-            if (question.correct_answer === question.answer)
-                correct++;
-        });
-        // return ((correct / questions.length) * 100);
-        return (Math.floor(Math.random() * (100 - 0)));
-    };
-    const getParticipationRate = (questions: any) => {
-        let answered = 0;
-        questions.map((question: any) => {
-            if (question.answer)
-                answered++;
-        });
-        // return ((answered / questions.length) * 100);
-        return (Math.floor(Math.random() * (100 - 0)));
-    };
-
-    const activities = Array.from(data.map((item) => {
-        let title = "";
-        let percentage = 0;
-        let nbQuestions = 0;
-        if (item.object)
-        {
-            Object.entries(item.object).map(([key, value]) => {
-                
-                if (key === 'title')
-                    title = value;
-                if (key === 'questions')
-                {
-                    if (item.type === 'quiz')
-                        // Calculate the percentage of questions answered correctly for quizzes
-                        percentage = getSuccessRate(value);
-                    else if (item.type === 'poll')
-                        // Calculate the percentage of answered questions
-                       percentage = getParticipationRate(value);
-                    nbQuestions = value.length;
-                }
-            });
-        }
-
-        const activity: ActivityTypeWidget = {
-            id: item.id,
-            type: item.type,
-            title: title,
-            launched_at: new Date().toString(),
-            stopped_at: new Date().toString(),
-            percentage: percentage,
-            nbQuestions: nbQuestions
-        }
-        return (activity);
-    }));
-    await new Promise(resolve => setTimeout(resolve, 1000))  ;
-    return ({ data: activities, error: null });
-};
-// A revoir ou supprimer
-export const fetchActivitiesWidgetData = async (roomId: number) => {
-    const supabase = createClient()
-    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`)
-    const { data, error } = await supabase.from('activities').select("*").eq('room_id', roomId).order('launched_at', { ascending: false });
-
+export const fetchActivitiesWidgetData = async (roomId: string) => {
+    const supabase = createClient();
+    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`);
+    const { data, error } = await supabase.from('activities').select("*").eq('id', roomId);
+    const { data: eventData, error: eventError } = await fetchActivitiesDoneInRoom(roomId);
     if (error || !data) {
-        logger.error('supabase:database', 'fetchActivitiesWidgetData', `Error fetching activities widget data for room ${roomId}`, error?.message)
-        return { data: [], error: error?.message }
+        logger.error('supabase:database', 'fetchActivitiesWidgetData', `Error fetching activities widget data for room ${roomId}`, error?.message);
+        return { data: [], error: error?.message };
+    } else if (eventError || !eventData) {
+        logger.error('supabase:database', 'fetchActivitiesDoneInRoom', `Error fetching activities done in room ${roomId}`, eventError?.message);
+        return { data: [], error: eventError?.message };
+    } else if (data.length === 0 || eventData.length === 0) { 
+        logger.error('supabase:database', 'fetchActivitiesWidgetData or fetchActivitiesDoneInRoom', `No activities done in room ${roomId}`);
+        return { data: [], error: null };
     }
 
     const activities = Array.from(data.map((item) => {
         let title = "";
-        let percentage = 0;
         let nbQuestions = 0;
         if (item.object)
         {   
@@ -126,28 +71,21 @@ export const fetchActivitiesWidgetData = async (roomId: number) => {
                 
                 if (key === 'title')
                     title = value;
-                if (key === 'questions')
-                {
-                    if (item.type === 'quiz')
-                        // Calculate the percentage of questions answered correctly for quizzes
-                        console.log("QUIZ")
-                    else if (item.type === 'poll')
-                        // Calculate the percentage of answered questions
-                        console.log("POLL")
+                if (key === 'questions')            
                     nbQuestions = value.length;
-                }
             });
         }
-
-        // const activity: ActivityTypeWidget = {
-        //     id: item.id,
-        //     type: item.type,
-        //     title: title,
-        //     launched_at: item.launched_at,
-        //     percentage: percentage,
-        //     nbQuestions: nbQuestions
-        // }
-        // return (activity);
+        const eventActivity = eventData.find((event) => event.activityId === item.id.toString());
+        const activity: ActivityTypeWidget = {
+            id: item.id,
+            type: item.type,
+            title: title,
+            started_at: eventActivity?.startDate || new Date(),
+            stopped_at: eventActivity?.endDate || new Date(),
+            percentage: eventActivity?.relevantNumber || 0,
+            nbQuestions: nbQuestions
+        }
+        return (activity);
     })); 
 
     return { data: activities, error: null }

@@ -1,4 +1,4 @@
-import 'server only'
+"use server";
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 import DatabaseResponse from '@/app/_utils/DatabaseResponse'
