@@ -1,5 +1,5 @@
 import logger from "@/app/_utils/logger"
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
