@@ -47,7 +47,7 @@ export const fetchNames = cache(async (userId: string): Promise<Names> => {
  */
 export const fetchProfile = cache(async (userId: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).limit(1).single()
+    const { data, error } = await supabase.from('user_profiles').select('*').eq('id', userId).maybeSingle()
     if (error) logger.error('supabase:database', `error fetching profile for user ${userId.slice(0, 5)}...`, error.message)
     return { data, error: error?.message }
 })
@@ -58,7 +58,7 @@ export const fetchProfile = cache(async (userId: string) => {
  */
 export const fetchStripeId = cache(async (userId: string) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).single()
+    const { data, error } = await supabase.from('user_profiles').select('stripe_id').eq('id', userId).maybeSingle()
     if (error) logger.error('supabase:database', `error fetching stripe id for user ${userId.slice(0, 5)}...`, error.message)
     return { data, error: error?.message }
 })

@@ -145,9 +145,10 @@ class Logger {
             return;
         }
 
-        // In Vercel prod, server-side, we only run error and warn logs, without styling
+        // In Vercel prod, server-side, we only run all logs, without styling
         if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && !this.isBrowser()) {
-            if ( type === 'error' || type === 'warn' ) {
+            //if ( type === 'error' || type === 'warn' ) {
+            if (true) {
                 consoleFunctions[type](category, message, ...optionalParams);
             }
             return;

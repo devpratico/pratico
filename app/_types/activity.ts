@@ -1,6 +1,6 @@
 import { Tables } from "@/supabase/types/database.types";
 import { PollSnapshot } from "./poll"
-import { QuizSnapshot as QuizSnapshot2 } from "./quiz"
+import { QuizSnapshot } from "./quiz"
 import { produce } from "immer"
 
 export type ActivityType = 'quiz' | 'poll'
@@ -23,7 +23,7 @@ export interface Activity {
     schemaVersion: string
 }
 
-export type ActivitySnapshot = PollSnapshot | QuizSnapshot2
+export type ActivitySnapshot = PollSnapshot | QuizSnapshot
 
 
 type ActivityUpdater<T extends Activity> = (activity: T) => T

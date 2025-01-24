@@ -210,3 +210,6 @@ export async function fetchSnapshot(roomId: number) {
 
     return { data, error: null }
 }
+
+
+

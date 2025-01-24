@@ -8,6 +8,7 @@ import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { Poll, PollSnapshot } from "@/app/_types/poll"
 import useActivityQuery from "../queries/useActivityQuery"
 import { useRoomMutation } from "../mutations/useRoomMutation"
+import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -20,6 +21,7 @@ export function useStartActivityService(): {
     const roomId = useRoom().room?.id
     const { fetchActivity } = useActivityQuery()
     const { saveActivitySnapshot } = useRoomMutation()
+    const { addStartActivityEvent } = useRoomEventsMutation(`${roomId}`)
 
     const start = useCallback(async (activityId: string | number) => {
         logger.log('zustand:store', 'useStartActivityService.tsx', 'Starting activity', activityId)
@@ -70,6 +72,8 @@ export function useStartActivityService(): {
                 return { error: 'Error saving quiz: ' + saveError }
             }
 
+            addStartActivityEvent(`${id}`, 'quiz')
+
             
         } else if (data.type === 'poll') {
             const poll = data.object as Poll
@@ -98,6 +102,10 @@ export function useStartActivityService(): {
                 setIsPending(false)
                 return { error: 'Error saving poll: ' + saveError }
             }
+
+            addStartActivityEvent(`${id}`, 'poll')
+
+
         } else {
             logger.error('zustand:store', 'useStartActivityService.tsx', 'Unknown activity type')
             setIsPending(false)
@@ -108,7 +116,8 @@ export function useStartActivityService(): {
 
         setIsPending(false)
         return { error: null }
-    }, [roomId, fetchActivity, saveActivitySnapshot])
+
+    }, [roomId, fetchActivity, saveActivitySnapshot, addStartActivityEvent])
 
     return { start, isPending }
 }
