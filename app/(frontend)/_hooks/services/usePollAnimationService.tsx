@@ -9,7 +9,6 @@ import { useUser } from "../contexts/useUser"
 import { useRoomMutation } from "../mutations/useRoomMutation"
 import useAnswerActivityMutation from "../mutations/useAnswerActivityMutation"
 import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
-import { add } from "lodash"
 
 
 export function usePollAnimationService(): {
