@@ -181,7 +181,6 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             activities[activityIndex].relevantNumber = percentage
         }
     }
-
     return { error: null, data: activities }
 }
 
@@ -225,7 +224,7 @@ async function computePollParticipation(args: {
     const uniqueAnsweredUserIds = Array.from(new Set(answeredUserIds))
     const answeredParticipants = uniqueAnsweredUserIds.length
 
-    const ratio = answeredParticipants / totalParticipants
+    const ratio = totalParticipants > 0 ? answeredParticipants / totalParticipants : 0
     const percentage = Math.round(ratio * 100)
 
     return { error: null, data: percentage }
@@ -282,7 +281,7 @@ async function computeQuizSuccess(args: {
         return isCorrect
     })
 
-    const ratio = correctUserAnswers.length / args.answers.length
+    const ratio = args.answers.length > 0 ? correctUserAnswers.length / args.answers.length : 0
 
     const percentage = Math.round(ratio * 100)
 
