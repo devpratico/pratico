@@ -6,9 +6,8 @@ import { getUser } from '../auth/auth.server'
 import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
-import { ActivityTypeTable, ActivityTypeWidget } from '@/app/_types/activity'
+import { ActivityTypeWidget } from '@/app/_types/activity'
 import { fetchActivitiesDoneInRoom } from './fetchActivitiesDoneInRoom'
-import { act } from 'react'
 
 
 
@@ -61,22 +60,18 @@ export const fetchActivitiesWidgetData = async (roomId: string) => {
     logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activities done in room ${roomId}: ${data.length}, activities: ${data.length}`);
     const activities = Array.from(data.map((item) => {
         logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
-        // const { data, error } = supabase.from("activities").select("object->>questions").eq("activityId", item.activityId).eq("type", item.type).then(({ data, error }) => ({ data, error }));
-        // if (!data || error)
-        //     logger.error('supabase:database', 'fetchActivitiesWidgetData', `Error fetching questions for activity ${item.activityId} (${item.type})`, error?.message);
-        // logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) questions: ${data?.questions}`);
-        const activity: ActivityTypeWidget = {
+        const activity = {
             id: item.activityId,
             type: item.type,
             title: item.title,
             started_at: item.startDate || new Date(),
             stopped_at: item.endDate || new Date(),
             percentage: item.relevantNumber || 0,
-            nbQuestions: 0
-        }
-        return (activity);
-    })); 
+            nbQuestions: item.nbQuestions
+        } as ActivityTypeWidget;
 
+        return (activity);
+    }));
     return { data: activities, error: null }
 };
 

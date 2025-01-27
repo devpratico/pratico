@@ -10,7 +10,6 @@ export async function ActivityWidget ({roomId}
 	: {roomId: string}) {
 	
 		const { data: activities, error } = await fetchActivitiesWidgetData(roomId);
-		console.log("Aaaaactivities", activities, "error", error);
 
 		return (
 			<>

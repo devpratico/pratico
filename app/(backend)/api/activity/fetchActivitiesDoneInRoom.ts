@@ -17,6 +17,7 @@ type ActivityData = {
 
     /**  e.g. 75 for 75% of success. Undefined if the activity is still ongoing */
     relevantNumber: number | undefined
+    nbQuestions: number
 }
 
 
@@ -81,9 +82,9 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     })
 
 
-    const { data: titlesAndTypes, error: titlesError } = await supabase
+    const { data: titlesTypesQuestions, error: titlesError } = await supabase
         .from('activities')
-        .select('id, type, object->>title')
+        .select('id, type, object->>title, object->>questions')
         .in('id', activitiesIds)
 
     if (titlesError) {
@@ -107,13 +108,15 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         const end = couple.end
 
         const activityId = (start.payload as { activityId: string }).activityId
-        const titleAndType = titlesAndTypes.find((titleAndType) => `${titleAndType.id}` === activityId) || { type: 'quiz', title: 'Unknown' }
-        const title = titleAndType.title
-        const type = titleAndType.type as 'quiz' | 'poll'
+        const titleTypeQuestion = titlesTypesQuestions.find((titleTypeQuestion) => `${titleTypeQuestion.id}` === activityId) || { type: 'quiz', title: 'Unknown', questions: '' }
+        const title = titleTypeQuestion.title
+        const type = titleTypeQuestion.type as 'quiz' | 'poll'
         const startDate = new Date(start.timestamp)
         const endDate = end ? new Date(end.timestamp) : undefined
+        const questions = JSON.parse(titleTypeQuestion.questions);        
+        const nbQuestions = Array.isArray(questions) ? questions.length : 0
 
-        return { activityId, type, title, startDate, endDate, relevantNumber: undefined }
+        return { activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
     })
 
     // Now we need to compute the relevant number for each activity
