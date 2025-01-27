@@ -15,7 +15,6 @@ export default function RedirectIfRoomClosed(props: {
 }) {
     const { children, roomId } = props;
     const router = useRouter();
-    const [ roomClosed, setRoomClosed ] = useState(false);
     const fetchInitialStatus = useCallback(async () => {
         if (!roomId) return
         const supabase = createClient();
