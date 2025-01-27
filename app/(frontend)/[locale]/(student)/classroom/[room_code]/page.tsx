@@ -18,8 +18,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         && Date.now() - new Date(roomData.end_of_session).getTime() >= 5 * 60 * 1000)) {
 		logger.error("next:page", "StudentViewPage", "room error", roomError);
         throw new Error("Room not found");
-	} else if (roomData.status === 'closed')
-        return (redirect(`/classroom/closed/${roomData.id}`));
+	}
 
     // Check user is logged in (can be anonymous)
 	const { user, error } = await fetchUser();
