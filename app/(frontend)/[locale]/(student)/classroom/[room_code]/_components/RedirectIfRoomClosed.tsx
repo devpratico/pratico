@@ -22,6 +22,8 @@ export default function RedirectIfRoomClosed(props: {
             .from('rooms')
             .select('status, code')
             .eq('id', roomId)
+            .order('end_of_session', { ascending: false })
+            .limit(1)
             .single<Room>();
 
         if (error) {
