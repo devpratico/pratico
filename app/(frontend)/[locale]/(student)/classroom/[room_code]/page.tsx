@@ -3,7 +3,7 @@ import { fetchUser } from '@/app/(backend)/api/user/user.server'
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation'
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
+import { fetchRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
 import { fetchUserAttendanceData } from '@/app/(backend)/api/attendance/attendance.server'
 import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
@@ -12,8 +12,10 @@ import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
 
 	// Check room exists
-	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
-	if (roomError || !roomData) {
+	const { data: roomData, error: roomError } = await fetchRoomByCode(params.room_code);
+    console.log("Room Data", roomData)
+	if (roomError || !roomData || (roomData.status === 'closed' && roomData.end_of_session 
+        && Date.now() - new Date(roomData.end_of_session).getTime() >= 60 * 60 * 1000)) {
 		logger.error("next:page", "StudentViewPage", "room error", roomError);
         throw new Error("Room not found");
 	}
