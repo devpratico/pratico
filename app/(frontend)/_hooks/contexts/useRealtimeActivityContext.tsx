@@ -38,7 +38,6 @@ function useRealtimeSnapshot(): {
         setIsSyncing(false)
         if (error) {
             setError(error.message)
-            return
         }
         logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
         setSnapshot(data)
