@@ -2,12 +2,13 @@
 import { Poll, PollSnapshot } from "@/app/_types/poll"
 import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { useRoom } from "./useRoom"
-import { useState, useEffect, useMemo, createContext, useContext } from "react"
+import { useState, useEffect, useMemo, createContext, useContext, useCallback } from "react"
 import logger from "@/app/_utils/logger"
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
 import useActivityQuery from "../queries/useActivityQuery"
 import useActivitySnapshotQuery from "../queries/useActivitySnapshotQuery"
+import { useOnWake } from "../standalone/useOnWake"
 
 
 type ActivitySnapshot = PollSnapshot | QuizSnapshot
@@ -28,22 +29,28 @@ function useRealtimeSnapshot(): {
     const { fetchSnapshot } = useActivitySnapshotQuery()
     const supabase = useMemo(() => createClient(), [])
 
-    // Fetch initial data
-    useEffect(() => {
+    const fetchInitialData = useCallback(async () => {
         if (!roomId) return
         setIsSyncing(true)
         setError(null)
 
-        fetchSnapshot(`${roomId}`).then(({data, error}) => {
-            setIsSyncing(false)
-            if (error) {
-                setError(error.message)
-                return
-            }
-            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
-            setSnapshot(data)
-        })
+        const { data, error } = await fetchSnapshot(`${roomId}`)
+        setIsSyncing(false)
+        if (error) {
+            setError(error.message)
+            return
+        }
+        logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
+        setSnapshot(data)
     }, [roomId, fetchSnapshot])
+
+    // Fetch initial data on first load
+    useEffect(() => {
+        fetchInitialData()
+    }, [fetchInitialData])
+
+    // Fetch data on wake (phone unlocks)
+    useOnWake(fetchInitialData)
 
     // Sync with database real-time
     useEffect(() => {
