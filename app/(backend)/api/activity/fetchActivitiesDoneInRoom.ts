@@ -215,15 +215,16 @@ async function computePollParticipation(args: {
     }
 
     const userIds = data.map((row) => row.user_id)
-    const uniqueUserIds = Array.from(new Set(userIds))
-    const totalParticipants = uniqueUserIds.length
+    const uniqueUserIds = new Set(userIds)
+    const totalParticipants = Array.from(uniqueUserIds).length
 
     // Now we need to count how many users answered the poll
     // We'll find all the userIds in the answers, and count the unique ones
     const answeredUserIds = args.answers.map((answer) => answer.userId)
-    const uniqueAnsweredUserIds = Array.from(new Set(answeredUserIds))
-    const answeredParticipants = uniqueAnsweredUserIds.length
-
+    const uniqueAnsweredUserIds = new Set(answeredUserIds)
+    const answeredParticipants = Array.from(uniqueUserIds).filter(userId =>
+        uniqueAnsweredUserIds.has(userId)
+    ).length;
     const ratio = totalParticipants > 0 ? answeredParticipants / totalParticipants : 0
     const percentage = Math.round(ratio * 100)
 
