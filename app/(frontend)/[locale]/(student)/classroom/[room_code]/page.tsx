@@ -15,7 +15,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 	const { data: roomData, error: roomError } = await fetchRoomByCode(params.room_code);
     console.log("Room Data", roomData)
 	if (roomError || !roomData || (roomData.status === 'closed' && roomData.end_of_session 
-        && Date.now() - new Date(roomData.end_of_session).getTime() >= 60 * 60 * 1000)) {
+        && Date.now() - new Date(roomData.end_of_session).getTime() >= 5 * 60 * 1000)) {
 		logger.error("next:page", "StudentViewPage", "room error", roomError);
         throw new Error("Room not found");
 	}
