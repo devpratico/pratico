@@ -52,7 +52,7 @@ export function ActivityWidgetView({ color, activity}
 			<Link href={"#"}>
 				Détails
 			</Link>
-		</Button>;
+		</Button>
 	</>
 	return (
 		<ReportWidgetTemplate 

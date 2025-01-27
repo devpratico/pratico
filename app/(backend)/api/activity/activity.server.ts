@@ -8,6 +8,7 @@ import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
 import { ActivityTypeTable, ActivityTypeWidget } from '@/app/_types/activity'
 import { fetchActivitiesDoneInRoom } from './fetchActivitiesDoneInRoom'
+import { act } from 'react'
 
 
 
@@ -47,43 +48,31 @@ export const fetchActivity = async (id: number) => {
 }
 
 export const fetchActivitiesWidgetData = async (roomId: string) => {
-    const supabase = createClient();
     logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`);
-    const { data, error } = await supabase.from('activities').select("*").eq('id', roomId);
-    const { data: eventData, error: eventError } = await fetchActivitiesDoneInRoom(roomId);
-    if (error || !data) {
-        logger.error('supabase:database', 'fetchActivitiesWidgetData', `Error fetching activities widget data for room ${roomId}`, error?.message);
+    const supabase = createClient();
+    const { data, error } = await fetchActivitiesDoneInRoom(roomId);
+    if (!data || error) {
+        logger.error('supabase:database', 'fetchActivitiesWidgetData', 'fetchActivitiesDoneInRoom', `Error fetching activities for room ${roomId}`, error?.message);
         return { data: [], error: error?.message };
-    } else if (eventError || !eventData) {
-        logger.error('supabase:database', 'fetchActivitiesDoneInRoom', `Error fetching activities done in room ${roomId}`, eventError?.message);
-        return { data: [], error: eventError?.message };
-    } else if (data.length === 0 || eventData.length === 0) { 
-        logger.error('supabase:database', 'fetchActivitiesWidgetData or fetchActivitiesDoneInRoom', `No activities done in room ${roomId}`);
+    } else if (data.length === 0) { 
+        logger.error('supabase:database', 'fetchActivitiesWidgetData', 'fetchActivitiesDoneInRoom', `No activities done in room ${roomId}`);
         return { data: [], error: null };
     }
-
+    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activities done in room ${roomId}: ${data.length}, activities: ${data.length}`);
     const activities = Array.from(data.map((item) => {
-        let title = "";
-        let nbQuestions = 0;
-        if (item.object)
-        {   
-            Object.entries(item.object).map(([key, value]) => {
-                
-                if (key === 'title')
-                    title = value;
-                if (key === 'questions')            
-                    nbQuestions = value.length;
-            });
-        }
-        const eventActivity = eventData.find((event) => event.activityId === item.id.toString());
+        logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
+        // const { data, error } = supabase.from("activities").select("object->>questions").eq("activityId", item.activityId).eq("type", item.type).then(({ data, error }) => ({ data, error }));
+        // if (!data || error)
+        //     logger.error('supabase:database', 'fetchActivitiesWidgetData', `Error fetching questions for activity ${item.activityId} (${item.type})`, error?.message);
+        // logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) questions: ${data?.questions}`);
         const activity: ActivityTypeWidget = {
-            id: item.id,
+            id: item.activityId,
             type: item.type,
-            title: title,
-            started_at: eventActivity?.startDate || new Date(),
-            stopped_at: eventActivity?.endDate || new Date(),
-            percentage: eventActivity?.relevantNumber || 0,
-            nbQuestions: nbQuestions
+            title: item.title,
+            started_at: item.startDate || new Date(),
+            stopped_at: item.endDate || new Date(),
+            percentage: item.relevantNumber || 0,
+            nbQuestions: 0
         }
         return (activity);
     })); 

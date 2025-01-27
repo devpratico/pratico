@@ -8,7 +8,7 @@ export type ActivityType = 'quiz' | 'poll'
 export type ActivityTypeTable = Tables<'activities'>;
 
 export type ActivityTypeWidget = {
-    id: number,
+    id: string,
     type: string,
     title: string | undefined,
     started_at: Date,
