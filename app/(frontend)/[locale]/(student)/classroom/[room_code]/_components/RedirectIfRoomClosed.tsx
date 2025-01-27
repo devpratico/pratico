@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 import { Tables } from '@/supabase/types/database.types';
@@ -15,6 +15,7 @@ export default function RedirectIfRoomClosed(props: {
 }) {
     const { children, roomId } = props;
     const router = useRouter();
+    const [ roomClosed, setRoomClosed ] = useState(false);
     const fetchInitialStatus = useCallback(async () => {
         if (!roomId) return
         const supabase = createClient();
@@ -31,13 +32,14 @@ export default function RedirectIfRoomClosed(props: {
             return;
         }
         logger.log('supabase:database', 'useRoom.tsx', `fetched room ${data.code}...`, data);
-    }, [roomId]);
+        if (data.status === 'closed')
+            router.push(`/classroom/closed/${roomId}`);
+    }, [roomId, router]);
 
     useEffect(() => {
         fetchInitialStatus();
     }, [fetchInitialStatus]);
 
-    // Fetch data on wake (phone unlocks)
     useOnWake(fetchInitialStatus);
 
     useEffect(() => {
