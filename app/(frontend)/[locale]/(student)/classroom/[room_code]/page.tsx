@@ -22,7 +22,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
     // Check room closed in the last 24 hours
     if (roomData.status === 'closed' && roomData.end_of_session) {
         const isRecentlyClosed = isRoomClosedInTheLast24h(roomData.end_of_session);
-        logger.error("next:page", "StudentViewPage", "Room closed in the last 24h ?", isRecentlyClosed);
+        logger.log("next:page", "StudentViewPage", "Room closed in the last 24h ?", isRecentlyClosed);
         if (isRecentlyClosed)
             return (redirect(`/classroom/closed/${roomData.id}`));
         throw new Error("La session est fermée");
