@@ -13,11 +13,19 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 
 	// Check room exists
 	const { data: roomData, error: roomError } = await fetchRoomByCode(params.room_code);
-    console.log("Room Data", roomData)
-	if (roomError || !roomData || (roomData.status === 'closed' && roomData.end_of_session 
-        && Date.now() - new Date(roomData.end_of_session).getTime() >= 24 * 60 * 60 * 1000)) {
-		logger.error("next:page", "StudentViewPage", "room error", roomError);
-        throw new Error("Room not found");
+	if (roomError || !roomData) 
+    {
+        logger.error("next:page", "StudentViewPage", "room error", roomError);
+        throw new Error("La session n'existe pas");
+    }
+
+    // Check room closed in the last 24 hours
+    if (roomData.status === 'closed' && roomData.end_of_session) {
+        const isRecentlyClosed = isRoomClosedInTheLast24h(roomData.end_of_session);
+        logger.error("next:page", "StudentViewPage", "Room closed in the last 24h ?", isRecentlyClosed);
+        if (isRecentlyClosed)
+            return (redirect(`/classroom/closed/${roomData.id}`));
+        throw new Error("La session est fermée");
 	}
 
     // Check user is logged in (can be anonymous)
@@ -53,3 +61,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         </RedirectIfRoomClosed>
 	);
 }
+
+const isRoomClosedInTheLast24h = (endOfSession: string) => {
+    return (endOfSession && Date.now() - new Date(endOfSession).getTime() <= 24 * 60 * 60 * 1000);
+};
