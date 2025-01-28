@@ -129,7 +129,12 @@ export function QuizAnswerRow({ text, votes, questionState, answerState = 'unsel
     }
 
     return (
-        <Button variant={variant} color={color} onClick={handleClick}>
+        <Button
+            variant={variant}
+            color={color}
+            onClick={handleClick}
+            style={{ height: 'auto', padding: '10px', textAlign: 'left' }}
+        >
             {text}
             <Box ml='auto'>
                 {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}
