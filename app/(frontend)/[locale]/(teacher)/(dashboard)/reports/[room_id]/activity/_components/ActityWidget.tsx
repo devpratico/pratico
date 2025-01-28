@@ -14,10 +14,10 @@ export async function ActivityWidget ({roomId}
 		return (
 			<>
 				{
-					activities.map((activity: ActivityTypeWidget) => {
+					activities.map((activity: ActivityTypeWidget, index) => {
 						const color = activity.type === "poll" ? undefined : getParticipationColor(activity.percentage);
 
-						return (<ActivityWidgetView key={activity.id} color={color} activity={activity} />);
+						return (<ActivityWidgetView key={index} color={color} activity={activity} />);
 					})
 				}
 			</>
