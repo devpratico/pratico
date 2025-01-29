@@ -259,7 +259,6 @@ async function computeQuizSuccess(args: {
         }
     }
     let totalAnswers: { questionId: string, nbChoices: number }[] = [];
-    // For each question id, get the correct choices ids
     const correctChoicesIds: Array<{
         questionId: string,
         correctChoicesIds: string[]
@@ -276,107 +275,89 @@ async function computeQuizSuccess(args: {
         }
     ))
     const users: { id: string, questions: { questionId: string, correctAnswers: string[], wrongAnswers: string[]}[]}[] = [];
-    // Count how many user answers were correct
+
     const correctUserAnswers = args.answers.filter((answer) => {
         const correctChoices = correctChoicesIds.find((correctChoices) => correctChoices.questionId === answer.questionId);
         if (!correctChoices) return false;
-    
+
         const isCorrect = correctChoices.correctChoicesIds.includes(answer.choiceId);
-        const existingUser = users.find((u) => u.id === answer.userId);
-        if (existingUser) {
-            let userQuestion = existingUser.questions.find((q) => q.questionId === answer.questionId);
-            if (!userQuestion) {
-                userQuestion = {
-                    questionId: answer.questionId,
-                    correctAnswers: [],
-                    wrongAnswers: [],
-                };
-                existingUser.questions.push(userQuestion);
-            }
-            if (isCorrect) {
-                if (!userQuestion.correctAnswers.includes(answer.choiceId))
-                    userQuestion.correctAnswers.push(answer.choiceId);
-            }
-            else {
-                if (!userQuestion.wrongAnswers.includes(answer.choiceId)) {
-                    userQuestion.wrongAnswers.push(answer.choiceId);
-                }
+        let existingUser = users.find((u) => u.id === answer.userId);
+
+        if (!existingUser) {
+            existingUser = {
+                id: answer.userId,
+                questions: [],
+            };
+            users.push(existingUser);
+        }
+
+        let userQuestion = existingUser.questions.find((q) => q.questionId === answer.questionId);
+        if (!userQuestion) {
+            userQuestion = {
+                questionId: answer.questionId,
+                correctAnswers: [],
+                wrongAnswers: [],
+            };
+            existingUser.questions.push(userQuestion);
+        }
+
+        if (isCorrect) {
+            if (!userQuestion.correctAnswers.includes(answer.choiceId)) {
+                userQuestion.correctAnswers.push(answer.choiceId);
             }
         } else {
-            users.push({
-                id: answer.userId,
-                questions: [
-                    {
-                        questionId: answer.questionId,
-                        correctAnswers: isCorrect ? [answer.choiceId] : [],
-                        wrongAnswers: !isCorrect ? [answer.choiceId] : [],
-                    },
-                ],
-            });
+            if (!userQuestion.wrongAnswers.includes(answer.choiceId)) {
+                userQuestion.wrongAnswers.push(answer.choiceId);
+            }
         }
-        console.log(users.length, "USERS",users, users[0].questions)
-        const scoresTotal: { userId: string; totalScore: number; questionScores: { questionId: string; score: number }[] }[] = [];
 
-        const maxScore = correctChoicesIds.length > 0 ? 100 / correctChoicesIds.length : 0;
-        
-        users.map((user) => {
-            const userQuestions = user.questions;
-            const questionScores: { questionId: string; score: number }[] = [];
-        
-            let totalScore = 0;
-        
-            userQuestions.map((question) => {
-                const questionScore = Math.max(0, question.correctAnswers.length - question.wrongAnswers.length); // Pas de score négatif
-                totalScore += questionScore;
-        
-                questionScores.push({
-                    questionId: question.questionId,
-                    score: questionScore,
-                });
-        
-                console.log("SCORE", questionScore, "user", user.id, "question", question.questionId);
-            });
-        
-            scoresTotal.push({
-                userId: user.id,
-                totalScore: totalScore * maxScore,
-                questionScores,
-            });
-        
-            console.log("USER QUESTIONS", userQuestions);
-        });
-        
-        console.log("SCORES TOTAL", scoresTotal, scoresTotal[0].questionScores[0].score);
-        
-        
-        return (isCorrect);
+        return isCorrect;
     });
-    
-    
-    // let score = 0;
-    // console.log("NB CORRECT QUESTIONS",correctChoicesIds.length)
-    // const maxScore = correctChoicesIds.length > 0 ? 100 / correctChoicesIds.length : 0;
 
-    // if (maxScore > 0)
-    // {
-    //     args.answers.forEach((answer) => {
-    //         const correctChoices = correctChoicesIds.find((correctChoices) => correctChoices.questionId === answer.questionId);
-    //         if (!correctChoices)
-    //             return ;
+    const scoresTotal: { userId: string; totalScore: number; questionScores: { questionId: string; score: number; percentage: number }[] }[] = [];
 
-    //         if (correctChoices.correctChoicesIds.includes(answer.choiceId))
-    //             score += maxScore;
-    //         else
-    //             score -= maxScore;
-    //     });
-    //     score = Math.max(0, Math.min(100, score));
-    // }
-    // console.log("SCOOORE",score)
+    users.forEach((user) => {
+        const userQuestions = user.questions;
+        const questionScores: { questionId: string; score: number; percentage: number }[] = [];
+        let totalScore = 0;
+        let totalPossibleScore = 0;
 
-    // return { error: null, data: Math.round(score) };
-    const ratio = args.answers.length > 0 ? correctUserAnswers.length / args.answers.length : 0
+        userQuestions.forEach((question) => {
+            const correctChoicesForQuestion = correctChoicesIds.find(q => q.questionId === question.questionId)?.correctChoicesIds.length || 0;
+            const questionScore = Math.max(0, question.correctAnswers.length - question.wrongAnswers.length);
+            totalScore += questionScore;
+            totalPossibleScore += correctChoicesForQuestion;
 
-    const percentage = Math.round(ratio * 100)
+            const percentage = correctChoicesForQuestion > 0 ? (questionScore / correctChoicesForQuestion) * 100 : 0;
 
-    return { error: null, data: percentage }
+            questionScores.push({
+                questionId: question.questionId,
+                score: questionScore,
+                percentage: Math.round(percentage),
+            });
+
+            console.log("SCORE", questionScore, "PERCENTAGE", percentage, "user", user.id, "question", question.questionId);
+        });
+
+        const totalPercentage = totalPossibleScore > 0 ? (totalScore / totalPossibleScore) * 100 : 0;
+
+        scoresTotal.push({
+            userId: user.id,
+            totalScore: Math.round(totalPercentage),
+            questionScores,
+        });
+
+        console.log("TOTAL SCORE", totalScore, "TOTAL POSSIBLE", totalPossibleScore, "TOTAL PERCENTAGE", totalPercentage);
+    });
+
+    console.log("FINAL SCORES", scoresTotal);
+    const totalUsers = scoresTotal.length;
+    const finalScore = totalUsers > 0
+        ? scoresTotal.reduce((sum, user) => sum + user.totalScore, 0) / totalUsers
+        : 0;
+
+    console.log("SCORE FINAL GLOBAL:", Math.round(finalScore));
+
+
+    return { error: null, data: Math.round(finalScore) }
 }
