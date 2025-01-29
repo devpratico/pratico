@@ -274,90 +274,51 @@ async function computeQuizSuccess(args: {
             }
         }
     ))
-    const users: { id: string, questions: { questionId: string, correctAnswers: string[], wrongAnswers: string[]}[]}[] = [];
+    const users: { id: string, score: number }[] = [];
 
-    const correctUserAnswers = args.answers.filter((answer) => {
-        const correctChoices = correctChoicesIds.find((correctChoices) => correctChoices.questionId === answer.questionId);
-        if (!correctChoices) return false;
-
+    args.answers.forEach((answer) => {
+        const correctChoices = correctChoicesIds.find(q => q.questionId === answer.questionId);
+        if (!correctChoices) return;
+    
+        let user = users.find(u => u.id === answer.userId);
+        if (!user) {
+            user = { id: answer.userId, score: 0 };
+            users.push(user);
+        }
+    
         const isCorrect = correctChoices.correctChoicesIds.includes(answer.choiceId);
-        let existingUser = users.find((u) => u.id === answer.userId);
-
-        if (!existingUser) {
-            existingUser = {
-                id: answer.userId,
-                questions: [],
-            };
-            users.push(existingUser);
-        }
-
-        let userQuestion = existingUser.questions.find((q) => q.questionId === answer.questionId);
-        if (!userQuestion) {
-            userQuestion = {
-                questionId: answer.questionId,
-                correctAnswers: [],
-                wrongAnswers: [],
-            };
-            existingUser.questions.push(userQuestion);
-        }
-
+    
         if (isCorrect) {
-            if (!userQuestion.correctAnswers.includes(answer.choiceId)) {
-                userQuestion.correctAnswers.push(answer.choiceId);
-            }
+            user.score += 1; // ✅ +1 right answer given
         } else {
-            if (!userQuestion.wrongAnswers.includes(answer.choiceId)) {
-                userQuestion.wrongAnswers.push(answer.choiceId);
-            }
+            user.score -= 1; // ❌ -1 wrong answer given
         }
-
-        return isCorrect;
     });
-
-    const scoresTotal: { userId: string; totalScore: number; questionScores: { questionId: string; score: number; percentage: number }[] }[] = [];
-
-    users.forEach((user) => {
-        const userQuestions = user.questions;
-        const questionScores: { questionId: string; score: number; percentage: number }[] = [];
-        let totalScore = 0;
-        let totalPossibleScore = 0;
-
-        userQuestions.forEach((question) => {
-            const correctChoicesForQuestion = correctChoicesIds.find(q => q.questionId === question.questionId)?.correctChoicesIds.length || 0;
-            const questionScore = Math.max(0, question.correctAnswers.length - question.wrongAnswers.length);
-            totalScore += questionScore;
-            totalPossibleScore += correctChoicesForQuestion;
-
-            const percentage = correctChoicesForQuestion > 0 ? (questionScore / correctChoicesForQuestion) * 100 : 0;
-
-            questionScores.push({
-                questionId: question.questionId,
-                score: questionScore,
-                percentage: Math.round(percentage),
-            });
-
-            console.log("SCORE", questionScore, "PERCENTAGE", percentage, "user", user.id, "question", question.questionId);
+    
+    // Calculate total score with non-answered questions
+    users.forEach(user => {
+        correctChoicesIds.forEach(correctQuestion => {
+            const userAnswers = args.answers.filter(a => a.userId === user.id && a.questionId === correctQuestion.questionId);
+            const correctAnswered = userAnswers.filter(a => correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
+            const wrongAnswered = userAnswers.filter(a => !correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
+    
+            const totalCorrectChoices = correctQuestion.correctChoicesIds.length;
+    
+            // Add points for non-answered questions
+            user.score += (totalCorrectChoices - correctAnswered); // ❌ -1 right answer not given
+            user.score -= wrongAnswered; // ❌ -1 wrong answer given
+            user.score += (args.answers.length - userAnswers.length); // ✅ +1 wrong answer not given
         });
-
-        const totalPercentage = totalPossibleScore > 0 ? (totalScore / totalPossibleScore) * 100 : 0;
-
-        scoresTotal.push({
-            userId: user.id,
-            totalScore: Math.round(totalPercentage),
-            questionScores,
-        });
-
-        console.log("TOTAL SCORE", totalScore, "TOTAL POSSIBLE", totalPossibleScore, "TOTAL PERCENTAGE", totalPercentage);
     });
+    
+    const totalUsers = users.length;
+    const totalPossibleScorePerUser = correctChoicesIds.reduce((sum, q) => sum + q.correctChoicesIds.length, 0);
 
-    console.log("FINAL SCORES", scoresTotal);
-    const totalUsers = scoresTotal.length;
-    const finalScore = totalUsers > 0
-        ? scoresTotal.reduce((sum, user) => sum + user.totalScore, 0) / totalUsers
+    let finalScorePercentage = totalUsers > 0 && totalPossibleScorePerUser > 0
+        ? (users.reduce((sum, user) => sum + user.score, 0) / (totalPossibleScorePerUser * totalUsers)) * 100
         : 0;
 
-    console.log("SCORE FINAL GLOBAL:", Math.round(finalScore));
+    finalScorePercentage = Math.min(Math.max(finalScorePercentage, 0), 100);
 
-
-    return { error: null, data: Math.round(finalScore) }
+    return { error: null, data: parseFloat(finalScorePercentage.toFixed(2)) };
 }
