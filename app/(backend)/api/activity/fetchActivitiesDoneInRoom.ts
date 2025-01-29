@@ -121,7 +121,6 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     // Now we need to compute the relevant number for each activity
     for (const event of eventCouples) {
         const answers = event.end ? (event.end.payload as unknown as { answers: QuizUserAnswer[] | PollUserAnswer[] }).answers : []
-        
         if (answers.length === 0) {
             continue
         }
@@ -258,13 +257,13 @@ async function computeQuizSuccess(args: {
             data: null
         }
     }
-    let totalAnswers: { questionId: string, nbChoices: number }[] = [];
+    let questions: { questionId: string, nbChoices: number }[] = [];
     const correctChoicesIds: Array<{
         questionId: string,
         correctChoicesIds: string[]
     }> = (
         (data.object as unknown as Quiz).questions.map((question) => {
-            totalAnswers.push({
+            questions.push({
                 questionId: question.id,
                 nbChoices: question.choices.length
             })
@@ -288,11 +287,10 @@ async function computeQuizSuccess(args: {
     
         const isCorrect = correctChoices.correctChoicesIds.includes(answer.choiceId);
     
-        if (isCorrect) {
-            user.score += 1; // ✅ +1 right answer given
-        } else {
-            user.score -= 1; // ❌ -1 wrong answer given
-        }
+        if (isCorrect)
+            user.score++; // ✅ +1 right answer given
+        else
+            user.score--; // ❌ -1 wrong answer given
     });
     
     // Calculate total score with non-answered questions
@@ -301,13 +299,13 @@ async function computeQuizSuccess(args: {
             const userAnswers = args.answers.filter(a => a.userId === user.id && a.questionId === correctQuestion.questionId);
             const correctAnswered = userAnswers.filter(a => correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
             const wrongAnswered = userAnswers.filter(a => !correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
-    
+            const totalAnswers = questions.filter(q => q.questionId === correctQuestion.questionId)[0].nbChoices;
             const totalCorrectChoices = correctQuestion.correctChoicesIds.length;
-    
+            console.log("TOTAL ANSWER", totalAnswers, totalCorrectChoices, correctAnswered, wrongAnswered, userAnswers.length)
             // Add points for non-answered questions
             user.score += (totalCorrectChoices - correctAnswered); // ❌ -1 right answer not given
             user.score -= wrongAnswered; // ❌ -1 wrong answer given
-            user.score += (args.answers.length - userAnswers.length); // ✅ +1 wrong answer not given
+            user.score += ((totalAnswers - totalCorrectChoices) - userAnswers.length); // ✅ +1 wrong answer not given
         });
     });
     
@@ -317,7 +315,7 @@ async function computeQuizSuccess(args: {
     let finalScorePercentage = totalUsers > 0 && totalPossibleScorePerUser > 0
         ? (users.reduce((sum, user) => sum + user.score, 0) / (totalPossibleScorePerUser * totalUsers)) * 100
         : 0;
-
+    console.log("FINAL SCORE", finalScorePercentage, totalUsers, totalPossibleScorePerUser)
     finalScorePercentage = Math.min(Math.max(finalScorePercentage, 0), 100);
 
     return { error: null, data: parseFloat(finalScorePercentage.toFixed(2)) };
