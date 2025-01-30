@@ -7,6 +7,7 @@ import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
 
 type ActivityData = {
+    widgetId: string,
     activityId: string,
     type: 'quiz' | 'poll',
     title: string,
@@ -105,7 +106,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const activities: Array<ActivityData> = eventCouples.map((couple) => {
         const start = couple.start
         const end = couple.end
-
+        const widgetId = (end?.payload as { startEventId: string }).startEventId;
         const activityId = (start.payload as { activityId: string }).activityId
         const titleTypeQuestion = titlesTypesQuestions.find((titleTypeQuestion) => `${titleTypeQuestion.id}` === activityId) || { type: 'quiz', title: 'Unknown', questions: '' }
         const title = titleTypeQuestion.title
@@ -115,7 +116,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         const questions = JSON.parse(titleTypeQuestion.questions);        
         const nbQuestions = Array.isArray(questions) ? questions.length : 0
 
-        return { activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
+        return { widgetId, activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
     })
 
     // Now we need to compute the relevant number for each activity
@@ -146,8 +147,8 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             }
 
             const activityIndex = activities.findIndex((activity) => {
-                return activity.activityId === (event.start.payload as { activityId: string }).activityId
-            })
+                return (activity.widgetId === (event.end!.payload as { startEventId: string }).startEventId);
+            });
 
             activities[activityIndex].relevantNumber = percentage
 
@@ -173,9 +174,12 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             }
 
             const activityIndex = activities.findIndex((activity) => {
-                return activity.activityId === (event.start.payload as { activityId: string }).activityId
-            })
-
+                return (activity.widgetId === (event.end!.payload as { startEventId: string }).startEventId);
+            });
+            console.log("activityIndex:", activityIndex);
+            console.log("activities:", activities);
+            console.log("activityId:", (event.start.payload as { activityId: string }).activityId);
+            
             activities[activityIndex].relevantNumber = percentage
         }
     }
@@ -274,6 +278,7 @@ async function computeQuizSuccess(args: {
     });
 
     // Adding points for unanswered questions
+
     allUserIds.forEach(userId => {
         questions.forEach(question => {
             const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
@@ -288,8 +293,8 @@ async function computeQuizSuccess(args: {
             let questionScore = 0;
 
             questionScore += correctAnswered; // ✅ +1 for each correct answer given
-            questionScore -= wrongAnswered >= 0 ? questionScore -= wrongAnswered : 0; // ❌ -1 for each wrong answer given
-            questionScore -= notGivenCorrectAnswers >= 0 ? questionScore -= notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
+            questionScore - wrongAnswered >= 0 ? questionScore -= wrongAnswered : 0; // ❌ -1 for each wrong answer given
+            questionScore - notGivenCorrectAnswers >= 0 ? questionScore -= notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
             questionScore += notGivenWrongAnswers; // ✅ +1 for each wrong answer not given
     
             usersScores[userId] += question.totalChoices - questionScore;
@@ -303,6 +308,7 @@ async function computeQuizSuccess(args: {
     let finalScorePercentage = totalUsers > 0 && totalPossibleScore > 0
         ? (totalRealScore / totalPossibleScore) * 100
         : 0;
+
 
     finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
     return { error: null, data: Math.round(finalScorePercentage) };

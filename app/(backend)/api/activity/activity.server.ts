@@ -48,7 +48,6 @@ export const fetchActivity = async (id: number) => {
 
 export const fetchActivitiesWidgetData = async (roomId: string) => {
     logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`);
-    const supabase = createClient();
     const { data, error } = await fetchActivitiesDoneInRoom(roomId);
     if (!data || error) {
         logger.error('supabase:database', 'fetchActivitiesWidgetData', 'fetchActivitiesDoneInRoom', `Error fetching activities for room ${roomId}`, error?.message);
@@ -61,7 +60,7 @@ export const fetchActivitiesWidgetData = async (roomId: string) => {
     const activities = Array.from(data.map((item) => {
         logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
         const activity = {
-            id: item.activityId,
+            id: item.widgetId,
             type: item.type,
             title: item.title,
             started_at: item.startDate || new Date(),
