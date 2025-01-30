@@ -257,66 +257,53 @@ async function computeQuizSuccess(args: {
             data: null
         }
     }
-    let questions: { questionId: string, nbChoices: number }[] = [];
-    const correctChoicesIds: Array<{
-        questionId: string,
-        correctChoicesIds: string[]
-    }> = (
-        (data.object as unknown as Quiz).questions.map((question) => {
-            questions.push({
-                questionId: question.id,
-                nbChoices: question.choices.length
-            })
-            return {
-                questionId: question.id,
-                correctChoicesIds: question.choices.filter((choice) => choice.isCorrect).map((choice) => choice.id)
-            }
-        }
-    ))
-    const users: { id: string, score: number }[] = [];
+    const questions = (data.object as unknown as Quiz).questions.map((question) => ({
+        questionId: question.id,
+        correctChoices: question.choices.filter(choice => choice.isCorrect).map(choice => choice.id),
+        totalChoices: question.choices.length
+    }));
 
-    args.answers.forEach((answer) => {
-        const correctChoices = correctChoicesIds.find(q => q.questionId === answer.questionId);
-        if (!correctChoices) return;
-    
-        let user = users.find(u => u.id === answer.userId);
-        if (!user) {
-            user = { id: answer.userId, score: 0 };
-            users.push(user);
-        }
-    
-        const isCorrect = correctChoices.correctChoicesIds.includes(answer.choiceId);
-    
-        if (isCorrect)
-            user.score++; // ✅ +1 right answer given
-        else
-            user.score--; // ❌ -1 wrong answer given
+    const usersScores: { [userId: string]: number } = {};
+    const allUserIds = new Set<string>();
+
+    // Initialize the scores
+    args.answers.forEach(answer => {
+        allUserIds.add(answer.userId);
+        if (!(answer.userId in usersScores))
+            usersScores[answer.userId] = 0;
     });
+
+    // Adding points for unanswered questions
+    allUserIds.forEach(userId => {
+        questions.forEach(question => {
+            const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
+            const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
+            const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
     
-    // Calculate total score with non-answered questions
-    users.forEach(user => {
-        correctChoicesIds.forEach(correctQuestion => {
-            const userAnswers = args.answers.filter(a => a.userId === user.id && a.questionId === correctQuestion.questionId);
-            const correctAnswered = userAnswers.filter(a => correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
-            const wrongAnswered = userAnswers.filter(a => !correctQuestion.correctChoicesIds.includes(a.choiceId)).length;
-            const totalAnswers = questions.filter(q => q.questionId === correctQuestion.questionId)[0].nbChoices;
-            const totalCorrectChoices = correctQuestion.correctChoicesIds.length;
-            console.log("TOTAL ANSWER", totalAnswers, totalCorrectChoices, correctAnswered, wrongAnswered, userAnswers.length)
-            // Add points for non-answered questions
-            user.score += (totalCorrectChoices - correctAnswered); // ❌ -1 right answer not given
-            user.score -= wrongAnswered; // ❌ -1 wrong answer given
-            user.score += ((totalAnswers - totalCorrectChoices) - userAnswers.length); // ✅ +1 wrong answer not given
+            const totalCorrectChoices = question.correctChoices.length;
+            const totalWrongChoices = question.totalChoices - totalCorrectChoices;
+    
+            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered; // ❌ -1 for each correct answer not given
+            const notGivenWrongAnswers = totalWrongChoices - wrongAnswered; // ✅ +1 for each wrong answer not given
+            let questionScore = 0;
+
+            questionScore += correctAnswered; // ✅ +1 for each correct answer given
+            questionScore -= wrongAnswered >= 0 ? questionScore -= wrongAnswered : 0; // ❌ -1 for each wrong answer given
+            questionScore -= notGivenCorrectAnswers >= 0 ? questionScore -= notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
+            questionScore += notGivenWrongAnswers; // ✅ +1 for each wrong answer not given
+    
+            usersScores[userId] += question.totalChoices - questionScore;
         });
     });
-    
-    const totalUsers = users.length;
-    const totalPossibleScorePerUser = correctChoicesIds.reduce((sum, q) => sum + q.correctChoicesIds.length, 0);
 
-    let finalScorePercentage = totalUsers > 0 && totalPossibleScorePerUser > 0
-        ? (users.reduce((sum, user) => sum + user.score, 0) / (totalPossibleScorePerUser * totalUsers)) * 100
+    // Calculate the final score
+    const totalUsers = allUserIds.size;
+    const totalPossibleScore = questions.reduce((sum, q) => sum + q.totalChoices, 0) * totalUsers;
+    const totalRealScore = Object.values(usersScores).reduce((sum, score) => sum + score, 0);
+    let finalScorePercentage = totalUsers > 0 && totalPossibleScore > 0
+        ? (totalRealScore / totalPossibleScore) * 100
         : 0;
-    console.log("FINAL SCORE", finalScorePercentage, totalUsers, totalPossibleScorePerUser)
-    finalScorePercentage = Math.min(Math.max(finalScorePercentage, 0), 100);
 
-    return { error: null, data: parseFloat(finalScorePercentage.toFixed(2)) };
+    finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
+    return { error: null, data: Math.round(finalScorePercentage) };
 }
