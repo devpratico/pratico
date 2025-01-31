@@ -6,7 +6,7 @@ import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
-import { ActivityWidgetView } from "./activity/_components/ActivityWidgetView";
+import { ActivityWidgetView } from "./_components/ActivityWidgetView";
 import { ActivityData, fetchActivitiesDoneInRoom } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 
 // // TYPE

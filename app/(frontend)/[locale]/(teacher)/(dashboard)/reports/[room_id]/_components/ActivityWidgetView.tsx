@@ -1,21 +1,21 @@
 "use client";
-import { ActivityTypeWidget } from "@/app/_types/activity";
-import { WidgetThumb } from "../../_components/WidgetThumb";
+import { WidgetThumb } from "./WidgetThumb";
 import { Box, Button, DataList, Heading, IconButton, Tooltip } from "@radix-ui/themes";
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
-import ReportWidgetTemplate from "../../_components/ReportWidgetTemplate";
+import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { FileDown } from "lucide-react";
+import { ActivityData } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 
 export function ActivityWidgetView({ color, activity}
-	: { color: string | undefined, activity: ActivityTypeWidget }) {
-	const { startDate, endDate } = formatEventDates(activity.started_at, activity.stopped_at); 
+	: { color: string | undefined, activity: ActivityData }) {
+	const { startDate, endDate } = formatEventDates(activity.startDate, activity.endDate!); 
 	const thumbSmallText = activity.type === "poll" ? "de participation" : "de réussite";
 
 	const handleDownloadCSV = () => {
 		console.log("Download CSV");
 	};
 
-	const Thumb = () => <WidgetThumb bigText={`${activity.percentage.toString()}`} bigTextOption="%" smallText={thumbSmallText} color={color} />;
+	const Thumb = () => <WidgetThumb bigText={`${activity.relevantNumber?.toString()}`} bigTextOption="%" smallText={thumbSmallText} color={color} />;
 	
 	const Content = () => {
 		const titleType = activity.type === "poll" ? "Sondage" : "Quiz";
