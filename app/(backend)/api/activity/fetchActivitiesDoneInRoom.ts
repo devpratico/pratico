@@ -1,4 +1,4 @@
-import 'server only'
+"use server";
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 import DatabaseResponse from '@/app/_utils/DatabaseResponse'
@@ -6,7 +6,8 @@ import { Poll, PollUserAnswer } from '@/app/_types/poll'
 import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
 
-type ActivityData = {
+export type ActivityData = {
+    widgetId: string,
     activityId: string,
     type: 'quiz' | 'poll',
     title: string,
@@ -17,8 +18,8 @@ type ActivityData = {
 
     /**  e.g. 75 for 75% of success. Undefined if the activity is still ongoing */
     relevantNumber: number | undefined
+    nbQuestions: number
 }
-
 
 export async function fetchActivitiesDoneInRoom(roomId: string): Promise<DatabaseResponse<
     Array<ActivityData>,
@@ -81,9 +82,9 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     })
 
 
-    const { data: titlesAndTypes, error: titlesError } = await supabase
+    const { data: titlesTypesQuestions, error: titlesError } = await supabase
         .from('activities')
-        .select('id, type, object->>title')
+        .select('id, type, object->>title, object->>questions')
         .in('id', activitiesIds)
 
     if (titlesError) {
@@ -105,21 +106,22 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const activities: Array<ActivityData> = eventCouples.map((couple) => {
         const start = couple.start
         const end = couple.end
-
+        const widgetId = (end?.payload as { startEventId: string }).startEventId;
         const activityId = (start.payload as { activityId: string }).activityId
-        const titleAndType = titlesAndTypes.find((titleAndType) => `${titleAndType.id}` === activityId) || { type: 'quiz', title: 'Unknown' }
-        const title = titleAndType.title
-        const type = titleAndType.type as 'quiz' | 'poll'
+        const titleTypeQuestion = titlesTypesQuestions.find((titleTypeQuestion) => `${titleTypeQuestion.id}` === activityId) || { type: 'quiz', title: 'Unknown', questions: '' }
+        const title = titleTypeQuestion.title
+        const type = titleTypeQuestion.type as 'quiz' | 'poll'
         const startDate = new Date(start.timestamp)
         const endDate = end ? new Date(end.timestamp) : undefined
+        const questions = JSON.parse(titleTypeQuestion.questions);        
+        const nbQuestions = Array.isArray(questions) ? questions.length : 0
 
-        return { activityId, type, title, startDate, endDate, relevantNumber: undefined }
+        return { widgetId, activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
     })
 
     // Now we need to compute the relevant number for each activity
     for (const event of eventCouples) {
         const answers = event.end ? (event.end.payload as unknown as { answers: QuizUserAnswer[] | PollUserAnswer[] }).answers : []
-        
         if (answers.length === 0) {
             continue
         }
@@ -127,6 +129,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         if (event.start.type === 'start poll') {
             const { data: percentage, error } = await computePollParticipation({
                 roomId,
+                pollId: (event.start.payload as { activityId: string }).activityId,
                 answers: answers as PollUserAnswer[]
             })
 
@@ -145,8 +148,8 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             }
 
             const activityIndex = activities.findIndex((activity) => {
-                return activity.activityId === (event.start.payload as { activityId: string }).activityId
-            })
+                return (activity.widgetId === (event.end!.payload as { startEventId: string }).startEventId);
+            });
 
             activities[activityIndex].relevantNumber = percentage
 
@@ -172,20 +175,34 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             }
 
             const activityIndex = activities.findIndex((activity) => {
-                return activity.activityId === (event.start.payload as { activityId: string }).activityId
-            })
-
+                return (activity.widgetId === (event.end!.payload as { startEventId: string }).startEventId);
+            });
             activities[activityIndex].relevantNumber = percentage
         }
     }
+    const activitiesForWidget = Array.from(activities.map((item) => {
+        logger.log('supabase:database', 'fetchActivitiesDoneInRoom', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
+        const activity = {
+            widgetId: item.widgetId,
+            activityId: item.activityId,
+            type: item.type,
+            title: item.title,
+            startDate: item.startDate || new Date(),
+            endDate: item.endDate || new Date(),
+            relevantNumber: item.relevantNumber || 0,
+            nbQuestions: item.nbQuestions
+        } as ActivityData;
 
-    return { error: null, data: activities }
+        return (activity);
+    }));
+    return { error: null, data: activitiesForWidget }
 }
 
 
 
 async function computePollParticipation(args: {
     roomId: string,
+    pollId: string,
     answers: PollUserAnswer[]
 }): 
     Promise<DatabaseResponse<number, Error>>
@@ -211,18 +228,49 @@ async function computePollParticipation(args: {
             data: null
         }
     }
+    const { data: activityData, error: activityError } = await supabase
+    .from('activities')
+    .select('object')
+    .eq('id', args.pollId)
+    .single();
 
+    if (activityError) {
+        logger.error(
+            'supabase:database',
+            'activity.server.ts',
+            'computePollParticipation',
+            'Error fetching poll object',
+            activityError.message
+        );
+        return {
+            error: new Error('Error fetching poll object: ' + activityError.message),
+            data: null
+        };
+    }
     const userIds = data.map((row) => row.user_id)
-    const uniqueUserIds = Array.from(new Set(userIds))
-    const totalParticipants = uniqueUserIds.length
-
+    const uniqueUserIds = new Set(userIds)
+    const totalParticipants = Array.from(uniqueUserIds).length
+    const questions = (activityData.object as unknown as Poll).questions.map((question) => ({
+        questionId: question.id,
+        totalParticipant: 0
+    }));
     // Now we need to count how many users answered the poll
     // We'll find all the userIds in the answers, and count the unique ones
     const answeredUserIds = args.answers.map((answer) => answer.userId)
-    const uniqueAnsweredUserIds = Array.from(new Set(answeredUserIds))
-    const answeredParticipants = uniqueAnsweredUserIds.length
+    const uniqueAnsweredUserIds = new Set(answeredUserIds)
+    // const answeredParticipants = Array.from(uniqueUserIds).filter(userId =>
+    //     uniqueAnsweredUserIds.has(userId)
+    // ).length;
+    uniqueAnsweredUserIds.forEach(userId => {
+        questions.forEach(question => {
+            const userAnswered = args.answers.find(a => a.userId === userId && a.questionId === question.questionId);
+            if (userAnswered)
+                question.totalParticipant++;
+        });
+    });
+    const participation = questions.map(question => question.totalParticipant).reduce((sum, total) => sum + total, 0) / questions.length;
 
-    const ratio = answeredParticipants / totalParticipants
+    const ratio = totalParticipants > 0 ? participation / totalParticipants : 0
     const percentage = Math.round(ratio * 100)
 
     return { error: null, data: percentage }
@@ -256,32 +304,55 @@ async function computeQuizSuccess(args: {
             data: null
         }
     }
+    const questions = (data.object as unknown as Quiz).questions.map((question) => ({
+        questionId: question.id,
+        correctChoices: question.choices.filter(choice => choice.isCorrect).map(choice => choice.id),
+        totalChoices: question.choices.length
+    }));
 
-    // For each question id, get the correct choices ids
-    const correctChoicesIds: Array<{
-        questionId: string,
-        correctChoicesIds: string[]
-    }> = (
-        (data.object as unknown as Quiz).questions.map((question) => {
-            return {
-                questionId: question.id,
-                correctChoicesIds: question.choices.filter((choice) => choice.isCorrect).map((choice) => choice.id)
-            }
-        }
-    ))
+    const usersScores: { [userId: string]: number } = {};
+    const allUserIds = new Set<string>();
 
-    // Count how many user answers were correct
-    const correctUserAnswers = args.answers.filter((answer) => {
-        const correctChoices = correctChoicesIds.find((correctChoices) => correctChoices.questionId === answer.questionId)
-        if (!correctChoices) return false
+    // Initialize the scores
+    args.answers.forEach(answer => {
+        allUserIds.add(answer.userId);
+        if (!(answer.userId in usersScores))
+            usersScores[answer.userId] = 0;
+    });
 
-        const isCorrect = correctChoices.correctChoicesIds.includes(answer.choiceId)
-        return isCorrect
-    })
+    // Adding points for unanswered questions
 
-    const ratio = correctUserAnswers.length / args.answers.length
+    allUserIds.forEach(userId => {
+        questions.forEach(question => {
+            const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
+            const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
+            const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
+    
+            const totalCorrectChoices = question.correctChoices.length;
+            const totalWrongChoices = question.totalChoices - totalCorrectChoices;
+    
+            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered; // ❌ -1 for each correct answer not given
+            const notGivenWrongAnswers = totalWrongChoices - wrongAnswered; // ✅ +1 for each wrong answer not given
+            let questionScore = 0;
 
-    const percentage = Math.round(ratio * 100)
+            questionScore += correctAnswered; // ✅ +1 for each correct answer given
+            questionScore - wrongAnswered >= 0 ? questionScore -= wrongAnswered : 0; // ❌ -1 for each wrong answer given
+            questionScore - notGivenCorrectAnswers >= 0 ? questionScore -= notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
+            questionScore += notGivenWrongAnswers; // ✅ +1 for each wrong answer not given
+    
+            usersScores[userId] += question.totalChoices - questionScore;
+        });
+    });
 
-    return { error: null, data: percentage }
+    // Calculate the final score
+    const totalUsers = allUserIds.size;
+    const totalPossibleScore = questions.reduce((sum, q) => sum + q.totalChoices, 0) * totalUsers;
+    const totalRealScore = Object.values(usersScores).reduce((sum, score) => sum + score, 0);
+    let finalScorePercentage = totalUsers > 0 && totalPossibleScore > 0
+        ? (totalRealScore / totalPossibleScore) * 100
+        : 0;
+
+
+    finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
+    return { error: null, data: Math.round(finalScorePercentage) };
 }

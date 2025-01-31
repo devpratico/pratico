@@ -60,6 +60,7 @@ export default function useRoomEventsMutation(roomId: string): {
 
         const { error } = await supabase.from('room_events').insert(newRoomEvent) //.select().single()
         setIsPending(false)
+        logger.log('react:hook', 'useRoomEventsMutation', 'addRoomEvent', 'Added room event', newRoomEvent, error && `error: ${error}`)
        return { error }
     }, [supabase, roomId])
 

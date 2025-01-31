@@ -53,9 +53,9 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 			snapshot={data.capsuleSnapshot}
 			title={data.capsuleTitle}
 			capsuleDate={data.capsuleDate}
-			tooltip = 'Télécharger le diaporama modifié en PDF'
-		>			
-			<IconButton variant='ghost'>
+			tooltip="Télécharger le diaporama modifié en pdf"
+		>
+			<IconButton variant="ghost">
 				<FileDown />
 			</IconButton>
 		</CapsuleToPdfBtn>
