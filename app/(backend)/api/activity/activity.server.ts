@@ -6,9 +6,6 @@ import { getUser } from '../auth/auth.server'
 import { Quiz } from '@/app/_types/quiz'
 import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
-import { ActivityTypeWidget } from '@/app/_types/activity'
-import { fetchActivitiesDoneInRoom } from './fetchActivitiesDoneInRoom'
-
 
 
 export const fetchActivity = async (id: number) => {
@@ -45,35 +42,6 @@ export const fetchActivity = async (id: number) => {
             return { data: null, error: 'Unknown activity type' }
     }
 }
-
-export const fetchActivitiesWidgetData = async (roomId: string) => {
-    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Fetching activities widget data for room ${roomId}...`);
-    const { data, error } = await fetchActivitiesDoneInRoom(roomId);
-    if (!data || error) {
-        logger.error('supabase:database', 'fetchActivitiesWidgetData', 'fetchActivitiesDoneInRoom', `Error fetching activities for room ${roomId}`, error?.message);
-        return { data: [], error: error?.message };
-    } else if (data.length === 0) { 
-        logger.error('supabase:database', 'fetchActivitiesWidgetData', 'fetchActivitiesDoneInRoom', `No activities done in room ${roomId}`);
-        return { data: [], error: null };
-    }
-    logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activities done in room ${roomId}: ${data.length}, activities: ${data.length}`);
-    const activities = Array.from(data.map((item) => {
-        logger.log('supabase:database', 'fetchActivitiesWidgetData', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
-        const activity = {
-            id: item.widgetId,
-            type: item.type,
-            title: item.title,
-            started_at: item.startDate || new Date(),
-            stopped_at: item.endDate || new Date(),
-            percentage: item.relevantNumber || 0,
-            nbQuestions: item.nbQuestions
-        } as ActivityTypeWidget;
-
-        return (activity);
-    }));
-    return { data: activities, error: null }
-};
-
 
 // Supabase returns `Json` instead of `Quiz` or `Poll` objects
 // Let's declare the type of data we want to return

@@ -7,16 +7,6 @@ export type ActivityType = 'quiz' | 'poll'
 
 export type ActivityTypeTable = Tables<'activities'>;
 
-export type ActivityTypeWidget = {
-    id: string,
-    type: string,
-    title: string | undefined,
-    started_at: Date,
-    stopped_at: Date,
-    percentage: number,
-    nbQuestions: number
-}
-
 export interface Activity {
     type: ActivityType
     title: string

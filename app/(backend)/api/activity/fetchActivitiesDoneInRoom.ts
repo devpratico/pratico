@@ -6,7 +6,7 @@ import { Poll, PollUserAnswer } from '@/app/_types/poll'
 import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
 
-type ActivityData = {
+export type ActivityData = {
     widgetId: string,
     activityId: string,
     type: 'quiz' | 'poll',
@@ -177,14 +177,25 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
             const activityIndex = activities.findIndex((activity) => {
                 return (activity.widgetId === (event.end!.payload as { startEventId: string }).startEventId);
             });
-            console.log("activityIndex:", activityIndex);
-            console.log("activities:", activities);
-            console.log("activityId:", (event.start.payload as { activityId: string }).activityId);
-            
             activities[activityIndex].relevantNumber = percentage
         }
     }
-    return { error: null, data: activities }
+    const activitiesForWidget = Array.from(activities.map((item) => {
+        logger.log('supabase:database', 'fetchActivitiesDoneInRoom', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
+        const activity = {
+            widgetId: item.widgetId,
+            activityId: item.activityId,
+            type: item.type,
+            title: item.title,
+            startDate: item.startDate || new Date(),
+            endDate: item.endDate || new Date(),
+            relevantNumber: item.relevantNumber || 0,
+            nbQuestions: item.nbQuestions
+        } as ActivityData;
+
+        return (activity);
+    }));
+    return { error: null, data: activitiesForWidget }
 }
 
 
