@@ -239,7 +239,6 @@ async function computePollParticipation(args: {
     const userIds = data.map((row) => row.user_id)
     const uniqueUserIds = new Set(userIds)
     const totalParticipants = Array.from(uniqueUserIds).length
-    console.log("totalParticipants:", totalParticipants);
     const questions = (activityData.object as unknown as Poll).questions.map((question) => ({
         questionId: question.id,
         totalParticipant: 0
@@ -248,9 +247,9 @@ async function computePollParticipation(args: {
     // We'll find all the userIds in the answers, and count the unique ones
     const answeredUserIds = args.answers.map((answer) => answer.userId)
     const uniqueAnsweredUserIds = new Set(answeredUserIds)
-    const answeredParticipants = Array.from(uniqueUserIds).filter(userId =>
-        uniqueAnsweredUserIds.has(userId)
-    ).length;
+    // const answeredParticipants = Array.from(uniqueUserIds).filter(userId =>
+    //     uniqueAnsweredUserIds.has(userId)
+    // ).length;
     uniqueAnsweredUserIds.forEach(userId => {
         questions.forEach(question => {
             const userAnswered = args.answers.find(a => a.userId === userId && a.questionId === question.questionId);
@@ -260,7 +259,6 @@ async function computePollParticipation(args: {
     });
     const participation = questions.map(question => question.totalParticipant).reduce((sum, total) => sum + total, 0) / questions.length;
 
-    console.log("PARTICIPATION:", participation, totalParticipants, participation / totalParticipants);
     const ratio = totalParticipants > 0 ? participation / totalParticipants : 0
     const percentage = Math.round(ratio * 100)
 
