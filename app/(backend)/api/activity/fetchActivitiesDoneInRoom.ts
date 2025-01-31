@@ -129,6 +129,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         if (event.start.type === 'start poll') {
             const { data: percentage, error } = await computePollParticipation({
                 roomId,
+                pollId: (event.start.payload as { activityId: string }).activityId,
                 answers: answers as PollUserAnswer[]
             })
 
@@ -190,6 +191,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
 
 async function computePollParticipation(args: {
     roomId: string,
+    pollId: string,
     answers: PollUserAnswer[]
 }): 
     Promise<DatabaseResponse<number, Error>>
@@ -215,11 +217,33 @@ async function computePollParticipation(args: {
             data: null
         }
     }
+    const { data: activityData, error: activityError } = await supabase
+    .from('activities')
+    .select('object')
+    .eq('id', args.pollId)
+    .single();
 
+    if (activityError) {
+        logger.error(
+            'supabase:database',
+            'activity.server.ts',
+            'computePollParticipation',
+            'Error fetching poll object',
+            activityError.message
+        );
+        return {
+            error: new Error('Error fetching poll object: ' + activityError.message),
+            data: null
+        };
+    }
     const userIds = data.map((row) => row.user_id)
     const uniqueUserIds = new Set(userIds)
     const totalParticipants = Array.from(uniqueUserIds).length
-
+    console.log("totalParticipants:", totalParticipants);
+    const questions = (activityData.object as unknown as Poll).questions.map((question) => ({
+        questionId: question.id,
+        totalParticipant: 0
+    }));
     // Now we need to count how many users answered the poll
     // We'll find all the userIds in the answers, and count the unique ones
     const answeredUserIds = args.answers.map((answer) => answer.userId)
@@ -227,7 +251,17 @@ async function computePollParticipation(args: {
     const answeredParticipants = Array.from(uniqueUserIds).filter(userId =>
         uniqueAnsweredUserIds.has(userId)
     ).length;
-    const ratio = totalParticipants > 0 ? answeredParticipants / totalParticipants : 0
+    uniqueAnsweredUserIds.forEach(userId => {
+        questions.forEach(question => {
+            const userAnswered = args.answers.find(a => a.userId === userId && a.questionId === question.questionId);
+            if (userAnswered)
+                question.totalParticipant++;
+        });
+    });
+    const participation = questions.map(question => question.totalParticipant).reduce((sum, total) => sum + total, 0) / questions.length;
+
+    console.log("PARTICIPATION:", participation, totalParticipants, participation / totalParticipants);
+    const ratio = totalParticipants > 0 ? participation / totalParticipants : 0
     const percentage = Math.round(ratio * 100)
 
     return { error: null, data: percentage }

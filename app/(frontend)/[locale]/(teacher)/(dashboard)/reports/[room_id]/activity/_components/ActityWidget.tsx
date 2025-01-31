@@ -18,7 +18,6 @@ export async function ActivityWidget ({roomId}
 				{
 					activities.map((activity: ActivityTypeWidget) => {
 						const color = activity.type === "poll" ? undefined : getParticipationColor(activity.percentage);
-						// console.log("ACTIVITY", activity);
 						return (<ActivityWidgetView key={activity.id} color={color} activity={activity} />);
 					})
 				}
