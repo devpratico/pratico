@@ -19,6 +19,7 @@ interface WindowHookType {
     widerThan: (size: Breakpoint) => boolean;
     narrowerThan: (size: Breakpoint) => boolean;
     orientation: 'landscape' | 'portrait';
+    deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
 // TODO: use a provider to avoid multiple listeners
@@ -30,7 +31,33 @@ function useWindow(): WindowHookType {
     const [widerThan, setWiderThan] = useState<(size: Breakpoint) => boolean>(() => () => false);
     const [narrowerThan, setNarrowerThan] = useState<(size: Breakpoint) => boolean>(() => () => false);
     const [orientation, setOrientation] = useState<'landscape' | 'portrait'>('landscape');
+    const [deviceType, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
 
+    useEffect(() => {
+        const updateDeviceInfo = () => {
+            if (!width)
+                return ;
+            const isLandscape = orientation === 'landscape';
+            const isTablet = width >= 768 && width < 1024; // tablettes
+    
+            if (isLandscape) {
+            setOrientation('landscape');
+            } else {
+            setOrientation('portrait');
+            }
+    
+            if (isTablet) {
+            setDeviceType('tablet');
+            } else if (window.innerWidth < 768) {
+            setDeviceType('mobile');
+            } else {
+            setDeviceType('desktop');
+            }
+        };
+        window.addEventListener('resize', updateDeviceInfo);
+        updateDeviceInfo(); // Call on mount to get initial value
+        return () => window.removeEventListener('resize', updateDeviceInfo);
+    }, [orientation, width]);
 
     useEffect(() => {
         function handleResize() {
@@ -88,7 +115,7 @@ function useWindow(): WindowHookType {
         }
     }, [width, height]);
 
-  return { width, height, size, widerThan, narrowerThan, orientation };
+  return { width, height, size, widerThan, narrowerThan, orientation, deviceType };
 }
 
 export default useWindow;

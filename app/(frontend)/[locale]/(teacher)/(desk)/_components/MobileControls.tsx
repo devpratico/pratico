@@ -4,9 +4,6 @@ import {  Plus, ChevronRight, ChevronLeft } from 'lucide-react'
 import AddMenu from './menus/AddMenu'
 import { useNav } from '@/app/(frontend)/_hooks/contexts/useNav'
 import Thumbnail from '@/app/(frontend)/[locale]/_components/Thumbnail'
-import MobileToolbar from './MobileToolbar'
-
-
 
 export default function MobileControls() {
     const { pageIds, currentPageId, nextPageId, prevPageId, setCurrentPage, goNextPage, goPrevPage, newPage } = useNav()
@@ -15,9 +12,6 @@ export default function MobileControls() {
 
     return (
         <Flex direction='column' gap='3'>
-
-            {/* MOBILE TOOLBAR */}
-            <MobileToolbar />
 
             {/* MOBILE PAGES NUMBERS AND + BUTTON */}
             <Grid columns='2' gap='3'>
