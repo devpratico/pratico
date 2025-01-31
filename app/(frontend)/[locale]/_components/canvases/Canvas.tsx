@@ -19,7 +19,7 @@ import { useCallback, useMemo } from 'react'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
 import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar'
-import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
+//import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
 
 export interface CanvasUser {
     id: string
@@ -87,7 +87,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         Background,
         OnTheCanvas: CanvasArea,
         Toolbar: null,
-        StylePanel: CustomTlStylePanel,
+        //StylePanel: CustomTlStylePanel,
         DebugPanel: null, // needed
 		ActionsMenu: null,
 		HelpMenu: null,
