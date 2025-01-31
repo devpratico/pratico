@@ -20,8 +20,7 @@ import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const { widerThan } = useWindow();
-    console.log('capsuleId', capsuleId)
+    const { widerThan, deviceType } = useWindow();
 
     // Get the user
     /*
@@ -40,7 +39,6 @@ export default function CanvasSL() {
         }
         _setUser()
     }, [])*/
-
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
@@ -75,7 +73,7 @@ export default function CanvasSL() {
     return (
         <Canvas initialSnapshot={initialSnapshot}>
             <CustomTlToolbar />
-            <Resizer insets={{top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 60 : 0}} margin={0} />
+            <Resizer insets={{top: 0, right: 0, bottom: 0, left: widerThan("xs") || deviceType === "desktop" ? 60 : 0}} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>
     )

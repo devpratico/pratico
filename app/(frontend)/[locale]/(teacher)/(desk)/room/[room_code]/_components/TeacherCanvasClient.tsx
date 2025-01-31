@@ -10,7 +10,6 @@ import { useEffect } from "react";
 import { setUserPreferences } from "tldraw";
 import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
-import { useFocusZone } from "@/app/(frontend)/_hooks/useFocusZone";
 
 
 interface TeacherCanvasClientProps {
@@ -22,8 +21,7 @@ interface TeacherCanvasClientProps {
 
 export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherCanvasClientProps) {
     const store = useBroadcastStore({ roomId: roomId.toString(), initialSnapshot: snapshot })
-    const { widerThan } = useWindow();
-    const { activeZone } = useFocusZone();
+    const { widerThan, deviceType } = useWindow();
 
     useEffect(() => {
         setUserPreferences({
@@ -36,7 +34,7 @@ export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherC
     return (
         <Canvas store={store}>
             <CustomTlToolbar />
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 60 : 0 }} margin={0} />
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: widerThan("xs") || deviceType === "desktop" ? 60 : 0 }} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} saveOnMount/>
             <NavigatorSync />
         </Canvas>

@@ -18,7 +18,7 @@ const iconSize = '30'
 
 export default function Controls() {
 	const { setFullscreenOn } = useFullscreen();
-    const { widerThan } = useWindow(); 
+    const { widerThan, deviceType } = useWindow(); 
     const {
         pageIds,
         currentPageId,
@@ -34,7 +34,7 @@ export default function Controls() {
 
     useEffect(() => {
         const debouncedSetOpenImport = debounce((pages) => {
-            if (pages == 1 && widerThan('xs')) {
+            if (pages == 1 && (widerThan('xs') || deviceType === 'desktop')) {
                 setOpenImport(true)
             } else {
                 setOpenImport(false)
@@ -46,7 +46,7 @@ export default function Controls() {
         return () => {
             debouncedSetOpenImport.cancel()
         }
-    }, [numberOfPages, widerThan])
+    }, [numberOfPages, widerThan, deviceType])
 
 	const handleFullscreen = () => {
 		setFullscreenOn();

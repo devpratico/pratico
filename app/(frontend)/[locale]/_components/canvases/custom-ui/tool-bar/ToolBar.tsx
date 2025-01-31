@@ -92,7 +92,7 @@ const myTLTools = [
 ];
 
 export function CustomTlToolbar() {
-	const { widerThan } = useWindow();
+	const { widerThan, deviceType } = useWindow();
 	const { editor } = useTLEditor();
 	
     useEffect(() => {
@@ -100,7 +100,7 @@ export function CustomTlToolbar() {
     }, [editor])
 	return (
 		<DefaultToolbar>
-			<ToolbarStyle isMobile={!widerThan('xs')}/>
+			<ToolbarStyle isMobile={!widerThan('xs') || deviceType !== "desktop"}/>
 			{
 				myTLTools.map((tool) => <ToolbarItem tool={tool} key={tool}/>)
 			}
