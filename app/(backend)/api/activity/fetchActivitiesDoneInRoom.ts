@@ -322,25 +322,21 @@ async function computeQuizSuccess(args: {
 
     // Adding points for unanswered questions
 
-    allUserIds.forEach(userId => {
+    allUserIds.forEach((userId, index) => {
         questions.forEach(question => {
             const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
             const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
             const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
-    
             const totalCorrectChoices = question.correctChoices.length;
             const totalWrongChoices = question.totalChoices - totalCorrectChoices;
-    
             const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered; // ❌ -1 for each correct answer not given
             const notGivenWrongAnswers = totalWrongChoices - wrongAnswered; // ✅ +1 for each wrong answer not given
             let questionScore = 0;
-
             questionScore += correctAnswered; // ✅ +1 for each correct answer given
-            questionScore - wrongAnswered >= 0 ? questionScore -= wrongAnswered : 0; // ❌ -1 for each wrong answer given
-            questionScore - notGivenCorrectAnswers >= 0 ? questionScore -= notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
+            questionScore - wrongAnswered >= 0 ? wrongAnswered : 0; // ❌ -1 for each wrong answer given
+            questionScore - notGivenCorrectAnswers >= 0 ? notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
             questionScore += notGivenWrongAnswers; // ✅ +1 for each wrong answer not given
-    
-            usersScores[userId] += question.totalChoices - questionScore;
+            usersScores[userId] += questionScore;
         });
     });
 
@@ -351,8 +347,6 @@ async function computeQuizSuccess(args: {
     let finalScorePercentage = totalUsers > 0 && totalPossibleScore > 0
         ? (totalRealScore / totalPossibleScore) * 100
         : 0;
-
-
     finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
     return { error: null, data: Math.round(finalScorePercentage) };
 }
