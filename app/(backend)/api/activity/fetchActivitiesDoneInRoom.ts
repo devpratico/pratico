@@ -194,7 +194,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         } as ActivityData;
 
         return (activity);
-    }));
+    }).toSorted((a, b) => a.startDate.getTime() - b.startDate.getTime()));
     return { error: null, data: activitiesForWidget }
 }
 
