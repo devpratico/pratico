@@ -277,7 +277,7 @@ async function computePollParticipation(args: {
 }
 
 
-async function computeQuizSuccess(args: {
+export async function computeQuizSuccess(args: {
     quizId: string,
     answers: QuizUserAnswer[]
 }): 
@@ -329,14 +329,15 @@ async function computeQuizSuccess(args: {
             const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
             const totalCorrectChoices = question.correctChoices.length;
             const totalWrongChoices = question.totalChoices - totalCorrectChoices;
-            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered; // ❌ -1 for each correct answer not given
-            const notGivenWrongAnswers = totalWrongChoices - wrongAnswered; // ✅ +1 for each wrong answer not given
-            let questionScore = 0;
-            questionScore += correctAnswered; // ✅ +1 for each correct answer given
-            questionScore - wrongAnswered >= 0 ? wrongAnswered : 0; // ❌ -1 for each wrong answer given
-            questionScore - notGivenCorrectAnswers >= 0 ? notGivenCorrectAnswers : 0; // ❌ -1 for each correct answer not given
-            questionScore += notGivenWrongAnswers; // ✅ +1 for each wrong answer not given
-            usersScores[userId] += questionScore;
+            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered
+            const notGivenWrongAnswers = totalWrongChoices - wrongAnswered;
+            const userChoices = {
+                correct: correctAnswered,
+                wrong: wrongAnswered,
+                notGivenCorrect: notGivenCorrectAnswers,
+                notGivenWrong: notGivenWrongAnswers
+            }
+            usersScores[userId] += calculateQuizScore(userChoices);
         });
     });
 
@@ -350,3 +351,23 @@ async function computeQuizSuccess(args: {
     finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
     return { error: null, data: Math.round(finalScorePercentage) };
 }
+
+const calculateQuizScore = (
+    userChoices: {
+        correct: number,
+        wrong: number,
+        notGivenCorrect: number,
+        notGivenWrong: number
+    }
+): number => {
+    let score = 0;
+    const points = {
+        correct: 2,
+        wrong: 0,
+        notGivenCorrect: 0,
+        notGivenWrong: 1
+    };
+    score += userChoices.correct * points.correct;
+    score += userChoices.wrong * points.wrong;
+    return (score);
+};
