@@ -310,19 +310,16 @@ export async function computeQuizSuccess(args: {
         totalChoices: question.choices.length
     }));
 
-    const usersScores: { [userId: string]: number } = {};
-    const allUserIds = new Set<string>();
-
-    // Initialize the scores
-    args.answers.forEach(answer => {
-        allUserIds.add(answer.userId);
+    const usersScores: { [userId: string]: number[] } = {};
+    const allUserIds = new Set<string>(args.answers.map((answer) => { 
         if (!(answer.userId in usersScores))
-            usersScores[answer.userId] = 0;
-    });
+            usersScores[answer.userId] = [];
+        return (answer.userId)
+    }));
 
     // Adding points for unanswered questions
 
-    allUserIds.forEach((userId, index) => {
+    allUserIds.forEach((userId) => {
         questions.forEach(question => {
             const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
             const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
@@ -337,18 +334,25 @@ export async function computeQuizSuccess(args: {
                 notGivenCorrect: notGivenCorrectAnswers,
                 notGivenWrong: notGivenWrongAnswers
             }
-            usersScores[userId] += calculateQuizScore(userChoices);
+            const score = calculateQuizScore(userChoices);
+            const questionPercentage = score / (totalCorrectChoices * 2 + notGivenWrongAnswers) * 100;
+            usersScores[userId].push(questionPercentage);
         });
     });
 
-    // Calculate the final score
-    const totalUsers = allUserIds.size;
-    const totalPossibleScore = questions.reduce((sum, q) => sum + q.totalChoices, 0) * totalUsers;
-    const totalRealScore = Object.values(usersScores).reduce((sum, score) => sum + score, 0);
-    let finalScorePercentage = totalUsers > 0 && totalPossibleScore > 0
-        ? (totalRealScore / totalPossibleScore) * 100
-        : 0;
-    finalScorePercentage = Math.max(0, Math.min(100, finalScorePercentage));
+    let totalGlobalScore = 0;
+    let totalUsers = 0;
+ 
+    Object.keys(usersScores).forEach(userId => {
+        const userScores = usersScores[userId];
+        const userAverageScore = userScores.reduce((sum, score) => sum + score, 0) / userScores.length;
+        totalGlobalScore += userAverageScore;
+        totalUsers++;
+    });
+
+    const globalAverageScore = totalUsers > 0 ? totalGlobalScore / totalUsers : 0;
+    const finalScorePercentage = Math.max(0, Math.min(100, globalAverageScore));
+
     return { error: null, data: Math.round(finalScorePercentage) };
 }
 
@@ -369,5 +373,7 @@ const calculateQuizScore = (
     };
     score += userChoices.correct * points.correct;
     score += userChoices.wrong * points.wrong;
+    score += userChoices.notGivenCorrect * points.notGivenCorrect;
+    score += userChoices.notGivenWrong * points.notGivenWrong;
     return (score);
 };
