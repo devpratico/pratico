@@ -23,7 +23,7 @@ interface StudentCanvasProps {
 
 // TODO: Put the toolbar in the page or a layout
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
-    const { widerThan, deviceType } = useWindow()
+    const { widerThan } = useWindow()
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
 
@@ -54,7 +54,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
                 : null
             
             }
-            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") || deviceType === "desktop" ? 60 : 0}} />
+            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 60 : 0}} />
             <NavigatorSync />
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
         </Canvas>
