@@ -1,14 +1,14 @@
-import {  ToolbarItem, TldrawUiMenuContextProvider, DefaultStylePanel } from 'tldraw';
-import { Flex, Popover, IconButton, Button } from '@radix-ui/themes';
+import {  ToolbarItem, TldrawUiMenuContextProvider, DefaultStylePanel, DefaultStylePanelContent, useRelevantStyles } from 'tldraw';
+import { Flex, Popover, IconButton, Grid } from '@radix-ui/themes';
+import { ChevronRight, PaletteIcon } from 'lucide-react';
 
 export function CustomTlToolbar() {
 	return (
         <Flex>
-            <Flex direction='column'>
+            <Flex direction='column' gap="3" m="4" align="center">
                 <Palette/>
-                {/* <Toolbar/> */}
+                <Toolbar/>
             </Flex>
-            
         </Flex>
 	);
 }
@@ -19,8 +19,18 @@ function Toolbar() {
     return (
         <Flex direction='column' align='center' style={toolbarStyle}>
             <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
-                {/* <DefaultStylePanel/> */}
                 {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                <Popover.Root >
+                <Popover.Trigger>
+                    <IconButton m="2" variant="ghost" size="4"><ChevronRight size={32} /></IconButton>
+                </Popover.Trigger>
+
+                <Popover.Content sideOffset={0} side="right">
+                    <Grid columns="4">
+                        {extraTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                    </Grid>
+                </Popover.Content>
+            </Popover.Root>
             </TldrawUiMenuContextProvider>
             <style>{toolStyle}</style>
         </Flex>
@@ -28,23 +38,21 @@ function Toolbar() {
 }
 
 function Palette() {
+    // const styles = useRelevantStyles();
+
     return (
-        <Popover.Root>
-            <Popover.Trigger>
-                <Button>Palette</Button>
+        <Popover.Root >
+            <Popover.Trigger style={{ zIndex: 100 }}>
+                <IconButton variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
-            <Popover.Content>
-                Hello
+            <Popover.Content sideOffset={1} alignOffset={1} side="right">
+                <DefaultStylePanel />
+                {/* <DefaultStylePanelContent styles={styles}/> */}
             </Popover.Content>
-
-
         </Popover.Root>
     )
 }
-
-
-
 
 const toolbarStyle: React.CSSProperties = {
     zIndex: 100,

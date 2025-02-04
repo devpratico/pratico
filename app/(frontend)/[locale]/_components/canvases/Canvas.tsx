@@ -87,7 +87,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         Background,
         OnTheCanvas: CanvasArea,
         Toolbar: null,
-        //StylePanel: CustomTlStylePanel,
+        StylePanel: null,
         DebugPanel: null, // needed
 		ActionsMenu: null,
 		HelpMenu: null,
