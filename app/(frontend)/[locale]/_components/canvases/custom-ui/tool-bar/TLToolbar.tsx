@@ -7,7 +7,6 @@ import ToolBar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/to
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor"
 import { useCallback } from "react"
 import logger from "@/app/_utils/logger"
-
 /*
 /**
  * This is the toolbar of the canvas.
