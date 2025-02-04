@@ -1,6 +1,7 @@
-import {  ToolbarItem, TldrawUiMenuContextProvider, DefaultStylePanel, DefaultStylePanelContent, useRelevantStyles } from 'tldraw';
+import {  ToolbarItem, TldrawUiMenuContextProvider, DefaultStylePanel } from 'tldraw';
 import { Flex, Popover, IconButton, Grid } from '@radix-ui/themes';
 import { ChevronRight, PaletteIcon } from 'lucide-react';
+import { useState } from 'react';
 
 export function CustomTlToolbar() {
 	return (
@@ -16,21 +17,39 @@ export function CustomTlToolbar() {
 
 
 function Toolbar() {
+    const [ dynamicTool, setDynamicTool ] = useState<string>("highlight");
+
+    const handleClick = (tool: string) => {
+        if (extraTools.includes(tool))
+            setDynamicTool(tool);
+    };
     return (
         <Flex direction='column' align='center' style={toolbarStyle}>
             <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
                 {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                <ToolbarItem tool={dynamicTool} />
                 <Popover.Root >
-                <Popover.Trigger>
-                    <IconButton m="2" variant="ghost" size="4"><ChevronRight size={32} /></IconButton>
-                </Popover.Trigger>
+                    <Popover.Trigger>
+                        <IconButton m="2" variant="ghost" size="4"><ChevronRight size={32} /></IconButton>
+                    </Popover.Trigger>
 
-                <Popover.Content sideOffset={0} side="right">
-                    <Grid columns="4">
-                        {extraTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
-                    </Grid>
-                </Popover.Content>
-            </Popover.Root>
+                    <Popover.Content onClick={(event) => {
+                        const target = (event.target as HTMLElement).closest('[data-tool]');
+                        if (!target)
+                        return ;
+                        const tool = target.getAttribute('data-tool');
+                        if (tool)
+                            handleClick(tool);
+                    }} sideOffset={0} side="right">
+                        <Grid columns="4">
+                            {extraTools.map((tool) => 
+                                <div key={tool} data-tool={tool}>
+                                    <ToolbarItem tool={tool} key={tool} />
+                                </div>
+                            )}
+                        </Grid>
+                    </Popover.Content>
+                </Popover.Root>
             </TldrawUiMenuContextProvider>
             <style>{toolStyle}</style>
         </Flex>
@@ -77,11 +96,10 @@ const mainTools = [
     "note",
     "asset",
     "text",
-    "laser",
-    "highlight"
-];
+    "laser"];
 
 const extraTools = [
+    "highlight",
     "cloud",
     "rectangle",
     "ellipse",
