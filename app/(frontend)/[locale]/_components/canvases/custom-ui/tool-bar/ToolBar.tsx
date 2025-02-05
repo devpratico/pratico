@@ -8,10 +8,8 @@ export function CustomTlToolbar() {
     const { widerThan } = useWindow();
 
 	return (
-        <Flex>
-           {
-                widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar />
-           }
+        <Flex justify={widerThan("sm") ? "start" : "end"}>
+           { widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
         </Flex>
 	);
 }
