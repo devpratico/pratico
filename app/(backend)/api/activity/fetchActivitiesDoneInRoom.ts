@@ -340,7 +340,9 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
                 notGivenWrong: notGivenWrongAnswers
             }
             const score = calculateQuizScore(userChoices);
-            const questionPercentage = score / (totalCorrectChoices * 2) * 100;
+            
+            const questionPercentage = score > 0 ? (score / (totalCorrectChoices * 2)) * 100 : 0;
+            
             usersScores[userId].push(questionPercentage);
         });
     });
@@ -350,18 +352,20 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
  
     Object.keys(usersScores).forEach(userId => {
         const userScores = usersScores[userId];
-        const userAverageScore = userScores.reduce((sum, score) => sum + score, 0) / userScores.length;
+        const userAverageScore = userScores.reduce((sum, score) => sum + score, 0) > 0 ? userScores.reduce((sum, score) => sum + score, 0) / userScores.length : 0;
         totalGlobalScore += userAverageScore;
         totalUsers++;
     });
 
-    const globalAverageScore = totalUsers > 0 ? totalGlobalScore / totalUsers : 0;
+    const globalAverageScore = totalUsers > 0 && totalGlobalScore > 0 ? (totalGlobalScore / totalUsers) : 0;
     let finalScorePercentage = Math.max(0, Math.min(100, globalAverageScore));
     if (isNaN(finalScorePercentage))
         finalScorePercentage = 0;
+    console.log("finalScorePercentage", finalScorePercentage);
     return { error: null, data: Math.round(finalScorePercentage) };
 };
-const calculateQuizScore = (
+
+export const calculateQuizScore = (
     userChoices: {
         correct: number,
         wrong: number,
