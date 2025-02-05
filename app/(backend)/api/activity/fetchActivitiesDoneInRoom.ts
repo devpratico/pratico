@@ -335,7 +335,7 @@ export async function computeQuizSuccess(args: {
                 notGivenWrong: notGivenWrongAnswers
             }
             const score = calculateQuizScore(userChoices);
-            const questionPercentage = score / (totalCorrectChoices * 2 + notGivenWrongAnswers) * 100;
+            const questionPercentage = score / (totalCorrectChoices * 2) * 100;
             usersScores[userId].push(questionPercentage);
         });
     });
