@@ -1,20 +1,38 @@
 import {  ToolbarItem, TldrawUiMenuContextProvider, DefaultStylePanel } from 'tldraw';
 import { Flex, Popover, IconButton, Grid } from '@radix-ui/themes';
-import { ChevronRight, PaletteIcon } from 'lucide-react';
+import { ChevronRight, ChevronUp, PaletteIcon } from 'lucide-react';
 import { useState } from 'react';
+import useWindow from '@/app/(frontend)/_hooks/contexts/useWindow';
 
 export function CustomTlToolbar() {
+    const { widerThan } = useWindow();
+
 	return (
         <Flex>
-            <Flex direction='column' gap="5" m="4" align="center">
-                <Palette/>
-                <Toolbar/>
-            </Flex>
+           {
+                widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar />
+           }
         </Flex>
 	);
 }
 
+function ClassicToolbar() {
+    return (
+        <Flex direction="column" gap="5" m="4" align="center">
+            <Palette />
+            <Toolbar />
+        </Flex>
+    )
+}
 
+function SmallerScreenToolbar() {
+    return (
+        <Flex gap="5" m="1" align="center">
+            <ToolbarMobile />
+            <Palette smallScreen />
+        </Flex>
+    )
+}
 
 function Toolbar() {
     const [ dynamicTool, setDynamicTool ] = useState<string>("embed");
@@ -40,7 +58,7 @@ function Toolbar() {
                         const tool = target.getAttribute('data-tool');
                         if (tool)
                             handleClick(tool);
-                    }} sideOffset={0} side="right">
+                    }} sideOffset={1} alignOffset={1} side="right">
                         <Grid columns="4">
                             {extraTools.map((tool) => 
                                 <div key={tool} data-tool={tool}>
@@ -56,7 +74,47 @@ function Toolbar() {
     )
 }
 
-function Palette() {
+function ToolbarMobile() {
+    const [ dynamicTool, setDynamicTool ] = useState<string>("text");
+
+    const handleClick = (tool: string) => {
+        if (extraToolsMobile.includes(tool))
+            setDynamicTool(tool);
+    };
+    return (
+        <Flex align='center' style={toolbarStyle}>
+            <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
+                {mainToolsMobile.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                <ToolbarItem tool={dynamicTool} />
+                <Popover.Root >
+                    <Popover.Trigger>
+                        <IconButton m="2" variant="ghost" size="4"><ChevronUp size={32} /></IconButton>
+                    </Popover.Trigger>
+
+                    <Popover.Content onClick={(event) => {
+                        const target = (event.target as HTMLElement).closest('[data-tool]');
+                        if (!target)
+                        return ;
+                        const tool = target.getAttribute('data-tool');
+                        if (tool)
+                            handleClick(tool);
+                    }} sideOffset={1} alignOffset={1} side="top">
+                        <Grid columns="4">
+                            {extraToolsMobile.map((tool) => 
+                                <div key={tool} data-tool={tool}>
+                                    <ToolbarItem tool={tool} key={tool} />
+                                </div>
+                            )}
+                        </Grid>
+                    </Popover.Content>
+                </Popover.Root>
+            </TldrawUiMenuContextProvider>
+            <style>{toolStyle}</style>
+        </Flex>
+    )
+}
+
+function Palette({smallScreen = false}: {smallScreen?: boolean}) {
 
     return (
         <Popover.Root >
@@ -64,7 +122,7 @@ function Palette() {
                 <IconButton radius="full" variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
-            <Popover.Content sideOffset={1} alignOffset={1} side="right" style={toolbarStyle}>
+            <Popover.Content sideOffset={1} alignOffset={1} side={smallScreen ? "top" : "right"} style={toolbarStyle}>
                 <DefaultStylePanel />
             </Popover.Content>
         </Popover.Root>
@@ -98,6 +156,44 @@ const mainTools = [
 ];
 
 const extraTools = [
+    "embed",
+    "cloud",
+    "rectangle",
+    "ellipse",
+    "triangle",
+    "diamond",
+    "pentagon",
+    "hexagon",
+    "octagon",
+    "star",
+    "rhombus",
+    "rhombus-2",
+    "oval",
+    "trapezoid",
+    "arrow-right",
+    "arrow-left",
+    "arrow-up",
+    "arrow-down",
+    "x-box",
+    "check-box",
+    "heart",
+    "arrow",
+    "line",
+    "laser"
+];
+
+const mainToolsMobile = [
+    "select",
+    "draw",
+    "highlight", 
+    "eraser",
+    "note",
+
+];
+
+const extraToolsMobile = [
+    "text",   
+    "asset",
     "embed",
     "cloud",
     "rectangle",
