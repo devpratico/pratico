@@ -60,11 +60,11 @@ function Palette() {
 
     return (
         <Popover.Root >
-            <Popover.Trigger style={{ zIndex: 100 }}>
-                <IconButton style={{ backgroundColor: "var(--accent-1)"}} radius="full" variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
+            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 100, boxShadow: 'var(--shadow-3)'}} >
+                <IconButton radius="full" variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
-            <Popover.Content sideOffset={1} alignOffset={1} side="right">
+            <Popover.Content sideOffset={1} alignOffset={1} side="right" style={toolbarStyle}>
                 <DefaultStylePanel />
             </Popover.Content>
         </Popover.Root>
@@ -75,7 +75,7 @@ const toolbarStyle: React.CSSProperties = {
     zIndex: 100,
     backgroundColor: 'var(--accent-1)',
     boxShadow: 'var(--shadow-3)',
-    borderRadius: 'var(--radius-3)',
+    borderRadius: 'var(--radius-3)'
 };
 
 const toolStyle = `
