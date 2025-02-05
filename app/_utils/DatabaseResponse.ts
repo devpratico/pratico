@@ -1,3 +1,4 @@
+// TODO: move to _types
 type DatabaseResponse<D, E> = {
     data: D;
     error: null;
