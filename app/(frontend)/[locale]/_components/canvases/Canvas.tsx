@@ -15,11 +15,8 @@ import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { useCallback, useMemo } from 'react'
-//import Resizer from './custom-ui/Resizer/Resizer'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
-import { CustomTlToolbar } from './custom-ui/tool-bar/ToolBar'
-//import { CustomTlStylePanel } from './custom-ui/CustomTlStylePanel'
 
 export interface CanvasUser {
     id: string
@@ -114,7 +111,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
 			options={options}
-           	forceMobile
 		>
             {children}
 			{/* <Resizer/> */}

@@ -6,7 +6,7 @@ import { useState } from 'react';
 export function CustomTlToolbar() {
 	return (
         <Flex>
-            <Flex direction='column' gap="3" m="4" align="center">
+            <Flex direction='column' gap="5" m="4" align="center">
                 <Palette/>
                 <Toolbar/>
             </Flex>
@@ -17,14 +17,14 @@ export function CustomTlToolbar() {
 
 
 function Toolbar() {
-    const [ dynamicTool, setDynamicTool ] = useState<string>("highlight");
+    const [ dynamicTool, setDynamicTool ] = useState<string>("embed");
 
     const handleClick = (tool: string) => {
         if (extraTools.includes(tool))
             setDynamicTool(tool);
     };
     return (
-        <Flex direction='column' align='center' style={toolbarStyle}>
+        <Flex pr="2" pl="2" direction='column' align='center' style={toolbarStyle}>
             <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
                 {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
                 <ToolbarItem tool={dynamicTool} />
@@ -57,17 +57,15 @@ function Toolbar() {
 }
 
 function Palette() {
-    // const styles = useRelevantStyles();
 
     return (
         <Popover.Root >
             <Popover.Trigger style={{ zIndex: 100 }}>
-                <IconButton variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
+                <IconButton style={{ backgroundColor: "var(--accent-1)"}} radius="full" variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
             <Popover.Content sideOffset={1} alignOffset={1} side="right">
                 <DefaultStylePanel />
-                {/* <DefaultStylePanelContent styles={styles}/> */}
             </Popover.Content>
         </Popover.Root>
     )
@@ -91,15 +89,16 @@ const toolStyle = `
 
 const mainTools = [
     "select",
-    "eraser",
     "draw",
+    "highlight", 
+    "eraser",
     "note",
-    "asset",
-    "text",
-    "laser"];
+    "text",   
+    "asset"
+];
 
 const extraTools = [
-    "highlight",
+    "embed",
     "cloud",
     "rectangle",
     "ellipse",
@@ -122,5 +121,5 @@ const extraTools = [
     "heart",
     "arrow",
     "line",
-    "embed",
+    "laser"
 ];
