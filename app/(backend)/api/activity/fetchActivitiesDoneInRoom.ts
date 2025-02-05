@@ -367,9 +367,9 @@ const calculateQuizScore = (
     let score = 0;
     const points = {
         correct: 2,
-        wrong: 0,
-        notGivenCorrect: 0,
-        notGivenWrong: 1
+        wrong: -1,
+        notGivenCorrect: -1,
+        notGivenWrong: 0
     };
     score += userChoices.correct * points.correct;
     score += userChoices.wrong * points.wrong;
