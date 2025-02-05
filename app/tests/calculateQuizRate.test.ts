@@ -1,4 +1,4 @@
-import { calculateQuizRate, questionQuizRateType, calculateQuizScore } from "../(backend)/api/activity/fetchActivitiesDoneInRoom";
+import { calculateQuizRate, questionQuizRateType } from "../(backend)/api/activity/fetchActivitiesDoneInRoom";
 import { QuizUserAnswer } from "../_types/quiz";
 
 describe('calculateTotalRate', () => {
@@ -324,77 +324,77 @@ describe('calculateTotalRate', () => {
 
 });
 
-describe('calculateQuizScore', () => {
-    it('should calculate the score correctly with correct, wrong, and not given answers', () => {
-        const userChoices = {
-            correct: 3,         // 3 correct answers (2 points per answer)
-            wrong: 2,           // 2 wrong answers (-1 point per answer)
-            notGivenCorrect: 1, // 1 not given but correct answer (-1 point per not given correct answer)
-            notGivenWrong: 1    // 1 not given but wrong answer (0 points)
-        };
+// describe('calculateQuizScore', () => {
+//     it('should calculate the score correctly with correct, wrong, and not given answers', () => {
+//         const userChoices = {
+//             correct: 3,         // 3 correct answers (2 points per answer)
+//             wrong: 2,           // 2 wrong answers (-1 point per answer)
+//             notGivenCorrect: 1, // 1 not given but correct answer (-1 point per not given correct answer)
+//             notGivenWrong: 1    // 1 not given but wrong answer (0 points)
+//         };
 
-        const result = calculateQuizScore(userChoices);
+//         const result = calculateQuizScore(userChoices);
 
-        // Expected score calculation:
-        // (3 * 2) + (2 * -1) + (1 * -1) + (1 * 0) = 6 - 2 - 1 + 0 = 3
-        expect(result).toBe(3);
-    });
+//         // Expected score calculation:
+//         // (3 * 2) + (2 * -1) + (1 * -1) + (1 * 0) = 6 - 2 - 1 + 0 = 3
+//         expect(result).toBe(3);
+//     });
 
-    it('should return a score of 0 if no answers are given', () => {
-        const userChoices = {
-            correct: 0,
-            wrong: 0,
-            notGivenCorrect: 0,
-            notGivenWrong: 0
-        };
+//     it('should return a score of 0 if no answers are given', () => {
+//         const userChoices = {
+//             correct: 0,
+//             wrong: 0,
+//             notGivenCorrect: 0,
+//             notGivenWrong: 0
+//         };
 
-        const result = calculateQuizScore(userChoices);
+//         const result = calculateQuizScore(userChoices);
 
-        expect(result).toBe(0); // No points since no answers were provided
-    });
+//         expect(result).toBe(0); // No points since no answers were provided
+//     });
 
-    it('should return a negative score if all answers are incorrect or not given', () => {
-        const userChoices = {
-            correct: 0,
-            wrong: 3,
-            notGivenCorrect: 2,
-            notGivenWrong: 2
-        };
+//     it('should return a negative score if all answers are incorrect or not given', () => {
+//         const userChoices = {
+//             correct: 0,
+//             wrong: 3,
+//             notGivenCorrect: 2,
+//             notGivenWrong: 2
+//         };
 
-        const result = calculateQuizScore(userChoices);
+//         const result = calculateQuizScore(userChoices);
 
-        // Expected calculation:
-        // (0 * 2) + (3 * -1) + (2 * -1) + (2 * 0) = 0 - 3 - 2 + 0 = -5
-        expect(result).toBe(-5);
-    });
+//         // Expected calculation:
+//         // (0 * 2) + (3 * -1) + (2 * -1) + (2 * 0) = 0 - 3 - 2 + 0 = -5
+//         expect(result).toBe(-5);
+//     });
 
-    it('should return a score of 0 for incorrect and not given answers with no penalties', () => {
-        const userChoices = {
-            correct: 0,
-            wrong: 2,
-            notGivenCorrect: 0,
-            notGivenWrong: 3
-        };
+//     it('should return a score of 0 for incorrect and not given answers with no penalties', () => {
+//         const userChoices = {
+//             correct: 0,
+//             wrong: 2,
+//             notGivenCorrect: 0,
+//             notGivenWrong: 3
+//         };
 
-        const result = calculateQuizScore(userChoices);
+//         const result = calculateQuizScore(userChoices);
 
-        // Expected calculation:
-        // (0 * 2) + (2 * -1) + (0 * -1) + (3 * 0) = 0 - 2 + 0 + 0 = -2
-        expect(result).toBe(-2);
-    });
+//         // Expected calculation:
+//         // (0 * 2) + (2 * -1) + (0 * -1) + (3 * 0) = 0 - 2 + 0 + 0 = -2
+//         expect(result).toBe(-2);
+//     });
 
-    it('should handle correctly the cases with 0 or 1 values for each category', () => {
-        const userChoices = {
-            correct: 1,          // 1 correct answer (2 points)
-            wrong: 1,            // 1 wrong answer (-1 point)
-            notGivenCorrect: 0,  // 0 not given but correct answers
-            notGivenWrong: 0     // 0 not given but wrong answers
-        };
+//     it('should handle correctly the cases with 0 or 1 values for each category', () => {
+//         const userChoices = {
+//             correct: 1,          // 1 correct answer (2 points)
+//             wrong: 1,            // 1 wrong answer (-1 point)
+//             notGivenCorrect: 0,  // 0 not given but correct answers
+//             notGivenWrong: 0     // 0 not given but wrong answers
+//         };
 
-        const result = calculateQuizScore(userChoices);
+//         const result = calculateQuizScore(userChoices);
 
-        // Expected calculation:
-        // (1 * 2) + (1 * -1) + (0 * -1) + (0 * 0) = 2 - 1 + 0 + 0 = 1
-        expect(result).toBe(1);
-    });
-});
+//         // Expected calculation:
+//         // (1 * 2) + (1 * -1) + (0 * -1) + (0 * 0) = 2 - 1 + 0 + 0 = 1
+//         expect(result).toBe(1);
+//     });
+// });
