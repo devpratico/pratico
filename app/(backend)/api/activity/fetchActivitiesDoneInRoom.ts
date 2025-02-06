@@ -326,13 +326,11 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
 
     allUserIds.forEach((userId) => {
         questions.forEach(question => {
-            const userAnswersSet = new Set(answers.filter(a => a.userId === userId && a.questionId === question.questionId));
-            const userAnswers = Array.from(userAnswersSet);
+            const userAnswers = Array.from(new Set(answers.filter(a => a.userId === userId && a.questionId === question.questionId)));
             const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
             const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
             const totalCorrectChoices = question.correctChoices.length;
-            const totalWrongChoices = question.totalChoices - totalCorrectChoices;
-            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered
+            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered;
             const points = {
                 correct: 2,
                 wrong: -1,
@@ -345,9 +343,9 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
             }
             const score = calculateQuizScore(userChoices, points);
             const maxScorePerQuestion = (totalCorrectChoices * points.correct);
-
+            
             const questionPercentage = maxScorePerQuestion > 0 && score > 0 ? (score / maxScorePerQuestion) * 100 : 0;
-
+            console.log("Max score per question: ", maxScorePerQuestion, "Score: ", score, "Question percentage: ", questionPercentage);
             usersScores[userId].push(questionPercentage);
         });
     });
@@ -360,8 +358,8 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
         totalQuestionCount += userScores.length;
     });
     
-    const globalAverageScore = totalQuestionCount > 0 ? totalScoreSum / totalQuestionCount : 0;
-    
+    const globalAverageScore = totalQuestionCount > 0 && totalScoreSum > 0 ? totalScoreSum / totalQuestionCount : 0;
+    console.log("Total score sum: ", totalScoreSum, "Total question count: ", totalQuestionCount, "Global average score: ", globalAverageScore);
     let finalScorePercentage = Math.round(Math.max(0, Math.min(100, globalAverageScore)));
     if (isNaN(finalScorePercentage))
         finalScorePercentage = 0;
