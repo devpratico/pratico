@@ -74,12 +74,31 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
                     //if (isEqual(oldRecord?.params, newRecord.params)) return
 
-                    logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
+                    //logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
                     setRoom((prev) => {
-                        if (isEqual(prev?.params, newRecord.params)) return prev
+                        if (isEqual(prev?.params, newRecord.params)) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated remotely but params are the same. Ignoring update."
+                            )
+                            return prev
+                        }
                         if (prev) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx', 
+                                "Room params changed remotely. Updating room params.",
+                                newRecord.params
+                            )
                             return {...prev, params: newRecord.params}
                         } else {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated",
+                                newRecord
+                            )
                             return newRecord
                         }
                     })
