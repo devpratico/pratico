@@ -343,7 +343,7 @@ export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds:
             }
             const score = calculateQuizScore(userChoices, points);
             const maxScorePerQuestion = (totalCorrectChoices * points.correct);
-            
+            console.log ("Score: ", score, "Max score per question: ", maxScorePerQuestion);
             const questionPercentage = maxScorePerQuestion > 0 && score > 0 ? (score / maxScorePerQuestion) * 100 : 0;
             console.log("Max score per question: ", maxScorePerQuestion, "Score: ", score, "Question percentage: ", questionPercentage);
             usersScores[userId].push(questionPercentage);
