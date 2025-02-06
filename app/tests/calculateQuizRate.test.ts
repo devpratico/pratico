@@ -103,14 +103,28 @@ describe('calculateTotalRate', () => {
             { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'c' },
             { userId: 'user2', timestamp: 123460, questionId: 'q2', choiceId: 'a' }
         ];
+        const answersA: QuizUserAnswer[] = [
+            // User 1 answers
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'a' },
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'b' },
+            { userId: 'user1', timestamp: 123458, questionId: 'q2', choiceId: 'a' },
+
+            // User 2 answers
+            { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'a' },
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'b' },
+            { userId: 'user2', timestamp: 123460, questionId: 'q2', choiceId: 'a' }
+        ];
 
         const result = calculateQuizRate(questions, allUserIds, answers);
+        const resultA = calculateQuizRate(questions, allUserIds, answersA);
 
         // Test si l'erreur est nulle
         expect(result.error).toBeNull();
+        expect(resultA.error).toBeNull();
 
         // Testons la valeur du score final retournée
         expect(result.data).toBe(50);
+        expect(resultA.data).toBe(50);
     });
 
 
@@ -157,57 +171,58 @@ describe('calculateTotalRate', () => {
         expect(resultA.data).toBe(0);  // 0% de bonnes réponses
     });
 
-    // it('should return between 0% ans 50%', () => {
-    //     const questions = [
-    //         {
-    //             questionId: 'q1',
-    //             correctChoices: ['a'],
-    //             totalChoices: 4
-    //         }
-    //     ];
-    //     const questionsA = [
-    //         {
-    //             questionId: 'q1',
-    //             correctChoices: ['a', 'b'],
-    //             totalChoices: 4
-    //         },
-    //         {
-    //             questionId: 'q2',
-    //             correctChoices: ['c'],
-    //             totalChoices: 4
-    //         }
-    //     ];
+    it('should return between 0% ans 50%', () => {
+        const questions = [
+            {
+                questionId: 'q1',
+                correctChoices: ['a'],
+                totalChoices: 4
+            }
+        ];
+        const questionsA = [
+            {
+                questionId: 'q1',
+                correctChoices: ['a', 'b'],
+                totalChoices: 4
+            },
+            {
+                questionId: 'q2',
+                correctChoices: ['c'],
+                totalChoices: 4
+            }
+        ];
 
-    //     const allUserIds = new Set<string>(['user1', 'user2']);
+        const allUserIds = new Set<string>(['user1', 'user2']);
 
-    //     const answers: QuizUserAnswer[] = [
-    //         // User 1 answers
-    //         { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'b' },
+        const answers: QuizUserAnswer[] = [
+            // User 1 answers
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'b' },
 
-    //         // User 2 answers
-    //         { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'c' },
-    //         { userId: 'user2', timestamp: 123460, questionId: 'q1', choiceId: 'a' }
-    //     ];
-    //     const answersA: QuizUserAnswer[] = [
-    //         // User 1 answers
-    //         { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'a' },
-    //         { userId: 'user1', timestamp: 123458, questionId: 'q2', choiceId: 'a' },
+            // User 2 answers
+            { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'c' },
+            { userId: 'user2', timestamp: 123460, questionId: 'q1', choiceId: 'a' }
+        ];
+        const answersA: QuizUserAnswer[] = [
+            // User 1 answers
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'a' },
+            { userId: 'user1', timestamp: 123458, questionId: 'q2', choiceId: 'a' },
 
-    //         // User 2 answers
-    //         { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'c' },
-    //         { userId: 'user2', timestamp: 123460, questionId: 'q2', choiceId: 'a' }
-    //     ];
+            // User 2 answers
+            { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'b' },
+            { userId: 'user2', timestamp: 123460, questionId: 'q2', choiceId: 'a' }
+        ];
 
-    //     const result = calculateQuizRate(questions, allUserIds, answers);
-    //     const resultA = calculateQuizRate(questionsA, allUserIds, answersA);
-    //     expect(result.error).toBeNull();
-    //     expect(result.data).toBeGreaterThanOrEqual(0);
-    //     expect(result.data).toBeLessThanOrEqual(50);
+        const result = calculateQuizRate(questions, allUserIds, answers);
+        const resultA = calculateQuizRate(questionsA, allUserIds, answersA);
+        expect(result.error).toBeNull();
+        expect(result.data).toBeGreaterThan(0);
+        expect(result.data).toBeLessThan(50);
 
-    //     expect(resultA.error).toBeNull();
-    //     expect(resultA.data).toBeGreaterThan(0);
-    //     expect(resultA.data).toBeLessThan(50);
-    // });
+        expect(resultA.error).toBeNull();
+        expect(resultA.data).toBeGreaterThan(0);
+        expect(resultA.data).toBeLessThan(50);
+        expect(resultA.data).toBe(25);
+    });
 
     it('should return between 50% ans 100%', () => {
         const questions = [
@@ -249,6 +264,18 @@ describe('calculateTotalRate', () => {
                 totalChoices: 4
             }
         ];
+        const questionsB = [
+            {
+                questionId: 'q1',
+                correctChoices: ['a', 'b'],
+                totalChoices: 4
+            },
+            {
+                questionId: 'q2',
+                correctChoices: ['c'],
+                totalChoices: 4
+            }
+        ];
 
         const allUserIds = new Set<string>(['user1', 'user2']);
 
@@ -281,9 +308,20 @@ describe('calculateTotalRate', () => {
             { userId: 'user1', timestamp: 123458, questionId: 'q4', choiceId: 'c' },
 
         ];
+        const answersB: QuizUserAnswer[] = [
+            // User 1 answers
+            { userId: 'user1', timestamp: 123456, questionId: 'q1', choiceId: 'a' },
+            { userId: 'user1', timestamp: 123456, questionId: 'q3', choiceId: 'c' },
 
+            // User 2 answers
+            { userId: 'user2', timestamp: 123459, questionId: 'q1', choiceId: 'b' },
+            { userId: 'user1', timestamp: 123456, questionId: 'q3', choiceId: 'c' },
+
+        ];
         const result = calculateQuizRate(questions, allUserIds, answers);
         const resultA = calculateQuizRate(questionsA, allUserIds, answersA);
+        const resultB = calculateQuizRate(questionsB, allUserIds, answersB);
+
         expect(result.error).toBeNull();
         expect(result.data).toBeGreaterThan(50);
         expect(result.data).toBeLessThan(100);
@@ -291,6 +329,9 @@ describe('calculateTotalRate', () => {
         expect(resultA.error).toBeNull();
         expect(resultA.data).toBeGreaterThan(50);
         expect(resultA.data).toBeLessThan(100);
+
+        expect(resultB.error).toBeNull();
+        expect(resultB.data).toBeGreaterThan(75);
     });
 
     it('should handle edge case with empty questions array', () => {
