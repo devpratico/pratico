@@ -106,7 +106,9 @@ export function calculateTotalQuizScore(args: {
     // Compute the average score of all users
     const numberOfUsers = usersIds.length
     const scoreSum = scores.reduce((acc, score) => acc + score.score, 0)
-    const averageScore = scoreSum / numberOfUsers
+    if (scoreSum <= 0 || numberOfUsers <= 0)
+        return 0
+    const averageScore =  scoreSum / numberOfUsers
 
     return averageScore
 };

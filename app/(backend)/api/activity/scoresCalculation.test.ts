@@ -286,21 +286,25 @@ describe('calculateTotalRate', () => {
     });
 
     it('should handle edge case with empty answers array', () => {
-        const questions = [
-            {
-                questionId: 'q1',
-                correctChoices: ['a'],
-                totalChoices: 4
-            }
+        const quizChoices = [
+            { id: 'a', isCorrect: true },
+            { id: 'b', isCorrect: true },
+            { id: 'c', isCorrect: true },
+            { id: 'd', isCorrect: true },
+            { id: 'e', isCorrect: false }
         ];
+
+        const usersAnswers: {
+            userId: string;
+            choiceId: string;
+        }[] = [];
 
         const allUserIds = new Set<string>(['user1', 'user2']);
         const answers: QuizUserAnswer[] = [];  // Aucune réponse donnée
 
-        const result = calculateQuizRate(questions, allUserIds, answers);
+        const result = calculateTotalQuizScore({ quizChoices, usersAnswers});
 
-        expect(result.error).toBeNull();
-        expect(result.data).toBe(0);  // Aucun score car aucune réponse donnée
+        expect(result).toBe(0);  // Aucun score car aucune réponse donnée
     });
 
 });
