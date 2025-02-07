@@ -8,8 +8,8 @@ export function CustomTlToolbar() {
     const { widerThan } = useWindow();
 
 	return (
-        <Flex align={widerThan("sm") ? "center" : "end"} height="80vh" style={{ position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 1, pointerEvents: 'none' }}>
-           { widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
+        <Flex align={widerThan("xs") ? "center" : "end"} height="80vh" style={widerThan("xs") ? {} : { position: "fixed", zIndex: 1 }}>
+           { widerThan('xs') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
         </Flex>
 	);
 }
@@ -116,8 +116,8 @@ function Palette({smallScreen = false}: {smallScreen?: boolean}) {
 
     return (
         <Popover.Root >
-            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 1000, boxShadow: 'var(--shadow-3)'}} >
-                <IconButton radius="full" variant="ghost" size="3"><PaletteIcon size={32} /></IconButton>
+            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 1, boxShadow: 'var(--shadow-3)'}} >
+                <IconButton radius="full" variant="ghost" size={smallScreen ? "3" : "4"}><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
             <Popover.Content sideOffset={1} alignOffset={1} side={smallScreen ? "top" : "right"} style={toolbarStyle}>
