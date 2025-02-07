@@ -1,31 +1,58 @@
-import {  ToolbarItem, TldrawUiMenuContextProvider, useRelevantStyles, DefaultStylePanelContent } from 'tldraw';
-import { Flex, Popover, IconButton, Grid } from '@radix-ui/themes';
+import {  ToolbarItem, TldrawUiMenuContextProvider, useRelevantStyles, DefaultStylePanelContent, DefaultStylePanel } from 'tldraw';
+import { Flex, Popover, IconButton, Grid, FlexProps, Box } from '@radix-ui/themes';
 import { ChevronRight, ChevronUp, PaletteIcon } from 'lucide-react';
 import { useState } from 'react';
-import useWindow from '@/app/(frontend)/_hooks/contexts/useWindow';
-import "tldraw/tldraw.css";
-export function CustomTlToolbar() {
-    const { widerThan } = useWindow();
+import * as PopoverPrimitive from '@radix-ui/react-popover';
 
+
+
+
+export function CustomTlToolbar() {
 	return (
-        <Flex align={widerThan("xs") ? "center" : "end"} justify={widerThan("xs") ? "start" : "center"} height="80vh">
-           { widerThan('xs') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
-        </Flex>
+        <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
+
+
+            <Flex
+                display={{ initial: 'none', xs: 'flex' }}
+                position='absolute'
+                left="2"
+                style={{ zIndex: 1 }}
+                align='center'
+                justify='center'
+                height='100%'
+            >
+                <ClassicToolbar/>
+            </Flex>
+
+
+            <Flex
+                display={{initial: 'flex', xs: 'none'}}
+                position='absolute'
+                bottom='2'
+                style={{ zIndex: 1 }}
+                align='center'
+                justify='center'
+                width='100%'
+            >
+                <SmallerScreenToolbar />
+            </Flex>
+
+        </TldrawUiMenuContextProvider>
 	);
 }
 
-function ClassicToolbar() {
+function ClassicToolbar(props: FlexProps) {
     return (
-        <Flex direction="column" gap="5" m="4" align="center">
+        <Flex direction="column" gap="5" m="4" align="center" {...props}>
             <Palette />
             <Toolbar />
         </Flex>
     )
 }
 
-function SmallerScreenToolbar() {
+function SmallerScreenToolbar(props: FlexProps) {
     return (
-        <Flex gap="3" align="center">
+        <Flex gap="3" align="center" {...props}>
             <ToolbarMobile />
             <Palette smallScreen />
         </Flex>
@@ -40,9 +67,11 @@ function Toolbar() {
             setDynamicTool(tool);
     };
     return (
-        <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
+        
             <Flex p="2" direction='column' align='center' style={toolbarStyle}>
+
                 {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+
                 <ToolbarItem tool={dynamicTool} />
                 <Popover.Root >
                     <Popover.Trigger>
@@ -68,7 +97,7 @@ function Toolbar() {
                 </Popover.Root>
                 <style>{toolStyle}</style>
             </Flex>
-        </TldrawUiMenuContextProvider>
+
 
     )
 }
@@ -81,9 +110,9 @@ function ToolbarMobile() {
             setDynamicTool(tool);
     };
     return (
-        <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
+
             <Flex align='center' style={toolbarStyle} >
-                    {mainToolsMobile.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                    {mainToolsMobile.map((tool) => <ToolbarItem tool={tool} key={tool}/>)}
                     <ToolbarItem tool={dynamicTool} />
                     <Popover.Root >
                         <Popover.Trigger>
@@ -109,31 +138,36 @@ function ToolbarMobile() {
                     </Popover.Root>
                 <style>{toolStyle}</style>
             </Flex>
-        </TldrawUiMenuContextProvider>
 
     )
 }
 
 function Palette({smallScreen = false}: {smallScreen?: boolean}) {
-    const styles = useRelevantStyles();
+    //const styles = useRelevantStyles();
     
     return (
-        <Popover.Root >
-            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 1, boxShadow: 'var(--shadow-3)'}} >
+        <PopoverPrimitive.Root >
+            <PopoverPrimitive.Trigger style={{ backgroundColor: "var(--accent-1)",  boxShadow: 'var(--shadow-3)'}} asChild>
                 <IconButton radius="full" variant="ghost" size={smallScreen ? "3" : "4"}><PaletteIcon size={32} /></IconButton>
-            </Popover.Trigger>
+            </PopoverPrimitive.Trigger>
 
-            <Popover.Content sideOffset={1} alignOffset={1} side={smallScreen ? "top" : "right"} >
-               <DefaultStylePanelContent styles={styles} />
-            </Popover.Content>
-        </Popover.Root>
+            <PopoverPrimitive.Portal container={document.getElementsByClassName('tldraw-canvas')[0] as HTMLElement}>
+                <PopoverPrimitive.Content
+                    //sideOffset={1}
+                    //alignOffset={1}
+                    side={smallScreen ? "top" : "right"}
+                    style={{zIndex: 10000}}
+                >
+                        <DefaultStylePanel />
+                </PopoverPrimitive.Content>
+            </PopoverPrimitive.Portal>
+        </PopoverPrimitive.Root>
     )
 }
 
 const toolbarStyle: React.CSSProperties = {
-    zIndex: 1,
     backgroundColor: 'var(--accent-1)',
-    boxShadow: 'var(--shadow-3)',
+    boxShadow: 'var(--shadow-2)',
     borderRadius: 'var(--radius-3)',
 };
 
