@@ -9,6 +9,7 @@ import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Re
 import logger from "@/app/_utils/logger";
 import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
+import { Flex } from "@radix-ui/themes";
 
 
 
@@ -72,7 +73,7 @@ export default function CanvasSL() {
     
     return (
         <Canvas initialSnapshot={initialSnapshot}>
-            <CustomTlToolbar />
+            <CustomTlToolbar /> 
             <Resizer insets={{top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 60 : 0}} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>

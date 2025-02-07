@@ -8,7 +8,7 @@ export function CustomTlToolbar() {
     const { widerThan } = useWindow();
 
 	return (
-        <Flex justify={widerThan("sm") ? "start" : "end"}>
+        <Flex justify={widerThan("sm") ? "start" : "end"} align={widerThan("sm") ? "center" : "end"} height="100vh">
            { widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
         </Flex>
 	);
@@ -131,7 +131,7 @@ const toolbarStyle: React.CSSProperties = {
     zIndex: 100,
     backgroundColor: 'var(--accent-1)',
     boxShadow: 'var(--shadow-3)',
-    borderRadius: 'var(--radius-3)'
+    borderRadius: 'var(--radius-3)',
 };
 
 const toolStyle = `
