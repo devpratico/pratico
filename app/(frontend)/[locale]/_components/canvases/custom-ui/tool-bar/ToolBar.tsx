@@ -8,7 +8,7 @@ export function CustomTlToolbar() {
     const { widerThan } = useWindow();
 
 	return (
-        <Flex align={widerThan("sm") ? "center" : "end"} height="80vh">
+        <Flex align={widerThan("sm") ? "center" : "end"} height="80vh" style={{ position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 1, pointerEvents: 'none' }}>
            { widerThan('sm') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
         </Flex>
 	);
@@ -25,7 +25,7 @@ function ClassicToolbar() {
 
 function SmallerScreenToolbar() {
     return (
-        <Flex gap="5" m="1" align="center">
+        <Flex gap="3" align="center">
             <ToolbarMobile />
             <Palette smallScreen />
         </Flex>
@@ -92,7 +92,7 @@ function ToolbarMobile() {
                     <Popover.Content onClick={(event) => {
                         const target = (event.target as HTMLElement).closest('[data-tool]');
                         if (!target)
-                        return ;
+                            return ;
                         const tool = target.getAttribute('data-tool');
                         if (tool)
                             handleClick(tool);
@@ -116,8 +116,8 @@ function Palette({smallScreen = false}: {smallScreen?: boolean}) {
 
     return (
         <Popover.Root >
-            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 100, boxShadow: 'var(--shadow-3)'}} >
-                <IconButton radius="full" variant="ghost" size="4"><PaletteIcon size={32} /></IconButton>
+            <Popover.Trigger style={{ backgroundColor: "var(--accent-1)", zIndex: 1000, boxShadow: 'var(--shadow-3)'}} >
+                <IconButton radius="full" variant="ghost" size="3"><PaletteIcon size={32} /></IconButton>
             </Popover.Trigger>
 
             <Popover.Content sideOffset={1} alignOffset={1} side={smallScreen ? "top" : "right"} style={toolbarStyle}>
