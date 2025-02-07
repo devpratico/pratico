@@ -8,7 +8,7 @@ export function CustomTlToolbar() {
     const { widerThan } = useWindow();
 
 	return (
-        <Flex align={widerThan("xs") ? "center" : "end"} height="80vh" style={widerThan("xs") ? {} : { position: "fixed", zIndex: 1 }}>
+        <Flex align={widerThan("xs") ? "center" : "end"} justify="center" height="80vh">
            { widerThan('xs') ? <ClassicToolbar /> : <SmallerScreenToolbar /> }
         </Flex>
 	);
@@ -80,7 +80,7 @@ function ToolbarMobile() {
             setDynamicTool(tool);
     };
     return (
-        <Flex align='center' style={toolbarStyle}>
+        <Flex align='center' style={toolbarStyle} >
             <TldrawUiMenuContextProvider type='toolbar' sourceId='toolbar'>
                 {mainToolsMobile.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
                 <ToolbarItem tool={dynamicTool} />
@@ -128,7 +128,7 @@ function Palette({smallScreen = false}: {smallScreen?: boolean}) {
 }
 
 const toolbarStyle: React.CSSProperties = {
-    zIndex: 100,
+    zIndex: 1,
     backgroundColor: 'var(--accent-1)',
     boxShadow: 'var(--shadow-3)',
     borderRadius: 'var(--radius-3)',
