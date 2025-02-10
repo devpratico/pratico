@@ -95,12 +95,12 @@ async function getPollDates(args:{
     };
 }
 
-// TODO: Make a common function also used in the reports page
-async function getPollParticipation(args: {
+
+async function getNumbersOfParticipants(args: {
     startEventId: string,
-}): Promise<DatabaseResponse<
-    number,
-    Error
+}): Promise<DatabaseResponse<{
+    number: number,
+}, Error
 >> {
     const supabase = createClient();
 
@@ -108,7 +108,7 @@ async function getPollParticipation(args: {
     const {
         data: endEventData,
         error: endEventError
-     } = await supabase
+    } = await supabase
         .from("room_events")
         .select()
         .eq("id", args.startEventId)
@@ -136,6 +136,54 @@ async function getPollParticipation(args: {
     const uniqueUsersIds = Array.from(new Set(usersIds));
     const participation = uniqueUsersIds.length;
 
+    return {
+        data: {
+            number: participation,
+        },
+        error: null,
+    }
+}
+
+
+// TODO: Make a common function also used in the reports page
+async function getPollParticipationRate(args: {
+    startEventId: string,
+}): Promise<DatabaseResponse<{
+    participationRate: number
+}, Error
+>> {
+    const supabase = createClient();
+
+    const {
+        data: nbPartData,
+        error: nbPartError
+    } = await getNumbersOfParticipants({ startEventId: args.startEventId });
+
+    if (nbPartError) {
+        return { data: null, error: nbPartError };
+    }
+
+    // Get room id from start event
+    const {
+        data: startEventData,
+        error: startEventError
+     } = await supabase
+        .from("room_events")
+        .select("room_id")
+        .eq("id", args.startEventId)
+        .single();
+
+    if (startEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getPollParticipation",
+            "Error fetching start event data",
+            startEventError
+        );
+        return { data: null, error: new Error("Error fetching start event data") };
+    }
+
     // Count number of attendances for this room, to calculate participation rate
     const {
         data: attendancesData,
@@ -143,7 +191,7 @@ async function getPollParticipation(args: {
      } = await supabase
         .from("attendance")
         .select("user_id")
-        .eq("room_id", endEventData.room_id);
+        .eq("room_id", startEventData.room_id);
 
     if (attendancesError) {
         logger.error(
@@ -158,10 +206,12 @@ async function getPollParticipation(args: {
 
     const attendances = attendancesData.length;
 
-    const participationRate = participation / attendances;
+    const participationRate = nbPartData.number / attendances;
 
     return {
-        data: participationRate,
+        data: { participationRate },
         error: null,
     };
 }
+
+
