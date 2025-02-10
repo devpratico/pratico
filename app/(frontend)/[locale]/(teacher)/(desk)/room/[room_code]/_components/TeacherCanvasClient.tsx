@@ -34,7 +34,7 @@ export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherC
     return (
         <Canvas store={store}>
             <CustomTlToolbar />
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 60 : 0 }} margin={0} />
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 80 : 0 }} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} saveOnMount/>
             <NavigatorSync />
         </Canvas>

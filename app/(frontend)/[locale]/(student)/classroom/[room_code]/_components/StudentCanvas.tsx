@@ -54,7 +54,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
                 : null
             
             }
-            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 60 : 0}} />
+            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 80 : 0}} />
             <NavigatorSync />
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
         </Canvas>
