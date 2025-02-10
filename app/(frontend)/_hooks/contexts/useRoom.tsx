@@ -1,11 +1,12 @@
 'use client'
-import { createContext, useContext, } from 'react';
+import { createContext, use, useContext, } from 'react';
 import { Room } from '@/app/(backend)/api/room/types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 import { isEqual } from 'lodash';
+import { useOnWake } from '../standalone/useOnWake';
 
 
 
@@ -22,6 +23,8 @@ export type RoomContext = {
 
 const RoomContext = createContext<RoomContext | undefined>(undefined);
 
+const supabase = createClient();
+
 /**
  * This provider fetches the room data based on the url room code.
  * Only the params property is updated in real time.
@@ -31,27 +34,35 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
-    useEffect(() => {
+    const fetchInitialData = useCallback(async () => {
         if (!room_code) return
-
-        const supabase = createClient();
-
-        // Fetch initial room data
-        supabase
+        const { data, error } = await supabase
             .from('rooms')
             .select('*')
             .eq('code', room_code)
             .eq('status', 'open')
-            .single<Room>()
-            .then(({ data, error }) => {
-                if (error) {
-                    logger.log('supabase:database', 'useRoom.tsx', `error fetching room ${room_code}...`, error.message)
-                    return
-                }
-                logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data)
-                setRoom(data)
-            })
+            .single<Room>();
 
+        if (error) {
+            logger.log('supabase:database', 'useRoom.tsx', `error fetching room ${room_code}...`, error.message);
+            return;
+        }
+        logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data);
+        setRoom(data);
+    }, [room_code]);
+
+
+    // Fetch initial data on first load
+    useEffect(() => {
+        fetchInitialData();
+    }, [fetchInitialData]);
+
+    // Fetch data on wake (phone unlocks)
+    useOnWake(fetchInitialData);
+
+
+    useEffect(() => {
+        if (!room_code) return
 
         logger.log('supabase:realtime','useRoom.tsx', "Listening to room table realtime")
 

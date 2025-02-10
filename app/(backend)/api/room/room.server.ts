@@ -81,11 +81,18 @@ export const fetchRoomParams = cache(async (roomId: number) => {
 export const fetchOpenRoomByCode = async (code: string) => {
     const supabase = createClient()
     const { data, error } = await supabase.from('rooms').select('*').eq('code', code).eq('status', 'open').single()
-
     if (error) logger.error('supabase:database', `error getting room by code "${code}"`, error.message)
     return { data, error: error?.message || null }
 }
 
+export const fetchRoomByCode = async (code: string) => {
+    const supabase = createClient()
+    const { data, error } = await supabase.from('rooms').select('*').eq('code', code).order('end_of_session', { ascending: false } ).limit(1).single();
+    console.log("fetchRoomByCode", data, error);
+    
+    if (error) logger.error('supabase:database', `error getting room by code "${code}"`, error.message)
+    return { data, error: error?.message || null }
+}
 
 
 

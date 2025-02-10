@@ -6,8 +6,19 @@ import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
 import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
+import { ActivityWidgetView } from "./_components/ActivityWidgetView";
+import { ActivityData, fetchActivitiesDoneInRoom } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 
-
+// // TYPE
+// export type ActivityTypeWidget = {
+//     id: string,
+//     type: string,
+//     title: string | undefined,
+//     started_at: Date,
+//     stopped_at: Date,
+//     percentage: number,
+//     nbQuestions: number
+// }
 // TYPE
 export type AttendanceInfoType = {
 	first_name: string | null,
@@ -43,6 +54,10 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
         sessionDateSubtitle = `Session du ${formatter.dateTime(sessionDate, {dateStyle: "short"})}`;
     }
     
+    const { data: activities, error } = await fetchActivitiesDoneInRoom(roomId);
+    if (error)
+        logger.error('next:page', 'SessionDetailsPage', 'Error fetching activities done in room', error.message);
+    
 	return (
 		<ScrollArea>
 			<Container>
@@ -56,9 +71,15 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                     <Heading as='h1' size="7" color='violet'>{capsuleTitle}</Heading>
                     <Text size="2" color='gray'>{sessionDateSubtitle}</Text> 
 
-                    <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='3' mt='8'>
+                    <Grid columns='repeat(auto-fill, minmax(400px, 1fr))' gap='5' mt='8'>
                         <AttendanceWidget roomId={roomId} capsuleTitle={capsuleTitle}/>
                         <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
+                        {
+                            activities?.map((activity: ActivityData) => {
+                                const color = activity.type === "poll" ? undefined : getParticipationColor(activity.relevantNumber!);
+                                return (<ActivityWidgetView key={activity.widgetId} color={color} activity={activity} />);
+                            })
+                        }   
                     </Grid>
 
                 </Section>
@@ -103,3 +124,8 @@ async function getSessionStartDate(roomId: string) {
     }
     return new Date(data.created_at)
 }
+
+const getParticipationColor = (rate: number) => {
+	if (rate < 50) return ("var(--amber-9)");
+	return ("var(--grass-9)");
+};
