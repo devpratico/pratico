@@ -62,12 +62,34 @@ async function getPollDates(args:{
 
     // Find the corresponding end event.
     // It is the next event of type end poll in the same room.
-    const endEventData = await supabase
+    const {
+        data: endEventData,
+        error: endEventError
+     } = await supabase
         .from("room_events")
         .select()
-        .eq("room_id", startEventData.
+        .eq("room_id", startEventData.room_id)
         .eq("type", "end_poll")
-        .gt("created_at", startEventData.created_at)
         .order("created_at", { ascending: true })
+        .limit(1)
         .single();
+
+    if (endEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getPollDates",
+            "Error fetching end event data",
+            endEventError
+        )
+        return { data: null, error: new Error("Error fetching end event data") };
+    }
+
+    return {
+        data: {
+            startDate: new Date(startEventData.timestamp),
+            endDate: new Date(endEventData.timestamp)
+        },
+        error: null,
+    };
 }
