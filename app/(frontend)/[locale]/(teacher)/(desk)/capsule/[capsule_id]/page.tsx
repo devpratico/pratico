@@ -21,7 +21,7 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
     const dialog = {
         title: "Vous avez lancer une session",
         description: `Toutes les modifications effectuées pendant la session seront effacées\
-            quand vous y mettrez fin et vous retrouverez votre capsule originale
+            quand vous y mettrez fin.
             Vous pourrez néanmoins télécharger la capsule modifiée en pdf pendant la session ou\
             dans vos rapports de session`
     }

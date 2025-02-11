@@ -1,7 +1,7 @@
 "use client";
 
 import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable";
-import { Button, AlertDialog, Flex } from "@radix-ui/themes";
+import { Button, AlertDialog, Flex, Checkbox } from "@radix-ui/themes";
 import { cloneElement, isValidElement, ReactElement, useState } from "react";
 
 export function WarningDialog(args: {
@@ -44,6 +44,9 @@ export function WarningDialog(args: {
 				<AlertDialog.Title align="center">{title}</AlertDialog.Title>
 				<Flex direction="column" gap="4">
 					<AlertDialog.Description style={{ whiteSpace: "pre-line" }}>{description}</AlertDialog.Description>
+					<Flex justify="center" align="center" gap="1">
+						<Checkbox />Ne plus afficher ce message
+					</Flex>
 					<Flex justify="center" gap="5" >
 						<AlertDialog.Cancel>
 							<Button>
