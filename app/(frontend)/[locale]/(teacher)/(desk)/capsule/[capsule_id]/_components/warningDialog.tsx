@@ -1,7 +1,7 @@
 "use client";
 
 import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable";
-import { Box, Button, AlertDialog, Flex } from "@radix-ui/themes";
+import { Button, AlertDialog, Flex } from "@radix-ui/themes";
 import { cloneElement, isValidElement, ReactElement, useState } from "react";
 
 export function WarningDialog(args: {
@@ -35,10 +35,6 @@ export function WarningDialog(args: {
 					variant={variant}
 					loading={loading}
 					disabled={disabled}
-					onClick={() => {
-						// setLoading(true);
-						// setDisabled(true);
-					}}
 					style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
 				>
 					{message}
