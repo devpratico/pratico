@@ -1,6 +1,6 @@
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { Flex, Box, Text } from "@radix-ui/themes"
-import { Puzzle, Users, Ellipsis, FlaskRound, Radio } from 'lucide-react';
+import { Puzzle, Users, Ellipsis, FlaskRound, Radio, Plus } from 'lucide-react';
 import Image from "next/image";
 import TopBarPortal from "../../_components/TopBarPortal";
 import StartDialog from "./_components/StartDialog";
@@ -36,7 +36,8 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 
 	const dialog = {
 		title: "Vous allez arrêter la session",
-		description: "Voulez-vous télécharger le pdf de la capsule modifiée ? Vous pouvez aussi le récupérer dans vos rapports de session"
+		description: `Vos modifications seront effacées
+			Vous pouvez télécharger le pdf dans le menu "Plus" de la session ou dans vos rapports de session`
 	}
     return (
         <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}
@@ -55,7 +56,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 						message={<><Radio color="var(--red-9)" />Arrêter la session</>}
 						title={dialog.title}
 						description={dialog.description}
-						buttonAction={<StopBtn message="Arrêter la session"/>}
+						buttonAction={<StopBtn message="continuer"/>}
 					/>
 					{/* <StopBtn message='Arrêter la session' /> */}
 

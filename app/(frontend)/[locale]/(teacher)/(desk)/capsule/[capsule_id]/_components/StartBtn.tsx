@@ -47,7 +47,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
             loading={loading}
             disabled={!capsuleId}
             onClick={handleClick}
-            style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)'} : {}) }}
+            // style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)'} : {}) }}
         >
             {message}
         </Button>

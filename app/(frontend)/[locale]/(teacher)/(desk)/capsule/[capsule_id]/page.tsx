@@ -20,8 +20,9 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
     const supabase = createClient();
     const dialog = {
         title: "Vous avez lancer une session",
-        description: `Vos modifications effectuees pendant la session active ne seront pas enregistrees\
-            dans la capsule mais vous pouvez les telecharger en pdf pendant la session ou\
+        description: `Toutes les modifications effectuées pendant la session seront effacées\
+            quand vous y mettrez fin et vous retrouverez votre capsule originale
+            Vous pourrez néanmoins télécharger la capsule modifiée en pdf pendant la session ou\
             dans vos rapports de session`
     }
     const { user, error } = await fetchUser();
@@ -51,7 +52,7 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                             message={<><Play size={15} strokeWidth='3' />lancer la session</>}
                             title={dialog.title}
                             description={dialog.description}
-                            buttonAction={<StartBtn message="lancer la session" />}
+                            buttonAction={<StartBtn message="continuer" />}
                         />
                         {/* <StartBtn message='lancer la session'/> */}
 
