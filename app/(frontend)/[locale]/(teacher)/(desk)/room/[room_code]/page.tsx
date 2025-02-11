@@ -1,6 +1,6 @@
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { Flex, Box, Text } from "@radix-ui/themes"
-import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
+import { Puzzle, Users, Ellipsis, FlaskRound, Radio } from 'lucide-react';
 import Image from "next/image";
 import TopBarPortal from "../../_components/TopBarPortal";
 import StartDialog from "./_components/StartDialog";
@@ -12,6 +12,7 @@ import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
 import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
+import { WarningDialog } from "../../capsule/[capsule_id]/_components/warningDialog";
 
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
@@ -33,6 +34,10 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 	else if (!roomData)
 		throw new Error("La session est terminée ou n'existe pas");
 
+	const dialog = {
+		title: "Vous allez arrêter la session",
+		description: "Voulez-vous télécharger le pdf de la capsule modifiée ? Vous pouvez aussi le récupérer dans vos rapports de session"
+	}
     return (
         <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}
 			<TopBarPortal>
@@ -46,7 +51,13 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 						<Text size='6' style={{ color: 'var(--background)', opacity: '0.5' }}>{`/${room_code}`}</Text>
 					</Flex>
 					<StartDialog/>
-					<StopBtn message='Arrêter la session' />
+					<WarningDialog
+						message={<><Radio color="var(--red-9)" />Arrêter la session</>}
+						title={dialog.title}
+						description={dialog.description}
+						buttonAction={<StopBtn message="Arrêter la session"/>}
+					/>
+					{/* <StopBtn message='Arrêter la session' /> */}
 
 				</Flex>
 

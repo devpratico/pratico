@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import TopBarPortal from '../../_components/TopBarPortal';
 import MenuTabs from '../../_components/MenuTabs';
-import { Puzzle, Ellipsis, FlaskRound } from 'lucide-react';
+import { Puzzle, Ellipsis, FlaskRound, Play } from 'lucide-react';
 import CapsuleTitle from '../../_components/CapsuleTitle';
 import CanvasSL from './_components/CanvasSL';
 import DoneBtn from './_components/DoneBtn';
@@ -11,13 +11,19 @@ import StartBtn from './_components/StartBtn';
 import createClient from '@/supabase/clients/server';
 import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
+import { WarningDialog } from './_components/warningDialog';
 
 
 
 export default async function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
     const logoScale = 0.25
     const supabase = createClient();
-
+    const dialog = {
+        title: "Vous avez lancer une session",
+        description: `Vos modifications effectuees pendant la session active ne seront pas enregistrees\
+            dans la capsule mais vous pouvez les telecharger en pdf pendant la session ou\
+            dans vos rapports de session`
+    }
     const { user, error } = await fetchUser();
     if (!user || error)
         throw new Error("User not found");
@@ -41,7 +47,13 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
 
                         <CapsuleTitle capsuleId={capsule_id}/>
 
-                        <StartBtn message='lancer la session'/>
+                        <WarningDialog
+                            message={<><Play size={15} strokeWidth='3' />lancer la session</>}
+                            title={dialog.title}
+                            description={dialog.description}
+                            buttonAction={<StartBtn message="lancer la session" />}
+                        />
+                        {/* <StartBtn message='lancer la session'/> */}
 
                     </Flex>
 
