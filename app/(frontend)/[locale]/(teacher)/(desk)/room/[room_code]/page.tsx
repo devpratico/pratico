@@ -12,8 +12,7 @@ import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
 import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
-import { WarningDialog } from "../../capsule/[capsule_id]/_components/warningDialog";
-
+import { StopSessionWarningAlert } from "./_components/StopSessionWarningAlert";
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25;
@@ -34,10 +33,6 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 	else if (!roomData)
 		throw new Error("La session est terminée ou n'existe pas");
 
-	const dialog = {
-		title: "Vous arrêtez la session",
-		description: `Votre capsule va être rétablie dans son état original ! Les modifications sont sauvegardées dans les rapports.`
-	}
     return (
         <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}
 			<TopBarPortal>
@@ -51,13 +46,7 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 						<Text size='6' style={{ color: 'var(--background)', opacity: '0.5' }}>{`/${room_code}`}</Text>
 					</Flex>
 					<StartDialog/>
-					<WarningDialog
-						message={<><Radio color="var(--red-9)" />Arrêter la session</>}
-						title={dialog.title}
-						description={dialog.description}
-						buttonAction={<StopBtn message="continuer"/>}
-					/>
-					{/* <StopBtn message='Arrêter la session' /> */}
+					<StopSessionWarningAlert />
 
 				</Flex>
 

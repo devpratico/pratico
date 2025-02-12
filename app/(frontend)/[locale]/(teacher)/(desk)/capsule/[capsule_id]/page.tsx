@@ -11,20 +11,14 @@ import StartBtn from './_components/StartBtn';
 import createClient from '@/supabase/clients/server';
 import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
-import { WarningDialog } from './_components/warningDialog';
+import { StartSessionWarningAlert } from './_components/StartSessionWarningAlert';
 
 
 
 export default async function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
     const logoScale = 0.25
     const supabase = createClient();
-    const dialog = {
-        title: "Vous lancez une session !",
-        description: `N'ayez pas peur de dynamiser votre présentation avec du dessin, des post-it, des images et des nouvelles pages.
-        
-            A la fin, votre capsule sera rétablie dans son état original !
-            Les modifications sont sauvergardées dans les rapports.`
-    }
+
     const { user, error } = await fetchUser();
     if (!user || error)
         throw new Error("User not found");
@@ -48,13 +42,7 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
 
                         <CapsuleTitle capsuleId={capsule_id}/>
 
-                        <WarningDialog
-                            message={<><Play size={15} strokeWidth='3' />lancer la session</>}
-                            title={dialog.title}
-                            description={dialog.description}
-                            buttonAction={<StartBtn message="continuer" />}
-                        />
-                        {/* <StartBtn message='lancer la session'/> */}
+                        <StartSessionWarningAlert />
 
                     </Flex>
 
