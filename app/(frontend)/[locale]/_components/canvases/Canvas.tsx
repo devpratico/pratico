@@ -122,12 +122,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {children}
 			{/* <Resizer/> */}
 			<EmbedHint/>
-			{/* <KeyboardShortcuts/> */}
 		</Tldraw>
     )
-}
-
-const KeyboardShortcuts = () => {
-    useKeyboardShortcuts()
-    return null
 }
