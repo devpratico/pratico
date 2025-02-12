@@ -1,5 +1,5 @@
 "use client";
-import { Button, AlertDialog, Flex, Checkbox } from "@radix-ui/themes";
+import { Button, AlertDialog, Flex, Checkbox, Text } from "@radix-ui/themes";
 import { Play } from "lucide-react";
 import StartBtn from "./StartBtn";
 
@@ -17,8 +17,9 @@ export function StartSessionWarningAlert() {
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger>
-				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--background)' }}>
-					<Play size={21} />lancer la session
+				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--accent-1)' }}>
+					<Play size={21} />
+                    <Text trim="end">lancer la session</Text>
 				</Button>
 			</AlertDialog.Trigger>
 			<AlertDialog.Content>

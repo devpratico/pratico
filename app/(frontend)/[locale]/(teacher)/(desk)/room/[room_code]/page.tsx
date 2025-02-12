@@ -42,8 +42,12 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 				<Flex align='center' gap='4' display={{ initial: 'none', xs: 'flex' }}>
 					
 					<Flex align='center'>
-						<Image src='/images/logolien.png' width={500 * logoScale} height={105 * logoScale} alt="Pratico" />
-						<Text size='6' style={{ color: 'var(--background)', opacity: '0.5' }}>{`/${room_code}`}</Text>
+						<Image src='/images/logo.png' width={420 * logoScale} height={105 * logoScale} alt="Pratico" />
+						<Text trim='end' size='6' style={{
+                            color: 'var(--accent-1)',
+                            opacity: '0.7',
+                            marginTop: '1px',
+                        }}>{`.io/${room_code}`}</Text>
 					</Flex>
 					<StartDialog/>
 					<StopSessionWarningAlert />

@@ -6,7 +6,6 @@ import Carousel from "./_components/Carousel"
 import Controls from "./_components/Controls"
 import { TLEditorProvider } from "@/app/(frontend)/_hooks/contexts/useTLEditor"
 import { NavProvider } from "@/app/(frontend)/_hooks/contexts/useNav"
-import TLToolbar from "../../_components/canvases/custom-ui/tool-bar/TLToolbar"
 import MobileControls from "./_components/MobileControls"
 import { PresencesProvider } from "@/app/(frontend)/_hooks/contexts/usePresences"
 import { RoomProvider } from "@/app/(frontend)/_hooks/contexts/useRoom"
@@ -57,14 +56,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
 
                 {/* Main content. Canvas will go here */}
-                <Flex gap='3' overflowY='clip'>
-                    <Flex direction='column' gap='3' justify='center' display={{ initial: 'none', xs: 'flex' }} style={{zIndex:'1'}}>
-                        <TLToolbar />
-                    </Flex>
+                <Box>
                     {children}
-                </Flex>
-
-                
+                </Box>    
 
                 {/* Menus layout (outside the grid layout because of `absolute`)*/}
                 <Box position='absolute' top='0' bottom='0' right='0' width='100%' overflow='clip' style={{pointerEvents: 'none'}}>

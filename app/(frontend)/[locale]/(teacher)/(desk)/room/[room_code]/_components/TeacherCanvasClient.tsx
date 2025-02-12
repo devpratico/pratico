@@ -8,6 +8,8 @@ import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Re
 import { CanvasUser } from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
 import { useEffect } from "react";
 import { setUserPreferences } from "tldraw";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
 
 
 interface TeacherCanvasClientProps {
@@ -19,6 +21,7 @@ interface TeacherCanvasClientProps {
 
 export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherCanvasClientProps) {
     const store = useBroadcastStore({ roomId: roomId.toString(), initialSnapshot: snapshot })
+    const { widerThan } = useWindow();
 
     useEffect(() => {
         setUserPreferences({
@@ -30,7 +33,8 @@ export default function TeacherCanvasClient({ user, roomId, snapshot }: TeacherC
 
     return (
         <Canvas store={store}>
-            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
+            <CustomTlToolbar />
+            <Resizer insets={{ top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 80 : 0 }} margin={0} />
             <AutoSaver saveTo={{ destination: 'remote room', roomId: roomId }} saveOnMount/>
             <NavigatorSync />
         </Canvas>

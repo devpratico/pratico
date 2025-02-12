@@ -10,7 +10,7 @@ import StartBtn from './[capsule_id]/_components/StartBtn';
 
 
 export default async function Page() {
-    const logoScale = 0.25
+    const logoScale = 0.20
 
     return (
         <>
@@ -21,7 +21,7 @@ export default async function Page() {
                     <Flex gap='5' display={{ initial: 'none', xs: 'flex' }}>
                         <Link href='/capsules' style={{ display: 'flex', alignItems: 'center' }}>
                             <Tooltip content={<Text size='2'>Accueil</Text>} side='bottom' style={{ padding: '0.5rem' }}>
-                                <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+                                <Image src='/images/logo.png' width={420 * logoScale} height={105 * logoScale} alt="Pratico" />
                             </Tooltip>
                         </Link>
 

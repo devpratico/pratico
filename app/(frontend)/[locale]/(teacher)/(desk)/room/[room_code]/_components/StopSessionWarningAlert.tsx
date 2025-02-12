@@ -13,7 +13,7 @@ export function StopSessionWarningAlert() {
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger>
-				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--background)' }}>
+				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--accent-1)' }}>
 					<Radio color="var(--tomato-10)"/>arrêter la session
 				</Button>
 			</AlertDialog.Trigger>

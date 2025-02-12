@@ -2,7 +2,6 @@
 import Canvas from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
 import useBroadcastStore from "@/app/(frontend)/_hooks/standalone/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
-import TLToolbar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/AutoSaver";
 import NavigatorSync from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/NavigatorSync";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
@@ -11,11 +10,9 @@ import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
 import { useEffect } from "react";
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
-import { Box } from "@radix-ui/themes";
-import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
-import ToolBarBox from "./ToolBarBox";
-import MobileToolbar from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/MobileToolbar";
 import logger from "@/app/_utils/logger";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
 
 
 interface StudentCanvasProps {
@@ -50,16 +47,16 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
     }, [canCollab, editor])
 
     return (
-        <>
-            <ToolBarBox>
-                {canCollab && (widerThan('xs') ? <Box p='2'><TLToolbar /></Box> : <MobileToolbar />)}
-            </ToolBarBox>
-
-            <Canvas store={store}>
-                <Resizer />
-                <NavigatorSync />
-                { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
-            </Canvas>
-        </>
+        <Canvas store={store}>
+            {
+                canCollab
+                ? <CustomTlToolbar />
+                : null
+            
+            }
+            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 80 : 0}} />
+            <NavigatorSync />
+            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
+        </Canvas>
     )
 }
