@@ -3,14 +3,17 @@ import { Button, AlertDialog, Flex, Checkbox } from "@radix-ui/themes";
 import { Play } from "lucide-react";
 import StartBtn from "./StartBtn";
 
-export function StartSessionWarningAlert() {
-	const dialog = {
-		title: "Vous lancez une session !",
-		description: `N'ayez pas peur de dynamiser votre présentation avec du dessin, des post-it, des images et des nouvelles pages.
 
-			A la fin, votre capsule sera rétablie dans son état original !
-			Les modifications sont sauvergardées dans les rapports.`
-	}
+const dialog = {
+	title: "Vous lancez une session !",
+	description: `N'ayez pas peur de dynamiser votre présentation avec du dessin, des post-it, des images et des nouvelles pages.
+
+		A la fin, votre capsule sera rétablie dans son état original !
+		Les modifications sont sauvergardées dans les rapports.`
+}
+
+export function StartSessionWarningAlert() {
+	
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger>

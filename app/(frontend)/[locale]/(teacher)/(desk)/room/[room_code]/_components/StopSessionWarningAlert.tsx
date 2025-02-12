@@ -3,16 +3,18 @@ import { Button, AlertDialog, Flex, Checkbox } from "@radix-ui/themes";
 import { Radio } from "lucide-react";
 import StopBtn from "./StopBtn";
 
+const dialog = {
+	title: "Vous arrêtez la session",
+	description: `Votre capsule va être rétablie dans son état original ! Les modifications sont sauvegardées dans les rapports.`
+}
+
 export function StopSessionWarningAlert() {
-	const dialog = {
-		title: "Vous arrêtez la session",
-		description: `Votre capsule va être rétablie dans son état original ! Les modifications sont sauvegardées dans les rapports.`
-	}
+
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger>
 				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--background)' }}>
-					<Radio color="red"/>arrêter la session
+					<Radio color="var(--tomato-10)"/>arrêter la session
 				</Button>
 			</AlertDialog.Trigger>
 			<AlertDialog.Content>
