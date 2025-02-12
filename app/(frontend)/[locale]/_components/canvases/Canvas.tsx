@@ -20,6 +20,7 @@ import logger from '@/app/_utils/logger'
 import useCapsuleId from '@/app/(frontend)/_hooks/standalone/useCapsuleId'
 import makeAssetStore from '@/app/_utils/tldraw/assetStore'
 
+
 export interface CanvasUser {
     id: string
     name: string
@@ -42,6 +43,7 @@ export interface CanvasProps {
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { setEditor } = useTLEditor();
     const capsuleId = useCapsuleId()
+    const assetHandler = useMemo(() => capsuleId ? makeAssetStore({ capsuleId }) : undefined, [capsuleId])
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -54,12 +56,6 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         // Call the provided onMount function
         if (onMount) {
             onMount(editor)
-
-            if (capsuleId) {
-                const assetHandler = makeAssetStore({ capsuleId })
-
-                //editor.registerExternalAssetHandler('file', assetHandler)
-            }
         }
 
         editor.setCameraOptions({
@@ -111,6 +107,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 		TopPanel: null,
 		CursorChatBubble: null
 	 }), []);
+
     return (
 		<Tldraw
 			className='tldraw-canvas'
@@ -120,6 +117,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
 			options={options}
+            assets={assetHandler}
 		>
             {children}
 			{/* <Resizer/> */}
