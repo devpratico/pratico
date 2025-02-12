@@ -29,9 +29,7 @@ const colors: string[] = [
     // Add all other CSS colors
 ];*/
 const colors: string[] = [
-    'var(--gray-9)',
     'var(--mauve-9)',
-    'var(--slate-9)',
     'var(--sage-9)',
     'var(--olive-9)',
     'var(--sand-9)',

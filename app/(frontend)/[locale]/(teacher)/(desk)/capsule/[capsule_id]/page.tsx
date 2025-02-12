@@ -33,16 +33,16 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                 <Flex justify={{ initial: 'center', xs: 'between' }} align='center'>
 
 
-                    <Flex gap='5' display={{ initial: 'none', xs: 'flex' }}>
+                    <Flex gap='5' display={{ initial: 'none', xs: 'flex' }} align='center'>
                         <Link href='/capsules' style={{ display: 'flex', alignItems: 'center' }}>
                             <Tooltip content={<Text size='2'>Accueil</Text>} side='bottom' style={{ padding: '0.5rem' }}>
-                                <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+                                <Image src='/images/logo.png' width={420 * logoScale} height={105 * logoScale} alt="Pratico" />
                             </Tooltip>
                         </Link>
 
-                        <CapsuleTitle capsuleId={capsule_id}/>
 
                         <StartSessionWarningAlert />
+                        <CapsuleTitle capsuleId={capsule_id}/>
 
                     </Flex>
 
