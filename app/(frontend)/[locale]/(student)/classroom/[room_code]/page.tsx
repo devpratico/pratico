@@ -3,7 +3,7 @@ import { fetchUser } from '@/app/(backend)/api/user/user.server'
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation'
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
-import { fetchOpenRoomByCode } from '@/app/(backend)/api/room/room.server'
+import { fetchRoomByCode } from '@/app/(backend)/api/room/room.server'
 import logger from '@/app/_utils/logger'
 import { fetchUserAttendanceData } from '@/app/(backend)/api/attendance/attendance.server'
 import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
@@ -12,10 +12,20 @@ import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
 export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
 
 	// Check room exists
-	const { data: roomData, error: roomError } = await fetchOpenRoomByCode(params.room_code);
-	if (roomError || !roomData) {
-		logger.error("next:page", "StudentViewPage", "room error", roomError);
-        throw new Error("Room not found");
+	const { data: roomData, error: roomError } = await fetchRoomByCode(params.room_code);
+	if (roomError || !roomData) 
+    {
+        logger.error("next:page", "StudentViewPage", "room error", roomError);
+        throw new Error("La session n'existe pas");
+    }
+
+    // Check room closed in the last 24 hours
+    if (roomData.status === 'closed' && roomData.end_of_session) {
+        const isRecentlyClosed = isRoomClosedInTheLast24h(roomData.end_of_session);
+        logger.log("next:page", "StudentViewPage", "Room closed in the last 24h ?", isRecentlyClosed);
+        if (isRecentlyClosed)
+            return (redirect(`/classroom/closed/${roomData.id}`));
+        throw new Error("La session est fermée");
 	}
 
     // Check user is logged in (can be anonymous)
@@ -51,3 +61,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
         </RedirectIfRoomClosed>
 	);
 }
+
+const isRoomClosedInTheLast24h = (endOfSession: string) => {
+    return (endOfSession && Date.now() - new Date(endOfSession).getTime() <= 24 * 60 * 60 * 1000);
+};

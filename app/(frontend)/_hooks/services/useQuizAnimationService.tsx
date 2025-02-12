@@ -8,6 +8,7 @@ import { useUser } from "../contexts/useUser"
 import logger from "@/app/_utils/logger"
 import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
 import useAnswerActivityMutation from "../mutations/useAnswerActivityMutation"
+import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -197,12 +198,17 @@ export function useCloseQuizService(): {
     const [isPending, setIsPending] = useState(false)
     const { save, isSaving } = useSaveQuizSnapshot()
     const roomId = useRoom().room?.id
+    const { addEndActivityEvent } = useRoomEventsMutation(`${roomId}`)
 
     const close = useCallback(async () => {
         if (!roomId) return { error: 'No room id' }
 
         const state = useQuizAnimationStore.getState()
         if (!state.activityId) return { error: 'No activity id' }
+
+        // Save this for the end event
+        const activityId = state.activityId
+        const answers = state.answers
 
         setIsPending(true)
 
@@ -217,8 +223,17 @@ export function useCloseQuizService(): {
         }
 
         setIsPending(false)
+
+        if (!error) {
+            addEndActivityEvent({
+                type: 'quiz',
+                activityId: `${activityId}`,
+                answers: answers
+            })
+        }
+
         return { error: null }
-    }, [roomId, save])
+    }, [roomId, save, addEndActivityEvent])
 
     return { close, isPending }
 }
