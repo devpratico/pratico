@@ -7,7 +7,6 @@ import { stopRoom } from "@/app/(backend)/api/room/room.client";
 import { useState } from "react";
 import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable";
 import createClient from "@/supabase/clients/client";
-import { Radio } from "lucide-react";
 
 interface StopBtnProps {
     message?: string;
@@ -27,10 +26,10 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
 
     return(
         <Button
-            variant={variant}
+            // variant={variant}
             radius='large'
             loading={loading}
-            style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
+            // style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--background)' } : {}) }}
             disabled={disabled}
             onClick={async () => {
                 setLoading(true)
@@ -52,7 +51,6 @@ export default function StopBtn({ message, variant='surface' }: StopBtnProps) {
                 }
             }}
         >
-            <Radio color="var(--red-9)" /> 
             {message}
         </Button>
     )
