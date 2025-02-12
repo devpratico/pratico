@@ -56,6 +56,10 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         // Call the provided onMount function
         if (onMount) {
             onMount(editor)
+            const watermark = document.getElementsByClassName('tl-watermark_SEE-LICENSE')[0]
+            watermark?.remove()
+
+            watermark?.setAttribute('style', 'z-index: 0;')
         }
 
         editor.setCameraOptions({
