@@ -37,7 +37,7 @@ export default function MenuDialog({children}: {children: React.ReactNode}) {
                 width:'100%',
                 maxWidth:'400px',
                 height:'100%',
-                zIndex:'201',
+                zIndex:'1',
                 paddingRight: 'env(safe-area-inset-right)',
                 backgroundColor:'var(--accent-1)',
                 boxShadow:'var(--shadow-3)',

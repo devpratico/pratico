@@ -16,7 +16,7 @@ export default function TopBarBox({ children, ...props }: { children?: React.Rea
                 color: 'var(--accent-contrast)',
                 boxShadow: 'var(--shadow-3)',
                 position: 'relative',
-                zIndex: '202',
+                zIndex: '2',
             }}
             {...props}
         >
