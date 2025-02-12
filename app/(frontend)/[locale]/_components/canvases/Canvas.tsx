@@ -122,7 +122,7 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
             {children}
 			{/* <Resizer/> */}
 			<EmbedHint/>
-			<KeyboardShortcuts/>
+			{/* <KeyboardShortcuts/> */}
 		</Tldraw>
     )
 }
