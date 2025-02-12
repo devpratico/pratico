@@ -19,11 +19,11 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
     const logoScale = 0.25
     const supabase = createClient();
     const dialog = {
-        title: "Vous avez lancer une session",
-        description: `Toutes les modifications effectuées pendant la session seront effacées\
-            quand vous y mettrez fin.
-            Vous pourrez néanmoins télécharger la capsule modifiée en pdf pendant la session ou\
-            dans vos rapports de session`
+        title: "Vous lancez une session !",
+        description: `N'ayez pas peur de dynamiser votre présentation avec du dessin, des post-it, des images et des nouvelles pages.
+        
+            A la fin, votre capsule sera rétablie dans son état original !
+            Les modifications sont sauvergardées dans les rapports.`
     }
     const { user, error } = await fetchUser();
     if (!user || error)

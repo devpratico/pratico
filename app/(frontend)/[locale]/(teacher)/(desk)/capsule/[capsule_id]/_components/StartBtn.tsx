@@ -42,7 +42,7 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 
     return (
         <Button
-            variant={variant}
+            // variant={variant}
             radius='large'
             loading={loading}
             disabled={!capsuleId}

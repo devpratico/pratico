@@ -35,9 +35,8 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 		throw new Error("La session est terminée ou n'existe pas");
 
 	const dialog = {
-		title: "Vous allez arrêter la session",
-		description: `Vos modifications seront effacées
-			Vous pouvez télécharger le pdf dans le menu "Plus" de la session ou dans vos rapports de session`
+		title: "Vous arrêtez la session",
+		description: `Votre capsule va être rétablie dans son état original ! Les modifications sont sauvegardées dans les rapports.`
 	}
     return (
         <RealtimeActivityProvider> {/* TODO: Place all providers in layouts to avoid that mess? */}

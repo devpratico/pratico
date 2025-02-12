@@ -41,15 +41,15 @@ export function WarningDialog(args: {
 				</Button>
 			</AlertDialog.Trigger>
 			<AlertDialog.Content>
-				<AlertDialog.Title align="center">{title}</AlertDialog.Title>
+				<AlertDialog.Title>{title}</AlertDialog.Title>
 				<Flex direction="column" gap="4">
-					<AlertDialog.Description style={{ whiteSpace: "pre-line" }}>{description}</AlertDialog.Description>
-					<Flex justify="center" align="center" gap="1">
+					<AlertDialog.Description size="2" style={{ whiteSpace: "pre-line" }}>{description}</AlertDialog.Description>
+					{/* <Flex justify="center" align="center" gap="1">
 						<Checkbox />Ne plus afficher ce message
-					</Flex>
-					<Flex justify="center" gap="5" >
+					</Flex> */}
+					<Flex justify="end" gap="2" >
 						<AlertDialog.Cancel>
-							<Button>
+							<Button variant="soft" color="gray">
 								annuler
 							</Button>
 						</AlertDialog.Cancel>				
