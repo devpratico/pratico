@@ -43,7 +43,7 @@ export function CustomTlToolbar() {
 
 function ClassicToolbar(props: FlexProps) {
     return (
-        <Flex direction="column" gap="5" m="4" align="center" {...props}>
+        <Flex direction="column" gap="4" m="4" align="center" {...props}>
             <Palette />
             <Toolbar />
         </Flex>
@@ -54,7 +54,7 @@ function SmallerScreenToolbar(props: FlexProps) {
     return (
         <Flex gap="3" align="center" {...props}>
             <ToolbarMobile />
-            <Palette smallScreen />
+            <Palette/>
         </Flex>
     )
 }
@@ -68,14 +68,20 @@ function Toolbar() {
     };
     return (
         
-            <Flex p="2" direction='column' align='center' style={toolbarStyle}>
+            <Flex p="1" gap="1" direction='column' align='center' style={toolbarStyle}>
 
-                {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool} />)}
+                {mainTools.map((tool) => <ToolbarItem tool={tool} key={tool}/>)}
 
                 <ToolbarItem tool={dynamicTool} />
                 <Popover.Root >
                     <Popover.Trigger>
-                        <IconButton m="0" variant="ghost" size="4"><ChevronRight size={32} /></IconButton>
+                        <IconButton
+                            style={{ margin: 0, marginBottom: 4 }}
+                            variant="ghost"
+                            size="2"
+                        >
+                            <ChevronRight size={32} />
+                        </IconButton>
                     </Popover.Trigger>
 
                     <Popover.Content onClick={(event) => {
@@ -85,7 +91,7 @@ function Toolbar() {
                         const tool = target.getAttribute('data-tool');
                         if (tool)
                             handleClick(tool);
-                    }} sideOffset={1} alignOffset={1} side="right">
+                    }} sideOffset={1} alignOffset={1} side="right" style={{padding:0}}>
                         <Grid columns="4">
                             {extraTools.map((tool) => 
                                 <div key={tool} data-tool={tool}>
@@ -116,7 +122,13 @@ function ToolbarMobile() {
                     <ToolbarItem tool={dynamicTool} />
                     <Popover.Root >
                         <Popover.Trigger>
-                            <IconButton m="2" variant="ghost" size="4"><ChevronUp size={32} /></IconButton>
+                            <IconButton
+                                variant="ghost"
+                                size='4'
+                                style={{margin: 0}}
+                            >
+                                <ChevronUp size={32} />
+                            </IconButton>
                         </Popover.Trigger>
 
                         <Popover.Content onClick={(event) => {
@@ -142,20 +154,28 @@ function ToolbarMobile() {
     )
 }
 
-function Palette({smallScreen = false}: {smallScreen?: boolean}) {
-    //const styles = useRelevantStyles();
-    
+function Palette() {    
     return (
         <PopoverPrimitive.Root >
-            <PopoverPrimitive.Trigger style={{ backgroundColor: "var(--accent-1)",  boxShadow: 'var(--shadow-3)'}} asChild>
-                <IconButton radius="full" variant="ghost" size={smallScreen ? "3" : "4"}><PaletteIcon size={32} /></IconButton>
+            <PopoverPrimitive.Trigger asChild>
+                <IconButton
+                    radius="full"
+                    style={{
+                        color: 'var(--accent-9)',
+                        backgroundColor: 'var(--accent-1)',
+                        width: '42px',
+                        height: '42px',
+                        boxShadow: 'var(--shadow-2)',
+                    }}
+                >
+                    <PaletteIcon size={25} strokeWidth={2.3}/>
+                </IconButton>
             </PopoverPrimitive.Trigger>
 
             <PopoverPrimitive.Portal container={document.getElementsByClassName('tldraw-canvas')[0] as HTMLElement}>
                 <PopoverPrimitive.Content
-                    //sideOffset={1}
-                    //alignOffset={1}
-                    side={smallScreen ? "top" : "right"}
+                    sideOffset={40}
+                    side={{initial: 'top', xs: 'right'} as any}
                     style={{zIndex: 10000}}
                 >
                         <DefaultStylePanel />
@@ -167,15 +187,32 @@ function Palette({smallScreen = false}: {smallScreen?: boolean}) {
 
 const toolbarStyle: React.CSSProperties = {
     backgroundColor: 'var(--accent-1)',
-    boxShadow: 'var(--shadow-2)',
+    boxShadow: 'var(--shadow-1)',
     borderRadius: 'var(--radius-3)',
 };
 
 const toolStyle = `
-.tlui-button__tool {
-    margin-left:  0px !important;
-    margin-right: 0px !important;
-}
+/*.tlui-icon {
+    width:  20px !important;
+    height: 20px !important;
+}*/
+
+/*.tlui-button {
+    min-width: 0px !important;
+    padding: 0 !important;
+}*/
+
+/*.tlui-button__tool {
+    margin: 0 !important;
+    width: 38px !important;
+    height: 38px !important;
+}*/
+
+/*.tlui-button__tool::after {
+    inset: 0px !important;
+    width: 38px !important;
+    height: 38px !important;
+}*/
 `
 
 
