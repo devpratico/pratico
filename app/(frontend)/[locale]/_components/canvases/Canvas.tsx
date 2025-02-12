@@ -17,6 +17,8 @@ import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
 import { useCallback, useMemo } from 'react'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import useCapsuleId from '@/app/(frontend)/_hooks/standalone/useCapsuleId'
+import makeAssetStore from '@/app/_utils/tldraw/assetStore'
 
 export interface CanvasUser {
     id: string
@@ -39,6 +41,7 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { setEditor } = useTLEditor();
+    const capsuleId = useCapsuleId()
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -51,6 +54,12 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
         // Call the provided onMount function
         if (onMount) {
             onMount(editor)
+
+            if (capsuleId) {
+                const assetHandler = makeAssetStore({ capsuleId })
+
+                //editor.registerExternalAssetHandler('file', assetHandler)
+            }
         }
 
         editor.setCameraOptions({
