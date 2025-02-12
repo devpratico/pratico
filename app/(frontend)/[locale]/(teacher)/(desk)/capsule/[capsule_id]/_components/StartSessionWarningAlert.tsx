@@ -17,7 +17,7 @@ export function StartSessionWarningAlert() {
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger>
-				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--background)' }}>
+				<Button variant="surface" style={{ boxShadow: 'none', backgroundColor: 'var(--accent-1)' }}>
 					<Play size={21} />lancer la session
 				</Button>
 			</AlertDialog.Trigger>
