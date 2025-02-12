@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Button } from "@radix-ui/themes";
 import { useState } from "react";
-import { Play } from "lucide-react";
 import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser";
 
 
@@ -43,14 +42,11 @@ export default function StartBtn({ message, variant='surface' }: StartBtnProps) 
 
     return (
         <Button
-            variant={variant}
             radius='large'
             loading={loading}
             disabled={!capsuleId}
             onClick={handleClick}
-            style={{ boxShadow: 'none', ...(variant === 'surface' ? { backgroundColor: 'var(--accent-1)'} : {}) }}
         >
-            <Play size={15} strokeWidth='3' />
             {message}
         </Button>
     )
