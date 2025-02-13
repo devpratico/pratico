@@ -136,7 +136,7 @@ export default function Carousel() {
 		};
 		if (snapshot?.session.currentPageId === currentPageId)
 			saveNewSnapshot();
-	}, [editor, capsuleId]);
+	}, [editor, capsuleId, currentPageId]);
 
     return (
 		<DndContext autoScroll={{
