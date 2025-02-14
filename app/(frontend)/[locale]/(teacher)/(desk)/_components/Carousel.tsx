@@ -15,7 +15,6 @@ import useKeyboardShortcuts, { KeyboardShortcutType } from '@/app/(frontend)/_ho
 import { useFullscreen } from '@/app/(frontend)/_hooks/contexts/useFullscreen'
 import { useParams } from 'next/navigation'
 import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
-import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 
 interface MiniatureProps {
     pageId: TLPageId
@@ -128,15 +127,6 @@ export default function Carousel() {
 		if (currentThumbnail && document.activeElement !== currentThumbnail)
 			currentThumbnail.focus();
 	}, [currentPageId]);
-
-	useEffect(() => {
-		const snapshot = editor?.getSnapshot();
-		const saveNewSnapshot = async () => {
-			await saveCapsuleSnapshot(capsuleId, snapshot);
-		};
-		if (snapshot?.session.currentPageId === currentPageId)
-			saveNewSnapshot();
-	}, [editor, capsuleId, currentPageId]);
 
     return (
 		<DndContext autoScroll={{

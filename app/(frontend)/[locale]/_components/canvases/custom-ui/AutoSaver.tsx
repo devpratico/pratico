@@ -4,7 +4,7 @@ import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 
 
 export type AutoSaverProps = {
@@ -23,6 +23,8 @@ export type AutoSaverProps = {
  */
 const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
     const editor  = useEditor()
+    const prevPageId = useRef(editor.getCurrentPageId());
+
     const save = useCallback(async (snapshot: TLEditorSnapshot) => {
         let _id: string | number
 
@@ -70,6 +72,21 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
             listener?.() // Removes the listener (returned from store.listen())
         }
     }, [editor, save])
+
+    useEffect(() => {
+        /* Listens on which page we are and saves it if it changes */
+        
+        const unsubscribe = editor.store.listen(() => {
+            const newPageId = editor.getCurrentPageId();
+            if (newPageId && newPageId !== prevPageId.current) {
+                prevPageId.current = newPageId;
+                save(editor.getSnapshot());
+            }
+        },
+        { source: "user" });
+      
+        return (() => unsubscribe());
+    }, [editor, save, prevPageId]);
 
     return null
 })
