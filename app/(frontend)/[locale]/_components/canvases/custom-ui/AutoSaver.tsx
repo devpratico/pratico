@@ -3,8 +3,10 @@ import { track, TLEditorSnapshot, useEditor } from 'tldraw'
 import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
-//import debounce from '@/utils/debounce';
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useNav } from '@/app/(frontend)/_hooks/contexts/useNav'
+import debounce from '@/app/_utils/debounce'
+// TODO: use lodash debounce instead of ours
 
 
 export type AutoSaverProps = {
@@ -23,72 +25,64 @@ export type AutoSaverProps = {
  */
 const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
     const editor  = useEditor()
-    const prevPageId = useRef(editor.getCurrentPageId());
+    const { currentPageId } = useNav()
 
-    const save = useCallback(async (snapshot: TLEditorSnapshot) => {
-        let _id: string | number
-
-        try {
-            switch (saveTo.destination) {
-                case 'remote capsule':
-                    _id = saveTo.capsuleId
-                    await saveCapsuleSnapshot(_id, snapshot)
-                    break
-
-                case 'remote room':
-                    _id = saveTo.roomId
-                    await saveRoomSnapshot(_id, snapshot)
-                    break
-            }
-            logger.log('supabase:database', `Saved capsule snapshot to ${saveTo.destination} ${_id}`)
-        } catch (error) {
-            logger.error('supabase:database', 'Error saving capsule snapshot', (error as Error).message)
-        }
-    }, [saveTo])
+    const debounceSave = useMemo(() => debounce(() => {
+        save({ saveTo, snapshot: editor.getSnapshot() });
+    }, 1000), [editor, saveTo]);
 
     // Save on mount
     useEffect(() => {
         if (editor && saveOnMount) {
             logger.log('react:component', 'AutoSaver', 'First save of autosaver')
-            save(editor.getSnapshot())
+            save({ saveTo, snapshot: editor.getSnapshot() })
         }
-    }, [editor, save, saveOnMount])
+    }, [editor, saveOnMount, saveTo])
 
 
-    // Save when the snapshot changes
+    // Save when the snapshot changes (drawing shapes...)
     useEffect(() => {
-        let timeout: NodeJS.Timeout
-        const debouncedSave = (snapshot: TLEditorSnapshot) => {
-            clearTimeout(timeout)
-            timeout = setTimeout(() => save(snapshot), 1000)
-        }
-
-        const listener = editor?.store.listen(({changes}) => {
-            debouncedSave(editor.getSnapshot())
+        const documentListener = editor?.store.listen(({changes}) => {
+            debounceSave()
         }, {source: 'user', scope: 'document'})
+
     
         return () => {
-            clearTimeout(timeout)
-            listener?.() // Removes the listener (returned from store.listen())
+            documentListener?.() // Removes the listener (returned from store.listen())
         }
-    }, [editor, save])
+    }, [editor, debounceSave])
 
+    // Page change
     useEffect(() => {
-        /* Listens on which page we are and saves it if it changes */
-        
-        const unsubscribe = editor.store.listen(() => {
-            const newPageId = editor.getCurrentPageId();
-            if (newPageId && newPageId !== prevPageId.current) {
-                prevPageId.current = newPageId;
-                save(editor.getSnapshot());
-            }
-        },
-        { source: "user" });
-      
-        return (() => unsubscribe());
-    }, [editor, save, prevPageId]);
+        debounceSave()
+    }, [currentPageId, debounceSave])
 
     return null
 })
 
 export default AutoSaver
+
+async function save(args: {
+    saveTo: AutoSaverProps['saveTo'],
+    snapshot: TLEditorSnapshot
+}) {
+    const { saveTo, snapshot } = args
+    let _id: string | number
+
+    try {
+        switch (saveTo.destination) {
+            case 'remote capsule':
+                _id = saveTo.capsuleId
+                await saveCapsuleSnapshot(_id, snapshot)
+                break
+
+            case 'remote room':
+                _id = saveTo.roomId
+                await saveRoomSnapshot(_id, snapshot)
+                break
+        }
+        logger.log('supabase:database', `Saved capsule snapshot to ${saveTo.destination} ${_id}`)
+    } catch (error) {
+        logger.error('supabase:database', 'Error saving capsule snapshot', (error as Error).message)
+    }
+}
