@@ -1,5 +1,5 @@
 // TODO: move to _types
-type DatabaseResponse<D, E> = {
+type ServerResponse<D, E> = {
     data: D;
     error: null;
 } | {
@@ -8,4 +8,4 @@ type DatabaseResponse<D, E> = {
 };
 
 
-export default DatabaseResponse;
+export default ServerResponse;

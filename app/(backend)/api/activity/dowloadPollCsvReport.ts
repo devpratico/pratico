@@ -1,5 +1,6 @@
+import "server-only"
 import createClient from "@/supabase/clients/server";
-import DatabaseResponse from "@/app/_utils/DatabaseResponse";
+import ServerResponse from "@/app/_utils/ServerResponse";
 import logger from "@/app/_utils/logger";
 
 
@@ -13,6 +14,57 @@ async function getTeacherName(userId: string) {
 }
 
 
+async function getUserId(startEventId: string): Promise<ServerResponse<string, Error>> {
+    const supabase = createClient();
+    const {
+        data: startEventData,
+        error: startEventError
+    } = await supabase
+        .from("room_events")
+        .select("room_id")
+        .eq("id", startEventId)
+        .single();
+
+    if (startEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getUserId",
+            "Error fetching start event data",
+            startEventError
+        );
+        return { data: null, error: new Error("Error fetching start event data: " + startEventError.message) };
+    }
+
+    const roomId = startEventData.room_id;
+
+    const {
+        data: roomData,
+        error: roomError
+    } = await supabase
+        .from("rooms")
+        .select("created_by")
+        .eq("id", roomId)
+        .single();
+
+    if (roomError || !roomData.created_by) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getUserId",
+            "Error fetching room data",
+            roomError || new Error("No user id found in room data")
+        );
+        return { data: null, error: new Error("Error fetching room data: " + roomError?.message || "No user id found in room data") };
+    }
+
+    return {
+        data: roomData.created_by,
+        error: null,
+    }
+}
+
+
 async function getPollTitle(activityId: string) {
     const supabase = createClient();
     return await supabase
@@ -20,6 +72,68 @@ async function getPollTitle(activityId: string) {
         .select("title")
         .eq("id", activityId)
         .single();
+}
+
+
+async function getActivityId(startEventId: string): Promise<ServerResponse<string, Error>> {
+    const supabase = createClient();
+    const {
+        data: startEventData,
+        error: startEventError
+    } = await supabase
+        .from("room_events")
+        .select("payload")
+        .eq("id", startEventId)
+        .single();
+
+    if (startEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getActivityId",
+            "Error fetching start event data",
+            startEventError
+        );
+        return { data: null, error: new Error("Error fetching start event data: " + startEventError.message) };
+    }
+
+    const startEventPayload = startEventData.payload as {
+        activityId: string
+    }
+
+    return {
+        data: startEventPayload.activityId,
+        error: null,
+    }
+}
+
+async function getCapsuleId(startEventId: string): Promise<ServerResponse<string, Error>> {
+    const supabase = createClient();
+    const {
+        data: startEventData,
+        error: startEventError
+    } = await supabase
+        .from("room_events")
+        .select("room_id")
+        .eq("id", startEventId)
+        .single();
+
+    if (startEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getCapsuleId",
+            "Error fetching start event data",
+            startEventError
+        );
+        return { data: null, error: new Error("Error fetching start event data: " + startEventError.message) };
+    }
+
+    return {
+        //data: startEventData.capsule_id,
+        data: "capsule_id",
+        error: null,
+    }
 }
 
 
@@ -35,7 +149,7 @@ async function getCapsuleTitle(capsuleId: string) {
 
 async function getPollDates(args:{
     startEventId: string,
-}): Promise<DatabaseResponse<{
+}): Promise<ServerResponse<{
     startDate: Date,
     endDate: Date,
 },  Error
@@ -98,7 +212,7 @@ async function getPollDates(args:{
 
 async function getNumbersOfParticipants(args: {
     startEventId: string,
-}): Promise<DatabaseResponse<{
+}): Promise<ServerResponse<{
     number: number,
 }, Error
 >> {
@@ -148,7 +262,7 @@ async function getNumbersOfParticipants(args: {
 // TODO: Make a common function also used in the reports page
 async function getPollParticipationRate(args: {
     startEventId: string,
-}): Promise<DatabaseResponse<{
+}): Promise<ServerResponse<{
     participationRate: number
 }, Error
 >> {
@@ -217,7 +331,7 @@ async function getPollParticipationRate(args: {
 
 async function getNbOfQuestions(args: {
     startEventId: string,
-}): Promise<DatabaseResponse<{
+}): Promise<ServerResponse<{
     number: number,
 }, Error
 >> {
@@ -279,4 +393,46 @@ async function getNbOfQuestions(args: {
         data: { number: nbOfQuestions},
         error: null,
     }
+}
+
+async function makeObjectForCsv(args: {
+    startEventId: string,
+}): Promise<ServerResponse<{
+    csvData: Record<string, any>[],
+}, Error>> {
+
+    const teacherNamePromise = new Promise(async (resolve, reject) => {
+        const { data: userId, error: userError } = await getUserId(args.startEventId);
+        if (userError) {
+            reject(userError);
+            return;
+        }
+        const { data: teacherNameData, error: teacherNameError } = await getTeacherName(userId);
+        if (teacherNameError) {
+            reject(teacherNameError);
+            return;
+        }
+        resolve(teacherNameData);
+    });
+
+    const pollTitlePromise = new Promise(async (resolve, reject) => {
+        const {
+            data: activityId,
+            error: activityError
+        } = await getActivityId(args.startEventId);
+        if (activityError) {
+            reject(activityError);
+            return;
+        }
+        const { data: pollTitleData, error: pollTitleError } = await getPollTitle(activityId);
+        if (pollTitleError) {
+            reject(pollTitleError);
+            return;
+        }
+        resolve(pollTitleData);
+    });
+
+
+
+    return {data: {csvData: []}, error: null};
 }

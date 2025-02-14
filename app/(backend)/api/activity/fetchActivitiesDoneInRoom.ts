@@ -1,7 +1,7 @@
 "use server";
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
-import DatabaseResponse from '@/app/_utils/DatabaseResponse'
+import DatabaseResponse from '@/app/_utils/ServerResponse'
 import { Poll, PollUserAnswer } from '@/app/_types/poll'
 import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
