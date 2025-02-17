@@ -1,10 +1,14 @@
-export function convertToCsvString (data: Record<string, any>[]) {
-    if (!data.length) return "";
+// export function convertToCsvString (data: Record<string, any>[]) {
+//     if (!data.length) return "";
 
-    const headers = Object.keys(data[0]).join(",");
-    const rows = data.map(row => Object.values(row).join(","));
+//     const headers = Object.keys(data[0]).join(",");
+//     const rows = data.map(row => Object.values(row).join(","));
 
-    return [headers, ...rows].join("\n");
+//     return [headers, ...rows].join("\n");
+// };
+
+export function convertToCsvString(data: string[][]): string {
+    return data.map(row => row.join(",")).join("\n");
 };
 
 export function downloadCSV(

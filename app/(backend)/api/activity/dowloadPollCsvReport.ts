@@ -395,10 +395,10 @@ async function getNbOfQuestions(args: {
     }
 }
 
-export async function makeObjectForCsv(args: {
+export async function makeArrayForCsv(args: {
     startEventId: string,
 }): Promise<ServerResponse<{
-    csvData: Record<string, any>[],
+    csvArray: string[][],
 }, Error>> {
 
     const teacherNamesPromise = getUserId(args.startEventId).then(async ({data: userId, error: error}) => {
@@ -436,13 +436,13 @@ export async function makeObjectForCsv(args: {
         pollDatesPromise,
     ]);
 
-    const csvData = [
-        {"Teacher": teacherNames?.first_name + " " + teacherNames?.last_name},
-        {"Poll title": pollTitle || "No title"},
-        {"Capsule title": capsuleTitle?.title || "No title"},
-        {"Start date": pollDates?.startDate || "No date"},
-        {"End date": pollDates?.endDate || "No date"},
+    const csvArray = [
+        ["Teacher", teacherNames?.first_name + " " + teacherNames?.last_name],
+        ["Poll title", pollTitle || "No title"],
+        ["Capsule title", capsuleTitle?.title || "No title"],
+        ["Start date", pollDates?.startDate ? pollDates.startDate.toISOString() : "No date"],
+        ["End date", pollDates?.endDate ? pollDates.endDate.toISOString() : "No date"],
     ];
 
-    return {data: {csvData: csvData}, error: null};
+    return {data: {csvArray}, error: null};
 }
