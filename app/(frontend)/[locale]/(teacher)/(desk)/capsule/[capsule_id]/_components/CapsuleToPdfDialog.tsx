@@ -37,43 +37,19 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			setPagesProgress((prev) => ({loading: index + 1, total: prev?.total}));
 			const reader = new FileReader();
 			reader.onload = async () => {
-				const base64data = reader.result;
-				// try {
-				// 	// pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-				// } catch (error) {
-				// 	logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
-				// }
-
-				// if (index < blobs.length - 1) {
-				// 	// pdf.addPage();
-				// }
-				// setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
-
-				// const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
-				// return (() => clearTimeout(timeout));
-				console.log("base64data", base64data);
-				const response = await fetch('/api/exportToPdf', {
-					method: 'POST',
-					body: JSON.stringify({ pagesData: [base64data] }),
-					headers: {
-						'Content-Type': 'application/json',
-					}
-				});
-				console.log("RESPONSE", response);
-				if (response.ok)
-				{
-					const blob = await response.blob();
-					const url = URL.createObjectURL(blob);
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = 'export.pdf';
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-					URL.revokeObjectURL(url);
-				} else {
-					logger.error("react:component", "CapsuleToPDFBtn", "fetch", response);
+				try {
+					// pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+				} catch (error) {
+					logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
 				}
+
+				if (index < blobs.length - 1) {
+					// pdf.addPage();
+				}
+				setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+
+				const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
+				return (() => clearTimeout(timeout));
 			};
 			reader.onerror = (error) => {
 				logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);

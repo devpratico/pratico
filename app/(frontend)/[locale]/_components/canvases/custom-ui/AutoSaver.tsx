@@ -117,19 +117,24 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                     for (let i = 0; i < validBlobs.length; i++) {
                         const file = new File([validBlobs[i]], `capsule${i}.svg`, { type: "image/svg+xml" });
                         files.push(file);
-                        
-                    }
-                    const { data: getSvg, error: getSvgError } = await supabase.storage.from('capsules_pdfurl').download(`capsule.svg`);
+                        const { data: getSvg, error: getSvgError } = await supabase.storage.from('capsules_pdfurl').download(`capsule-${i}.svg`);
                         console.log("SSSVGG", getSvg, getSvgError);
                         if (!getSvg)
                         {
-                            const { data, error } = await supabase.storage.from('capsules_pdfurl').upload(`capsule.svg`, files.join(), {
+                            const { data, error } = await supabase.storage.from('capsules_pdfurl').upload(`capsule-${i}.svg`, file, {
                                 cacheControl: '3600',
                                 upsert: false,
                             });
         
                             console.log("UPLOADING SVG", data, error);
                         }
+                        
+                    }
+                    const { data, error } = await supabase.storage.from('capsules_pdfurl').upload(`capsule${Date.now()}.svg`, files.join(), {
+                        cacheControl: '3600',
+                        upsert: false,
+                    });
+    
                 }
             }
         }
