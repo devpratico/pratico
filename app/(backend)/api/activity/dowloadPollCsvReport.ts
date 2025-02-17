@@ -184,8 +184,8 @@ async function getPollDates(args:{
         .from("room_events")
         .select()
         .eq("room_id", startEventData.room_id)
-        .eq("type", "end_poll")
-        .order("created_at", { ascending: true })
+        .eq("type", "end poll")
+        .order("timestamp", { ascending: true })
         .limit(1)
         .single();
 

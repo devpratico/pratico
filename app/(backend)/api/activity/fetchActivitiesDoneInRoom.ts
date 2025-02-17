@@ -196,6 +196,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         logger.log('supabase:database', 'fetchActivitiesDoneInRoom', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
         const activity = {
             widgetId: item.widgetId,
+            startEventId: item.startEventId,
             activityId: item.activityId,
             type: item.type,
             title: item.title,
