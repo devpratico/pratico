@@ -395,44 +395,54 @@ async function getNbOfQuestions(args: {
     }
 }
 
-async function makeObjectForCsv(args: {
+export async function makeObjectForCsv(args: {
     startEventId: string,
 }): Promise<ServerResponse<{
     csvData: Record<string, any>[],
 }, Error>> {
 
-    const teacherNamePromise = new Promise(async (resolve, reject) => {
-        const { data: userId, error: userError } = await getUserId(args.startEventId);
-        if (userError) {
-            reject(userError);
-            return;
+    const teacherNamesPromise = getUserId(args.startEventId).then(async ({data: userId, error: error}) => {
+        if (error) {
+            return {data: null, error: error};
         }
-        const { data: teacherNameData, error: teacherNameError } = await getTeacherName(userId);
-        if (teacherNameError) {
-            reject(teacherNameError);
-            return;
-        }
-        resolve(teacherNameData);
+        return getTeacherName(userId);
     });
 
-    const pollTitlePromise = new Promise(async (resolve, reject) => {
-        const {
-            data: activityId,
-            error: activityError
-        } = await getActivityId(args.startEventId);
-        if (activityError) {
-            reject(activityError);
-            return;
+    const pollTitlePromise = getActivityId(args.startEventId).then(async ({data: activityId, error: error}) => {
+        if (error) {
+            return {data: null, error: error};
         }
-        const { data: pollTitleData, error: pollTitleError } = await getPollTitle(activityId);
-        if (pollTitleError) {
-            reject(pollTitleError);
-            return;
-        }
-        resolve(pollTitleData);
+        return getPollTitle(activityId);
     });
 
+    const capsuleTitlePromise = getCapsuleId(args.startEventId).then(async ({data: capsuleId, error: error}) => {
+        if (error) {
+            return {data: null, error: error};
+        }
+        return getCapsuleTitle(capsuleId);
+    });
 
+    const pollDatesPromise = getPollDates(args);
 
-    return {data: {csvData: []}, error: null};
+    const [
+        {data: teacherNames, error: teacherNamesError},
+        {data: pollTitle, error: pollTitleError},
+        {data: capsuleTitle, error: capsuleTitleError},
+        {data: pollDates, error: pollDatesError},
+    ] = await Promise.all([
+        teacherNamesPromise,
+        pollTitlePromise,
+        capsuleTitlePromise,
+        pollDatesPromise,
+    ]);
+
+    const csvData = [
+        {"Teacher": teacherNames?.first_name + " " + teacherNames?.last_name},
+        {"Poll title": pollTitle || "No title"},
+        {"Capsule title": capsuleTitle?.title || "No title"},
+        {"Start date": pollDates?.startDate || "No date"},
+        {"End date": pollDates?.endDate || "No date"},
+    ];
+
+    return {data: {csvData: csvData}, error: null};
 }

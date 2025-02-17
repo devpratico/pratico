@@ -8,6 +8,7 @@ import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
 export type ActivityData = {
     widgetId: string,
+    startEventId: string,
     activityId: string,
     type: 'quiz' | 'poll',
     title: string,
@@ -106,7 +107,8 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const activities: Array<ActivityData> = eventCouples.map((couple) => {
         const start = couple.start
         const end = couple.end
-        const widgetId = (end?.payload as { startEventId: string }).startEventId;
+        const startEventId = (end?.payload as { startEventId: string }).startEventId;
+        const widgetId = startEventId;
         const activityId = (start.payload as { activityId: string }).activityId
         const titleTypeQuestion = titlesTypesQuestions.find((titleTypeQuestion) => `${titleTypeQuestion.id}` === activityId) || { type: 'quiz', title: 'Unknown', questions: '' }
         const title = titleTypeQuestion.title
@@ -116,7 +118,17 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         const questions = JSON.parse(titleTypeQuestion.questions);        
         const nbQuestions = Array.isArray(questions) ? questions.length : 0
 
-        return { widgetId, activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
+        return {
+            widgetId,
+            startEventId,
+            activityId,
+            type,
+            title,
+            startDate,
+            endDate,
+            relevantNumber: undefined,
+            nbQuestions
+        }
     })
 
     // Now we need to compute the relevant number for each activity

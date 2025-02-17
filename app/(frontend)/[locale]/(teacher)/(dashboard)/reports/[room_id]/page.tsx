@@ -8,6 +8,7 @@ import { getFormatter } from "next-intl/server";
 import { CapsuleWidget } from "./_components/CapsuleWidget";
 import { ActivityWidgetView } from "./_components/ActivityWidgetView";
 import { ActivityData, fetchActivitiesDoneInRoom } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
+import DownloadCsvBtn from "./_components/DownloadCsvBtn";
 
 // // TYPE
 // export type ActivityTypeWidget = {
@@ -75,8 +76,18 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                         <CapsuleWidget capsuleTitle={capsuleTitle} capsuleId={capsuleId} roomId={roomId} />
                         {
                             activities?.map((activity: ActivityData) => {
+
                                 const color = activity.type === "poll" ? undefined : getParticipationColor(activity.relevantNumber!);
-                                return (<ActivityWidgetView key={activity.widgetId} color={color} activity={activity} />);
+                                const downloadCsvButton = <DownloadCsvBtn startEventId={activity.startEventId} />;
+
+                                return (
+                                    <ActivityWidgetView
+                                        key={activity.widgetId}
+                                        color={color}
+                                        activity={activity}
+                                        downloadCsvButton={downloadCsvButton}
+                                    />
+                                );
                             })
                         }   
                     </Grid>
