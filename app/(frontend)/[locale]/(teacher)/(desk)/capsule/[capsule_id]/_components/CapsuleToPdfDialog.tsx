@@ -23,13 +23,13 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
-	const createPdf = async (blobs: Blob[], pdf: jsPDF) => {
+	const createPdf = async (blobs: Blob[]) => {
 		const processBlob = async (index: number) => {
 			if (index >= blobs.length) {
 				setDisabled(false);
 				setOpenDialog(false);
 				setProgress(0);
-				pdf.save(filename);
+				// pdf.save(filename);
 				return ;
 			}
 			const blob = blobs[index];
@@ -37,20 +37,43 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			setPagesProgress((prev) => ({loading: index + 1, total: prev?.total}));
 			const reader = new FileReader();
 			reader.onload = async () => {
-				const base64data = reader.result as string;
-				try {
-					pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
-				} catch (error) {
-					logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
-				}
+				const base64data = reader.result;
+				// try {
+				// 	// pdf.addImage(base64data, "WEBP", 0, 0, defaultBox.w, defaultBox.h);
+				// } catch (error) {
+				// 	logger.error("react:component", "CapsuleToPDFBtn", "pdf.addImage", index, error);
+				// }
 
-				if (index < blobs.length - 1) {
-					pdf.addPage();
-				}
-				setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
+				// if (index < blobs.length - 1) {
+				// 	// pdf.addPage();
+				// }
+				// setProgress((prev) => Math.min((prev || 0) + 100 / (blobs.length || 1), 100));
 
-				const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
-				return (() => clearTimeout(timeout));
+				// const timeout = setTimeout(() => {processBlob(index + 1)}, 100);
+				// return (() => clearTimeout(timeout));
+				console.log("base64data", base64data);
+				const response = await fetch('/api/exportToPdf', {
+					method: 'POST',
+					body: JSON.stringify({ pagesData: [base64data] }),
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				});
+				console.log("RESPONSE", response);
+				if (response.ok)
+				{
+					const blob = await response.blob();
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = 'export.pdf';
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+					URL.revokeObjectURL(url);
+				} else {
+					logger.error("react:component", "CapsuleToPDFBtn", "fetch", response);
+				}
 			};
 			reader.onerror = (error) => {
 				logger.error("react:component", "CapsuleToPDFBtn", "FileReader", index, error);
@@ -72,7 +95,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			return ;
 		setDisabled(true);
 		setState('loading');
-		const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
+		// const pdf = new jsPDF('landscape', 'px', [defaultBox.w, defaultBox.h]);
 		const allBlobs: any[] = [];
 		const allPages = editor.getPages();
 
@@ -134,7 +157,9 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 		}
 		const validBlobs = allBlobs.filter(blob => blob.size > 0);
 		setProgress(0);
-		await createPdf(validBlobs, pdf);
+		await createPdf(validBlobs);
+
+	
 	};
 
 	useEffect(() => {
@@ -225,3 +250,26 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			</AlertDialog.Root>
     );
 };
+
+
+export const fileToBase64 = (file: File): Promise<string> => {
+	return new Promise((resolve, reject) => {
+	  const reader = new FileReader();
+	  reader.readAsDataURL(file);
+	  reader.onload = () => resolve(reader.result as string);
+	  reader.onerror = (error) => reject(error);
+	});
+  };
+  
+  export const base64ToFile = (base64: string, filename: string): File => {
+	const arr = base64.split(',');
+	const mime = arr[0].match(/:(.*?);/)![1];
+	const bstr = atob(arr[1]);
+	let n = bstr.length;
+	const u8arr = new Uint8Array(n);
+	while (n--) {
+	  u8arr[n] = bstr.charCodeAt(n);
+	}
+	return new File([u8arr], filename, { type: mime });
+  };
+  
