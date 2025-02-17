@@ -177,13 +177,14 @@ async function getPollDates(args:{
 
     // Find the corresponding end event.
     // It is the next event of type end poll in the same room.
+    // TODO: make a reusable function
     const {
         data: endEventData,
         error: endEventError
      } = await supabase
         .from("room_events")
         .select()
-        .eq("room_id", startEventData.room_id)
+        .eq("payload ->> startEventId", args.startEventId)
         .eq("type", "end poll")
         .order("timestamp", { ascending: true })
         .limit(1)
@@ -225,9 +226,9 @@ async function getNumbersOfParticipants(args: {
     } = await supabase
         .from("room_events")
         .select()
-        .eq("id", args.startEventId)
-        .eq("type", "end_poll")
-        .order("created_at", { ascending: true })
+        .eq("payload ->> startEventId", args.startEventId)
+        .eq("type", "end poll")
+        .order("timestamp", { ascending: true })
         .limit(1)
         .single();
 
@@ -422,18 +423,23 @@ export async function makeArrayForCsv(args: {
         return getCapsuleTitle(capsuleId);
     });
 
-    const pollDatesPromise = getPollDates(args);
 
     const [
         {data: teacherNames, error: teacherNamesError},
         {data: pollTitle, error: pollTitleError},
         {data: capsuleTitle, error: capsuleTitleError},
         {data: pollDates, error: pollDatesError},
+        {data: participationRate, error: participationRateError},
+        {data: nbOfParticipants, error: nbOfParticipantsError},
+        {data: nbOfQuestions, error: nbOfQuestionsError},
     ] = await Promise.all([
         teacherNamesPromise,
         pollTitlePromise,
         capsuleTitlePromise,
-        pollDatesPromise,
+        getPollDates(args),
+        getPollParticipationRate(args),
+        getNumbersOfParticipants(args),
+        getNbOfQuestions(args),
     ]);
 
     const csvArray = [
@@ -442,6 +448,10 @@ export async function makeArrayForCsv(args: {
         ["Capsule title", capsuleTitle?.title || "No title"],
         ["Start date", pollDates?.startDate ? pollDates.startDate.toISOString() : "No date"],
         ["End date", pollDates?.endDate ? pollDates.endDate.toISOString() : "No date"],
+        [""],
+        ["Number of participants", nbOfParticipants?.number.toString() || "No data"],
+        ["Participation rate", participationRate?.participationRate.toString() || "No data"],
+        ["Number of questions", nbOfQuestions?.number.toString() || "No data"],
     ];
 
     return {data: {csvArray}, error: null};
