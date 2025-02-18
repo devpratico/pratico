@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
 import { CapsuleWidgetView } from "./CapsuleWidgetView";
 import { getFormatter } from "next-intl/server";
-import { TLEditorSnapshot } from "tldraw";
+import { TLEditorSnapshot, TLPageId } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
 import { getUser } from "@/app/(backend)/api/auth/auth.server";
@@ -36,8 +36,7 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
 			
 			firstPageId = typeof capsuleRoomData.capsule_snapshot === "string"
-				? Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0]
-				: undefined;
+				&& Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0];
 		}
 	}
 	const data = {
@@ -45,7 +44,7 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
 		capsuleSnapshot: capsuleSnapshot,
-		firstPageId: firstPageId
+		firstPageId: firstPageId as TLPageId
 	};
 	return (<>
 		<CapsuleWidgetView data={data} />
