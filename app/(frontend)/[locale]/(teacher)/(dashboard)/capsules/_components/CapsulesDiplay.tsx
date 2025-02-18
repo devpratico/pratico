@@ -43,7 +43,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const roomOpen = cap.roomOpen;
 						const roomCode = cap.roomCode;
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
-						const firstPageId = snap?.document.store && Object.keys(snap?.document.store)[0] as TLPageId;
+						const firstPageId = snap && snap?.document.store && Object.keys(snap?.document.store)[0] as TLPageId;
 						if (!firstPageId)
 							return (null);
 						return (
@@ -51,7 +51,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 									<Miniature title={title} createdAt={created_at} roomOpen={roomOpen}>
 										{
-											snap
+											snap && firstPageId
 											?	<TldrawImage
 													snapshot={snap}
 													format='png'
