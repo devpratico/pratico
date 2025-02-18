@@ -2,7 +2,7 @@
 
 import { Box, Heading, Text, Flex, IconButton } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { TldrawImage, TLEditorSnapshot, TLPageId } from "tldraw";
+import { TLEditorSnapshot, TLPageId } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
@@ -31,19 +31,8 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     overflow: "hidden",
                     backgroundColor: "var(--gray-5)",
                 }}
-            >
-				{
-					data.firstPageId
-					?	<TldrawImage
-							snapshot={data.capsuleSnapshot as TLEditorSnapshot}
-							format='png'
-							scale={0.05}
-							background={true}
-							pageId={data.firstPageId as TLPageId}
-							padding={0}
-						/>
-					: null
-				}
+            >	
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={data.firstPageId as TLPageId}/>
 			</Flex>
 		);
 	};

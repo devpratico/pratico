@@ -36,7 +36,9 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
 			
 			firstPageId = typeof capsuleRoomData.capsule_snapshot === "string"
-				&& Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0];
+				&& Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0].includes("page:")
+				? Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0]
+				: undefined;
 		}
 	}
 	const data = {
