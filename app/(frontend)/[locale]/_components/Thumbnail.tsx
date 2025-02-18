@@ -56,7 +56,8 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     if (!snapshot) {
         return null;
     }
-
+    // if (!pageId)
+    //     return null;
     /**
      * When using the hookSnapshot, it may not contain the desired pageId yet,
      * because we debounce its updates for performance reasons.
@@ -80,7 +81,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
             format='png'
             scale={scale}
             background={true}
-            pageId={pageId && pageId}
+            pageId={pageId}
             bounds={bounds}
             //preserveAspectRatio={'true'}
             padding={0}

@@ -46,7 +46,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
 						const firstPageId = snap?.document.store
 							? Object.keys(snap?.document.store)[0]
-							: undefined;
+							: null;
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
