@@ -6,8 +6,9 @@ import {
   TLEditorSnapshot
 } from "tldraw";
 import { Flex, Spinner } from "@radix-ui/themes";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSnapshot } from "@/app/(frontend)/_hooks/contexts/useSnapshot";
+import logger from "@/app/_utils/logger";
 
 
 interface ThumbnailProps {
@@ -31,6 +32,9 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     //const { currentPageId } = useNav()
 
     //const isFirstRender = useRef(true);
+    useEffect(() => {
+        logger.log("react:component", "Thumbnail", "snapshot", snapshot, "pageId", pageId, typeof pageId);
+    }, [snapshot, pageId])
 
     /*
     // Initialize the snapshot on the first render
@@ -56,6 +60,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     if (!snapshot) {
         return null;
     }
+
     /**
      * When using the hookSnapshot, it may not contain the desired pageId yet,
      * because we debounce its updates for performance reasons.
