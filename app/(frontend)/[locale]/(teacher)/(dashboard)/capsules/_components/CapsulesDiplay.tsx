@@ -4,8 +4,8 @@ import { AspectRatio, Badge, Box, Card, Flex, Grid, Heading, Text, Tooltip } fro
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import Menu from "./Menu";
-import { TLEditorSnapshot, TLPageId } from "tldraw";
-import { useEffect, useState } from "react";
+import { TldrawImage, TLEditorSnapshot, TLPageId } from "tldraw";
+import { useEffect, useMemo, useState } from "react";
 import { OptionsMenu } from "../../_components/OptionsMenu";
 import CreateCapsuleBtn from "./CreateCapsuleBtn";
 import { Radio } from "lucide-react";
@@ -15,7 +15,6 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 	const options = ["+ récent", "- récent"];
 	const [ option, setOption ] = useState("+ récent");
 	const [ sortedCapsules, setSortedCapsules ] = useState(capsules);
-
 	useEffect(() => {
 		const sorted = option === "- récent"
 		? [...capsules].sort((a, b) => {
@@ -44,12 +43,25 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const roomOpen = cap.roomOpen;
 						const roomCode = cap.roomCode;
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
-						// const firstPageId = snap?.document.store && Object.keys(snap?.document.store)[0] as TLPageId;
+						const firstPageId = snap?.document.store && Object.keys(snap?.document.store)[0] as TLPageId;
+						if (!firstPageId)
+							return (null);
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 									<Miniature title={title} createdAt={created_at} roomOpen={roomOpen}>
-										snap && <Thumbnail snapshot={snap} scale={0.2} />
+										{
+											snap
+											?	<TldrawImage
+													snapshot={snap}
+													format='png'
+													scale={0.05}
+													background={true}
+													pageId={firstPageId}
+													padding={0}
+												/>
+											: null
+										}
 									</Miniature>
 								</Link>
 								<Menu capsuleId={id} key={id} />
