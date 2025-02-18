@@ -32,12 +32,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     backgroundColor: "var(--gray-5)",
                 }}
             >	
-				{
-					data.firstPageId
-					? <Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={data.firstPageId as TLPageId}/>
-					: <Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot}/>
-				}
-				
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot}/>
 			</Flex>
 		);
 	};
