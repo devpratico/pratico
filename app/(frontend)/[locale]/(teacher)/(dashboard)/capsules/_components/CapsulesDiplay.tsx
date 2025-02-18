@@ -46,6 +46,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const firstPageId = snap && snap?.document.store && Object.keys(snap?.document.store)[0] as TLPageId;
 						if (!firstPageId)
 							return (null);
+						console.log('firstPageId', firstPageId, typeof firstPageId);
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>

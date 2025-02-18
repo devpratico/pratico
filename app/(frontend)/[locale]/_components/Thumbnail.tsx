@@ -32,9 +32,6 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     //const { currentPageId } = useNav()
 
     //const isFirstRender = useRef(true);
-    useEffect(() => {
-        logger.log("react:component", "Thumbnail", "snapshot", snapshot, "pageId", pageId, typeof pageId);
-    }, [snapshot, pageId])
 
     /*
     // Initialize the snapshot on the first render
