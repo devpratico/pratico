@@ -9,38 +9,39 @@ export default async function PlayGround () {
 		return (null);
 	}
 	
-const supabase = createClient();
-
-	const extractSvgPaths = (svgContent: string) => {
-		const pathMatches = [...svgContent.matchAll(/<path[^>]+d="([^"]+)"/g)];
-		return pathMatches.map(match => match[1]);
-	};
+	const supabase = createClient();
+	const capsuleId = "77535f1a-c672-43ab-b62f-511305b8f4ef";
 	let pdfUrl = "";
-	try{
-		const { data } = await supabase.storage.from('capsules_pdfurl').download('capsule-0.svg');
-		const {data: { publicUrl }} = await supabase.storage.from('capsules_pdfurl').getPublicUrl('capsule-0.svg');
-		const svg = await data?.text();
-		const attachmentBytes = await fetch(publicUrl).then(res => res.arrayBuffer())
-		if (!svg)
+	try
+	{
+		const { data, error } = await supabase.from('capsules').select('metadata').eq('id', capsuleId).single<any>();
+		if (error) {
+			console.error("Error fetching metadata:", error);
 			return (null);
-		const paths = extractSvgPaths(svg)
+		}
+		console.log("DATA", data);
+		if (!data || data.length === 0) 
+			return (null);
+		const blobUrls: string[] = data.metadata?.data ? [data.metadata.data] : [];
 		const pdfDoc = await PDFDocument.create();
-		await pdfDoc.attach(attachmentBytes, "test.svg", { mimeType: "image/svg+xml" });
-		console.log("SVG", paths[0]);
-		const page = pdfDoc.addPage();
+		for (let i = 0; i < blobUrls.length; i++) {
+			const blobUrl = blobUrls[i];
+			
+			const pngImage = await pdfDoc.embedPng(blobUrl);
+			const page = pdfDoc.addPage();
+			page.drawImage(pngImage, {
+				x: 0,
+				y: 0,
+				width: page.getWidth(),
+				height: page.getHeight(),
+			});
+		}
 
-		// paths.forEach(path => page.drawSvgPath(path));
 		const pdfBytes = await pdfDoc.save();
-		
 		const blob = new Blob([pdfBytes], { type: "application/pdf" });
-		const link = document.createElement('a');
-		link.href = URL.createObjectURL(blob);
-		link.download = 'generated.pdf'; 
-		link.click();
-		// const tmpUrl = URL.createObjectURL(blob);
-		// pdfUrl = tmpUrl;
-		// URL.revokeObjectURL(tmpUrl);
-		// console.log("PDF URL", pdfUrl);
+		pdfUrl = URL.createObjectURL(blob);
+		console.log("PDF URL", pdfUrl);
+
 	} catch (error) {
 		console.error("Failed to create PDF", error);
 	}

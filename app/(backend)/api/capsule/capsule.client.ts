@@ -72,13 +72,3 @@ export async function fetchCapsuleSnapshot(capsuleId: string) {
 export async function saveCapsule(capsule: SaveCapsuleArg) {
     return await saveCapsuleServer(capsule)
 }
-
-
-export async function saveCapsuleForPdf(capsuleId: string, metadata: any)
-{
-    const supabase = createClient();
-    const { data, error } = await supabase.from("capsules").upsert({ id: capsuleId, metadata }).eq('id', capsuleId);
-    if (error)
-        logger.error('supabase:database', 'capsule.client.ts', 'saveCapsuleForPdf', 'Error saving capsule for pdf', error.message);
-    return { data, error: error?.message };
-}

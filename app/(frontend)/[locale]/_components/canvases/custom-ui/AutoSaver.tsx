@@ -1,6 +1,6 @@
 'use client'
 import { track, TLEditorSnapshot, useEditor, exportToBlob } from 'tldraw'
-import { saveCapsuleForPdf, saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
+import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
@@ -34,7 +34,6 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                 case 'remote capsule':
                     _id = saveTo.capsuleId
                     await saveCapsuleSnapshot(_id, snapshot)
-                    await saveCapsuleForPdf(_id, snapshot)
                     break
 
                 case 'remote room':
@@ -113,35 +112,24 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                 }
     
                 const validBlobs = allBlobs.filter(blob => blob.size > 0);
-                let files: File[] = [];
                 if (validBlobs.length > 0) {
-                    for (let i = 0; i < validBlobs.length; i++) {
-                        const file = new File([validBlobs[i]], `capsule${i}.svg`, { type: "image/svg+xml" });
-                        files.push(file);
-                        const { data: getSvg, error: getSvgError } = await supabase.storage.from('capsules_pdfurl').download(`capsule-${i}.svg`);
-                        console.log("SSSVGG", getSvg, getSvgError);
-                        if (!getSvg)
-                        {
-                            const { data, error } = await supabase.storage.from('capsules_pdfurl').upload(`capsule-${i}.svg`, file, {
-                                cacheControl: '3600',
-                                upsert: false,
-                            });
-        
-                            console.log("UPLOADING SVG", data, error);
+                    if (saveTo.destination === 'remote capsule')
+                    {
+                        const metadata = {
+                            id: saveTo.capsuleId,
+                            type: "capsule",
+                            format: "svg",
+                            data: validBlobs.map(blob => URL.createObjectURL(blob))
                         }
-                        
+                        const supabase = createClient();
+                        await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
+                        logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
                     }
-                    const { data, error } = await supabase.storage.from('capsules_pdfurl').upload(`capsule${Date.now()}.svg`, files.join(), {
-                        cacheControl: '3600',
-                        upsert: false,
-                    });
-    
                 }
             }
         }
-    
         saveSvgUrls();
-    }, [editor, supabase]);
+    }, [editor, supabase, saveTo]);
     
 
     return null
