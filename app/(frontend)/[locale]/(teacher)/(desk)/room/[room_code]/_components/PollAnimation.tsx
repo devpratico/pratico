@@ -124,7 +124,12 @@ export function PollAnswerRow({ text, votes, questionState, answerState = 'unsel
     }
 
     return (
-        <Button variant={variant} onClick={handleClick} disabled={disabled}>
+        <Button
+            variant={variant}
+            style={{ height: 'auto', padding: '10px', textAlign: 'left' }}
+            onClick={handleClick}
+            disabled={disabled}
+        >
             {text}
             <Box ml='auto'>
                 {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}

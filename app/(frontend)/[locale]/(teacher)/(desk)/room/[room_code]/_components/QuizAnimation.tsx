@@ -131,7 +131,13 @@ export function QuizAnswerRow({ text, votes, questionState, answerState = 'unsel
     }
 
     return (
-        <Button variant={variant} color={color} onClick={handleClick} disabled={disabled}>
+        <Button
+            variant={variant}
+            color={color}
+            onClick={handleClick}
+            style={{ height: 'auto', padding: '10px', textAlign: 'left' }}
+            disabled={disabled}
+        >
             {text}
             <Box ml='auto'>
                 {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}

@@ -46,7 +46,7 @@ export default function CollabSwitch({ userId, roomCode }: CollabSwitchProps) {
                 onClick={handleClick}
                 loading={loading}
             >
-                {active ? <Pen size='20' color='var(--pink)'/> : <PenOff size='20'/>}
+                {active ? <Pen size='20'/> : <PenOff size='20'/>}
             </IconButton>
         </TooltipL>
     )

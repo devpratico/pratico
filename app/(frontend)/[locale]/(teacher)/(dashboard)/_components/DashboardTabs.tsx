@@ -35,17 +35,17 @@ export default function DashboardTabs() {
                 <Text as='label' size='1'>Capsules</Text>
             </TabElement>
 
-            <TabElement href='/activities'>
+            {/* <TabElement href='/activities'>
                 <Puzzle size='21' />
                 <Text as='label' size='1'>Activités</Text>
-            </TabElement>
+            </TabElement> */}
 
-            <TabElement href='/reports'>
+            <TabElement href=''>
                 <NotepadText size='21' />
                 <Text as='label' size='1'>Rapports</Text>
             </TabElement>
 
-            <TabElement href='/resources'>
+            <TabElement href='https://www.pratico.live/resources'>
                 <BookOpen size='21' />
                 <Text as='label' size='1'>Ressources</Text>
             </TabElement>

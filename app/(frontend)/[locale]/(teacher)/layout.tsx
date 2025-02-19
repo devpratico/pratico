@@ -7,7 +7,7 @@ export default function Layout({children }: { children: React.ReactNode }) {
 
     return (
         <>
-			<Grid rows={{initial: '1fr auto', xs: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-2)'}}>
+			<Grid rows={{initial: '1fr auto', xs: 'auto 1fr'}} style={{height: '100dvh', backgroundColor:'var(--accent-3)'}}>
 				{children}
 			</Grid>
 			<WelcomeDialog />

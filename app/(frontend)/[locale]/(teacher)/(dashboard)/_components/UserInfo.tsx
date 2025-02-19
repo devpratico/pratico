@@ -45,5 +45,5 @@ const containerStyle: React.CSSProperties = {
 const textStyle: React.CSSProperties = {
     fontSize: '0.9rem',
     lineHeight: 1,
-    color: 'var(--secondary)',
+    color: 'var(--accent-1)',
 }

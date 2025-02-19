@@ -16,7 +16,7 @@ interface TitleProps  {
 
 function EditButton() {
     return (
-        <IconButton size='1' variant='ghost' style={{opacity:'0.5'}}>
+        <IconButton size='2' variant='ghost' style={{opacity:'0.5'}}>
             <SquarePen size='20' color='var(--accent-contrast)'/>
         </IconButton>
     )
@@ -28,7 +28,7 @@ async function CapsuleTitleS({ capsuleId, editable=true , ...props }: TitleProps
 
     return (
         <Flex gap='2' align='center'>
-            <Text {...props} >{data?.title || 'Sans titre'}</Text>
+            <Text {...props} trim='end' >{data?.title || 'Sans titre'}</Text>
             {editable &&
                 <EditTitlePopover capsuleId={capsuleId} trigger={<EditButton />} />
             }

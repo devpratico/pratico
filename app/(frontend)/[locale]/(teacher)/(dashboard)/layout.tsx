@@ -79,7 +79,7 @@ function DesktopTopBar(props: BoxProps) {
     return (
         <Box {...props}>
             <Flex align='center' justify='between'>
-                <Image src='/images/logo.png' width={386 * logoScale} height={105 * logoScale} alt="Pratico" />
+                <Image src='/images/logo.png' width={420 * logoScale} height={105 * logoScale} alt="Pratico" />
                 <UserInfo />
             </Flex>
         </Box>

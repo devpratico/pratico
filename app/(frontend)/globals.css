@@ -29,3 +29,7 @@
 .lucide * {
     vector-effect: non-scaling-stroke;
 }*/
+.tl-theme__light {
+    --color-selected: var(--accent-9) !important;
+}
+

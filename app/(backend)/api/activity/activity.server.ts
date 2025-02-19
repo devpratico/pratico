@@ -8,7 +8,6 @@ import { Poll } from '@/app/_types/poll'
 import { Tables } from '@/supabase/types/database.types'
 
 
-
 export const fetchActivity = async (id: number) => {
     const supabase = createClient()
     logger.log('supabase:database', `Fetching activity ${id}...`)
@@ -43,9 +42,6 @@ export const fetchActivity = async (id: number) => {
             return { data: null, error: 'Unknown activity type' }
     }
 }
-
-
-
 
 // Supabase returns `Json` instead of `Quiz` or `Poll` objects
 // Let's declare the type of data we want to return
