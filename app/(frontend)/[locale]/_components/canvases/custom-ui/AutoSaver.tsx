@@ -1,6 +1,6 @@
 'use client'
 import { track, TLEditorSnapshot, useEditor, exportToBlob } from 'tldraw'
-import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
+import { saveCapsuleForPdf, saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
@@ -34,6 +34,7 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                 case 'remote capsule':
                     _id = saveTo.capsuleId
                     await saveCapsuleSnapshot(_id, snapshot)
+                    await saveCapsuleForPdf(_id, snapshot)
                     break
 
                 case 'remote room':
