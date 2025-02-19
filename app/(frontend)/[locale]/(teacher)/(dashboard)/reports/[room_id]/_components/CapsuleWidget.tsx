@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
 import { CapsuleWidgetView } from "./CapsuleWidgetView";
 import { getFormatter } from "next-intl/server";
-import { TLEditorSnapshot, TLPageId } from "tldraw";
+import { TLEditorSnapshot } from "tldraw";
 import { Json } from "@/supabase/types/database.types";
 import logger from "@/app/_utils/logger";
 import { getUser } from "@/app/(backend)/api/auth/auth.server";
@@ -11,7 +11,6 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 	const formatter = await getFormatter();
 	let capsuleDate = "";
 	let capsuleSnapshot: Json | TLEditorSnapshot | null = null;
-	let firstPageId = undefined;
 
     const userId = (await getUser()).data?.user?.id;
     if (!userId) {
@@ -32,31 +31,13 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 	if (capsuleRoomData)
 	{
 		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)
-		{
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
-			if (typeof capsuleSnapshot === 'object' && capsuleSnapshot !== null && 'document' in capsuleSnapshot)
-			{
-				const pages = Object.values((capsuleSnapshot as unknown as TLEditorSnapshot).document?.store)
-					.filter(value => value.id?.startsWith("page:"))
-					.map(value => ({
-						id: value.id as TLPageId,
-						pageNumber: 'name' in value && value.name
-							? parseInt(value.name.split(" ")[1])
-							: Number.MAX_SAFE_INTEGER
-					}))
-					.sort((a, b) => a.pageNumber - b.pageNumber);
-			
-				firstPageId = pages[0]?.id || undefined;
-			}
-			logger.log("react:component", "CapsuleWidget", "firstPageId", firstPageId);
-		}
 	}
 	const data = {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
 		capsuleSnapshot: capsuleSnapshot,
-		firstPageId: firstPageId as TLPageId
 	};
 	return (<>
 		<CapsuleWidgetView data={data} />

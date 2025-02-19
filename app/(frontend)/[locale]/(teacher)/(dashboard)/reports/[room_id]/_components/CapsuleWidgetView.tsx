@@ -14,7 +14,6 @@ interface CapsuleWidgetViewProps {
 		capsuleTitle: string;
 		capsuleDate: string;
 		capsuleSnapshot: Json | TLEditorSnapshot;
-		firstPageId?: TLPageId;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
@@ -33,7 +32,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     backgroundColor: "var(--gray-5)",
                 }}
             >	
-				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={data.firstPageId} />
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} firstPageDisplay />
 			</Flex>
 		);
 	};
