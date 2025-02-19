@@ -20,13 +20,21 @@ interface CapsuleWidgetViewProps {
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	
 	const Thumb = () => {
-		const firstPageId = typeof data.capsuleSnapshot === 'object' && data.capsuleSnapshot !== null && 'document' in data.capsuleSnapshot
-			? Object.keys((data.capsuleSnapshot as TLEditorSnapshot).document?.store).find(key => {
-				const page = key.includes('page:')
-				logger.log("react:component", "CapsuleWidget", "keys", key);
-				return (page);
-			}) as TLPageId
-			: undefined;
+		let firstPageId: TLPageId | undefined = undefined;
+		if (typeof data.capsuleSnapshot === 'object' && data.capsuleSnapshot !== null && 'document' in data.capsuleSnapshot)
+		{
+			const pages = Object.values((data.capsuleSnapshot as TLEditorSnapshot).document?.store)
+				.filter(value => value.id?.startsWith("page:"))
+				.map(value => ({
+					id: value.id as TLPageId,
+					pageNumber: 'name' in value && value.name
+						? parseInt(value.name.split(" ")[1])
+						: Number.MAX_SAFE_INTEGER
+				}))
+				.sort((a, b) => a.pageNumber - b.pageNumber);
+		
+			firstPageId = pages[0]?.id || undefined;
+		}
 		logger.log("react:component", "CapsuleWidgetView", "firstPageId", firstPageId);
 
 		return (

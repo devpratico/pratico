@@ -32,15 +32,25 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId, firstPageDisplay
     const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
     //const { currentPageId } = useNav()
     const firstPageId = useMemo(() => {
-        if (firstPageDisplay)
-        {
-            const id = snapshot?.document.store
-                ? Object.keys(snapshot?.document.store).find(key => key.includes('page:')) as TLPageId
-                : undefined;
-            logger.log("react:component", "Thumbnail", "firstPageId", id);
-            return (id);
-        }
-    }, [firstPageDisplay, snapshot])
+        if (!firstPageDisplay || !snapshot?.document.store)
+            return ;
+
+        const pages = Object.values(snapshot.document.store)
+            .filter(value => value.id?.startsWith("page:"))
+            .map(value => ({
+                id: value.id as TLPageId,
+                pageNumber: 'name' in value && value.name
+                ? parseInt(value.name.split(" ")[1])
+                : Number.MAX_SAFE_INTEGER
+            }))
+            .sort((a, b) => a.pageNumber - b.pageNumber);
+    
+        const smallestPageId = pages[0]?.id;
+        
+        logger.log("react:component", "Thumbnail", "firstPageId", smallestPageId);
+        return (smallestPageId);
+    }, [firstPageDisplay, snapshot]);
+    
     //const isFirstRender = useRef(true);
 
     /*
