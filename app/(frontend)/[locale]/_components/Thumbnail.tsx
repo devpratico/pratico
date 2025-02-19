@@ -6,7 +6,7 @@ import {
   TLEditorSnapshot
 } from "tldraw";
 import { Flex, Spinner } from "@radix-ui/themes";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useSnapshot } from "@/app/(frontend)/_hooks/contexts/useSnapshot";
 import logger from "@/app/_utils/logger";
 
@@ -15,6 +15,7 @@ interface ThumbnailProps {
     snapshot?: TLEditorSnapshot
     scale?: number
     pageId?: TLPageId
+    firstPageDisplay?: boolean
 }
 
 
@@ -23,14 +24,23 @@ interface ThumbnailProps {
  * @param snapshot - The snapshot of the tldraw store (optional). If not provided, the snapshot from the useTLEditor hook will be used.
  * @param pageId - The id of the page (optional). If not provided, the first page will be used.
  */
-const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps) => {
+const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId, firstPageDisplay }: ThumbnailProps) => {
     const bounds = useMemo(() => new Box(0, 0, 1920, 1080), []);
 
     // The snapshot used will be either the one passed as a prop or the one from the hook
     const {snapshot: hookSnapshot } = useSnapshot()
     const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
     //const { currentPageId } = useNav()
-
+    const firstPageId = useMemo(() => {
+        if (firstPageDisplay)
+        {
+            const id = snapshot?.document.store
+                ? Object.keys(snapshot?.document.store).find(key => key.includes('page:')) as TLPageId
+                : undefined;
+            logger.log("react:component", "Thumbnail", "firstPageId", id);
+            return (id);
+        }
+    }, [firstPageDisplay, snapshot])
     //const isFirstRender = useRef(true);
 
     /*
@@ -81,7 +91,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
             format='png'
             scale={scale}
             background={true}
-            pageId={pageId}
+            pageId={firstPageDisplay ? firstPageId : pageId}
             bounds={bounds}
             //preserveAspectRatio={'true'}
             padding={0}

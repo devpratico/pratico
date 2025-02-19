@@ -1,9 +1,7 @@
 "use client";
 import { WidgetThumb } from "./WidgetThumb";
-import { Box, Button, DataList, Heading, IconButton, Tooltip } from "@radix-ui/themes";
-import { Link } from "@/app/(frontend)/_intl/intlNavigation";
+import { Box, DataList, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
-import { FileDown } from "lucide-react";
 import { ActivityData } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 
 export function ActivityWidgetView({ color, activity}

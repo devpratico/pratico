@@ -7,6 +7,7 @@ import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { FileDown } from "lucide-react";
+import logger from "@/app/_utils/logger";
 
 interface CapsuleWidgetViewProps {
 	data: {
@@ -14,11 +15,20 @@ interface CapsuleWidgetViewProps {
 		capsuleTitle: string;
 		capsuleDate: string;
 		capsuleSnapshot: Json | TLEditorSnapshot;
-		firstPageId: string | undefined;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
+	
 	const Thumb = () => {
+		const firstPageId = typeof data.capsuleSnapshot === 'object' && data.capsuleSnapshot !== null && 'document' in data.capsuleSnapshot
+			? Object.keys((data.capsuleSnapshot as TLEditorSnapshot).document?.store).find(key => {
+				const page = key.includes('page:')
+				logger.log("react:component", "CapsuleWidget", "keys", key);
+				return (page);
+			}) as TLPageId
+			: undefined;
+		logger.log("react:component", "CapsuleWidgetView", "firstPageId", firstPageId);
+
 		return (
             <Flex
                 align={'center'}
@@ -32,7 +42,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     backgroundColor: "var(--gray-5)",
                 }}
             >	
-				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={data.firstPageId as TLPageId}/>
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={firstPageId} />
 			</Flex>
 		);
 	};
