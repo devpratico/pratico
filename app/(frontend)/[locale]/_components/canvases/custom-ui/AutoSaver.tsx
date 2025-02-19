@@ -77,9 +77,8 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
         const saveSvgUrls = async () => {
             console.log("SAVE SVG URL");
             const allPages = editor.getPages();
-            const allBlobs: Blob[] = [];
-            console.log("ALL PAGES", allPages);
-    
+            const allBlobs: string[] = [];
+            const allSvgPaths: string[] = [];
             if (allPages.length > 0) {
                 try {
                     for (let i = 0; i < allPages.length; i++) {
@@ -88,7 +87,7 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                             continue;
     
                         try {
-                            const blob = await exportToBlob({
+                            const blob = await (await exportToBlob({
                                 editor,
                                 ids: Array.from(shapeIds),
                                 format: 'svg',
@@ -97,10 +96,15 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                                     padding: 0,
                                     darkMode: false,
                                 }
-                            });
-                            
-                            if (blob.size > 0) {
+                            })).text();
+                   
+                            if (blob.length > 0) {
                                 allBlobs.push(blob);
+                                const parser = new DOMParser();
+                                const svgDoc = parser.parseFromString(blob, 'image/svg+xml');
+                                const svgPaths = Array.from(svgDoc.querySelectorAll('path')).map(path => path.getAttribute('d')).filter((d): d is string => d !== null);
+                                allSvgPaths.push(...svgPaths);
+                                console.log("svgpath", svgPaths);
                             }
     
                         } catch (error) {
@@ -111,7 +115,7 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                     logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
                 }
     
-                const validBlobs = allBlobs.filter(blob => blob.size > 0);
+                const validBlobs = allBlobs.filter(blob => blob.length > 0);
                 if (validBlobs.length > 0) {
                     if (saveTo.destination === 'remote capsule')
                     {
@@ -119,7 +123,7 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                             id: saveTo.capsuleId,
                             type: "capsule",
                             format: "svg",
-                            data: validBlobs.map(blob => URL.createObjectURL(blob))
+                            data: allSvgPaths
                         }
                         const supabase = createClient();
                         await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
