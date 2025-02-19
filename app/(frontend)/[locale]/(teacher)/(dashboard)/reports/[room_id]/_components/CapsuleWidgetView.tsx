@@ -7,7 +7,6 @@ import { Json } from "@/supabase/types/database.types";
 import { CapsuleToPdfBtn } from "../../../../../_components/CapsuleToPdfBtn";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import { FileDown } from "lucide-react";
-import logger from "@/app/_utils/logger";
 
 interface CapsuleWidgetViewProps {
 	data: {

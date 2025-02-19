@@ -10,7 +10,6 @@ import { OptionsMenu } from "../../_components/OptionsMenu";
 import CreateCapsuleBtn from "./CreateCapsuleBtn";
 import { Radio } from "lucide-react";
 import { ExtendedCapsuleType } from "../page";
-import logger from "@/app/_utils/logger";
 
 export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | any[]}) {
 	const options = ["+ récent", "- récent"];
@@ -45,7 +44,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const roomOpen = cap.roomOpen;
 						const roomCode = cap.roomCode;
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
-						
+
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
