@@ -15,28 +15,12 @@ interface CapsuleWidgetViewProps {
 		capsuleTitle: string;
 		capsuleDate: string;
 		capsuleSnapshot: Json | TLEditorSnapshot;
+		firstPageId?: TLPageId;
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
 	
 	const Thumb = () => {
-		let firstPageId: TLPageId | undefined = undefined;
-		if (typeof data.capsuleSnapshot === 'object' && data.capsuleSnapshot !== null && 'document' in data.capsuleSnapshot)
-		{
-			const pages = Object.values((data.capsuleSnapshot as TLEditorSnapshot).document?.store)
-				.filter(value => value.id?.startsWith("page:"))
-				.map(value => ({
-					id: value.id as TLPageId,
-					pageNumber: 'name' in value && value.name
-						? parseInt(value.name.split(" ")[1])
-						: Number.MAX_SAFE_INTEGER
-				}))
-				.sort((a, b) => a.pageNumber - b.pageNumber);
-		
-			firstPageId = pages[0]?.id || undefined;
-		}
-		logger.log("react:component", "CapsuleWidgetView", "firstPageId", firstPageId);
-
 		return (
             <Flex
                 align={'center'}
@@ -50,7 +34,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     backgroundColor: "var(--gray-5)",
                 }}
             >	
-				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={firstPageId} />
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} pageId={data.firstPageId} />
 			</Flex>
 		);
 	};
