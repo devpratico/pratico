@@ -30,7 +30,7 @@ export default function QuizAnimation() {
 
     // Service methods
     const { close } = useCloseQuizService()
-    const { toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = useQuizAnimationService()
+    const { isPending, toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = useQuizAnimationService()
 
 
     return (
@@ -61,7 +61,7 @@ export default function QuizAnimation() {
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
                                     isCorrect={choice.isCorrect}
                                     onClick={() => toggleAnswer(choice.id)}
-                                    //disabled
+                                    disabled={isSyncing || isPending}
                                 />
                             ))}
                         </Flex>
