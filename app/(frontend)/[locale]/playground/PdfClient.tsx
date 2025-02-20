@@ -7,34 +7,37 @@ export function PfdClient ({pdfUrl}: {pdfUrl?: any}) {
 	const supabase = createClient();
 
 	const handleClick = async () => {
-			const capsuleId = "10c07317-af38-4014-9f4c-b86725faff03";
+			const capsuleId = "5472eac2-6b57-4114-806e-3a3ec6031f1e";
 			let pdfUrl = "";
 			try
 			{
-				const { data, error } = await supabase.from('capsules').select('metadata').eq('id', capsuleId).single<any>();
+				const { data, error } = await supabase.from('capsules').select('metadata').eq('id', capsuleId).single();
 				if (error) {
-					console.error("Error fetching metadata:", error);
+					console.error("Error fetching metadata:", error, data);
 					return (null);
 				}
-				if (!data || data.length === 0) 
-					return (null);
-				const svgPaths: string[] = Array.isArray(data.metadata.data)
-				? data.metadata.data
-				: Object.values(data.metadata.data);
-		
+				if (!("metadata" in data)) {
+					console.error("Metadata not found in data:", data);
+					return null;
+				}
 				const pdfDoc = await PDFDocument.create();
-		
-				for (const path of svgPaths) {
-					if (typeof path !== "string") {
-						console.error("Invalid SVG path:", path);
-						continue;
+				const metadata = data.metadata as { data: Record<string, string> | string[] };
+				if ("metadata" in data && "data" in metadata) {
+					const svgPaths: string[] = Array.isArray(metadata.data)
+					? metadata.data
+					: Object.values(metadata.data);
+			
+					const pdfDoc = await PDFDocument.create();
+			
+					for (const path of svgPaths) {
+						if (typeof path !== "string") {
+							console.error("Invalid SVG path:", path);
+							continue;
+						}
+			
+						const page = pdfDoc.addPage();
+						page.drawSvgPath(path);
 					}
-		
-					const page = pdfDoc.addPage();
-					page.drawSvgPath(path, {
-						x: 50,
-						y: page.getHeight() - 50
-					});
 				}
 				const pdfBytes = await pdfDoc.save();
 				const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: "application/pdf" }));
