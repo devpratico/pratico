@@ -77,8 +77,8 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
         const saveSvgUrls = async () => {
             console.log("SAVE SVG URL");
             const allPages = editor.getPages();
-            const allBlobs: string[] = [];
-            const allSvgPaths: string[] = [];
+            const allBlobs: Blob[] = [];
+            const allBase64: string[] = [];
             if (allPages.length > 0) {
                 try {
                     for (let i = 0; i < allPages.length; i++) {
@@ -87,26 +87,22 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                             continue;
     
                         try {
-                            const blob = await (await exportToBlob({
+                            const blob = await exportToBlob({
                                 editor,
                                 ids: Array.from(shapeIds),
-                                format: 'svg',
+                                format: 'png',
                                 opts: {
                                     bounds: defaultBox,
                                     padding: 0,
                                     darkMode: false,
                                 }
-                            })).text();
+                            });
                    
-                            if (blob.length > 0) {
+                            if (blob.size > 0) {
                                 allBlobs.push(blob);
-                                const parser = new DOMParser();
-                                const svgDoc = parser.parseFromString(blob, 'image/svg+xml');
-                                const svgPaths = Array.from(svgDoc.querySelectorAll('path')).map(path => path.getAttribute('d')).filter((d): d is string => d !== null);
-                                allSvgPaths.push(...svgPaths);
-                                console.log("svgpath", svgPaths);
+                                const base64data = await getBase64FromBlob(blob);
+                                allBase64.push(base64data);
                             }
-    
                         } catch (error) {
                             logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
                         }
@@ -115,19 +111,18 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                     logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
                 }
     
-                const validBlobs = allBlobs.filter(blob => blob.length > 0);
-                if (validBlobs.length > 0) {
+                if (allBase64.length > 0) {
                     if (saveTo.destination === 'remote capsule')
                     {
                         const metadata = {
                             id: saveTo.capsuleId,
                             type: "capsule",
-                            format: "svg",
-                            data: allSvgPaths
+                            format: "base64",
+                            data: allBase64
                         }
                         const supabase = createClient();
                         await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
-                        logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
+                        logger.log("react:component", "AutoSaver", "Saved blob png in base64 capsule for pdf");
                     }
                 }
             }
@@ -140,3 +135,12 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
 })
 
 export default AutoSaver
+
+async function getBase64FromBlob(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}

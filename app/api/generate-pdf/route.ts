@@ -49,18 +49,29 @@ export async function POST(req: NextRequest) {
 			console.error('Data not found in metadata');
 			return NextResponse.json({ error: 'Data not found in metadata' }, { status: 404 });
 		}
-		const svgPaths: string[] = Array.isArray(metadata.data)
+		console.log("METADATA", metadata.data);	
+		const base64Files: string[] = Array.isArray(metadata.data)
 			? metadata.data
 			: Object.values(metadata.data || {});
-		console.log("SVG Paths", svgPaths);
+
 		const pdfDoc = await PDFDocument.create();
-		const page = pdfDoc.addPage();
-		page.drawSvgPath(svgPaths.join(' '));
-	
+
+		for (const base64File of base64Files) {
+			const image = await pdfDoc.embedPng(base64File);
+            const page = pdfDoc.addPage([image.width, image.height]);
+            const { width, height } = page.getSize();
+            page.drawImage(image, {
+                x: 0,
+                y: 0,
+                width,
+                height
+            });
+		}
+		
 		const pdfBytes = await pdfDoc.save();
 		const response = new NextResponse(Buffer.from(pdfBytes), {
 			headers: {
-			'Content-Type': 'application/pdf',
+				'Content-Type': 'application/pdf',
 			},
 		});
 	
