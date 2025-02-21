@@ -1,5 +1,5 @@
 'use client'
-import { Section, Flex, VisuallyHidden, Text, Button } from '@radix-ui/themes'
+import { Section, Flex, VisuallyHidden, Text } from '@radix-ui/themes'
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import StartBtn from '../../capsule/[capsule_id]/_components/StartBtn'
 import StopBtn from '../../room/[room_code]/_components/StopBtn'
@@ -33,16 +33,11 @@ function AnimationMenu() {
 }
 
 
-export default function MoreMenu({ pdfUrl }: { pdfUrl: string }) {
+export default function MoreMenu() {
     const params = useParams()
     const isRoom = params.room_code !== undefined
 	const { capsule_id } = useParams();
 	const { pageIds } = useNav();
-
-	const handlePdfDownload = () => {
-		console.log(`Downloading PDF for capsule ${capsule_id} from ${pdfUrl}`);
-		window.open(pdfUrl, '_blank');
-	};
 
     return (
         <>
@@ -56,8 +51,7 @@ export default function MoreMenu({ pdfUrl }: { pdfUrl: string }) {
 					{isRoom ? <AnimationMenu /> : <CreationMenu />}
 					{
 						pageIds && pageIds.length > 0
-						? <Button onClick={handlePdfDownload}>Download</Button>
-						// ? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
+						? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
 						: <></>
 					}
 		

@@ -1,11 +1,10 @@
 'use client'
-import { track, TLEditorSnapshot, useEditor, exportToBlob } from 'tldraw'
+import { track, TLEditorSnapshot, useEditor } from 'tldraw'
 import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
 //import debounce from '@/utils/debounce';
 import { useEffect, useCallback } from 'react';
-import { defaultBox } from './Resizer'
 import createClient from '@/supabase/clients/client'
 
 
@@ -73,78 +72,67 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
             listener?.() // Removes the listener (returned from store.listen())
         }
     }, [editor, save])
-    useEffect(() => {
-        const saveSvgUrls = async () => {
-            logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
-            const allPages = editor.getPages();
-            const allBlobs: Blob[] = [];
-            if (allPages.length > 0) {
-                try {
-                    for (let i = 0; i < allPages.length; i++) {
-                        const shapeIds = editor.getPageShapeIds(allPages[i]);
-                        if (shapeIds.size === 0)
-                            continue;
+    // useEffect(() => {
+    //     const saveSvgUrls = async () => {
+    //         logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
+    //         const allPages = editor.getPages();
+    //         const allBlobs: Blob[] = [];
+    //         if (allPages.length > 0) {
+    //             try {
+    //                 for (let i = 0; i < allPages.length; i++) {
+    //                     const shapeIds = editor.getPageShapeIds(allPages[i]);
+    //                     if (shapeIds.size === 0)
+    //                         continue;
     
-                        try {
-                            const blob = await exportToBlob({
-                                editor,
-                                ids: Array.from(shapeIds),
-                                format: 'png',
-                                opts: {
-                                    bounds: defaultBox,
-                                    padding: 0,
-                                    darkMode: false,
-                                }
-                            });
-                            console.log("BLOB", blob);
-                            if (blob.size > 0)
-                                allBlobs.push(blob);
-                        } catch (error) {
-                            logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
-                        }
-                    }
-                } catch (error) {
-                    logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
-                }
+    //                     try {
+    //                         const blob = await exportToBlob({
+    //                             editor,
+    //                             ids: Array.from(shapeIds),
+    //                             format: 'png',
+    //                             opts: {
+    //                                 bounds: defaultBox,
+    //                                 padding: 0,
+    //                                 darkMode: false,
+    //                             }
+    //                         });
+    //                         if (blob.size > 0)
+    //                             allBlobs.push(blob);
+    //                     } catch (error) {
+    //                         logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
+    //                     }
+    //                 }
+    //             } catch (error) {
+    //                 logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
+    //             }
     
-                const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
-                    if (blob.size > 0)
-                    {
-                        const base64data = await getBase64FromBlob(blob);
-                        return (base64data);
-                    }
-                }));
-                console.log("ALL BASE 64", allBase64);
-                if (allBase64.length > 0) {
-                    if (saveTo.destination === 'remote capsule')
-                    {
-                        const metadata = {
-                            id: saveTo.capsuleId,
-                            type: "capsule",
-                            format: "png",
-                            data: allBase64
-                        }
-                        const supabase = createClient();
-                        await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
-                        logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
-                    }
-                }
-            }
-        }
-        saveSvgUrls();
-    }, [editor, supabase, saveTo]);
+    //             const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
+    //                 if (blob.size > 0)
+    //                 {
+    //                     const base64data = await getBase64FromBlob(blob);
+    //                     return (base64data);
+    //                 }
+    //             }));
+    //             if (allBase64.length > 0) {
+    //                 if (saveTo.destination === 'remote capsule')
+    //                 {
+    //                     const metadata = {
+    //                         id: saveTo.capsuleId,
+    //                         type: "capsule",
+    //                         format: "png",
+    //                         data: allBase64
+    //                     }
+    //                     const supabase = createClient();
+    //                     await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
+    //                     logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     saveSvgUrls();
+    // }, [editor, supabase, saveTo]);
     
 
     return null
 })
 
 export default AutoSaver
-
-async function getBase64FromBlob(blob: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}

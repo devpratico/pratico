@@ -21,9 +21,6 @@ import GlobalCardDialog from "./_components/GlobalCardDialog"
 import { FullscreenProvider } from "@/app/(frontend)/_hooks/contexts/useFullscreen"
 import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
 import QuizCreation from "./_components/menus/ActivitiesMenu/components/QuizCreation"
-import { MoreMenuS } from "./_components/menus/MoreMenuS"
-
-
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 
@@ -72,7 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                 'participants': <ParticipantsMenu />,
                                 'defilement': <DefilementMenu />,
                                 'chat': <ChatMenu />,
-                                'more': <MoreMenuS />
+                                'more': <MoreMenu />
                             }}
                         />
                     </MenuDialog>
