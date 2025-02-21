@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
 	if (!base64Datas || base64Datas.length === 0) {
 		return (NextResponse.json({ error: "base64Data not provided" }, { status: 400 }));
 	}
-	console.log("ICI BACK ", base64Datas);
 	try {
 
 		const pdfDoc = await PDFDocument.create();
