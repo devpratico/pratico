@@ -75,10 +75,9 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
     }, [editor, save])
     useEffect(() => {
         const saveSvgUrls = async () => {
-            console.log("SAVE SVG URL");
+            logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
             const allPages = editor.getPages();
             const allBlobs: Blob[] = [];
-            const allBase64: string[] = [];
             if (allPages.length > 0) {
                 try {
                     for (let i = 0; i < allPages.length; i++) {
@@ -97,12 +96,8 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                                     darkMode: false,
                                 }
                             });
-                   
-                            if (blob.size > 0) {
+                            if (blob.size > 0)
                                 allBlobs.push(blob);
-                                const base64data = await getBase64FromBlob(blob);
-                                allBase64.push(base64data);
-                            }
                         } catch (error) {
                             logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
                         }
@@ -111,18 +106,26 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                     logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
                 }
     
+                const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
+                    if (blob.size > 0)
+                    {
+                        const base64data = await getBase64FromBlob(blob);
+                        return (base64data);
+                    }
+                }));
+                console.log("ALL BASE 64", allBase64);
                 if (allBase64.length > 0) {
                     if (saveTo.destination === 'remote capsule')
                     {
                         const metadata = {
                             id: saveTo.capsuleId,
                             type: "capsule",
-                            format: "base64",
+                            format: "png",
                             data: allBase64
                         }
                         const supabase = createClient();
                         await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
-                        logger.log("react:component", "AutoSaver", "Saved blob png in base64 capsule for pdf");
+                        logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
                     }
                 }
             }
