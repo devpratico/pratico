@@ -37,22 +37,30 @@ export async function POST(req: NextRequest) {
 		const pdfDoc = await PDFDocument.create();
 
 		for (const base64File of base64Files) {
-			console.log("BASE64 FILE", base64File);
-			if (!base64File.startsWith("data:image/png;base64,")) {
-				return NextResponse.json({ error: "Invalid PNG format" }, { status: 400 });
+			if (base64File.startsWith("data:image/png;base64,")) {
+				const base64Data = base64File.replace(/^data:image\/png;base64,/, "");
+				const byteArray = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+				const image = await pdfDoc.embedPng(byteArray);
+				const page = pdfDoc.addPage([image.width, image.height]);
+
+				page.drawImage(image, {
+					x: 0,
+					y: 0,
+					width: image.width,
+					height: image.height
+				});
+			} else if (base64File.startsWith("data:application/pdf;base64,")) {
+				const base64Data = base64File.replace(/^data:application\/pdf;base64,/, "");
+				const byteArray = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+				const existingPdf = await PDFDocument.load(byteArray);
+				const copiedPages = await pdfDoc.copyPages(existingPdf, existingPdf.getPageIndices());
+
+				copiedPages.forEach((page) => pdfDoc.addPage(page));
+			} else {
+				return NextResponse.json({ error: "Invalid file format" }, { status: 400 });
 			}
-			const base64Data = base64File.replace(/^data:image\/png;base64,/, "");
-        	const byteArray = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-
-			const image = await pdfDoc.embedPng(byteArray);
-			const page = pdfDoc.addPage([image.width, image.height]);
-
-            page.drawImage(image, {
-                x: 0,
-                y: 0,
-				width: image.width,
-				height: image.height
-            });
 		}
 		
 		const pdfBytes = await pdfDoc.save();
