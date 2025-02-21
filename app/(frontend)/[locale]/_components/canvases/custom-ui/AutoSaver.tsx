@@ -96,6 +96,7 @@ const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
                                     darkMode: false,
                                 }
                             });
+                            console.log("BLOB", blob);
                             if (blob.size > 0)
                                 allBlobs.push(blob);
                         } catch (error) {

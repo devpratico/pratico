@@ -27,52 +27,41 @@ export async function OPTIONS() {
 
 
 export async function POST(req: NextRequest) {
-	const { capsuleId } = await req.json();
-	const supabase = createClient();
+	const { base64Files } = await req.json();
+	if (!base64Files || base64Files.length === 0) {
+		return NextResponse.json({ error: "base64Files not provided" }, { status: 400 });
+	}
+
 	try {
-		const { data, error } = await supabase
-			.from("capsules")
-			.select("metadata")
-			.eq('id', capsuleId)
-			.single<{ metadata: { data?: Record<string, string> | string[] } }>();
-	
-		if (error) {
-			console.error('Error fetching capsule data:', error);
-			return NextResponse.json({ error: 'Error fetching capsule data' }, { status: 500 });
-		}
-		if (!data || !data.metadata) {
-			console.error('Metadata not found in capsule data');
-			return NextResponse.json({ error: 'Metadata not found in capsule data' }, { status: 404 });
-		}
-		const metadata = data.metadata as { data?: Record<string, string> | string[] };
-		if (!("data" in metadata)) {
-			console.error('Data not found in metadata');
-			return NextResponse.json({ error: 'Data not found in metadata' }, { status: 404 });
-		}
-		console.log("METADATA", metadata.data);	
-		const base64Files: string[] = Array.isArray(metadata.data)
-			? metadata.data
-			: Object.values(metadata.data || {});
 
 		const pdfDoc = await PDFDocument.create();
 
 		for (const base64File of base64Files) {
-			const image = await pdfDoc.embedPng(base64File);
-            const page = pdfDoc.addPage([image.width, image.height]);
-            const { width, height } = page.getSize();
+			console.log("BASE64 FILE", base64File);
+			if (!base64File.startsWith("data:image/png;base64,")) {
+				return NextResponse.json({ error: "Invalid PNG format" }, { status: 400 });
+			}
+			const base64Data = base64File.replace(/^data:image\/png;base64,/, "");
+        	const byteArray = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+			const image = await pdfDoc.embedPng(byteArray);
+			const page = pdfDoc.addPage([image.width, image.height]);
+
             page.drawImage(image, {
                 x: 0,
                 y: 0,
-                width,
-                height
+				width: image.width,
+				height: image.height
             });
 		}
 		
 		const pdfBytes = await pdfDoc.save();
-		const response = new NextResponse(Buffer.from(pdfBytes), {
+		const response = new NextResponse(new Uint8Array(pdfBytes), {
 			headers: {
 				'Content-Type': 'application/pdf',
+				"Content-Disposition": 'attachment; filename="document.pdf"'
 			},
+			status: 200
 		});
 	
 		return (response);

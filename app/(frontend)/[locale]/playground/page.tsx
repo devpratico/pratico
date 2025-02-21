@@ -5,6 +5,7 @@ import createClient from '@/supabase/clients/client';
 import { Box, Flex, Heading, Button, AlertDialog, Text, Card, Progress } from '@radix-ui/themes';
 import { FileDown, FlaskConical } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import logger from '@/app/_utils/logger';
 
 export default function PlayGround () {
 	const supabase = createClient();
@@ -18,7 +19,7 @@ export default function PlayGround () {
 	// }
 	
 
-	
+
 	useEffect(() => {
 	const getCapsuleData = async () => {
 		const { data, error } = await supabase.from('capsules').select('title, created_at').eq('id', capsuleId).single();
@@ -56,63 +57,93 @@ export default function PlayGround () {
 	}, [supabase]);
 
 	const handleExportAllPages = async () => {
-	try {
-		interface ProgressEvent {
-			total: number;
-			loaded: number;
-		}
-
-		interface GeneratePdfResponse {
-			data: Blob;
-		}
-
-		const response: GeneratePdfResponse | undefined = await fetch('/api/generate-pdf', {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ capsuleId }),
-		}).then(async (res) => {
-			const contentLength = res.headers.get('Content-Length');
-			if (contentLength) {
-				const total = parseInt(contentLength, 10);
-				const reader = res.body?.getReader();
-				if (reader) {
-					let loaded = 0;
-					const read = async () => {
-						const { done, value } = await reader.read();
-						if (done) {
-							return;
-						}
-						if (value) {
-							loaded += value.length;
-							setProgress((loaded / total) * 100);
-							read();
-						}
-					};
-					read();
-				}
+	
+		try {
+			interface ProgressEvent {
+				total: number;
+				loaded: number;
 			}
-			const data = await res.blob();
-			return { data };
-		}).catch(() => undefined);
-		if (!response) {
-			throw new Error('Failed to fetch PDF');
-		}
-		const url = window.URL.createObjectURL(new Blob([response.data]));
-		const link = document.createElement('a');
-		link.href = url;
-		link.setAttribute('download', filename);
-		document.body.appendChild(link);
-		link.click();
-		link.remove();
-		setOpenDialog(false);
-	} catch (error) {
-		console.error('Error downloading PDF:', error);
-		setOpenDialog(false);
-	}
-	};
 
+			interface GeneratePdfResponse {
+				data: Blob;
+			}
+			const { data, error } = await supabase
+			.from("capsules")
+			.select("metadata")
+			.eq('id', capsuleId)
+			.single<{ metadata: { data?: Record<string, string> | string[] } }>();
+
+			if (error) {
+				console.error('Error fetching capsule data:', error);
+				return (null);
+			}
+			if (!data || !data.metadata) {
+				console.error('Metadata not found in capsule data');
+				return (null);
+			}
+			const metadata = data.metadata as { data?: Record<string, string> | string[] };
+			if (!("data" in metadata)) {
+				console.error('Data not found in metadata');
+				return (null);
+			}
+			const base64Files: string[] = Array.isArray(metadata.data)
+			? metadata.data
+			: Object.values(metadata.data || {});
+		
+			const response: GeneratePdfResponse | undefined = await fetch('/api/generate-pdf', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ base64Files }),
+			})
+				.then(async (res) => {
+					if (!res.ok) throw new Error("Server returned an error");
+
+					const contentLength = res.headers.get('Content-Length');
+					if (contentLength) {
+						const total = parseInt(contentLength, 10);
+						const reader = res.body?.getReader();
+						if (reader) {
+							let loaded = 0;
+							const read = async () => {
+								const { done, value } = await reader.read();
+								if (done) return;
+								if (value) {
+									loaded += value.length;
+									setProgress((loaded / total) * 100);
+									await read();
+								}
+							};
+							await read();
+						}
+					}
+
+					return { data: await res.blob() };
+				})
+				.catch((error) => {
+					console.error("Error fetching PDF:", error);
+					return undefined;
+				});
+
+				if (!response) {
+					throw new Error('Failed to fetch PDF');
+				}
+
+				const url = window.URL.createObjectURL(response.data);
+				const link = document.createElement('a');
+				link.href = url;
+				link.setAttribute('download', filename);
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+
+				setOpenDialog(false);
+			} catch (error) {
+				console.error('Error downloading PDF:', error);
+				setOpenDialog(false);
+			}
+		};
 	return (
 		<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 			<AlertDialog.Trigger>
