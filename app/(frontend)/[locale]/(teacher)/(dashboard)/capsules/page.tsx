@@ -1,5 +1,5 @@
-import { ScrollArea, Container, Section, SegmentedControl, Flex, TextField, Box, IconButton } from "@radix-ui/themes"
-import { LayoutGrid, List, Search } from "lucide-react"
+import { ScrollArea, Container, Section, Flex, Box, IconButton } from "@radix-ui/themes"
+import { Search } from "lucide-react"
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
 import { fetchCapsulesDataAndRoomStatus } from "@/app/(backend)/api/capsule/capsule.server";
 import { CapsulesDisplay } from "./_components/CapsulesDiplay";

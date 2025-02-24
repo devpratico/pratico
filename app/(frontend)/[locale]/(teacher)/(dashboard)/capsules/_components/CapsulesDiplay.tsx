@@ -44,7 +44,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const roomOpen = cap.roomOpen;
 						const roomCode = cap.roomCode;
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
-				
+
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>

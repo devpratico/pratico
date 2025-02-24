@@ -31,9 +31,7 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 	if (capsuleRoomData)
 	{
 		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)
-		{
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
-		}
 	}
 	const data = {
 		capsuleId: capsuleId,

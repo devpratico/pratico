@@ -17,6 +17,7 @@ interface CapsuleWidgetViewProps {
 	}
 }
 export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
+	
 	const Thumb = () => {
 		return (
             <Flex
