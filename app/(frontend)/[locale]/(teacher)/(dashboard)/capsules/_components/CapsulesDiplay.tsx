@@ -4,7 +4,7 @@ import { AspectRatio, Badge, Box, Card, Flex, Grid, Heading, Text, Tooltip } fro
 import { Link } from "@/app/(frontend)/_intl/intlNavigation";
 import Thumbnail from "@/app/(frontend)/[locale]/_components/Thumbnail";
 import Menu from "./Menu";
-import { TLEditorSnapshot } from "tldraw";
+import { TLEditorSnapshot, TLPageId } from "tldraw";
 import { useEffect, useState } from "react";
 import { OptionsMenu } from "../../_components/OptionsMenu";
 import CreateCapsuleBtn from "./CreateCapsuleBtn";
@@ -15,7 +15,6 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 	const options = ["+ récent", "- récent"];
 	const [ option, setOption ] = useState("+ récent");
 	const [ sortedCapsules, setSortedCapsules ] = useState(capsules);
-	
 
 	useEffect(() => {
 		const sorted = option === "- récent"
@@ -29,7 +28,6 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 
 	}, [option, capsules]);
 
-	console.log("capsules", capsules);
 	return (
 		<>
 			<Flex justify={"between"} mb='4'>

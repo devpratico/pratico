@@ -3,136 +3,86 @@ import { track, TLEditorSnapshot, useEditor } from 'tldraw'
 import { saveCapsuleSnapshot } from '@/app/(backend)/api/capsule/capsule.client'
 import { saveRoomSnapshot } from '@/app/(backend)/api/room/room.client'
 import logger from '@/app/_utils/logger'
-//import debounce from '@/utils/debounce';
-import { useEffect, useCallback } from 'react';
-import createClient from '@/supabase/clients/client'
+import { useEffect, useMemo } from 'react';
+import { useNav } from '@/app/(frontend)/_hooks/contexts/useNav'
+import debounce from '@/app/_utils/debounce'
+// TODO: use lodash debounce instead of ours
 
 
 export type AutoSaverProps = {
-    saveTo:
-          { destination: 'remote capsule', capsuleId: string }
-        | { destination: 'remote room',    roomId:    number },
-    saveOnMount?: boolean
+  saveTo:
+        { destination: 'remote capsule', capsuleId: string }
+      | { destination: 'remote room',    roomId:    number },
+  saveOnMount?: boolean
 }
 
 
 /**
- * This automaticaly saves the current snapshot every time it changes.
- * You can choose to save to:
- * * A room (while in collaboration mode)
- * * A capsule (while in solo edit mode)
- */
+* This automaticaly saves the current snapshot every time it changes.
+* You can choose to save to:
+* * A room (while in collaboration mode)
+* * A capsule (while in solo edit mode)
+*/
 const AutoSaver = track(({saveTo, saveOnMount=false}: AutoSaverProps) => {
-    const editor  = useEditor();
-    const supabase = createClient();
-    const save = useCallback(async (snapshot: TLEditorSnapshot) => {
-        let _id: string | number
+  const editor  = useEditor()
+  const { currentPageId } = useNav()
 
-        try {
-            switch (saveTo.destination) {
-                case 'remote capsule':
-                    _id = saveTo.capsuleId
-                    await saveCapsuleSnapshot(_id, snapshot)
-                    break
+  const debounceSave = useMemo(() => debounce(() => {
+      save({ saveTo, snapshot: editor.getSnapshot() });
+  }, 1000), [editor, saveTo]);
 
-                case 'remote room':
-                    _id = saveTo.roomId
-                    await saveRoomSnapshot(_id, snapshot)
-                    break
-            }
-            logger.log('supabase:database', `Saved capsule snapshot to ${saveTo.destination} ${_id}`)
-        } catch (error) {
-            logger.error('supabase:database', 'Error saving capsule snapshot', (error as Error).message)
-        }
-    }, [saveTo])
-
-    // Save on mount
-    useEffect(() => {
-        if (editor && saveOnMount) {
-            logger.log('react:component', 'AutoSaver', 'First save of autosaver')
-            save(editor.getSnapshot())
-        }
-    }, [editor, save, saveOnMount])
+  // Save on mount
+  useEffect(() => {
+      if (editor && saveOnMount) {
+          logger.log('react:component', 'AutoSaver', 'First save of autosaver')
+          save({ saveTo, snapshot: editor.getSnapshot() })
+      }
+  }, [editor, saveOnMount, saveTo])
 
 
-    // Save when the snapshot changes
-    useEffect(() => {
-        let timeout: NodeJS.Timeout
-        const debouncedSave = (snapshot: TLEditorSnapshot) => {
-            clearTimeout(timeout)
-            timeout = setTimeout(() => save(snapshot), 1000)
-        }
+  // Save when the snapshot changes (drawing shapes...)
+  useEffect(() => {
+      const documentListener = editor?.store.listen(({changes}) => {
+          debounceSave()
+      }, {source: 'user', scope: 'document'})
 
-        const listener = editor?.store.listen(({changes}) => {
-            debouncedSave(editor.getSnapshot())
-        }, {source: 'user', scope: 'document'})
-    
-        return () => {
-            clearTimeout(timeout)
-            listener?.() // Removes the listener (returned from store.listen())
-        }
-    }, [editor, save])
-    // useEffect(() => {
-    //     const saveSvgUrls = async () => {
-    //         logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
-    //         const allPages = editor.getPages();
-    //         const allBlobs: Blob[] = [];
-    //         if (allPages.length > 0) {
-    //             try {
-    //                 for (let i = 0; i < allPages.length; i++) {
-    //                     const shapeIds = editor.getPageShapeIds(allPages[i]);
-    //                     if (shapeIds.size === 0)
-    //                         continue;
-    
-    //                     try {
-    //                         const blob = await exportToBlob({
-    //                             editor,
-    //                             ids: Array.from(shapeIds),
-    //                             format: 'png',
-    //                             opts: {
-    //                                 bounds: defaultBox,
-    //                                 padding: 0,
-    //                                 darkMode: false,
-    //                             }
-    //                         });
-    //                         if (blob.size > 0)
-    //                             allBlobs.push(blob);
-    //                     } catch (error) {
-    //                         logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
-    //                     }
-    //                 }
-    //             } catch (error) {
-    //                 logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
-    //             }
-    
-    //             const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
-    //                 if (blob.size > 0)
-    //                 {
-    //                     const base64data = await getBase64FromBlob(blob);
-    //                     return (base64data);
-    //                 }
-    //             }));
-    //             if (allBase64.length > 0) {
-    //                 if (saveTo.destination === 'remote capsule')
-    //                 {
-    //                     const metadata = {
-    //                         id: saveTo.capsuleId,
-    //                         type: "capsule",
-    //                         format: "png",
-    //                         data: allBase64
-    //                     }
-    //                     const supabase = createClient();
-    //                     await supabase.from("capsules").upsert({ id: saveTo.capsuleId, metadata }).eq('id', saveTo.capsuleId);
-    //                     logger.log("react:component", "AutoSaver", "Saved blob url capsule for pdf");
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     saveSvgUrls();
-    // }, [editor, supabase, saveTo]);
-    
 
-    return null
+      return () => {
+          documentListener?.() // Removes the listener (returned from store.listen())
+      }
+  }, [editor, debounceSave])
+
+  // Page change
+  useEffect(() => {
+      debounceSave()
+  }, [currentPageId, debounceSave])
+
+  return null
 })
 
 export default AutoSaver
+
+async function save(args: {
+  saveTo: AutoSaverProps['saveTo'],
+  snapshot: TLEditorSnapshot
+}) {
+  const { saveTo, snapshot } = args
+  let _id: string | number
+
+  try {
+      switch (saveTo.destination) {
+          case 'remote capsule':
+              _id = saveTo.capsuleId
+              await saveCapsuleSnapshot(_id, snapshot)
+              break
+
+          case 'remote room':
+              _id = saveTo.roomId
+              await saveRoomSnapshot(_id, snapshot)
+              break
+      }
+      logger.log('supabase:database', `Saved capsule snapshot to ${saveTo.destination} ${_id}`)
+  } catch (error) {
+      logger.error('supabase:database', 'Error saving capsule snapshot', (error as Error).message)
+  }
+}
