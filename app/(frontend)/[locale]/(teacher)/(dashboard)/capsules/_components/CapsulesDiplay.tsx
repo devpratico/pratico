@@ -44,14 +44,12 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 						const roomOpen = cap.roomOpen;
 						const roomCode = cap.roomCode;
 						let url = roomOpen && roomCode ? `/room/${roomCode}` : `/capsule/${id}`
-						const firstPageId = snap?.document.store
-							? Object.keys(snap?.document.store)[0]
-							: undefined;
+				
 						return (
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 									<Miniature title={title} createdAt={created_at} roomOpen={roomOpen}>
-										{snap && <Thumbnail snapshot={snap} scale={0.2} pageId={firstPageId as TLPageId} />}
+										{snap && <Thumbnail snapshot={snap} scale={0.2} />}
 									</Miniature>
 								</Link>
 								<Menu capsuleId={id} key={id} />
