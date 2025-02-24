@@ -30,7 +30,13 @@ export default function QuizAnimation() {
 
     // Service methods
     const { close } = useCloseQuizService()
-    const { isPending, toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = useQuizAnimationService()
+    const { 
+        isPending, 
+        toggleAnswer, 
+        setQuestionState, 
+        myChoicesIds, 
+        setCurrentQuestionIndex 
+    } = useQuizAnimationService()
 
 
     return (

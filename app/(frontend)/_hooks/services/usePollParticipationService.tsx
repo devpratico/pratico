@@ -5,6 +5,7 @@ import usePollParticipationStore from '../stores/usePollParticipationStore'
 import { useUser } from '../contexts/useUser'
 import { useRoom } from '../contexts/useRoom'
 import useAnswerActivityMutation from '../mutations/useAnswerActivityMutation'
+import { isEqual } from 'lodash'
 
 
 export default function usePollParticipationService(): {
@@ -86,6 +87,10 @@ export function useSyncParticipationPollService(): {
             return
         }
         usePollParticipationStore.getState().setSnapshot(snapshot)
+        // Update the store if the snapshot is different
+        // if (!isEqual(snapshot.answers, usePollParticipationStore.getState().answers)) {
+        //     usePollParticipationStore.getState().setSnapshot(snapshot)
+        // }
     }, [snapshot, userId])
 
     // Put the poll in the store
