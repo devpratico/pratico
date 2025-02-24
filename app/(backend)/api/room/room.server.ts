@@ -130,7 +130,8 @@ export async function roomCreatorIsPaidCustomer(roomId: number) {
 
 export async function isRoomOpen(roomId: string) {
 	const supabase = createClient()
-	const { data, error } = await supabase.from('rooms').select('status').eq('id', roomId).single()
+    const numRoomId = Number(roomId)
+	const { data, error } = await supabase.from('rooms').select('status').eq('id', numRoomId).single()
 	if (error)
 		logger.error('supabase:database', 'isRoomOpen', 'error getting room status', error.message)
 	return (data?.status === 'open');

@@ -8,8 +8,8 @@ const dialog = {
 	title: "Vous lancez une session !",
 	description: `N'ayez pas peur de dynamiser votre présentation avec du dessin, des post-it, des images et des nouvelles pages.
 
-		A la fin, votre capsule sera rétablie dans son état original !
-		Les modifications sont sauvergardées dans les rapports.`
+		À la fin, votre capsule sera rétablie dans son état original !
+		Les modifications sont sauvegardées dans les rapports.`
 }
 
 export function StartSessionWarningAlert() {

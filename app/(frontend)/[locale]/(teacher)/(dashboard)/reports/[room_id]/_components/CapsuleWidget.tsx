@@ -11,7 +11,6 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 	const formatter = await getFormatter();
 	let capsuleDate = "";
 	let capsuleSnapshot: Json | TLEditorSnapshot | null = null;
-	let firstPageId = undefined;
 
     const userId = (await getUser()).data?.user?.id;
     if (!userId) {
@@ -32,20 +31,13 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 	if (capsuleRoomData)
 	{
 		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)
-		{
 			capsuleSnapshot = capsuleRoomData.capsule_snapshot;
-			
-			firstPageId = typeof capsuleRoomData.capsule_snapshot === "string"
-				? Object.keys(JSON.parse(capsuleRoomData.capsule_snapshot).document.store)[0]
-				: undefined;
-		}
 	}
 	const data = {
 		capsuleId: capsuleId,
 		capsuleTitle: capsuleTitle,
 		capsuleDate: capsuleDate,
 		capsuleSnapshot: capsuleSnapshot,
-		firstPageId: firstPageId
 	};
 	return (<>
 		<CapsuleWidgetView data={data} />
