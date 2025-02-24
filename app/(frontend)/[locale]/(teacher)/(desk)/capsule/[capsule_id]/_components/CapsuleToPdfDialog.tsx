@@ -62,7 +62,24 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobs", error);
 				return ;
 			}
-			return (allBlobs);
+			const compressBlob = async (blob: Blob, quality = 0.7): Promise<Blob> => {
+				return new Promise((resolve) => {
+					const img = new Image();
+					img.src = URL.createObjectURL(blob);
+					img.onload = () => {
+						const canvas = document.createElement("canvas");
+						canvas.width = img.width;
+						canvas.height = img.height;
+						const ctx = canvas.getContext("2d");
+						ctx?.drawImage(img, 0, 0, img.width, img.height);
+						canvas.toBlob((compressedBlob) => resolve(compressedBlob || blob), "image/jpeg", quality);
+					};
+				});
+			};
+			
+			const compressedBlobs = await Promise.all(allBlobs.map((blob) => compressBlob(blob, 0.7)));
+			
+			return (compressedBlobs);
 		}
 	};
 
