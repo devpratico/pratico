@@ -165,6 +165,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 					link.click();
 					link.remove();
 					setOpenDialog(false);
+					URL.revokeObjectURL(url);
 					blobsUrls.forEach(async (url) => {
 						const fileName = url.split('/').pop();
 						if (fileName)
@@ -174,6 +175,11 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			}
 		} catch (error) {
 			logger.error("react:component", "CapsuleToPdfDialog", "Error downloading PDF:", error);
+			blobsUrls.forEach(async (url) => {
+				const fileName = url.split('/').pop();
+				if (fileName)
+					deleteFileFromSupabaseBucket(fileName);
+			});
 			setOpenDialog(false);
 		} finally {
 			clearInterval(progressInterval);

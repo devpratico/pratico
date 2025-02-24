@@ -12,20 +12,21 @@ export async function POST(req: NextRequest) {
 
 		const pdfDoc = await PDFDocument.create();
 
-		for (const url of blobsUrls) {
-			try {
-				const response = await fetch(url);
-				if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+		const images = await Promise.all(blobsUrls.map(async (url) => {
+			const response = await fetch(url);
+			if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+			const buffer = Buffer.from(await response.arrayBuffer());
+			return (buffer);
+		}));
+		let i  = 0;
+		for (const image of images) {
+			const img = await pdfDoc.embedPng(image);
+			const page = pdfDoc.addPage([img.width, img.height]);
 
-				const buffer = Buffer.from(await response.arrayBuffer());
-				const img = await pdfDoc.embedPng(buffer);
-				const page = pdfDoc.addPage([img.width, img.height]);
-
-				page.drawImage(img, { x: 0, y: 0 });
-			} catch (error) {
-				logger.error("next:api", "api/generate-pdf", `Error processing ${url}:`, error);
-			}
+			page.drawImage(img, { x: 0, y: 0 });
+			
 		}
+		logger.log("next:api", "api/generate-pdf", "Saving PDF...");
 		const pdfBytes = await pdfDoc.save();
 		const pdfBuffer = new Uint8Array(pdfBytes);
 
