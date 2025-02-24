@@ -50,10 +50,13 @@ export async function POST(req: NextRequest) {
 		}
 		
 		const pdfBytes = await pdfDoc.save();
-		const response = new NextResponse(new Uint8Array(pdfBytes), {
+		const pdfBuffer = new Uint8Array(pdfBytes);
+		const contentLength = pdfBuffer.byteLength.toString();
+		const response = new NextResponse(pdfBuffer, {
 			headers: {
 				'Content-Type': 'application/pdf',
-				"Content-Disposition": 'attachment; filename="document.pdf"'
+				"Content-Disposition": 'attachment; filename="document.pdf"',
+				'Content-Length': contentLength
 			},
 			status: 200
 		});

@@ -9,15 +9,11 @@ import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { exportToBlob } from "tldraw";
 import { defaultBox } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 
-interface GeneratePdfResponse {
-	data: Blob;
-}
 export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
 {
 	const { editor } = useTLEditor();
 	const supabase = createClient();
 	const formatter = useFormatter();
-	const [ disabled, setDisabled ] = useState(false);
 	const [ progress, setProgress ] = useState(0);
 	const [ filename, setFilename ] = useState("capsule.pdf");
 	const [ pagesProgress, setPagesProgress  ] = useState<{loading: number, total: number}>({loading: 0, total: 0});
@@ -25,21 +21,21 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
-	const getBase64Data = async () => {
+	const getBase64Data = async (): Promise<string[] | undefined> => {
 		if (!editor)
-			return ([]);
-		logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
+			return ;
+		logger.log("react:component", "CapsuleToPdfDialog", "getting PNG base 64 from all pages");
+		setProgress(0);
 		const allPages = editor.getPages();
 		const allBlobs: Blob[] = [];
 		if (allPages.length > 0) {
 			try {
 				setPagesProgress({loading: 0, total: allPages.length});
-
 				for (let i = 0; i < allPages.length; i++) {
 
 					const shapeIds = editor.getPageShapeIds(allPages[i]);
 					if (shapeIds.size === 0)
-						continue;
+						continue ;
 					setPagesProgress((prev) => ({loading: prev?.loading + 1, total: prev?.total}));
 					try {
 						const blob = await exportToBlob({
@@ -58,12 +54,12 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 					} catch (error) {
 						logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
-						return ([]);
+						return ;
 					}
 				}
 			} catch (error) {
 				logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
-				return ([]);
+				return ;
 			}
 			
 
@@ -78,82 +74,93 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			if (filteredBase64.length > 0) {
 				return (filteredBase64);
 			}
-			return ([]);
+			return ;
 		}
 	};
 
 	const handleExportAllPages = async () => {
-	
 		const base64Datas = await getBase64Data();
 		if (!base64Datas || base64Datas.length === 0) {
 			setErrorMsg("Échec de la récupération des données de la capsule");
 			setState('error');
 			setOpenDialog(false);
-			return;	
+			return ;
 		}
+		setPagesProgress({ loading: 0, total: base64Datas.length });
+		setState('downloading');
+		setProgress(0);
+		let progressInterval;
 		try {
-			setPagesProgress({loading: 0, total: base64Datas.length});
-			setState('downloading');
-			setProgress(0);
-			const response: GeneratePdfResponse | undefined = await fetch('/api/generate-pdf', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ base64Datas }),
-				})
-				.then(async (res) => {
-					if (!res.ok)
-						throw new Error("Server returned an error while generating PDF");
-
-					const contentLength = res.headers.get('Content-Length');
-					if (contentLength) {
-						const total = parseInt(contentLength, 10);
-						const reader = res.body?.getReader();
-						if (reader) {
-							let loaded = 0;
-							const read = async () => {
-								const { done, value } = await reader.read();
-								if (done) return;
-								if (value) {
-									loaded += value.byteLength;
-									setProgress((loaded / total) * 100);
-									await read();
-								}
-							};
-							await read();
-						}
-					}
-					return ({ data: await res.blob() });
-				})
-				.catch((error) => {
-					logger.error("react:component", "CapsuleToPDFDialog", "Error fetching PDF:", error);
-					setErrorMsg(`Échec de la récupération du PDF avec erreur: ${error}`);
-					setState('error');
-					setOpenDialog(false);
-					return (undefined);
-				});
-
-				if (!response) {
-					setErrorMsg("Échec de la récupération du PDF, reponse vide");
-					setState('error');
-					setOpenDialog(false);
-					throw new Error('Failed to fetch PDF');
-				}
-
-				const url = window.URL.createObjectURL(response.data);
-				const link = document.createElement('a');
-				link.href = url;
-				link.setAttribute('download', filename);
-				document.body.appendChild(link);
-				link.click();
-				link.remove();
+			progressInterval = setInterval(() => {
+				setProgress(prev => Math.min(prev + 5, 95));
+			},100);
+			const response = await fetch('/api/generate-pdf', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ base64Datas }),
+			});
+	
+			if (!response || !response.ok) {
+				setErrorMsg("Échec de la récupération du PDF, réponse vide");
+				setState('error');
 				setOpenDialog(false);
-			} catch (error) {
-				logger.error("react:component", "CapsuleToPdfDialog", "Error downloading PDF:", error);
-				setOpenDialog(false);
+				throw new Error('Failed to fetch PDF');
 			}
-		};
+			const contentLength = response.headers.get('Content-Length');
+			if (contentLength) {
+				const total = parseInt(contentLength, 10);
+				const reader = response.body?.getReader();
+				if (reader) {
+					let loaded = 0;
+					let lastProgress = 0;
+					const chunks: Uint8Array[] = [];
+					
+					const readStream = async () => {
+						while (true) {
+							const { done, value } = await reader.read();
+							if (done)
+								break;
+							if (value) {
+								loaded += value.length;
+								chunks.push(value);
+								const progress = (loaded / total) * 100;
+								if (progress - lastProgress > 1) {
+									lastProgress = progress;
+									requestAnimationFrame(() => {
+										setPagesProgress(prev => ({
+											loading: prev.loading + 1,
+											total: prev.total,
+										}));
+										setProgress(progress);
+									});
+								}
+							}
+						}
+					};
+					await readStream();
+					clearInterval(progressInterval);
+	
+					const blob = new Blob(chunks);
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', filename);
+					document.body.appendChild(link);
+					link.click();
+					link.remove();
+					setOpenDialog(false);
+				}
+			}
+		} catch (error) {
+			logger.error("react:component", "CapsuleToPdfDialog", "Error downloading PDF:", error);
+			setOpenDialog(false);
+		} finally {
+			clearInterval(progressInterval);
+		}
+	};
+	
 
 	useEffect(() => {
 		const getCapsuleData = async () => {
@@ -187,7 +194,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	return (
 			<AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 				<AlertDialog.Trigger>
-					<Button style={{  width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages} disabled={disabled}>
+					<Button style={{  width:"100%", justifyContent: 'center' }} onClick={handleExportAllPages}>
 						<FileDown size='20' style={{ marginRight: '5px' }} />
 						<Text>Télécharger en PDF</Text>
 					</Button>
@@ -228,7 +235,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 							</Flex>
 							<Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
 								<Text trim='both'>{filename}</Text>
-								<Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
+								{/* <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text> */}
 							</Flex>
 
 							<Box width='100%'>
@@ -252,26 +259,4 @@ async function getBase64FromBlob(blob: Blob): Promise<string> {
         reader.readAsDataURL(blob);
     });
 }
-
-
-const fileToBase64 = (file: File): Promise<string> => {
-	return new Promise((resolve, reject) => {
-	  const reader = new FileReader();
-	  reader.readAsDataURL(file);
-	  reader.onload = () => resolve(reader.result as string);
-	  reader.onerror = (error) => reject(error);
-	});
-  };
-  
-const base64ToFile = (base64: string, filename: string): File => {
-	const arr = base64.split(',');
-	const mime = arr[0].match(/:(.*?);/)![1];
-	const bstr = atob(arr[1]);
-	let n = bstr.length;
-	const u8arr = new Uint8Array(n);
-	while (n--) {
-	  u8arr[n] = bstr.charCodeAt(n);
-	}
-	return new File([u8arr], filename, { type: mime });
-  };
   
