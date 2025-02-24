@@ -32,7 +32,7 @@ export function CapsuleWidgetView({ data }: CapsuleWidgetViewProps) {
                     backgroundColor: "var(--gray-5)",
                 }}
             >	
-				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} firstPageDisplay />
+				<Thumbnail snapshot={data.capsuleSnapshot as TLEditorSnapshot} />
 			</Flex>
 		);
 	};

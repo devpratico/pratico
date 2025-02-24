@@ -3,7 +3,8 @@ import {
   TldrawImage,
   Box,
   TLPageId,
-  TLEditorSnapshot
+  TLEditorSnapshot,
+  TLPage
 } from "tldraw";
 import { Flex, Spinner } from "@radix-ui/themes";
 import { useMemo } from "react";
@@ -15,7 +16,6 @@ interface ThumbnailProps {
     snapshot?: TLEditorSnapshot
     scale?: number
     pageId?: TLPageId
-    firstPageDisplay?: boolean
 }
 
 
@@ -24,7 +24,7 @@ interface ThumbnailProps {
  * @param snapshot - The snapshot of the tldraw store (optional). If not provided, the snapshot from the useTLEditor hook will be used.
  * @param pageId - The id of the page (optional). If not provided, the first page will be used.
  */
-const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId, firstPageDisplay }: ThumbnailProps) => {
+const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps) => {
     const bounds = useMemo(() => new Box(0, 0, 1920, 1080), []);
 
     // The snapshot used will be either the one passed as a prop or the one from the hook
@@ -32,24 +32,19 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId, firstPageDisplay
     const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
     //const { currentPageId } = useNav()
     const firstPageId = useMemo(() => {
-        if (!firstPageDisplay || !snapshot?.document.store)
+        if (!snapshot?.document.store)
             return ;
 
-        const pages = Object.values(snapshot.document.store)
-            .filter(value => value.id?.startsWith("page:"))
-            .map(value => ({
-                id: value.id as TLPageId,
-                pageNumber: 'name' in value && value.name
-                ? parseInt(value.name.split(" ")[1])
-                : Number.MAX_SAFE_INTEGER
-            }))
-            .sort((a, b) => a.pageNumber - b.pageNumber);
-    
-        const smallestPageId = pages[0]?.id;
+        const store = snapshot.document.store 
+        const pages = Object.values(store)
+            .filter(value => value.id?.startsWith("page:")) as TLPage[]
         
-        logger.log("react:component", "Thumbnail", "firstPageId", smallestPageId);
-        return (smallestPageId);
-    }, [firstPageDisplay, snapshot]);
+        const firstPage = pages.reduce((firstPage, page) => {
+            return page.index < firstPage.index ? page : firstPage
+        }, pages[0]);
+    
+        return firstPage.id
+    }, [snapshot]);
     
     //const isFirstRender = useRef(true);
 
@@ -101,7 +96,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId, firstPageDisplay
             format='png'
             scale={scale}
             background={true}
-            pageId={firstPageDisplay ? firstPageId : pageId}
+            pageId={pageId ?? firstPageId}
             bounds={bounds}
             //preserveAspectRatio={'true'}
             padding={0}

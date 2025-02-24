@@ -49,7 +49,7 @@ export function CapsulesDisplay ({capsules}: {capsules: ExtendedCapsuleType[] | 
 							<Box position='relative' key={id}>
 								<Link href={url} style={{ all: 'unset', cursor: 'pointer'}}>
 									<Miniature title={title} createdAt={created_at} roomOpen={roomOpen}>
-										{snap && <Thumbnail snapshot={snap} scale={0.2} firstPageDisplay />}
+										{snap && <Thumbnail snapshot={snap} scale={0.2} />}
 									</Miniature>
 								</Link>
 								<Menu capsuleId={id} key={id} />
