@@ -5,7 +5,6 @@ import { PDFDocument } from 'pdf-lib';
 export async function POST(req: NextRequest) {
 	try {
 		const { blobsUrls } = await req.json();
-		console.log("API BLOBVS", blobsUrls);
 		if (!Array.isArray(blobsUrls) || blobsUrls.length === 0)
 			return NextResponse.json({ error: "No blobs URLs provided" }, { status: 400 });
 
@@ -26,12 +25,11 @@ export async function POST(req: NextRequest) {
 			} catch (error) {
 				logger.error("next:api", "api/generate-pdf", `Error processing ${url}:`, error);
 			}
-			}
+		}
+		const pdfBytes = await pdfDoc.save();
+		const pdfBuffer = new Uint8Array(pdfBytes);
 
-			const pdfBytes = await pdfDoc.save();
-			const pdfBuffer = new Uint8Array(pdfBytes);
-
-			return new NextResponse(pdfBuffer, {
+		return new NextResponse(pdfBuffer, {
 			headers: {
 				'Content-Type': 'application/pdf',
 				"Content-Disposition": 'attachment; filename="document.pdf"',
