@@ -1,54 +1,26 @@
 import logger from '@/app/_utils/logger';
-import createClient from '@/supabase/clients/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
-// export async function OPTIONS() {
-//     return NextResponse.json({}, { 
-//         headers: {
-//             'Access-Control-Allow-Origin': '*',
-//             'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-//             'Access-Control-Allow-Headers': 'Content-Type',
-//         }
-//     });
-// }
-
 export async function POST(req: NextRequest) {
-	const { base64Datas } = await req.json();
-	if (!base64Datas || base64Datas.length === 0) {
+	const formData = await req.formData();
+	const blobs = [];
+	for (const [key, value] of formData.entries()) {
+		const blob = value as Blob;
+		blobs.push(blob);
+	}
+	if (!blobs || blobs.length === 0) {
 		return (NextResponse.json({ error: "base64Data not provided" }, { status: 400 }));
 	}
+	
 	try {
-
 		const pdfDoc = await PDFDocument.create();
-
-		for (const base64Data of base64Datas) {
-			if (base64Data.startsWith("data:image/png;base64,")) {
-				const data = base64Data.replace(/^data:image\/png;base64,/, "");
-				const byteArray = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
-
-				const image = await pdfDoc.embedPng(byteArray);
-				const page = pdfDoc.addPage([image.width, image.height]);
-
-				page.drawImage(image, {
-					x: 0,
-					y: 0,
-					width: image.width,
-					height: image.height
-				});
-			} else if (base64Data.startsWith("data:application/pdf;base64,")) {
-				const data = base64Data.replace(/^data:application\/pdf;base64,/, "");
-				const byteArray = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
-
-				const existingPdf = await PDFDocument.load(byteArray);
-				const copiedPages = await pdfDoc.copyPages(existingPdf, existingPdf.getPageIndices());
-
-				copiedPages.forEach((page) => pdfDoc.addPage(page));
-			} else {
-				return (NextResponse.json({ error: "Invalid file format" }, { status: 400 }));
-			}
+		for (const blob of blobs) {
+			const buffer = Buffer.from(await blob.arrayBuffer());
+			const img = await pdfDoc.embedPng(buffer);
+			const page = pdfDoc.addPage([img.width, img.height]);
+			page.drawImage(img, { x: 0, y: 0 });
 		}
-		
 		const pdfBytes = await pdfDoc.save();
 		const pdfBuffer = new Uint8Array(pdfBytes);
 		const contentLength = pdfBuffer.byteLength.toString();

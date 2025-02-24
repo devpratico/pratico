@@ -21,10 +21,10 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
-	const getBase64Data = async (): Promise<string[] | undefined> => {
+	const getPNGBlobs = async (): Promise<Blob[] | undefined> => {
 		if (!editor)
 			return ;
-		logger.log("react:component", "CapsuleToPdfDialog", "getting PNG base 64 from all pages");
+		logger.log("react:component", "CapsuleToPdfDialog", "getPNGBlobs", "getting PNG blobs from all pages");
 		setProgress(0);
 		const allPages = editor.getPages();
 		const allBlobs: Blob[] = [];
@@ -53,40 +53,27 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						setState('loading');
 						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 					} catch (error) {
-						logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
+						logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobs", `Failed to get blob in page ${allPages[i].id}`, error);
 						return ;
 					}
 				}
 			} catch (error) {
-				logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
+				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobs", error);
 				return ;
 			}
-			
-
-			const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
-				if (blob.size > 0)
-				{
-					const base64data = await getBase64FromBlob(blob);
-					return (base64data);
-				}
-			}));
-			const filteredBase64 = allBase64.filter((base64): base64 is string => base64 !== undefined);
-			if (filteredBase64.length > 0) {
-				return (filteredBase64);
-			}
-			return ;
+			return (allBlobs);
 		}
 	};
 
 	const handleExportAllPages = async () => {
-		const base64Datas = await getBase64Data();
-		if (!base64Datas || base64Datas.length === 0) {
+		const blobs = await getPNGBlobs();
+		if (!blobs || blobs.length === 0) {
 			setErrorMsg("Échec de la récupération des données de la capsule");
 			setState('error');
 			setOpenDialog(false);
 			return ;
 		}
-		setPagesProgress({ loading: 0, total: base64Datas.length });
+		setPagesProgress({ loading: 0, total: blobs.length });
 		setState('downloading');
 		setProgress(0);
 		let progressInterval;
@@ -94,12 +81,14 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			progressInterval = setInterval(() => {
 				setProgress(prev => Math.min(prev + 5, 95));
 			},100);
+			const formData = new FormData();
+			blobs.forEach((blob, index) => {
+				formData.append(`blob${index}`, blob, `image${index}.png`);
+			});
+	
 			const response = await fetch('/api/generate-pdf', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ base64Datas }),
+				body: formData
 			});
 	
 			if (!response || !response.ok) {
