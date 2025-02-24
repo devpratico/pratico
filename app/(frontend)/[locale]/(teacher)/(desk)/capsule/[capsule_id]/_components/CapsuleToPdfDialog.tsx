@@ -41,11 +41,12 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						const blob = await exportToBlob({
 							editor,
 							ids: Array.from(shapeIds),
-							format: 'png',
+							format: 'jpeg',
 							opts: {
 								bounds: defaultBox,
 								padding: 0,
 								darkMode: false,
+								quality: 0.8
 							}
 						});
 						if (blob.size > 0)

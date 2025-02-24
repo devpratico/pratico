@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 		const pdfDoc = await PDFDocument.create();
 		for (const blob of blobs) {
 			const buffer = Buffer.from(await blob.arrayBuffer());
-			const img = await pdfDoc.embedPng(buffer);
+			const img = await pdfDoc.embedJpg(buffer);
 			const page = pdfDoc.addPage([img.width, img.height]);
 			page.drawImage(img, { x: 0, y: 0 });
 		}
