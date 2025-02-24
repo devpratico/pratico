@@ -24,61 +24,77 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ openDialog, setOpenDialog ] = useState(false);
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
-	const [ base64Datas, setBase64Datas ] = useState<string[]>([]);
 
-	useEffect(() => {
-		const getBase64Data = async () => {
-			if (!editor)
-				return ;
-            logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
-            const allPages = editor.getPages();
-            const allBlobs: Blob[] = [];
-            if (allPages.length > 0) {
-                try {
-                    for (let i = 0; i < allPages.length; i++) {
-                        const shapeIds = editor.getPageShapeIds(allPages[i]);
-                        if (shapeIds.size === 0)
-                            continue;
-    
-                        try {
-                            const blob = await exportToBlob({
-                                editor,
-                                ids: Array.from(shapeIds),
-                                format: 'png',
-                                opts: {
-                                    bounds: defaultBox,
-                                    padding: 0,
-                                    darkMode: false,
-                                }
-                            });
-                            if (blob.size > 0)
-                                allBlobs.push(blob);
-                        } catch (error) {
-                            logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
-                        }
-                    }
-                } catch (error) {
-                    logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
-                }
-    
-                const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
-                    if (blob.size > 0)
-                    {
-                        const base64data = await getBase64FromBlob(blob);
-                        return (base64data);
-                    }
-                }));
-				const filteredBase64 = allBase64.filter((base64): base64 is string => base64 !== undefined);
-				if (filteredBase64.length > 0) {
-					setBase64Datas(filteredBase64);
+	const getBase64Data = async () => {
+		if (!editor)
+			return ([]);
+		logger.log("react:component", "AutoSaver", "Saving PNG base 64 to capsules table, metadata column");
+		const allPages = editor.getPages();
+		const allBlobs: Blob[] = [];
+		if (allPages.length > 0) {
+			try {
+				setPagesProgress({loading: 0, total: allPages.length});
+
+				for (let i = 0; i < allPages.length; i++) {
+
+					const shapeIds = editor.getPageShapeIds(allPages[i]);
+					if (shapeIds.size === 0)
+						continue;
+					setPagesProgress((prev) => ({loading: prev?.loading + 1, total: prev?.total}));
+					try {
+						const blob = await exportToBlob({
+							editor,
+							ids: Array.from(shapeIds),
+							format: 'png',
+							opts: {
+								bounds: defaultBox,
+								padding: 0,
+								darkMode: false,
+							}
+						});
+						if (blob.size > 0)
+							allBlobs.push(blob);
+						setState('loading');
+						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
+					} catch (error) {
+						logger.error("react:component", "CapsuleToSVGBtn", `Failed to get svgElement in page ${allPages[i].id}`, error);
+						return ([]);
+					}
 				}
-            }
-        }
-        getBase64Data();
-	}, [capsuleId, editor, supabase]);
+			} catch (error) {
+				logger.error("react:component", "CapsuleToSVGBtn", "handleExportAllPages", error);
+				return ([]);
+			}
+			
+
+			const allBase64 = await Promise.all(allBlobs.map(async (blob) => {
+				if (blob.size > 0)
+				{
+					const base64data = await getBase64FromBlob(blob);
+					return (base64data);
+				}
+			}));
+			const filteredBase64 = allBase64.filter((base64): base64 is string => base64 !== undefined);
+			if (filteredBase64.length > 0) {
+				return (filteredBase64);
+			}
+			return ([]);
+		}
+	};
+
 	const handleExportAllPages = async () => {
 	
+		const base64Datas = await getBase64Data();
+		if (!base64Datas || base64Datas.length === 0) {
+			setErrorMsg("Échec de la récupération des données de la capsule");
+			setState('error');
+			setOpenDialog(false);
+			return;	
+		}
 		try {
+			setPagesProgress({loading: 0, total: base64Datas.length});
+			setState('downloading');
+			setProgress(0);
 			const response: GeneratePdfResponse | undefined = await fetch('/api/generate-pdf', {
 					method: 'POST',
 					headers: {
@@ -87,7 +103,8 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 					body: JSON.stringify({ base64Datas }),
 				})
 				.then(async (res) => {
-					if (!res.ok) throw new Error("Server returned an error while generating PDF");
+					if (!res.ok)
+						throw new Error("Server returned an error while generating PDF");
 
 					const contentLength = res.headers.get('Content-Length');
 					if (contentLength) {
@@ -99,7 +116,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 								const { done, value } = await reader.read();
 								if (done) return;
 								if (value) {
-									loaded += value.length;
+									loaded += value.byteLength;
 									setProgress((loaded / total) * 100);
 									await read();
 								}
@@ -113,12 +130,14 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 					logger.error("react:component", "CapsuleToPDFDialog", "Error fetching PDF:", error);
 					setErrorMsg(`Échec de la récupération du PDF avec erreur: ${error}`);
 					setState('error');
+					setOpenDialog(false);
 					return (undefined);
 				});
 
 				if (!response) {
 					setErrorMsg("Échec de la récupération du PDF, reponse vide");
 					setState('error');
+					setOpenDialog(false);
 					throw new Error('Failed to fetch PDF');
 				}
 
