@@ -21,77 +21,85 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
 
-	const getPNGBlobs = async (): Promise<Blob[] | undefined> => {
-		if (!editor)
-			return ;
-		logger.log("react:component", "CapsuleToPdfDialog", "getPNGBlobs", "getting PNG blobs from all pages");
+	const uploadToSupabase = async (blob: Blob, fileName: string): Promise<string | null> => {
+		const { data, error } = await supabase.storage.from('capsules_pdf').upload(fileName, blob, {
+			contentType: 'image/png',
+			upsert: true
+		});
+		
+		if (error) {
+			logger.error("react:component", "uploadToSupabase", error.message);
+			return (null);
+		}
+		
+		return (supabase.storage.from('capsules_pdf').getPublicUrl(fileName).data.publicUrl);
+	};
+
+	const deleteFileFromSupabaseBucket = async (filePath: string) => {
+		const { error } = await supabase.storage.from('capsules_pdf').remove([filePath]);
+	
+		if (error)
+			logger.error("react:component", "CapsuleToPdfDialog", "deleteFileFromSupabaseBucket", error.message);
+	}
+	  
+	
+	const getPNGBlobsUrl = async (): Promise<string[] | undefined> => {
+		if (!editor) return;
+		logger.log("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", "getting PNG blobs from all pages");
 		setProgress(0);
 		const allPages = editor.getPages();
-		const allBlobs: Blob[] = [];
+		const allUrls: string[] = [];
+	
 		if (allPages.length > 0) {
 			try {
-				setPagesProgress({loading: 0, total: allPages.length});
+				setPagesProgress({ loading: 0, total: allPages.length });
 				for (let i = 0; i < allPages.length; i++) {
-
 					const shapeIds = editor.getPageShapeIds(allPages[i]);
 					if (shapeIds.size === 0)
-						continue ;
-					setPagesProgress((prev) => ({loading: prev?.loading + 1, total: prev?.total}));
+						continue;
+					
+					setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }));
+					
 					try {
 						const blob = await exportToBlob({
 							editor,
 							ids: Array.from(shapeIds),
-							format: 'jpeg',
+							format: 'png',
 							opts: {
 								bounds: defaultBox,
 								padding: 0,
 								darkMode: false,
-								quality: 0.8
 							}
 						});
-						if (blob.size > 0)
-							allBlobs.push(blob);
-						setState('loading');
+			
+						if (blob.size > 0) {
+							const url = await uploadToSupabase(blob, `slide_${Date.now()}_${i}.png`);
+							if (url)
+								allUrls.push(url);
+						}
 						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 					} catch (error) {
-						logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobs", `Failed to get blob in page ${allPages[i].id}`, error);
-						return ;
+						logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", `Failed to get blob in page ${allPages[i].id}`, error);
+						return;
 					}
 				}
 			} catch (error) {
-				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobs", error);
-				return ;
+				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", error);
+				return;
 			}
-			const compressBlob = async (blob: Blob, quality = 0.7): Promise<Blob> => {
-				return new Promise((resolve) => {
-					const img = new Image();
-					img.src = URL.createObjectURL(blob);
-					img.onload = () => {
-						const canvas = document.createElement("canvas");
-						canvas.width = img.width;
-						canvas.height = img.height;
-						const ctx = canvas.getContext("2d");
-						ctx?.drawImage(img, 0, 0, img.width, img.height);
-						canvas.toBlob((compressedBlob) => resolve(compressedBlob || blob), "image/jpeg", quality);
-					};
-				});
-			};
-			
-			const compressedBlobs = await Promise.all(allBlobs.map((blob) => compressBlob(blob, 0.7)));
-			
-			return (compressedBlobs);
+			return (allUrls);
 		}
 	};
+	  
 
 	const handleExportAllPages = async () => {
-		const blobs = await getPNGBlobs();
-		if (!blobs || blobs.length === 0) {
+		const blobsUrls = await getPNGBlobsUrl();
+		if (!blobsUrls || blobsUrls.length === 0) {
 			setErrorMsg("Échec de la récupération des données de la capsule");
 			setState('error');
 			setOpenDialog(false);
 			return ;
 		}
-		setPagesProgress({ loading: 0, total: blobs.length });
 		setState('downloading');
 		setProgress(0);
 		let progressInterval;
@@ -99,14 +107,13 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			progressInterval = setInterval(() => {
 				setProgress(prev => Math.min(prev + 5, 95));
 			},100);
-			const formData = new FormData();
-			blobs.forEach((blob, index) => {
-				formData.append(`blob${index}`, blob, `image${index}.png`);
-			});
-	
+			
 			const response = await fetch('/api/generate-pdf', {
 				method: 'POST',
-				body: formData
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ blobsUrls }),
 			});
 	
 			if (!response || !response.ok) {
@@ -158,6 +165,11 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 					link.click();
 					link.remove();
 					setOpenDialog(false);
+					blobsUrls.forEach(async (url) => {
+						const fileName = url.split('/').pop();
+						if (fileName)
+							deleteFileFromSupabaseBucket(fileName);
+					});
 				}
 			}
 		} catch (error) {
@@ -266,4 +278,3 @@ async function getBase64FromBlob(blob: Blob): Promise<string> {
         reader.readAsDataURL(blob);
     });
 }
-  
