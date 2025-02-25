@@ -28,11 +28,11 @@ export async function POST(req: NextRequest) {
 		
 		const fetchImage = async (url: string) => {
 			try {
-			const buffer = await fetchWithTimeout(url, 5000);
-			return Buffer.from(buffer);
+				const buffer = await fetchWithTimeout(url, 5000);
+				return Buffer.from(buffer);
 			} catch (err) {
-			logger.error("next:api", "api/generate-pdf", `Error fetching image ${url}:`, err);
-			throw err;
+				logger.error("next:api", "api/generate-pdf", `Error fetching image ${url}:`, err);
+				throw err;
 			}
 		};
 		
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 			const img = await pdfDoc.embedPng(image);
 			const page = pdfDoc.addPage([img.width, img.height]);
 
-			page.drawImage(img, { x: 0, y: 0, width: img.width / 2, height: img.height / 2});
+			page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height});
 			
 		}
 		logger.log("next:api", "api/generate-pdf", "Saving PDF...");
@@ -51,31 +51,20 @@ export async function POST(req: NextRequest) {
 		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
 		const supabase = createClient();
 		const { data, error } = await supabase.storage
-		.from('capsules_pdf')
-		.upload(`pdf_${Date.now()}.pdf`, pdfBytes, {
-			contentType: 'application/pdf',
-			upsert: true,
+			.from('capsules_pdf')
+			.upload(`pdf_${Date.now()}.pdf`, pdfBytes, {
+				contentType: 'application/pdf',
+				upsert: true,
 		});
 
 		if (error) {
 			console.error("Erreur lors de l'upload dans Supabase Storage:", error);
 			return NextResponse.json({ error: 'Erreur lors de l\'upload du PDF' }, { status: 500 });
 		}
-		const publicURL = supabase.storage.from('capsules_pdf').getPublicUrl(data.path).data.publicUrl;
-		const pdfResponse = await fetch(publicURL);
-		supabase.storage.from('capsules_pdf').remove([data.path]);
-		if (!pdfResponse.ok)
-			throw new Error(`Failed to fetch ${publicURL}`);
-		const pdfBuffer = new Uint8Array(await pdfResponse.arrayBuffer());
+		const { data: { publicUrl } } = supabase.storage.from('capsules_pdf').getPublicUrl(data.path);
+		const path = data.path;
 
-		return new NextResponse(pdfBuffer, {
-			headers: {
-				'Content-Type': 'application/pdf',
-				'Content-Disposition': 'attachment; filename="document.pdf"',
-				'Content-Length': pdfBuffer.byteLength.toString(),
-			},
-			status: 200,
-		});
+		return NextResponse.json({ publicUrl, path }, { status: 200 });
 	} catch (error) {
 		logger.error("next:api", "api/generate-pdf", "Error generating PDF:", error);
 		return NextResponse.json({ error: 'Error generating PDF' }, { status: 500 });

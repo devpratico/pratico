@@ -20,7 +20,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ openDialog, setOpenDialog ] = useState(false);
 	const [ state, setState ] = useState<'loading' | 'downloading'  | 'error'>('loading');
 	const [ errorMsg, setErrorMsg ] = useState<string | null>(null);
-
+	const [ pdfPath, setPdfPath ] = useState<string | null>(null);
 	const uploadToSupabase = async (blob: Blob, fileName: string): Promise<string | null> => {
 		const { data, error } = await supabase.storage.from('capsules_pdf').upload(fileName, blob, {
 			contentType: 'image/png',
@@ -121,67 +121,50 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 				setOpenDialog(false);
 				throw new Error('Failed to fetch PDF');
 			}
-			const contentLength = response.headers.get('Content-Length');
-			if (contentLength) {
-				const total = parseInt(contentLength, 10);
-				const reader = response.body?.getReader();
-				if (reader) {
-					let loaded = 0;
-					let lastProgress = 0;
-					const chunks: Uint8Array[] = [];
-					
-					const readStream = async () => {
-						while (true) {
-							const { done, value } = await reader.read();
-							if (done)
-								break;
-							if (value) {
-								loaded += value.length;
-								chunks.push(value);
-								const progress = (loaded / total) * 100;
-								if (progress - lastProgress > 1) {
-									lastProgress = progress;
-									requestAnimationFrame(() => {
-										setPagesProgress(prev => ({
-											loading: prev.loading + 1,
-											total: prev.total,
-										}));
-										setProgress(progress);
-									});
-								}
-							}
-						}
-					};
-					await readStream();
-					clearInterval(progressInterval);
-	
-					const blob = new Blob(chunks);
-					const url = URL.createObjectURL(blob);
-					const link = document.createElement('a');
-					link.href = url;
-					link.setAttribute('download', filename);
-					document.body.appendChild(link);
-					link.click();
-					link.remove();
-					setOpenDialog(false);
-					URL.revokeObjectURL(url);
-					blobsUrls.forEach(async (url) => {
-						const fileName = url.split('/').pop();
-						if (fileName)
-							deleteFileFromSupabaseBucket(fileName);
-					});
-				}
+			
+			clearInterval(progressInterval);
+			const { path, publicUrl } = await response.json();
+			if (!publicUrl)
+				throw new Error('PublicUrl for pdf missing');
+			setPdfPath(path);
+			const responsePdf = await fetch(publicUrl);
+			if (!responsePdf.ok) {
+			  throw new Error("Erreur lors du téléchargement du PDF");
 			}
+			
+			const blob = await responsePdf.blob();
+			const blobUrl = URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = blobUrl;
+			link.setAttribute("download", filename);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(blobUrl);
+			setOpenDialog(false);
+			await Promise.all([
+				supabase.storage.from("capsules_pdf").remove([path]),
+				...blobsUrls.map(async (url) => {
+				const fileName = url.split("/").pop();
+				if (fileName)
+					await deleteFileFromSupabaseBucket(fileName);
+				}),
+			]);
 		} catch (error) {
 			logger.error("react:component", "CapsuleToPdfDialog", "Error downloading PDF:", error);
-			blobsUrls.forEach(async (url) => {
-				const fileName = url.split('/').pop();
+			await Promise.all([
+				pdfPath ? supabase.storage.from("capsules_pdf").remove([pdfPath]) : Promise.resolve(),
+				...blobsUrls.map(async (url) => {
+				const fileName = url.split("/").pop();
 				if (fileName)
-					deleteFileFromSupabaseBucket(fileName);
-			});
+					await deleteFileFromSupabaseBucket(fileName);
+				}),
+			]);
 			setOpenDialog(false);
 		} finally {
 			clearInterval(progressInterval);
+			if (pdfPath)
+				supabase.storage.from("capsules_pdf").remove([pdfPath]);
 		}
 	};
 	
@@ -274,12 +257,3 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			</AlertDialog.Root>
     );
 };
-
-async function getBase64FromBlob(blob: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
