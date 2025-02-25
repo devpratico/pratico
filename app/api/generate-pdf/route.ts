@@ -13,31 +13,13 @@ export async function POST(req: NextRequest) {
 		logger.log("next:api", "api/generate-pdf", "Downloading capsule...", blobsUrls);
 
 		const pdfDoc = await PDFDocument.create();
-		  
-		const fetchWithTimeout = async (url: string, timeout: number) => {
-			const timeoutPromise = new Promise<never>((_, reject) => 
-				setTimeout(() => reject(new Error(`Timeout after ${timeout}ms`)), timeout)
-			);
 		
-			const fetchPromise = fetch(url).then(response => {
-				if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-				return response.arrayBuffer();
-			});
-		
-			return Promise.race([fetchPromise, timeoutPromise]);
-		};
-		
-		const fetchImage = async (url: string) => {
-			try {
-				const buffer = await fetchWithTimeout(url, 5000);
-				return Buffer.from(buffer);
-			} catch (err) {
-				logger.error("next:api", "api/generate-pdf", `Error fetching image ${url}:`, err);
-				throw err;
-			}
-		};
-		
-		const images = await Promise.all(blobsUrls.map(fetchImage));
+		const images = await Promise.all(blobsUrls.map(async (url: string) => {
+			const response = await fetch(url);
+			const arrayBuffer = await response.arrayBuffer();
+			const uint8Array = new Uint8Array(arrayBuffer);
+			return (uint8Array);
+		}));
 		for (const image of images) {
 			const img = await pdfDoc.embedJpg(image);
 			const page = pdfDoc.addPage([img.width, img.height]);
