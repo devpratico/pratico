@@ -134,6 +134,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 			
 			const blob = await responsePdf.blob();
 			const blobUrl = URL.createObjectURL(blob);
+			console.log("blobUrl", blobUrl);
 			const link = document.createElement("a");
 			link.href = blobUrl;
 			link.setAttribute("download", filename);
