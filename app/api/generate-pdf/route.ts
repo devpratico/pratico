@@ -12,22 +12,43 @@ export async function POST(req: NextRequest) {
 		logger.log("next:api", "api/generate-pdf", "Downloading capsule...", blobsUrls);
 
 		const pdfDoc = await PDFDocument.create();
-
-		const images = await Promise.all(blobsUrls.map(async (url) => {
-			const response = await fetch(url);
+		  
+		const fetchWithTimeout = async (url: string, timeout: number) => {
+			const timeoutPromise = new Promise<never>((_, reject) => 
+			setTimeout(() => reject(new Error(`Timeout after ${timeout}ms`)), timeout)
+			);
+		
+			const fetchPromise = fetch(url).then(response => {
 			if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-			const buffer = Buffer.from(await response.arrayBuffer());
-			return (buffer);
-		}));
+			return response.arrayBuffer();
+			});
+		
+			return Promise.race([fetchPromise, timeoutPromise]);
+		};
+		
+		const fetchImage = async (url: string) => {
+			try {
+			const buffer = await fetchWithTimeout(url, 5000);
+			return Buffer.from(buffer);
+			} catch (err) {
+			logger.error("next:api", "api/generate-pdf", `Error fetching image ${url}:`, err);
+			throw err;
+			}
+		};
+		
+		const images = await Promise.all(blobsUrls.map(fetchImage));
 		for (const image of images) {
 			const img = await pdfDoc.embedPng(image);
 			const page = pdfDoc.addPage([img.width, img.height]);
 
-			page.drawImage(img, { x: 0, y: 0 });
+			page.drawImage(img, { x: 0, y: 0, width: img.width / 2, height: img.height / 2});
 			
 		}
 		logger.log("next:api", "api/generate-pdf", "Saving PDF...");
+		const startTime = Date.now();
 		const pdfBytes = await pdfDoc.save();
+		const endTime = Date.now();
+		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
 		const supabase = createClient();
 		const { data, error } = await supabase.storage
 		.from('capsules_pdf')
