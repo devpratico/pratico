@@ -23,7 +23,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	const [ pdfPath, setPdfPath ] = useState<string | null>(null);
 	const uploadToSupabase = async (blob: Blob, fileName: string): Promise<string | null> => {
 		const { data, error } = await supabase.storage.from('capsules_pdf').upload(fileName, blob, {
-			contentType: 'image/png',
+			contentType: 'image/jpeg',
 			upsert: true
 		});
 		
@@ -43,9 +43,9 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	}
 	  
 	
-	const getPNGBlobsUrl = async (): Promise<string[] | undefined> => {
+	const getJPGBlobsUrl = async (): Promise<string[] | undefined> => {
 		if (!editor) return;
-		logger.log("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", "getting PNG blobs from all pages");
+		logger.log("react:component", "CapsuleToPdfDialog", "getJPGBlobsUrl", "getting JPG blobs from all pages");
 		setProgress(0);
 		const allPages = editor.getPages();
 		const allUrls: string[] = [];
@@ -64,7 +64,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						const blob = await exportToBlob({
 							editor,
 							ids: Array.from(shapeIds),
-							format: 'png',
+							format: 'jpeg',
 							opts: {
 								bounds: defaultBox,
 								padding: 0,
@@ -73,18 +73,18 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						});
 			
 						if (blob.size > 0) {
-							const url = await uploadToSupabase(blob, `slide_${Date.now()}_${i}.png`);
+							const url = await uploadToSupabase(blob, `slide_${Date.now()}_${i}.jpg`);
 							if (url)
 								allUrls.push(url);
 						}
 						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 					} catch (error) {
-						logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", `Failed to get blob in page ${allPages[i].id}`, error);
+						logger.error("react:component", "CapsuleToPdfDialog", "getJPGBlobsUrl", `Failed to get blob in page ${allPages[i].id}`, error);
 						return ;
 					}
 				}
 			} catch (error) {
-				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", error);
+				logger.error("react:component", "CapsuleToPdfDialog", "getJPGBlobsUrl", error);
 				return ;
 			}
 			return (allUrls);
@@ -92,7 +92,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 	};
 	  
 	const handleExportAllPages = async () => {
-		const blobsUrls = await getPNGBlobsUrl();
+		const blobsUrls = await getJPGBlobsUrl();
 		if (!blobsUrls || blobsUrls.length === 0) {
 			setErrorMsg("Échec de la récupération des données de la capsule");
 			setState('error');
