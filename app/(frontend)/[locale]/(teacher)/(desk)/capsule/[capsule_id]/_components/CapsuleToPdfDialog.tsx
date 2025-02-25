@@ -56,7 +56,7 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 				for (let i = 0; i < allPages.length; i++) {
 					const shapeIds = editor.getPageShapeIds(allPages[i]);
 					if (shapeIds.size === 0)
-						continue;
+						continue ;
 					
 					setPagesProgress((prev) => ({ loading: prev.loading + 1, total: prev.total }));
 					
@@ -80,18 +80,17 @@ export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | str
 						setProgress((prev) => Math.min((prev || 0) + 100 / (allPages.length || 1), 100));
 					} catch (error) {
 						logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", `Failed to get blob in page ${allPages[i].id}`, error);
-						return;
+						return ;
 					}
 				}
 			} catch (error) {
 				logger.error("react:component", "CapsuleToPdfDialog", "getPNGBlobsUrl", error);
-				return;
+				return ;
 			}
 			return (allUrls);
 		}
 	};
 	  
-
 	const handleExportAllPages = async () => {
 		const blobsUrls = await getPNGBlobsUrl();
 		if (!blobsUrls || blobsUrls.length === 0) {
