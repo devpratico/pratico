@@ -32,7 +32,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
     //const { currentPageId } = useNav()
     const firstPageId = useMemo(() => {
-        if (!snapshot?.document.store)
+        if (!snapshot || !("document" in snapshot) || !snapshot?.document.store)
             return ;
 
         const store = snapshot.document.store 
@@ -79,6 +79,9 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
      * In that case, we show a spinner until the pageId is available.
      */
     if (!argSnapshot && hookSnapshot) {
+        if (!("document" in hookSnapshot) || !hookSnapshot.document.store)
+            return null;
+        
         const store = hookSnapshot.document.store as any
         const pageIds = getPageKeys(store)
         if (!pageIds.includes(pageId as string)) {
