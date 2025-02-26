@@ -179,13 +179,11 @@ export function CapsuleToPdfDialog({
       if (!publicUrl) throw new Error("PublicUrl for pdf missing");
       setPdfPath(path);
       const responsePdf = await fetch(publicUrl);
-      if (!responsePdf.ok) {
+      if (!responsePdf.ok)
         throw new Error("Erreur lors du téléchargement du PDF");
-      }
 
       const blob = await responsePdf.blob();
       const blobUrl = URL.createObjectURL(blob);
-      console.log("blobUrl", blobUrl);
       const link = document.createElement("a");
       link.href = blobUrl;
       link.setAttribute("download", filename);
@@ -289,6 +287,7 @@ export function CapsuleToPdfDialog({
         <AlertDialog.Title>
           Génération de votre capsule en PDF
         </AlertDialog.Title>
+        <AlertDialog.Description />
 
         <Card variant="surface" my="4">
           {/* ERROR */}
