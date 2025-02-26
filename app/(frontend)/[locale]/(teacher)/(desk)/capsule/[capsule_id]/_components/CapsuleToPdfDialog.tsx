@@ -166,7 +166,12 @@ export function CapsuleToPdfDialog({
         },
         body: JSON.stringify({ blobsUrls }),
       });
-
+      await Promise.all([
+        ...blobsUrls.map(async (url) => {
+          const fileName = url.split("/").pop();
+          if (fileName) await deleteFileFromSupabaseBucket(fileName);
+        }),
+      ]);
       if (!response || !response.ok) {
         setErrorMsg("Échec de la récupération du PDF, réponse vide");
         setState("error");
@@ -192,13 +197,7 @@ export function CapsuleToPdfDialog({
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
       setOpenDialog(false);
-      await Promise.all([
-        supabase.storage.from("capsules_pdf").remove([path]),
-        ...blobsUrls.map(async (url) => {
-          const fileName = url.split("/").pop();
-          if (fileName) await deleteFileFromSupabaseBucket(fileName);
-        }),
-      ]);
+      await supabase.storage.from("capsules_pdf").remove([path]);
     } catch (error) {
       logger.error(
         "react:component",
