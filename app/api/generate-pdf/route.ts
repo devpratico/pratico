@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 export function DELETE() {
-	const pdfDirectory = path.join(process.cwd(), 'public', 'pdfs');
+	const pdfDirectory = path.resolve(process.cwd(), 'public', 'pdfs');
 	if (fs.existsSync(pdfDirectory)) {
 		const files = fs.readdirSync(pdfDirectory);
 		files.forEach(file => {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 		const pdfBytes = await pdfDoc.save();
 		const endTime = Date.now();
 		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
-		const pdfDirectory = path.join(process.cwd(), 'public', 'pdfs');
+		const pdfDirectory = path.resolve(process.cwd(), 'public', 'pdfs');
 		if (!fs.existsSync(pdfDirectory)) {
 			fs.mkdirSync(pdfDirectory, { recursive: true });
 		}
