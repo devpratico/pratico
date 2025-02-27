@@ -38,7 +38,6 @@ export function CapsuleToPdfDialog({
     "loading"
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [pdfDir, setPdfDir] = useState<string | null>(null);
   const uploadToSupabase = async (
     blob: Blob,
     fileName: string
@@ -178,16 +177,8 @@ export function CapsuleToPdfDialog({
         setOpenDialog(false);
         throw new Error("Failed to fetch PDF");
       }
-
       clearInterval(progressInterval);
-      const { pdfUrl, pdfDirectory } = await response.json();
-      if (!pdfUrl) throw new Error("PdfUrl for pdf missing");
-      setPdfDir(pdfDirectory);
-      const responsePdf = await fetch(pdfUrl);
-      if (!responsePdf.ok)
-        throw new Error("Erreur lors du téléchargement du PDF");
-
-      const blob = await responsePdf.blob();
+      const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
@@ -204,8 +195,6 @@ export function CapsuleToPdfDialog({
         "Error downloading PDF:",
         error
       );
-      if (pdfDir)
-        deletePdfFiles(pdfDir);
       await Promise.all([
         ...blobsUrls.map(async (url) => {
           const fileName = url.split("/").pop();
@@ -215,8 +204,6 @@ export function CapsuleToPdfDialog({
       setOpenDialog(false);
     } finally {
       clearInterval(progressInterval);
-      if (pdfDir)
-        deletePdfFiles(pdfDir);
     }
   };
 

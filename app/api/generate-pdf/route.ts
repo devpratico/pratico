@@ -1,23 +1,6 @@
 import logger from '@/app/_utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
-import fs from 'fs';
-import path from 'path';
-
-export function DELETE() {
-	const pdfDirectory = path.resolve(process.cwd(), 'public', 'pdfs');
-	if (fs.existsSync(pdfDirectory)) {
-		const files = fs.readdirSync(pdfDirectory);
-		files.forEach(file => {
-			const filePath = path.join(pdfDirectory, file);
-			fs.unlinkSync(filePath);
-		});
-		if (fs.readdirSync(pdfDirectory).length === 0)
-			fs.rmdirSync(pdfDirectory);
-	}
-
-	return (NextResponse.json({ message: 'Fichiers et dossier pour pdf supprimés.' }, { status: 200 }));
-}
 
 export async function POST(req: NextRequest) {
 	try {
@@ -49,17 +32,15 @@ export async function POST(req: NextRequest) {
 		const pdfBytes = await pdfDoc.save();
 		const endTime = Date.now();
 		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
-		const pdfDirectory = path.resolve(process.cwd(), 'public', 'pdfs');
-		if (!fs.existsSync(pdfDirectory)) {
-			fs.mkdirSync(pdfDirectory, { recursive: true });
-		}
-		const pdfFileName = `${Date.now()}.pdf`;
-		const pdfPath = path.join(pdfDirectory, pdfFileName);
-		fs.writeFileSync(pdfPath, pdfBytes);
-		const pdfUrl = `/pdfs/${pdfFileName}`;
 		const end = Date.now();
 		logger.log("next:api", "api/generate-pdf", `PDF generated in ${end - beginning}ms`);
-		return (NextResponse.json({ pdfUrl, pdfPath, pdfDirectory }, { status: 200 }));
+		return new NextResponse(pdfBytes, {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/pdf',
+				'Content-Disposition': 'attachment; filename="generated.pdf"'
+			}
+		});
 	} catch (error) {
 		logger.error("next:api", "api/generate-pdf", "Error generating PDF:", error);
 		return (NextResponse.json({ error: 'Error generating PDF' }, { status: 500 }));
