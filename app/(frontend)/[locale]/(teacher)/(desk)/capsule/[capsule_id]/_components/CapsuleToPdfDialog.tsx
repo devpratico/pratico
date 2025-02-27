@@ -38,7 +38,7 @@ export function CapsuleToPdfDialog({
     "loading"
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [pdfPath, setPdfPath] = useState<string | null>(null);
+  const [pdfDir, setPdfDir] = useState<string | null>(null);
   const uploadToSupabase = async (
     blob: Blob,
     fileName: string
@@ -180,10 +180,10 @@ export function CapsuleToPdfDialog({
       }
 
       clearInterval(progressInterval);
-      const { path, publicUrl } = await response.json();
-      if (!publicUrl) throw new Error("PublicUrl for pdf missing");
-      setPdfPath(path);
-      const responsePdf = await fetch(publicUrl);
+      const { pdfUrl, pdfDirectory } = await response.json();
+      if (!pdfUrl) throw new Error("PdfUrl for pdf missing");
+      setPdfDir(pdfDirectory);
+      const responsePdf = await fetch(pdfUrl);
       if (!responsePdf.ok)
         throw new Error("Erreur lors du téléchargement du PDF");
 
@@ -197,7 +197,6 @@ export function CapsuleToPdfDialog({
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
       setOpenDialog(false);
-      await supabase.storage.from("capsules_pdf").remove([path]);
     } catch (error) {
       logger.error(
         "react:component",
@@ -205,10 +204,9 @@ export function CapsuleToPdfDialog({
         "Error downloading PDF:",
         error
       );
+      if (pdfDir)
+        deletePdfFiles(pdfDir);
       await Promise.all([
-        pdfPath
-          ? supabase.storage.from("capsules_pdf").remove([pdfPath])
-          : Promise.resolve(),
         ...blobsUrls.map(async (url) => {
           const fileName = url.split("/").pop();
           if (fileName) await deleteFileFromSupabaseBucket(fileName);
@@ -217,7 +215,8 @@ export function CapsuleToPdfDialog({
       setOpenDialog(false);
     } finally {
       clearInterval(progressInterval);
-      if (pdfPath) supabase.storage.from("capsules_pdf").remove([pdfPath]);
+      if (pdfDir)
+        deletePdfFiles(pdfDir);
     }
   };
 
@@ -363,3 +362,20 @@ export function CapsuleToPdfDialog({
     </AlertDialog.Root>
   );
 }
+
+function deletePdfFiles(pdfDir: string) {
+    fetch('/api/generate-pdf', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ pdfDir })
+    })
+    .then(response => response.json())
+    .then(data => {
+      logger.log("react:component", "CapsuleToPdfDialog", "deletePdfFiles", "PDF files deleted", data.message);
+    })
+    .catch(error => {
+      logger.error("react:component", "CapsuleToPdfDialog", "deletePdfFiles", "error while deleting files", error.message);
+    });
+  }

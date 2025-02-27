@@ -1,7 +1,23 @@
 import logger from '@/app/_utils/logger';
-import createClient from '@/supabase/clients/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
+import fs from 'fs';
+import path from 'path';
+
+export function DELETE() {
+	const pdfDirectory = path.join(process.cwd(), 'public', 'pdfs');
+	if (fs.existsSync(pdfDirectory)) {
+		const files = fs.readdirSync(pdfDirectory);
+		files.forEach(file => {
+			const filePath = path.join(pdfDirectory, file);
+			fs.unlinkSync(filePath);
+		});
+		if (fs.readdirSync(pdfDirectory).length === 0)
+			fs.rmdirSync(pdfDirectory);
+	}
+
+	return (NextResponse.json({ message: 'Fichiers et dossier pour pdf supprimés.' }, { status: 200 }));
+}
 
 export async function POST(req: NextRequest) {
 	try {
@@ -9,11 +25,8 @@ export async function POST(req: NextRequest) {
 		const { blobsUrls } = await req.json();
 		if (!Array.isArray(blobsUrls) || blobsUrls.length === 0)
 			return NextResponse.json({ error: "No blobs URLs provided" }, { status: 400 });
-
 		logger.log("next:api", "api/generate-pdf", "Downloading capsule...", blobsUrls);
-
 		const pdfDoc = await PDFDocument.create();
-		
 		const images = await Promise.all(blobsUrls.map(async (url: string) => {
 			const response = await fetch(url);
 			const arrayBuffer = await response.arrayBuffer();
@@ -23,34 +36,32 @@ export async function POST(req: NextRequest) {
 		for (const image of images) {
 			const img = await pdfDoc.embedJpg(image);
 			const page = pdfDoc.addPage([img.width, img.height]);
-
-			page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height});
-			
+			page.drawImage(img,
+				{ 
+					x: 0,
+					y: 0,
+					width: img.width,
+					height: img.height
+				});
 		}
 		logger.log("next:api", "api/generate-pdf", "Saving PDF...");
 		const startTime = Date.now();
 		const pdfBytes = await pdfDoc.save();
 		const endTime = Date.now();
 		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
-		const supabase = createClient();
-		const { data, error } = await supabase.storage
-			.from('capsules_pdf')
-			.upload(`pdf_${Date.now()}.pdf`, pdfBytes, {
-				contentType: 'application/pdf',
-				upsert: true,
-		});
-
-		if (error) {
-			console.error("Erreur lors de l'upload dans Supabase Storage:", error);
-			return NextResponse.json({ error: 'Erreur lors de l\'upload du PDF' }, { status: 500 });
+		const pdfDirectory = path.join(process.cwd(), 'public', 'pdfs');
+		if (!fs.existsSync(pdfDirectory)) {
+			fs.mkdirSync(pdfDirectory, { recursive: true });
 		}
-		const { data: { publicUrl } } = supabase.storage.from('capsules_pdf').getPublicUrl(data.path);
-		const path = data.path;
+		const pdfFileName = `${Date.now()}.pdf`;
+		const pdfPath = path.join(pdfDirectory, pdfFileName);
+		fs.writeFileSync(pdfPath, pdfBytes);
+		const pdfUrl = `/pdfs/${pdfFileName}`;
 		const end = Date.now();
 		logger.log("next:api", "api/generate-pdf", `PDF generated in ${end - beginning}ms`);
-		return NextResponse.json({ publicUrl, path }, { status: 200 });
+		return (NextResponse.json({ pdfUrl, pdfPath, pdfDirectory }, { status: 200 }));
 	} catch (error) {
 		logger.error("next:api", "api/generate-pdf", "Error generating PDF:", error);
-		return NextResponse.json({ error: 'Error generating PDF' }, { status: 500 });
+		return (NextResponse.json({ error: 'Error generating PDF' }, { status: 500 }));
 	}
 }
