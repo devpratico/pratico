@@ -7,12 +7,13 @@ import NavigatorSync from "@/app/(frontend)/[locale]/_components/canvases/custom
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import { CanvasUser } from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
 import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
 import logger from "@/app/_utils/logger";
 import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
+import { useRealtimeActivityContext } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
 
 
 interface StudentCanvasProps {
@@ -23,9 +24,18 @@ interface StudentCanvasProps {
 
 // TODO: Put the toolbar in the page or a layout
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
-    const { widerThan } = useWindow()
+    const { widerThan, narrowerThan } = useWindow()
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
+
+    const { snapshot: activitySnapshot } = useRealtimeActivityContext()
+
+    // TODO: Fix this dirty fix
+    const shouldHideCanvas = useMemo(() => {
+        const isMobile = narrowerThan("sm")
+        const ongoingActivity = !!activitySnapshot
+        return isMobile && ongoingActivity
+    }, [narrowerThan, activitySnapshot])
 
     useEffect(() => {
         setUserPreferences({
@@ -46,6 +56,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
+    if (shouldHideCanvas) return null
 
     return (
         <Canvas store={store}>
