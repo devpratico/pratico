@@ -47,7 +47,7 @@ export default function QuizParticipation() {
                                     questionState={questionState}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
                                     //onClick={() => toggleAnswer(choice.id)}
-                                    disabled={isPending || isSyncing}
+                                    //disabled={isPending || isSyncing}
                                     onClick={async (e) => {
                                         e.preventDefault(); // Prevent double event triggering
                                         e.stopPropagation(); // Ensure event bubbling isn't the issue
