@@ -85,6 +85,8 @@ export default function CardDialog({trigger, preventClose=false, open, onOpenCha
                             width: '100%',
                             paddingRight: 'env(safe-area-inset-right)',
                             paddingLeft: 'env(safe-area-inset-left)',
+                            paddingTop: 'env(safe-area-inset-top)',
+                            paddingBottom: 'env(safe-area-inset-bottom)',
                             backgroundColor: 'var(--accent-1)',
                             boxShadow: 'var(--shadow-6)',
                             borderRadius: 'var(--radius-6) var(--radius-6) 0 0',
