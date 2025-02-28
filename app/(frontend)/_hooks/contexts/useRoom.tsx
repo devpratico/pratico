@@ -116,7 +116,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
         return () => {supabase.removeChannel(channel)}
 
-    }, [room_code, setRoom]);
+    }, [room_code, setRoom, supabase]);
 
     return (
         <RoomContext.Provider value={{ room }}>

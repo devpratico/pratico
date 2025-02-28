@@ -46,14 +46,10 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
+
     return (
         <Canvas store={store}>
-            {
-                canCollab
-                ? <CustomTlToolbar />
-                : null
-            
-            }
+            { canCollab ? <CustomTlToolbar /> : null }
             <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 80 : 0}} />
             <NavigatorSync />
             { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }

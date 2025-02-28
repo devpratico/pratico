@@ -58,7 +58,7 @@ function useRealtimeSnapshot(): {
 
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
-            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Supabase channel change detected in room', roomId)
+
             setError(null)
 
             const newSnapshot = payload.new.activity_snapshot as unknown as ActivitySnapshot | null
