@@ -135,6 +135,8 @@ export function useQuizAnimationService(): {
         if (!previousQuestionId) return { error: 'No previous question id' }
         if (previousQuestionId === questionId) return { error: 'Same question id' }
 
+
+
         // Set the state to 'answering' to avoid revealing the answer
         state.setQuestionState('answering')
 

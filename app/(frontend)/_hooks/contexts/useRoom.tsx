@@ -23,14 +23,13 @@ export type RoomContext = {
 
 const RoomContext = createContext<RoomContext | undefined>(undefined);
 
-const supabase = createClient();
-
 /**
  * This provider fetches the room data based on the url room code.
  * Only the params property is updated in real time.
  * The other data is fetched once and doesn't change.
  */
 export function RoomProvider({ children }: { children: React.ReactNode}) {
+    const supabase = createClient();
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
@@ -49,7 +48,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
         }
         logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data);
         setRoom(data);
-    }, [room_code]);
+    }, [room_code, supabase]);
 
 
     // Fetch initial data on first load
@@ -74,12 +73,31 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
                     //if (isEqual(oldRecord?.params, newRecord.params)) return
 
-                    logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
+                    //logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
                     setRoom((prev) => {
-                        if (isEqual(prev?.params, newRecord.params)) return prev
+                        if (isEqual(prev?.params, newRecord.params)) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated remotely but params are the same. Ignoring update."
+                            )
+                            return prev
+                        }
                         if (prev) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx', 
+                                "Room params changed remotely. Updating room params.",
+                                newRecord.params
+                            )
                             return {...prev, params: newRecord.params}
                         } else {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated",
+                                newRecord
+                            )
                             return newRecord
                         }
                     })
@@ -98,7 +116,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
         return () => {supabase.removeChannel(channel)}
 
-    }, [room_code, setRoom]);
+    }, [room_code, setRoom, supabase]);
 
     return (
         <RoomContext.Provider value={{ room }}>

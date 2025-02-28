@@ -16,7 +16,7 @@ export default function useAnswerActivityMutation(): {
     isPending: boolean
 } {
     const [isPending, setIsPending] = useState(false)
-    const supabase = useMemo(() => createClient(), [])
+    const supabase = createClient()
 
     /**
      * Adds a user answer to an activity snapshot in the room table.

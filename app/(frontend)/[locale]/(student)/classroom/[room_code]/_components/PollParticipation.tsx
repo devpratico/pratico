@@ -44,6 +44,7 @@ export default function PollParticipation() {
                                     questionState={questionState}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
                                     onClick={() => toggleVote(choice.id)}
+                                    //disabled={isSyncing || isPending}
                                 />
                             ))}
                         </Flex>
