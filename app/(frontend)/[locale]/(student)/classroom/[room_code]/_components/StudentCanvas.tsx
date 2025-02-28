@@ -56,7 +56,7 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
-    if (shouldHideCanvas) return null
+    if (shouldHideCanvas) return <div>Canvas</div>
 
     return (
         <Canvas store={store}>
