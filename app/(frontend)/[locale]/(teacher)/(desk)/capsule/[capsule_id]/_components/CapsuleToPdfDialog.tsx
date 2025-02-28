@@ -12,6 +12,7 @@ import {
   Progress,
   Text,
 } from "@radix-ui/themes";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useFormatter } from "next-intl";
 import { useEffect, useState } from "react";
@@ -38,39 +39,6 @@ export function CapsuleToPdfDialog({
     "loading"
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const uploadToSupabase = async (
-    blob: Blob,
-    fileName: string
-  ): Promise<string | null> => {
-    const { data, error } = await supabase.storage
-      .from("capsules_pdf")
-      .upload(fileName, blob, {
-        contentType: "image/jpeg",
-        upsert: true,
-      });
-
-    if (error) {
-      logger.error("react:component", "uploadToSupabase", error.message);
-      return null;
-    }
-
-    return supabase.storage.from("capsules_pdf").getPublicUrl(fileName).data
-      .publicUrl;
-  };
-
-  const deleteFileFromSupabaseBucket = async (filePath: string) => {
-    const { error } = await supabase.storage
-      .from("capsules_pdf")
-      .remove([filePath]);
-
-    if (error)
-      logger.error(
-        "react:component",
-        "CapsuleToPdfDialog",
-        "deleteFileFromSupabaseBucket",
-        error.message
-      );
-  };
 
   const getJPGBlobsUrl = async (): Promise<string[] | undefined> => {
     if (!editor) return;
@@ -109,9 +77,10 @@ export function CapsuleToPdfDialog({
             });
 
             if (blob.size > 0) {
-              const url = await uploadToSupabase(
+              const url = await uploadToSupabaseBucketCapsulesPdf(
                 blob,
-                `slide_${Date.now()}_${i}.jpg`
+                `slide_${Date.now()}_${i}.jpg`,
+                supabase
               );
               if (url) allUrls.push(url);
             }
@@ -168,7 +137,7 @@ export function CapsuleToPdfDialog({
       await Promise.all([
         ...blobsUrls.map(async (url) => {
           const fileName = url.split("/").pop();
-          if (fileName) await deleteFileFromSupabaseBucket(fileName);
+          if (fileName) await deleteFileFromSupabaseBucketCapsulesPdf(fileName, supabase);
         }),
       ]);
       if (!response || !response.ok) {
@@ -198,7 +167,7 @@ export function CapsuleToPdfDialog({
       await Promise.all([
         ...blobsUrls.map(async (url) => {
           const fileName = url.split("/").pop();
-          if (fileName) await deleteFileFromSupabaseBucket(fileName);
+          if (fileName) await deleteFileFromSupabaseBucketCapsulesPdf(fileName, supabase);
         }),
       ]);
       setOpenDialog(false);
@@ -366,3 +335,39 @@ function deletePdfFiles(pdfDir: string) {
       logger.error("react:component", "CapsuleToPdfDialog", "deletePdfFiles", "error while deleting files", error.message);
     });
   }
+
+  
+  export const uploadToSupabaseBucketCapsulesPdf = async (
+    blob: Blob,
+    fileName: string,
+    supabase: SupabaseClient
+  ): Promise<string | null> => {
+    const { error } = await supabase.storage
+      .from("capsules_pdf")
+      .upload(fileName, blob, {
+        contentType: "image/jpeg",
+        upsert: true,
+      });
+
+    if (error) {
+      logger.error("react:component", "uploadToSupabase", error.message);
+      return null;
+    }
+
+    return supabase.storage.from("capsules_pdf").getPublicUrl(fileName).data
+      .publicUrl;
+  };
+
+  export const deleteFileFromSupabaseBucketCapsulesPdf = async (filePath: string, supabase: SupabaseClient) => {
+    const { error } = await supabase.storage
+      .from("capsules_pdf")
+      .remove([filePath]);
+
+    if (error)
+      logger.error(
+        "react:component",
+        "CapsuleToPdfDialog",
+        "deleteFileFromSupabaseBucket",
+        error.message
+      );
+  };
