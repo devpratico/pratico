@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <Box height='100vh' width="100%" style={{backgroundColor:'black'}}>
+        <Box height='100dvh' width="100%" style={{backgroundColor:'black'}}>
             <RoomProvider>
                 <RealtimeActivityProvider>
                     <PresencesProvider>

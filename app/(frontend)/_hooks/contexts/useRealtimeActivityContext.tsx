@@ -2,13 +2,12 @@
 import { Poll, PollSnapshot } from "@/app/_types/poll"
 import { Quiz, QuizSnapshot } from "@/app/_types/quiz"
 import { useRoom } from "./useRoom"
-import { useState, useEffect, useMemo, createContext, useContext, useCallback } from "react"
+import { useState, useEffect, useMemo, createContext, useContext } from "react"
 import logger from "@/app/_utils/logger"
 import createClient from "@/supabase/clients/client"
 import { Tables } from "@/supabase/types/database.types"
 import useActivityQuery from "../queries/useActivityQuery"
 import useActivitySnapshotQuery from "../queries/useActivitySnapshotQuery"
-import { useOnWake } from "../standalone/useOnWake"
 
 
 type ActivitySnapshot = PollSnapshot | QuizSnapshot
@@ -27,29 +26,24 @@ function useRealtimeSnapshot(): {
     const [isSyncing, setIsSyncing] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const { fetchSnapshot } = useActivitySnapshotQuery()
-    const supabase = useMemo(() => createClient(), [])
+    const supabase = createClient()
 
-    const fetchInitialData = useCallback(async () => {
+    // Fetch initial data
+    useEffect(() => {
         if (!roomId) return
         setIsSyncing(true)
         setError(null)
 
-        const { data, error } = await fetchSnapshot(`${roomId}`)
-        setIsSyncing(false)
-        if (error) {
-            setError(error.message)
-        }
-        logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
-        setSnapshot(data)
+        fetchSnapshot(`${roomId}`).then(({data, error}) => {
+            setIsSyncing(false)
+            if (error) {
+                setError(error.message)
+                return
+            }
+            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Initial activity snapshot set to', data)
+            setSnapshot(data)
+        })
     }, [roomId, fetchSnapshot])
-
-    // Fetch initial data on first load
-    useEffect(() => {
-        fetchInitialData()
-    }, [fetchInitialData])
-
-    // Fetch data on wake (phone unlocks)
-    useOnWake(fetchInitialData)
 
     // Sync with database real-time
     useEffect(() => {
@@ -64,7 +58,7 @@ function useRealtimeSnapshot(): {
 
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
-            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Supabase channel change detected in room', roomId)
+
             setError(null)
 
             const newSnapshot = payload.new.activity_snapshot as unknown as ActivitySnapshot | null

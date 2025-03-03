@@ -4,6 +4,7 @@ import { QuizAnswerRow } from "@/app/(frontend)/[locale]/(teacher)/(desk)/room/[
 import useQuizParticipationStore from "@/app/(frontend)/_hooks/stores/useQuizParticipationStore"
 import useQuizParticipationService, { useSyncParticipationQuizService } from "@/app/(frontend)/_hooks/services/useQuizParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
+import logger from "@/app/_utils/logger"
 
 export default function QuizParticipation() {
     // Sync store state with remote answers
@@ -20,6 +21,12 @@ export default function QuizParticipation() {
 
     // Service
     const { toggleAnswer, myChoicesIds, isPending } = useQuizParticipationService()
+
+    // const onClick = useCallback(async (e: React.MouseEvent) => {
+    //     e.preventDefault(); // Prevent double event triggering
+    //     e.stopPropagation(); // Ensure event bubbling isn't the issue
+    //     await toggleAnswer(choice.id)
+    // }, [])
 
     return (
         <CardDialog open={showCard} preventClose topMargin='0'>
@@ -39,7 +46,20 @@ export default function QuizParticipation() {
                                     votes={answers.filter(a => a.choiceId === choice.id).length}
                                     questionState={questionState}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
-                                    onClick={() => toggleAnswer(choice.id)}
+                                    //onClick={() => toggleAnswer(choice.id)}
+                                    //disabled={isPending || isSyncing}
+                                    onClick={async (e) => {
+                                        e.preventDefault(); // Prevent double event triggering
+                                        e.stopPropagation(); // Ensure event bubbling isn't the issue
+                                        const { error } = await toggleAnswer(choice.id)
+                                        if (error) logger.error(
+                                            'react:component',
+                                            'QuizParticipation.tsx',
+                                            'onClick',
+                                            'toggleAnswer',
+                                            error
+                                        )
+                                    }}
                                 />
                             ))}
                         </Flex>
