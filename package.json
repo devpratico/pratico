@@ -64,7 +64,7 @@
     "eslint-config-next": "^14.2.5",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "supabase": "^1.203.0",
+    "supabase": "^2.15.8",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
