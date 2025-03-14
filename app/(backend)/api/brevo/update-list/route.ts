@@ -20,6 +20,7 @@ export async function POST(req: Request) {
 
     const BREVO_API_KEY = process.env.BREVO;
     if (!BREVO_API_KEY) {
+        logger.error('next:api', 'brevo/update-list', 'POST', 'Brevo API key not found');
         return Response.json({
             success: false,
             message: 'Brevo API key not found',
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
 
     const email = record.email;
     if (!email) {
+        logger.error('next:api', 'brevo/update-list', 'POST', 'Email not found');
         return Response.json({
             success: false,
             message: 'Email not found',
