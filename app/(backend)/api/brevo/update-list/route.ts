@@ -1,5 +1,6 @@
 import logger from "@/app/_utils/logger";
 
+const listId = '17';
 
 export async function POST(req: Request) {
     console.log('req', req);
@@ -45,7 +46,8 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 email: email,
-                updateEnabled: false
+                updateEnabled: false,
+                listIds: [listId]
             })
         };
 
@@ -70,7 +72,8 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 "EMAIL": email,
-                updateEnabled: true
+                updateEnabled: true,
+                listIds: [listId]
             })
         };
 
