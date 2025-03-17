@@ -26,7 +26,7 @@ function useRealtimeSnapshot(): {
     const [isSyncing, setIsSyncing] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const { fetchSnapshot } = useActivitySnapshotQuery()
-    const supabase = createClient()
+    const supabase = useMemo(() => createClient(), [])
 
     // Fetch initial data
     useEffect(() => {
@@ -58,7 +58,7 @@ function useRealtimeSnapshot(): {
 
         channel.on<Tables<'rooms'>>('postgres_changes', roomUpdate, async (payload) => {
             if (!(payload.eventType === 'UPDATE')) return
-
+            logger.log('react:hook', 'useSyncActivitySnapshotService.tsx', 'Supabase channel change detected in room', roomId)
             setError(null)
 
             const newSnapshot = payload.new.activity_snapshot as unknown as ActivitySnapshot | null
