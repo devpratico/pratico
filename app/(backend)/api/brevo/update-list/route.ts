@@ -3,7 +3,6 @@ import logger from "@/app/_utils/logger";
 const listId: number = 17;
 
 export async function POST(req: Request) {
-    console.log('req', req);
     const { type, record, old_record } = await req.json();
 
     logger.log(
@@ -65,6 +64,14 @@ export async function POST(req: Request) {
                 message: 'Old email not found. Cannot identify contact',
             });
         }
+
+        if (oldEmail === email) {
+            return Response.json({
+                success: false,
+                message: 'Old email and new email are the same. Ignoring update.',
+            });
+        }
+
         const options = {
             method: 'PUT',
             headers: {
