@@ -1,6 +1,6 @@
 import logger from "@/app/_utils/logger";
 
-const listId = '17';
+const listId: number = 17;
 
 export async function POST(req: Request) {
     console.log('req', req);
