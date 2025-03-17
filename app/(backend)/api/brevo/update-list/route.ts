@@ -13,9 +13,9 @@ export async function POST(req: Request) {
         "type",
         type,
         "record",
-        record,
+        record.email,
         "old_record",
-        old_record
+        old_record?.email
     )
 
     const BREVO_API_KEY = process.env.BREVO;
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
             })
         };
 
-        fetch('https://api.brevo.com/v3/contacts', options)
+        await fetch('https://api.brevo.com/v3/contacts', options)
             .then(res => res.json())
             .then(res => console.log(res))
             .catch(err => console.error(err));
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
             })
         };
 
-        fetch(
+        await fetch(
             'https://api.brevo.com/v3/contacts/' + oldEmail,
             options
         )
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
             }
         };
 
-        fetch(
+        await fetch(
             'https://api.brevo.com/v3/contacts/' + email,
             options
         )
