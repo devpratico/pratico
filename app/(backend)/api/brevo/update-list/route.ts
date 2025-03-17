@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         });
     }
 
-    const oldEmail = old_record.email as string;
+    const oldEmail = old_record?.email as string | undefined;
 
     if (type === 'INSERT') {
         const options = {
