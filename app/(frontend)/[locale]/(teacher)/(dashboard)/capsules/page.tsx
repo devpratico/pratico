@@ -53,7 +53,7 @@ function Banner() {
                         </Callout.Text>
                     </Callout.Root>
 
-                    <Flex direction='column' justify='center' gap='3' p='3' style={{
+                    <Flex direction='column' justify='center' gap='1' p='3' style={{
                         backgroundColor: 'var(--yellow-a3)',
                         borderRadius: 'var(--radius-3)',
                         color: 'var(--yellow-11)',
@@ -68,7 +68,7 @@ function Banner() {
                         <Text size='2' align='center'>
                             Pour un nombre illimité de participants.
                         </Text>
-                        <Text size='1' align='center' color='yellow'>
+                        <Text size='1' align='center' color='yellow' mt='3'>
                             Vous êtes une entreprise ?&nbsp;
                             <Link href="mailto:bonjour@pratico.live">Contactez-nous</Link>
                         </Text>
