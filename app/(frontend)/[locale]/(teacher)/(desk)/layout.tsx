@@ -22,8 +22,6 @@ import { FullscreenProvider } from "@/app/(frontend)/_hooks/contexts/useFullscre
 import PollCreation from "./_components/menus/ActivitiesMenu/components/PollCreation"
 import QuizCreation from "./_components/menus/ActivitiesMenu/components/QuizCreation"
 
-
-
 export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
