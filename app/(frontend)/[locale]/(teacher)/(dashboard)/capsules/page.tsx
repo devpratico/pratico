@@ -43,8 +43,8 @@ function Banner() {
     return (
         <Box mt='3'>
             <Card>
-                <Grid columns='2' gap='3'>
-                    <Callout.Root color='crimson'>
+                <Grid columns='1fr 2fr' gap='3'>
+                    <Callout.Root color='pink'>
                         <Callout.Icon>
                             <AlertTriangle />
                         </Callout.Icon>
@@ -54,12 +54,12 @@ function Banner() {
                     </Callout.Root>
 
                     <Flex direction='column' justify='center' gap='1' p='3' style={{
-                        backgroundColor: 'var(--yellow-a3)',
+                        backgroundColor: 'var(--amber-a4)',
                         borderRadius: 'var(--radius-3)',
-                        color: 'var(--yellow-11)',
+                        color: 'var(--amber-11)',
                     }}>
                         <LinkButton
-                            color='yellow'
+                            color='amber'
                             href="/subscribe"
                             target='_blank'
                         >
@@ -68,7 +68,7 @@ function Banner() {
                         <Text size='2' align='center'>
                             Pour un nombre illimité de participants.
                         </Text>
-                        <Text size='1' align='center' color='yellow' mt='3'>
+                        <Text size='1' align='center' color='yellow'>
                             Vous êtes une entreprise ?&nbsp;
                             <Link href="mailto:bonjour@pratico.live">Contactez-nous</Link>
                         </Text>

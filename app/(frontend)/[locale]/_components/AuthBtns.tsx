@@ -23,7 +23,7 @@ export function LoginBtn({ nextUrl }: LoginBtnProps) {
 
 export function SignUpBtn({ nextUrl }: LoginBtnProps) {
     return (
-        <Button color='yellow' asChild>
+        <Button color='amber' asChild>
             <Link href={'/auth?authTab=signup' + (nextUrl ? '?nextUrl=' + nextUrl : '')}>
 	                Créer un compte				
             </Link>

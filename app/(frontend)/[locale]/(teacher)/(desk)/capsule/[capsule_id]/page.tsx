@@ -53,8 +53,8 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                     { !isSubscribed &&
                         <LinkButton
                             href='/subscribe'
-                            color='yellow'
-                            size='1'
+                            color='amber'
+                            //size='1'
                         >
                                 Débloquer la limite de 10 participants
                         </LinkButton>
