@@ -82,11 +82,14 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 					}
 				}
 
-				const { data, error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
+				const { error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
 				if (error)
 					logger.error("supabase:database", "InfoSettings", error, "discord");
-				else if (data)
-					logger.log("supabase:database", "InfoSettings", "Datas updated successfully", data);
+				else
+				{
+					logger.log("supabase:database", "InfoSettings", "Datas updated successfully");
+					setValues((prev) => ({...prev, userProfileCopy}));
+				}
 			}
 			if (values.email?.length && values.email !== teacher.email && !userProfileError)
 			{
