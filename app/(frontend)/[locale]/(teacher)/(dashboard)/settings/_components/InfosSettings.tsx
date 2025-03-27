@@ -1,10 +1,10 @@
 "use client";
 import logger from "@/app/_utils/logger";
 import createClient from "@/supabase/clients/client";
-import { Button, Callout, Card, DataList, Flex, Heading, Separator, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, DataList, Flex, Heading, TextField } from "@radix-ui/themes";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { Check, TriangleAlert } from "lucide-react";
+import { Check } from "lucide-react";
 
 export type UserInfoType = {
 	first_name?: string,
@@ -49,6 +49,18 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 		}
 	}, [anonyme]);
 
+	useEffect(() => {
+		const storedValues = localStorage.getItem('user_info');
+		if (storedValues) {
+			setValues(JSON.parse(storedValues));
+		}
+	}, []);
+	
+	useEffect(() => {
+		if (modifying)
+			localStorage.setItem('user_info', JSON.stringify(values));
+	}, [values, modifying]);
+	
 	const updateData = async () => {
 		if (timeout)
 			clearTimeout(timeout);
@@ -66,7 +78,6 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				}
 				else
 					logger.error("supabase:database", "InfoSettings, error getting user_profile", userProfileError, "discord");
-
 			}
 			else
 			{
@@ -81,19 +92,27 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						city: values.organization?.city
 					}
 				}
-
 				const { error } = await supabase.from('user_profiles').update(userProfileCopy).eq('id', teacher?.id);
 				if (error)
 					logger.error("supabase:database", "InfoSettings", error, "discord");
 				else
-				{
-					logger.log("supabase:database", "InfoSettings", "Datas updated successfully");
-					setValues((prev) => ({...prev, userProfileCopy}));
+				{	logger.log("supabase:database", "InfoSettings", "Datas updated successfully");
+					setValues(prev => ({ ...prev,
+						first_name: values.first_name,
+						last_name: values.last_name,
+						email: values.email,
+						organization: {
+							name: values.organization?.name,
+							address: values.organization?.address,
+							zip_code: values.organization?.zip_code,
+							city: values.organization?.city
+						}
+					}));
 				}
 			}
 			if (values.email?.length && values.email !== teacher.email && !userProfileError)
 			{
-				const { data: user, error: userError } = await supabase.auth.updateUser({email: values.email });
+				const { data: user, error: userError } = await supabase.auth.updateUser({ email: values.email });
 				if (userError)
 					logger.error("supabase:database", "InfoSettings, error updating email", userError, "discord");
 				else
@@ -121,7 +140,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				logger.error('supabase:database', 'InfoSetting', 'error getting datas', error, 'discord');
 			if (data)
 			{
-				setValues({
+				setValues(prev => ({ ...prev,
 					first_name: data.first_name || "",
 					last_name: data.last_name || "",
 					email: user?.email || "",
@@ -131,7 +150,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						zip_code: "",
 						city: ""
 					}
-				})
+				}))
 			}
 			else
 				setValues(tmpInfo);
@@ -152,17 +171,12 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 				<DataList.Root>
 
 					<Heading size='5'>Personnelles</Heading>
-					{/*
-					<DataList.Item>
-						<DataList.Label>{"nickname")}</DataList.Label>
-						<DataList.Value>{nickname}</DataList.Value>
-					</DataList.Item>*/}
 
 					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Prénom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) =>{
-									setValues({...values, first_name: e.target.value})
+									setValues(prev => ({...prev, first_name: e.target.value}))
 									setModifying(true);
 								}} value={values?.first_name} />
 						</DataList.Value>
@@ -172,7 +186,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"Nom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, last_name: e.target.value});
+								setValues(prev => ({...prev, last_name: e.target.value}));
 								setModifying(true);
 							}}
 							value={values?.last_name} />
@@ -183,23 +197,19 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"Email"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, email: e.target.value});
+								setValues(prev => ({...prev, email: e.target.value}));
 								setModifying(true);
 							}} value={values?.email} />						
 						</DataList.Value>
 					</DataList.Item>
 
-					{/*<DataList.Item>
-						<DataList.Label>{"id"}</DataList.Label>
-						<DataList.Value><Code>{user?.id}</Code></DataList.Value>
-					</DataList.Item>*/}
 					<Heading size='5' mt='5'>Organisation</Heading>
 
 					<DataList.Item style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
 						<DataList.Label>{"Nom"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, organization: {...values.organization, name: e.target.value}});
+								setValues(prev => ({...prev, organization: {...prev.organization, name: e.target.value}}));
 								setModifying(true);
 							}} value={values?.organization?.name} />						
 						</DataList.Value>
@@ -209,7 +219,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"Adresse"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, organization: {...values.organization, address: e.target.value}});
+								setValues(prev => ({...prev, organization: {...prev.organization, address: e.target.value}}));
 								setModifying(true);
 							}} value={values?.organization?.address} />						
 						</DataList.Value>
@@ -219,7 +229,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"Code postal"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, organization: {...values.organization, zip_code: e.target.value}});
+								setValues(prev => ({...prev, organization: {...prev.organization, zip_code: e.target.value}}));
 								setModifying(true);
 							}} value={values?.organization?.zip_code} />						
 						</DataList.Value>
@@ -229,7 +239,7 @@ export default function InfosSettings ({teacher, profileData}: {teacher: User | 
 						<DataList.Label>{"Ville"}</DataList.Label>
 						<DataList.Value>
 							<TextField.Root onChange={(e) => {
-								setValues({...values, organization: {...values.organization, city: e.target.value}});
+								setValues(prev => ({...prev, organization: {...prev.organization, city: e.target.value}}));
 								setModifying(true);
 							}} value={values?.organization?.city} />							
 						</DataList.Value>
