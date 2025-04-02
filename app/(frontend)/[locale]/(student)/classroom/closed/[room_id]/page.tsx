@@ -5,6 +5,7 @@ import logger from "@/app/_utils/logger"
 import { FileDown } from "lucide-react"
 import { CapsuleToPdfBtn } from "@/app/(frontend)/[locale]/_components/CapsuleToPdfBtn"
 import { getFormatter } from "next-intl/server"
+import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton"
 
 export default async function ClosedRoomPage({ params }: { params: { room_id: string } }) {
     const supabase = createClient();
@@ -31,7 +32,7 @@ export default async function ClosedRoomPage({ params }: { params: { room_id: st
                             <FileDown />Télécharger le support en pdf
                         </Button>
                     </CapsuleToPdfBtn>
-                    {/* <Button variant='ghost' color='gray'>Signaler un problème</Button> */}
+                    <LinkButton variant='soft' color='gray' mt='5' href='https://www.pratico.live' target="_blank">En savoir plus sur Pratico</LinkButton>
                 </Flex>
             </Section>
         </Container>
