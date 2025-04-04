@@ -38,7 +38,7 @@ export default async function SubScribePage() {
                             publishable-key={process.env.STRIPE_PUBLIC_KEY}
                         />
                     </Card>
-                    <Text size='1' color='gray'>La version gratuite est limitée à 10 participants par session.</Text>
+                    <Text size='1' color='gray' align='center'>La version gratuite est limitée à 10 participants par session.</Text>
                 </Section>
             </Container>
         </main>
