@@ -91,7 +91,7 @@ export default function LogInForm() {
 
                 {errorMessage && <Feedback color='orange' icon={<TriangleAlert />} message={errorMessage} />}
 
-                <TryAnonymousBtn mt='5'/>
+                {/* <TryAnonymousBtn mt='5'/> */}
 
             </Flex>
 

@@ -116,7 +116,7 @@ export default function SignUpForm() {
 
                 { errorMessage && <Feedback color='orange' message={errorMessage} icon={<TriangleAlert />} /> }
 
-                <TryAnonymousBtn />
+                {/* <TryAnonymousBtn /> */}
 
             </Flex>
 
