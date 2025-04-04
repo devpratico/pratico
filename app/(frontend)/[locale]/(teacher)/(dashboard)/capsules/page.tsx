@@ -1,10 +1,12 @@
-import { ScrollArea, Container, Section, Flex, Box, IconButton } from "@radix-ui/themes"
-import { Search } from "lucide-react"
+import { ScrollArea, Container, Section, Flex, Box, IconButton, Grid, Callout, Card, Button, Link, Text } from "@radix-ui/themes"
+import { AlertTriangle, Star, Gem } from "lucide-react"
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
 import { fetchCapsulesDataAndRoomStatus } from "@/app/(backend)/api/capsule/capsule.server";
 import { CapsulesDisplay } from "./_components/CapsulesDiplay";
 import { CapsuleType } from "../reports/page";
 import logger from "@/app/_utils/logger";
+import { customerIsSubscribed } from "@/app/(backend)/api/stripe/stripe.server";
+import LinkButton from "../../../_components/LinkButton";
 
 export type ExtendedCapsuleType = CapsuleType & { roomOpen: boolean, roomCode: string | null | undefined }
 export default async function Page() {
@@ -20,38 +22,16 @@ export default async function Page() {
             capsules = data;
     }
 
+    const isSubscribed = await customerIsSubscribed(user?.id);
+
     return (
         <ScrollArea>
             <Container pr='3' pl={{ initial: '3', xs: '0' }}>
+
+                { !isSubscribed && <Banner /> }
+
                 <Section>
-
-                    <Flex gap='3' align='center'>
-
-                        {/* <SegmentedControl.Root defaultValue='grid'>
-                            <SegmentedControl.Item value='grid'>
-                                <Flex><LayoutGrid size='18' /></Flex>
-                            </SegmentedControl.Item>
-
-                            <SegmentedControl.Item value='list'>
-                                <Flex><List size='18' /></Flex>
-                            </SegmentedControl.Item>
-                        </SegmentedControl.Root>
-
-                        <Box display={{ initial: 'none', md: 'block' }}>
-                            <TextField.Root placeholder='Rechercher' disabled>
-                                <TextField.Slot>
-                                    <Search size='18' />
-                                </TextField.Slot>
-                            </TextField.Root>
-                        </Box> */}
-
-                        <Box display={{ initial: 'block', md: 'none' }}>
-                            <IconButton variant='ghost'><Search size='18' /></IconButton>
-                        </Box>
-
-                    </Flex>
                     <CapsulesDisplay capsules={capsules} />
-
                 </Section>
             </Container>
         </ScrollArea>
@@ -59,3 +39,45 @@ export default async function Page() {
 }
 
 
+function Banner() {
+    return (
+        <Box mt='3'>
+            <Card>
+                <Grid columns='1fr 2fr' gap='3'>
+                    <Callout.Root color='pink'>
+                        <Callout.Icon>
+                            <AlertTriangle />
+                        </Callout.Icon>
+                        <Callout.Text>
+                            Vous êtes limité à 10 participants maximum par session.
+                        </Callout.Text>
+                    </Callout.Root>
+
+                    <Flex direction='column' justify='center' gap='1' p='3' style={{
+                        backgroundColor: 'var(--amber-a4)',
+                        borderRadius: 'var(--radius-3)',
+                        color: 'var(--amber-11)',
+                    }}>
+                        <LinkButton
+                            color='amber'
+                            href="/subscribe"
+                            target='_blank'
+                        >
+                            <Star />Passer à Pratico Pro
+                        </LinkButton>
+                        <Text size='2' align='center'>
+                            Pour un nombre illimité de participants.
+                        </Text>
+                        <Text size='1' align='center' color='yellow'>
+                            Vous êtes une entreprise ?&nbsp;
+                            <Link href="mailto:bonjour@pratico.live">Contactez-nous</Link>
+                        </Text>
+                    </Flex>
+                </Grid>
+
+
+
+            </Card>
+        </Box>
+    )
+}

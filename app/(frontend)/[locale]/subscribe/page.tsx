@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import config from '@/app/(backend)/api/stripe/stripe.config';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
-import { Container, Section, Card, Heading } from '@radix-ui/themes';
+import { Container, Section, Card, Heading, Text } from '@radix-ui/themes';
 
 declare global {
     namespace JSX {
@@ -38,6 +38,7 @@ export default async function SubScribePage() {
                             publishable-key={process.env.STRIPE_PUBLIC_KEY}
                         />
                     </Card>
+                    <Text size='1' color='gray' align='center'>La version gratuite est limitée à 10 participants par session.</Text>
                 </Section>
             </Container>
         </main>

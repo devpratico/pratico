@@ -12,6 +12,8 @@ import createClient from '@/supabase/clients/server';
 import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
 import { StartSessionWarningAlert } from './_components/StartSessionWarningAlert';
+import LinkButton from '@/app/(frontend)/[locale]/_components/LinkButton';
+import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 
 
 
@@ -26,6 +28,8 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
     const { data } = await supabase.from("rooms").select("code").eq("created_by", user?.id).eq("capsule_id", capsule_id).eq("status", "open").order('created_at', { ascending: false }).limit(1);
     if (data && data.length > 0 && data[0].code)
         redirect(`/room/${data[0].code}`);
+
+    const isSubscribed = await customerIsSubscribed(user?.id);
 
     return (
         <>
@@ -45,6 +49,18 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                         <CapsuleTitle capsuleId={capsule_id}/>
 
                     </Flex>
+
+                    { !isSubscribed &&
+                        <Box display={{ initial: 'none', md: 'block' }} >
+                            <LinkButton
+                                href='/subscribe'
+                                color='amber'
+                                //size='1'
+                            >
+                                    Débloquer la limite de 10 participants
+                            </LinkButton>
+                        </Box>
+                    }
 
                     
 
