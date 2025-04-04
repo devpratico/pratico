@@ -19,17 +19,17 @@ export default function WelcomeDialog() {
         later:  (capsuleId: string) => `/capsule/${capsuleId}`
     }
 
-    async function handleLater() {
+    // async function handleLater() {
 
-        const { data: userData, error: userError } = await signInAnonymously()
-        if (userError || !userData.user) throw userError || new Error('No user data')
+    //     const { data: userData, error: userError } = await signInAnonymously()
+    //     if (userError || !userData.user) throw userError || new Error('No user data')
 
-        // Create a new capsule and redirect to it
-        const { data: capsuleData, error: capsuleError } = await saveCapsule({ created_by: userData.user.id, title: 'Sans titre' })
-        if (capsuleError || !capsuleData) throw capsuleError || new Error('No capsule data')
+    //     // Create a new capsule and redirect to it
+    //     const { data: capsuleData, error: capsuleError } = await saveCapsule({ created_by: userData.user.id, title: 'Sans titre' })
+    //     if (capsuleError || !capsuleData) throw capsuleError || new Error('No capsule data')
         
-        router.push(routes.later(capsuleData.id))
-    }
+    //     router.push(routes.later(capsuleData.id))
+    // }
 
     return (
         <AlertDialog.Root open={show} onOpenChange={setShow}>
@@ -43,12 +43,12 @@ export default function WelcomeDialog() {
                     Pour profiter des fonctionnalités de Pratico, connectez-vous ou créez un compte.
                 </AlertDialog.Description>
 
-                <Flex gap='2' justify='between' align='baseline' mt='7'>
-                    <AlertDialog.Cancel>
+                <Flex gap='2' justify='end' align='baseline' mt='7'>
+                    {/* <AlertDialog.Cancel>
                         <Button variant='ghost' onClick={handleLater}>
                             Plus tard
                         </Button>
-                    </AlertDialog.Cancel>
+                    </AlertDialog.Cancel> */}
 
                     <Flex gap='2'>
                         <AlertDialog.Action>
