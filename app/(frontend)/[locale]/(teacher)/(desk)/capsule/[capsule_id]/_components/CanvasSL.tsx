@@ -9,7 +9,7 @@ import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Re
 import logger from "@/app/_utils/logger";
 import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
 import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Box } from "@radix-ui/themes";
 
 
 
@@ -21,7 +21,7 @@ import { Flex } from "@radix-ui/themes";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    const { widerThan } = useWindow();
+    //const { widerThan } = useWindow();
 
     // Get the user
     /*
@@ -74,7 +74,13 @@ export default function CanvasSL() {
     return (
         <Canvas initialSnapshot={initialSnapshot}>
             <CustomTlToolbar /> 
-            <Resizer insets={{top: 0, right: 0, bottom: 0, left: widerThan("xs") ? 80 : 0}} margin={0} />
+            <Box display={{initial:'none', xs:'block'}} >
+                <Resizer insets={{top: 0, right: 0, bottom: 0, left: 80}} margin={0} />
+            </Box>
+
+            <Box display={{ initial: 'block', xs: 'none' }} >
+                <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
+            </Box>
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>
     )
