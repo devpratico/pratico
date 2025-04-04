@@ -51,13 +51,15 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                     </Flex>
 
                     { !isSubscribed &&
-                        <LinkButton
-                            href='/subscribe'
-                            color='amber'
-                            //size='1'
-                        >
-                                Débloquer la limite de 10 participants
-                        </LinkButton>
+                        <Box display={{ initial: 'none', md: 'block' }} >
+                            <LinkButton
+                                href='/subscribe'
+                                color='amber'
+                                //size='1'
+                            >
+                                    Débloquer la limite de 10 participants
+                            </LinkButton>
+                        </Box>
                     }
 
                     
