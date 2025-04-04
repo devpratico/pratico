@@ -1,6 +1,6 @@
 import TeacherCanvas from "./_components/TeacherCanvasServer";
 import { Flex, Box, Text } from "@radix-ui/themes"
-import { Puzzle, MessageSquareText, Users, Ellipsis, FlaskRound } from 'lucide-react';
+import { Puzzle, Users, Ellipsis, FlaskRound, Radio, Plus } from 'lucide-react';
 import Image from "next/image";
 import TopBarPortal from "../../_components/TopBarPortal";
 import StartDialog from "./_components/StartDialog";
@@ -12,7 +12,7 @@ import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
 import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
-
+import { StopSessionWarningAlert } from "./_components/StopSessionWarningAlert";
 
 export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
     const logoScale = 0.25;
@@ -42,11 +42,15 @@ export default async function Page({ params: { room_code } }: { params: { room_c
 				<Flex align='center' gap='4' display={{ initial: 'none', xs: 'flex' }}>
 					
 					<Flex align='center'>
-						<Image src='/images/logolien.png' width={500 * logoScale} height={105 * logoScale} alt="Pratico" />
-						<Text size='6' style={{ color: 'var(--background)', opacity: '0.5' }}>{`/${room_code}`}</Text>
+						<Image src='/images/logo.png' width={420 * logoScale} height={105 * logoScale} alt="Pratico" />
+						<Text trim='end' size='6' style={{
+                            color: 'var(--accent-1)',
+                            opacity: '0.7',
+                            marginTop: '1px',
+                        }}>{`.io/${room_code}`}</Text>
 					</Flex>
 					<StartDialog/>
-					<StopBtn message='Arrêter la session' />
+					<StopSessionWarningAlert />
 
 				</Flex>
 

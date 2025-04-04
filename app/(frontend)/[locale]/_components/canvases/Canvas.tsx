@@ -8,16 +8,18 @@ import {
     TLStore,
     StoreSnapshot,
     TLRecord,
-    useKeyboardShortcuts,
+    useKeyboardShortcuts
 } from 'tldraw'
 import 'tldraw/tldraw.css'
 import Background from './custom-ui/Background'
 import CanvasArea from './custom-ui/CanvasArea'
 import { useTLEditor } from '@/app/(frontend)/_hooks/contexts/useTLEditor'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-//import Resizer from './custom-ui/Resizer/Resizer'
+import { useCallback, useMemo } from 'react'
 import EmbedHint from './custom-ui/EmbedHint/EmbedHint'
 import logger from '@/app/_utils/logger'
+import useCapsuleId from '@/app/(frontend)/_hooks/standalone/useCapsuleId'
+import makeAssetStore from '@/app/_utils/tldraw/assetStore'
+
 
 export interface CanvasUser {
     id: string
@@ -40,6 +42,8 @@ export interface CanvasProps {
  */
 export default function Canvas({store, initialSnapshot, persistenceKey, onMount, children}: CanvasProps) {
     const { setEditor } = useTLEditor();
+    const capsuleId = useCapsuleId()
+    const assetHandler = useMemo(() => capsuleId ? makeAssetStore({ capsuleId }) : undefined, [capsuleId])
 
     /**
      * This function is called when the tldraw editor is mounted.
@@ -81,28 +85,59 @@ export default function Canvas({store, initialSnapshot, persistenceKey, onMount,
     }, [setEditor, onMount])
 
     const options = useMemo(() => ({ maxPages: 300 }), [])
+	const components = useMemo(() => ({
+        Background,
+        OnTheCanvas: CanvasArea,
+        Toolbar: null,
+        StylePanel: null,
+        DebugPanel: null, // needed
+		ActionsMenu: null,
+		HelpMenu: null,
+		ZoomMenu: null,
+		MainMenu: null,
+		Minimap: null,
+		PageMenu: null,
+		NavigationPanel: null,
+		KeyboardShortcutsDialog: null,
+		QuickActions: null,
+		HelperButtons: null,
+		DebugMenu: null,
+		SharePanel: null,
+		MenuPanel: null,
+		TopPanel: null,
+		CursorChatBubble: null
+	 }), []);
 
     return (
 		<Tldraw
 			className='tldraw-canvas'
-			hideUi={true}
 			onMount={handleMount}
-			components={{ Background: Background, OnTheCanvas: CanvasArea }}
+            components={components}
 			store={store}
 			snapshot={ store ? undefined : initialSnapshot }
 			persistenceKey={persistenceKey}
 			options={options}
+            assets={assetHandler}
 		>
-			{children}
+            {children}
 			{/* <Resizer/> */}
 			<EmbedHint/>
-			<KeyboardShortcuts/>
+            <WatermarkStyle/>
 		</Tldraw>
     )
 }
 
 
-const KeyboardShortcuts = () => {
-    useKeyboardShortcuts()
-    return null
+function WatermarkStyle() {
+    return (
+        <style>
+            {`
+            .tl-watermark_SEE-LICENSE {
+                z-index: 0 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            `}
+        </style>
+    )
 }

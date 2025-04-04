@@ -30,7 +30,7 @@ export default function PollAnimation() {
 
     // Service methods
     const { closePoll } = useClosePollService()
-    const { toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = usePollAnimationService()
+    const { isSaving, toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = usePollAnimationService()
 
 
     return (
@@ -60,6 +60,7 @@ export default function PollAnimation() {
                                     questionState={questionState || 'voting'}
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
                                     onClick={() => toggleAnswer(choice.id)}
+                                    disabled={isSaving || isSyncing}
                                 />
                             ))}
                         </Flex>
@@ -106,9 +107,10 @@ interface PollAnswerRowProps {
     questionState: PollSnapshot['state']
     answerState: 'selected' | 'unselected'
     onClick: () => void
+    disabled?: boolean
 }
 
-export function PollAnswerRow({ text, votes, questionState, answerState = 'unselected', onClick }: PollAnswerRowProps) {
+export function PollAnswerRow({ text, votes, questionState, answerState = 'unselected', onClick, disabled }: PollAnswerRowProps) {
 
     const isSolid = questionState == 'voting' && answerState === 'selected'
     const isSoft = questionState == 'showing results'
@@ -122,7 +124,12 @@ export function PollAnswerRow({ text, votes, questionState, answerState = 'unsel
     }
 
     return (
-        <Button variant={variant} onClick={handleClick}>
+        <Button
+            variant={variant}
+            style={{ height: 'auto', padding: '10px', textAlign: 'left' }}
+            onClick={handleClick}
+            disabled={disabled}
+        >
             {text}
             <Box ml='auto'>
                 {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}

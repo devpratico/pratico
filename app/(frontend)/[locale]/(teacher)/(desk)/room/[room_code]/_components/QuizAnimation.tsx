@@ -30,7 +30,13 @@ export default function QuizAnimation() {
 
     // Service methods
     const { close } = useCloseQuizService()
-    const { toggleAnswer, setQuestionState, myChoicesIds, setCurrentQuestionIndex } = useQuizAnimationService()
+    const { 
+        isPending, 
+        toggleAnswer, 
+        setQuestionState, 
+        myChoicesIds, 
+        setCurrentQuestionIndex 
+    } = useQuizAnimationService()
 
 
     return (
@@ -61,6 +67,7 @@ export default function QuizAnimation() {
                                     answerState={myChoicesIds.includes(choice.id) ? 'selected' : 'unselected'}
                                     isCorrect={choice.isCorrect}
                                     onClick={() => toggleAnswer(choice.id)}
+                                    disabled={isSyncing || isPending}
                                 />
                             ))}
                         </Flex>
@@ -107,10 +114,11 @@ interface QuizAnswerRowProps {
     questionState: QuizSnapshot['state']
     answerState: 'selected' | 'unselected'
     isCorrect: boolean
-    onClick: () => void
+    onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+    disabled?: boolean
 }
 
-export function QuizAnswerRow({ text, votes, questionState, answerState = 'unselected', isCorrect, onClick }: QuizAnswerRowProps) {
+export function QuizAnswerRow({ text, votes, questionState, answerState = 'unselected', isCorrect, onClick, disabled=false }: QuizAnswerRowProps) {
 
     const isSolid = (questionState == 'answering' && answerState === 'selected') || (questionState == 'showing results' && isCorrect)
     const isSoft = questionState == 'showing results' && !isCorrect
@@ -123,13 +131,19 @@ export function QuizAnswerRow({ text, votes, questionState, answerState = 'unsel
         color = undefined;
     }
 
-    function handleClick() {
+    function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
         if (questionState == 'showing results') return
-        onClick()
+        onClick(event)
     }
 
     return (
-        <Button variant={variant} color={color} onClick={handleClick}>
+        <Button
+            variant={variant}
+            color={color}
+            onClick={handleClick}
+            style={{ height: 'auto', padding: '10px', textAlign: 'left' }}
+            disabled={disabled}
+        >
             {text}
             <Box ml='auto'>
                 {questionState == 'showing results' && <Badge variant='solid' radius='full'>{votes}</Badge>}

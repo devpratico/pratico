@@ -4,13 +4,12 @@ import {
   Box,
   TLPageId,
   TLEditorSnapshot,
-  exportAs
+  TLPage
 } from "tldraw";
-import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { Flex, Spinner } from "@radix-ui/themes";
-import { useMemo, useState, useEffect, useTransition, useRef } from "react";
+import { useMemo } from "react";
 import { useSnapshot } from "@/app/(frontend)/_hooks/contexts/useSnapshot";
-import { useNav } from "@/app/(frontend)/_hooks/contexts/useNav";
+import logger from "@/app/_utils/logger";
 
 
 interface ThumbnailProps {
@@ -32,7 +31,21 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
     const {snapshot: hookSnapshot } = useSnapshot()
     const snapshot = useMemo(() => argSnapshot || hookSnapshot, [argSnapshot, hookSnapshot])
     //const { currentPageId } = useNav()
+    const firstPageId = useMemo(() => {
+        if (!snapshot || !("document" in snapshot) || !snapshot?.document.store)
+            return ;
 
+        const store = snapshot.document.store 
+        const pages = Object.values(store)
+            .filter(value => value.id?.startsWith("page:")) as TLPage[]
+        
+        const firstPage = pages.reduce((firstPage, page) => {
+            return page.index < firstPage.index ? page : firstPage
+        }, pages[0]);
+    
+        return firstPage.id
+    }, [snapshot]);
+    
     //const isFirstRender = useRef(true);
 
     /*
@@ -66,6 +79,9 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
      * In that case, we show a spinner until the pageId is available.
      */
     if (!argSnapshot && hookSnapshot) {
+        if (!("document" in hookSnapshot) || !hookSnapshot.document.store)
+            return null;
+        
         const store = hookSnapshot.document.store as any
         const pageIds = getPageKeys(store)
         if (!pageIds.includes(pageId as string)) {
@@ -83,7 +99,7 @@ const Thumbnail = ({ snapshot: argSnapshot, scale=0.05, pageId }: ThumbnailProps
             format='png'
             scale={scale}
             background={true}
-            pageId={pageId}
+            pageId={pageId ?? firstPageId}
             bounds={bounds}
             //preserveAspectRatio={'true'}
             padding={0}

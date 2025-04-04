@@ -46,7 +46,7 @@ export default function CollabSwitchGlobal({ roomCode }: CollabSwitchGlobalProps
                 onClick={handleClick}
                 loading={loading}
             >
-                <Pen size='20' color={active ? 'var(--pink)' : 'gray'}/>
+                <Pen size='20'/>
             </IconButton>
         </TooltipL>
     )

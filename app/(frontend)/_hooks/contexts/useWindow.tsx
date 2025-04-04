@@ -31,7 +31,6 @@ function useWindow(): WindowHookType {
     const [narrowerThan, setNarrowerThan] = useState<(size: Breakpoint) => boolean>(() => () => false);
     const [orientation, setOrientation] = useState<'landscape' | 'portrait'>('landscape');
 
-
     useEffect(() => {
         function handleResize() {
             setWidth(window.innerWidth);

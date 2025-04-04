@@ -1,11 +1,12 @@
 'use client'
-import { createContext, useContext, } from 'react';
+import { createContext, use, useContext, } from 'react';
 import { Room } from '@/app/(backend)/api/room/types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import logger from '@/app/_utils/logger';
 import { useParams } from 'next/navigation';
 import createClient from '@/supabase/clients/client';
 import { isEqual } from 'lodash';
+import { useOnWake } from '../standalone/useOnWake';
 
 
 
@@ -28,30 +29,39 @@ const RoomContext = createContext<RoomContext | undefined>(undefined);
  * The other data is fetched once and doesn't change.
  */
 export function RoomProvider({ children }: { children: React.ReactNode}) {
+    const supabase = createClient();
     const { room_code }: { room_code: string } = useParams();
     const [room, setRoom] = useState<Room | undefined>(undefined);
 
-    useEffect(() => {
+    const fetchInitialData = useCallback(async () => {
         if (!room_code) return
-
-        const supabase = createClient();
-
-        // Fetch initial room data
-        supabase
+        const { data, error } = await supabase
             .from('rooms')
             .select('*')
             .eq('code', room_code)
             .eq('status', 'open')
-            .single<Room>()
-            .then(({ data, error }) => {
-                if (error) {
-                    logger.log('supabase:database', 'useRoom.tsx', `error fetching room ${room_code}...`, error.message)
-                    return
-                }
-                logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data)
-                setRoom(data)
-            })
+            .single<Room>();
 
+        if (error) {
+            logger.log('supabase:database', 'useRoom.tsx', `error fetching room ${room_code}...`, error.message);
+            return;
+        }
+        logger.log('supabase:database', 'useRoom.tsx', `fetched room ${room_code}...`, data);
+        setRoom(data);
+    }, [room_code, supabase]);
+
+
+    // Fetch initial data on first load
+    useEffect(() => {
+        fetchInitialData();
+    }, [fetchInitialData]);
+
+    // Fetch data on wake (phone unlocks)
+    useOnWake(fetchInitialData);
+
+
+    useEffect(() => {
+        if (!room_code) return
 
         logger.log('supabase:realtime','useRoom.tsx', "Listening to room table realtime")
 
@@ -63,12 +73,31 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
                     //if (isEqual(oldRecord?.params, newRecord.params)) return
 
-                    logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
+                    //logger.log('supabase:realtime', 'useRoom.tsx', "room row updated", newRecord.params)
                     setRoom((prev) => {
-                        if (isEqual(prev?.params, newRecord.params)) return prev
+                        if (isEqual(prev?.params, newRecord.params)) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated remotely but params are the same. Ignoring update."
+                            )
+                            return prev
+                        }
                         if (prev) {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx', 
+                                "Room params changed remotely. Updating room params.",
+                                newRecord.params
+                            )
                             return {...prev, params: newRecord.params}
                         } else {
+                            logger.log(
+                                'supabase:realtime',
+                                'useRoom.tsx',
+                                "room row updated",
+                                newRecord
+                            )
                             return newRecord
                         }
                     })
@@ -87,7 +116,7 @@ export function RoomProvider({ children }: { children: React.ReactNode}) {
 
         return () => {supabase.removeChannel(channel)}
 
-    }, [room_code, setRoom]);
+    }, [room_code, setRoom, supabase]);
 
     return (
         <RoomContext.Provider value={{ room }}>

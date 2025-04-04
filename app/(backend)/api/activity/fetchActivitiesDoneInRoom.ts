@@ -290,7 +290,7 @@ async function computePollParticipation(args: {
 }
 
 
-export async function computeQuizSuccess(args: {
+async function computeQuizSuccess(args: {
     quizId: string,
     answers: QuizUserAnswer[]
 }): 
@@ -322,71 +322,78 @@ export async function computeQuizSuccess(args: {
         correctChoices: question.choices.filter(choice => choice.isCorrect).map(choice => choice.id),
         totalChoices: question.choices.length
     }));
-
+    const allUserIds = new Set<string>(args.answers.map((answer) => answer.userId));
+    const answers = args.answers;
+    return (calculateQuizRate(questions, allUserIds, answers));
+    
+}
+export type questionQuizRateType = { questionId: string, correctChoices: string[], totalChoices: number };
+export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds: Set<string>, answers: QuizUserAnswer[] ) => {
     const usersScores: { [userId: string]: number[] } = {};
-    const allUserIds = new Set<string>(args.answers.map((answer) => { 
-        if (!(answer.userId in usersScores))
-            usersScores[answer.userId] = [];
-        return (answer.userId)
-    }));
+    allUserIds.forEach((userId) => {
+        if (!(userId in usersScores))
+            usersScores[userId] = [];
+    });
 
     // Adding points for unanswered questions
 
     allUserIds.forEach((userId) => {
         questions.forEach(question => {
-            const userAnswers = args.answers.filter(a => a.userId === userId && a.questionId === question.questionId);
+            const userAnswers = Array.from(new Set(answers.filter(a => a.userId === userId && a.questionId === question.questionId)));
             const correctAnswered = userAnswers.filter(a => question.correctChoices.includes(a.choiceId)).length;
             const wrongAnswered = userAnswers.filter(a => !question.correctChoices.includes(a.choiceId)).length;
             const totalCorrectChoices = question.correctChoices.length;
-            const totalWrongChoices = question.totalChoices - totalCorrectChoices;
-            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered
-            const notGivenWrongAnswers = totalWrongChoices - wrongAnswered;
+            const notGivenCorrectAnswers = totalCorrectChoices - correctAnswered;
+            const points = {
+                correct: 2,
+                wrong: -1,
+                notGivenCorrect: -1,
+            };
             const userChoices = {
                 correct: correctAnswered,
                 wrong: wrongAnswered,
                 notGivenCorrect: notGivenCorrectAnswers,
-                notGivenWrong: notGivenWrongAnswers
             }
-            const score = calculateQuizScore(userChoices);
-            const questionPercentage = score / (totalCorrectChoices * 2 + notGivenWrongAnswers) * 100;
+            const score = calculateQuizScore(userChoices, points);
+            const maxScorePerQuestion = (totalCorrectChoices * points.correct);
+            console.log ("Score: ", score, "Max score per question: ", maxScorePerQuestion);
+            const questionPercentage = maxScorePerQuestion > 0 && score > 0 ? (score / maxScorePerQuestion) * 100 : 0;
+            console.log("Max score per question: ", maxScorePerQuestion, "Score: ", score, "Question percentage: ", questionPercentage);
             usersScores[userId].push(questionPercentage);
         });
     });
 
-    let totalGlobalScore = 0;
-    let totalUsers = 0;
- 
-    Object.keys(usersScores).forEach(userId => {
-        const userScores = usersScores[userId];
-        const userAverageScore = userScores.reduce((sum, score) => sum + score, 0) / userScores.length;
-        totalGlobalScore += userAverageScore;
-        totalUsers++;
+    let totalScoreSum = 0;
+    let totalQuestionCount = 0;
+    
+    Object.values(usersScores).forEach(userScores => {
+        totalScoreSum += userScores.reduce((sum, score) => sum + score, 0);
+        totalQuestionCount += userScores.length;
     });
-
-    const globalAverageScore = totalUsers > 0 ? totalGlobalScore / totalUsers : 0;
-    const finalScorePercentage = Math.max(0, Math.min(100, globalAverageScore));
-
+    
+    const globalAverageScore = totalQuestionCount > 0 && totalScoreSum > 0 ? totalScoreSum / totalQuestionCount : 0;
+    console.log("Total score sum: ", totalScoreSum, "Total question count: ", totalQuestionCount, "Global average score: ", globalAverageScore);
+    let finalScorePercentage = Math.round(Math.max(0, Math.min(100, globalAverageScore)));
+    if (isNaN(finalScorePercentage))
+        finalScorePercentage = 0;
     return { error: null, data: Math.round(finalScorePercentage) };
-}
+};
 
 const calculateQuizScore = (
     userChoices: {
         correct: number,
         wrong: number,
         notGivenCorrect: number,
-        notGivenWrong: number
+    },
+    points: {
+        correct: number,
+        wrong: number,
+        notGivenCorrect: number,
     }
 ): number => {
-    let score = 0;
-    const points = {
-        correct: 2,
-        wrong: 0,
-        notGivenCorrect: 0,
-        notGivenWrong: 1
-    };
-    score += userChoices.correct * points.correct;
-    score += userChoices.wrong * points.wrong;
-    score += userChoices.notGivenCorrect * points.notGivenCorrect;
-    score += userChoices.notGivenWrong * points.notGivenWrong;
-    return (score);
+    return (
+        userChoices.correct * points.correct +
+        userChoices.wrong * points.wrong +
+        userChoices.notGivenCorrect * points.notGivenCorrect
+    );
 };

@@ -56,7 +56,8 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
     }
     
     const { data: activities, error } = await fetchActivitiesDoneInRoom(roomId);
-    
+    if (error)
+        logger.error('next:page', 'SessionDetailsPage', 'Error fetching activities done in room', error.message);
     
 	return (
 		<ScrollArea>

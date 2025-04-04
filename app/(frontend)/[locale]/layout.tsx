@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Theme } from '@radix-ui/themes'
-import '../colors.css'
 import '../globals.css'
 import '@radix-ui/themes/styles.css';
 import { luciole } from '../Fonts'
@@ -10,7 +9,7 @@ import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 import { NextIntlClientProvider } from 'next-intl';
 import FocusZoneProvider from '../_hooks/useFocusZone';
-
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
     title: 'Pratico',
@@ -54,6 +53,7 @@ export default async function RootLayout({children, params: { locale }}: RootLay
                             <UserContextProvider user={data?.user || undefined} firstName={firstName} lastName={lastName} isSubscribed={isSubscribed}>
                                 <NextIntlClientProvider>
                                 {children}
+                                <Analytics />
                                 </NextIntlClientProvider>
                             </UserContextProvider>
                         </FocusZoneProvider>

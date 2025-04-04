@@ -2,20 +2,18 @@
 import Canvas from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
 import useBroadcastStore from "@/app/(frontend)/_hooks/standalone/useBroadcastStore";
 import { TLStoreSnapshot } from "tldraw";
-import TLToolbar from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/TLToolbar";
 import AutoSaver from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/AutoSaver";
 import NavigatorSync from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/NavigatorSync";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import { CanvasUser } from "@/app/(frontend)/[locale]/_components/canvases/Canvas";
 import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTLEditor } from "@/app/(frontend)/_hooks/contexts/useTLEditor";
 import { setUserPreferences } from "tldraw";
-import { Box } from "@radix-ui/themes";
-import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
-import ToolBarBox from "./ToolBarBox";
-import MobileToolbar from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/MobileToolbar";
 import logger from "@/app/_utils/logger";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
+import { useRealtimeActivityContext } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
 
 
 interface StudentCanvasProps {
@@ -26,9 +24,18 @@ interface StudentCanvasProps {
 
 // TODO: Put the toolbar in the page or a layout
 export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
-    const { widerThan } = useWindow()
+    const { widerThan, narrowerThan } = useWindow()
     const { room } = useRoom()
     const canCollab = room?.params?.collaboration?.active && ( room?.params?.collaboration?.allowAll || room?.params?.collaboration?.allowedUsersIds.includes(user.id))
+
+    const { snapshot: activitySnapshot } = useRealtimeActivityContext()
+
+    // TODO: Fix this dirty fix
+    const shouldHideCanvas = useMemo(() => {
+        const isMobile = narrowerThan("sm")
+        const ongoingActivity = !!activitySnapshot
+        return isMobile && ongoingActivity
+    }, [narrowerThan, activitySnapshot])
 
     useEffect(() => {
         setUserPreferences({
@@ -49,17 +56,14 @@ export default function StudentCanvas({ user, snapshot }: StudentCanvasProps) {
         editor?.updateInstanceState({ isReadonly: !canCollab })
     }, [canCollab, editor])
 
-    return (
-        <>
-            <ToolBarBox>
-                {canCollab && (widerThan('xs') ? <Box p='2'><TLToolbar /></Box> : <MobileToolbar />)}
-            </ToolBarBox>
+    if (shouldHideCanvas) return <div>Canvas</div>
 
-            <Canvas store={store}>
-                <Resizer />
-                <NavigatorSync />
-                { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
-            </Canvas>
-        </>
+    return (
+        <Canvas store={store}>
+            { canCollab ? <CustomTlToolbar /> : null }
+            <Resizer insets={{ top: 0, bottom: 0, right: 0, left: canCollab && widerThan("xs") ? 80 : 0}} />
+            <NavigatorSync />
+            { room?.id && <AutoSaver saveTo={{ destination: 'remote room', roomId: room.id }} /> }
+        </Canvas>
     )
 }

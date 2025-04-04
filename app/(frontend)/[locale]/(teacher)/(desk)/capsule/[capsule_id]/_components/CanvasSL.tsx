@@ -7,6 +7,9 @@ import { fetchCapsuleSnapshot } from "@/app/(backend)/api/capsule/capsule.client
 import { useEffect, useState } from "react";
 import Resizer from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/Resizer";
 import logger from "@/app/_utils/logger";
+import { CustomTlToolbar } from "@/app/(frontend)/[locale]/_components/canvases/custom-ui/tool-bar/ToolBar";
+import useWindow from "@/app/(frontend)/_hooks/contexts/useWindow";
+import { Flex, Box } from "@radix-ui/themes";
 
 
 
@@ -18,7 +21,7 @@ import logger from "@/app/_utils/logger";
  */
 export default function CanvasSL() {
     const { capsule_id: capsuleId } = useParams<{ capsule_id: string }>()
-    console.log('capsuleId', capsuleId)
+    //const { widerThan } = useWindow();
 
     // Get the user
     /*
@@ -37,7 +40,6 @@ export default function CanvasSL() {
         }
         _setUser()
     }, [])*/
-
 
     // Get the initial snapshot from the capsule
     const [initialSnapshot, setInitialSnapshot] = useState<TLStoreSnapshot | undefined>(undefined)
@@ -71,7 +73,14 @@ export default function CanvasSL() {
     
     return (
         <Canvas initialSnapshot={initialSnapshot}>
-            <Resizer insets={{top: 0, right: 0, bottom: 0, left: 0}} margin={0} />
+            <CustomTlToolbar /> 
+            <Box display={{initial:'none', xs:'block'}} >
+                <Resizer insets={{top: 0, right: 0, bottom: 0, left: 80}} margin={0} />
+            </Box>
+
+            <Box display={{ initial: 'block', xs: 'none' }} >
+                <Resizer insets={{ top: 0, right: 0, bottom: 0, left: 0 }} margin={0} />
+            </Box>
             <AutoSaver saveTo={{ destination: 'remote capsule', capsuleId: capsuleId }} />
         </Canvas>
     )
