@@ -1,0 +1,2 @@
+CREATE POLICY "allow_all_for_capsules_pdf pu6ejd_0" ON storage.objects FOR SELECT TO public USING (bucket_id = 'capsules_pdf');
+CREATE POLICY "allow_all_for_capsules_pdf pu6ejd_1" ON storage.objects FOR INSERT TO public WITH CHECK (bucket_id = 'capsules_pdf');
