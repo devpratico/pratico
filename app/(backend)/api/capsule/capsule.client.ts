@@ -8,6 +8,7 @@ import {
     saveCapsule as saveCapsuleServer,
     SaveCapsuleArg,
 } from "./capsule.server";
+import { metadata } from "@/app/(frontend)/[locale]/layout";
 
 //export type Snapshot = TLStoreSnapshot
 

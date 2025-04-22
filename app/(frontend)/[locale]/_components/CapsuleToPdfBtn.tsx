@@ -55,17 +55,17 @@ export function CapsuleToPdfBtn(props: {
 		if (!editor)
 			return ;
 		setOpenDialog(true);
-		const result = await generatePdf(editor);
-		if (result)
+		const { blob, error } = await generatePdf(editor);
+		if (blob)
 		{
-			const { pdf, error } = result;
-			if (error)
-			{
-				logger.error("react:component", "CapsuleToPDFBtn", "handleClick", error);
-				setErrorMsg(error);
-				return ;
-			}
-			pdf.save(filename);
+			const blobUrl = URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = blobUrl;
+			link.setAttribute("download", filename);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(blobUrl);
 			setState('idle');
 			setOpenDialog(false);			
 		}
@@ -104,7 +104,8 @@ export function CapsuleToPdfBtn(props: {
             <AlertDialog.Root open={openDialog} onOpenChange={setOpenDialog}>
 
                 <AlertDialog.Content>
-                <AlertDialog.Title>Export du diaporama en PDF</AlertDialog.Title>
+					<AlertDialog.Title>Export du diaporama en PDF</AlertDialog.Title>
+					<AlertDialog.Description />
                     <Card variant='surface' my='4'>
 
                             {/* ERROR */}
@@ -136,7 +137,6 @@ export function CapsuleToPdfBtn(props: {
                                 </Flex>
                                 <Flex align='center' justify='between' gap='1' width='100%' style={{ color: 'var(--gray-10)' }}>
                                     <Text trim='both'>{filename}</Text>
-                                    <Text size='1'>{`Chargement page ${pagesProgress.loading} sur ${pagesProgress.total}`}</Text>
                                 </Flex>
 
                                 <Box width='100%'>

@@ -38,6 +38,7 @@ export default function MoreMenu() {
     const isRoom = params.room_code !== undefined
 	const { capsule_id } = useParams();
 	const { pageIds } = useNav();
+
     return (
         <>
             <VisuallyHidden>
