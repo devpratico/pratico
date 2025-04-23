@@ -22,7 +22,7 @@ export function useRoomMutation(): {
         const { error } = await supabase
             .from('rooms')
             .update({ activity_snapshot: snapshot ? snapshot as unknown as Json : null})
-            .eq('id', roomId)
+            .eq('id', parseInt(roomId))
             .eq('status', 'open')
 
         if (error) {

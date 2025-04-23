@@ -22,7 +22,7 @@ async function getUserId(startEventId: string): Promise<ServerResponse<string, E
     } = await supabase
         .from("room_events")
         .select("room_id")
-        .eq("id", startEventId)
+        .eq("id", parseInt(startEventId))
         .single();
 
     if (startEventError) {
@@ -70,7 +70,7 @@ async function getPollTitle(activityId: string) {
     return await supabase
         .from("activities")
         .select("title")
-        .eq("id", activityId)
+        .eq("id", parseInt(activityId))
         .single();
 }
 
@@ -83,7 +83,7 @@ async function getActivityId(startEventId: string): Promise<ServerResponse<strin
     } = await supabase
         .from("room_events")
         .select("payload")
-        .eq("id", startEventId)
+        .eq("id", parseInt(startEventId))
         .single();
 
     if (startEventError) {
@@ -115,7 +115,7 @@ async function getCapsuleId(startEventId: string): Promise<ServerResponse<string
     } = await supabase
         .from("room_events")
         .select("room_id")
-        .eq("id", startEventId)
+        .eq("id", parseInt(startEventId))
         .single();
 
     if (startEventError) {
@@ -161,7 +161,7 @@ async function getPollDates(args:{
      } = await supabase
         .from("room_events")
         .select()
-        .eq("id", args.startEventId)
+        .eq("id", parseInt(args.startEventId))
         .single();
 
     if (startEventError) {
@@ -285,7 +285,7 @@ async function getPollParticipationRate(args: {
      } = await supabase
         .from("room_events")
         .select("room_id")
-        .eq("id", args.startEventId)
+        .eq("id", parseInt(args.startEventId))
         .single();
 
     if (startEventError) {
@@ -345,7 +345,7 @@ async function getNbOfQuestions(args: {
      } = await supabase
         .from("room_events")
         .select("payload")
-        .eq("id", args.startEventId)
+        .eq("id", parseInt(args.startEventId))
         .single();
 
     if (startEventError) {
@@ -370,7 +370,7 @@ async function getNbOfQuestions(args: {
     } = await supabase
         .from("activities")
         .select("object")
-        .eq("id", startEventPayload.activityId)
+        .eq("id", parseInt(startEventPayload.activityId))
         .single();
 
     if (activityError) {
@@ -392,6 +392,104 @@ async function getNbOfQuestions(args: {
 
     return {
         data: { number: nbOfQuestions},
+        error: null,
+    }
+}
+
+// async function getAnswersTexts(args: {
+//     startEventId: string,
+// }): Promise<ServerResponse<{
+//     answers: { id: string, text: string }[]
+// }, Error>> {
+//     const supabase = createClient();
+
+//     // Get activity id from start event
+//     const {
+//         data: startEventData,
+//         error: startEventError
+//     } = await supabase
+//         .from("room_events")
+//         .select("payload")
+//         .eq("id", args.startEventId)
+//         .single();
+//     if (startEventError) {
+//         logger.error(
+//             "supabase:database",
+//             "downloadPollCsvReport.ts",
+//             "getAnswersTexts",
+//             "Error fetching start event data",
+//             startEventError
+//         );
+//         return { data: null, error: new Error("Error fetching start event data: " + startEventError.message) };
+//     }
+
+//     const activityId = (startEventData.payload as { activityId: string }).activityId;
+//     // Fetch Activity
+//     const {
+//         data: activityData,
+//         error: activityError
+//     } = await supabase
+//         .from("activities")
+//         .select("object")
+//         .eq("id", activityId)
+//         .single();
+//     if (activityError) {
+//         logger.error(
+//             "supabase:database",
+//             "downloadPollCsvReport.ts",
+//             "getAnswersTexts",
+//             "Error fetching activity data",
+//             activityError
+//         );
+//         return { data: null, error: new Error("Error fetching activity data: " + activityError.message) };
+//     }
+//     // Parse activity object
+//     const activity = activityData.object as {
+        
+
+
+
+
+async function getParticipantsAnswers(args: {
+    startEventId: string,
+}): Promise<ServerResponse<{
+    answers: { userId: string, choiceId: string }[]
+}, Error>> {
+    const supabase = createClient();
+
+    // In the room_events table, find end event of type "end poll" corresponding to the start event
+    // It contains the answers
+    const {
+        data: endEventData,
+        error: endEventError
+    } = await supabase
+        .from("room_events")
+        .select()
+        .eq("payload ->> startEventId", args.startEventId)
+        .eq("type", "end poll")
+        .order("timestamp", { ascending: true })
+        .limit(1)
+        .single();
+
+    if (endEventError) {
+        logger.error(
+            "supabase:database",
+            "downloadPollCsvReport.ts",
+            "getAnswers",
+            "Error fetching end event data",
+            endEventError
+        );
+        return { data: null, error: new Error("Error fetching end event data: " + endEventError.message) };
+    }
+
+    // Parse user answers
+    const endEventPayload = endEventData.payload as {
+        answers: { userId: string, choiceId: string }[]
+    }
+    const answers = endEventPayload.answers;
+
+    return {
+        data: { answers },
         error: null,
     }
 }

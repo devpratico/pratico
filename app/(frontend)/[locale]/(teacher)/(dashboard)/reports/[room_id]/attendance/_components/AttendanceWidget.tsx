@@ -44,12 +44,12 @@ export async function AttendanceWidget({ roomId, capsuleTitle }: AttendanceWidge
 			logger.error('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 		if (userData)
 			userInfo = userData;
-		const { data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
+		const { data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', parseInt(roomId)).single();
 		if (roomData && roomData?.end_of_session)
 			sessionDate = { date: new Date(roomData.created_at), end: new Date(roomData.end_of_session) };
 		if ((!sessionDate?.date && !sessionDate?.end) || roomError)
 			logger.error('supabase:database', 'sessionDetailsPage', 'session date ', sessionDate, roomError);
-		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+		const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', parseInt(roomId));
 		if (!attendanceData?.length)
 			logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
 		else if (!attendanceData || attendanceError) {

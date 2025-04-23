@@ -27,7 +27,7 @@ export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { caps
 		const date = new Date(capsuleData.created_at);
 		capsuleDate = formatter.dateTime(date, { dateStyle: 'short' });
 	}
-	const { data: capsuleRoomData } = await supabase.from('rooms').select('capsule_snapshot').eq("created_by", userId).eq("capsule_id", capsuleId).eq('id', roomId).single();
+	const { data: capsuleRoomData } = await supabase.from('rooms').select('capsule_snapshot').eq("created_by", userId).eq("capsule_id", capsuleId).eq('id', parseInt(roomId)).single();
 	if (capsuleRoomData)
 	{
 		if (capsuleRoomData.capsule_snapshot && capsuleRoomData.capsule_snapshot)

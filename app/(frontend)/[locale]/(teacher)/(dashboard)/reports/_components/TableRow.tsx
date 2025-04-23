@@ -48,7 +48,7 @@ export function TableRow ({navigationsIds, infos, onDelete}: {navigationsIds: Re
 			logger.log("next:page", "CapsuleSessionReportPage", "handleRemoveReport: remove report");
 			if (deleteOk)
 			{
-				await supabase.from('rooms').delete().eq('id', navigationsIds.roomId);
+				await supabase.from('rooms').delete().eq('id', parseInt(navigationsIds.roomId));
 				onDelete(navigationsIds.roomId);
 				setDeleteOk(false);
 			};

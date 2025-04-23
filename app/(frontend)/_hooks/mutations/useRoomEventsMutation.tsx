@@ -83,7 +83,7 @@ export default function useRoomEventsMutation(roomId: string): {
         const { data, error } = await supabase
             .from('room_events')
             .select('id')
-            .eq('room_id', roomId)
+            .eq('room_id', parseInt(roomId))
             .eq('type', 'start ' + args.type)
             .eq('payload->>activityId', args.activityId)
             .order('timestamp', { ascending: false })

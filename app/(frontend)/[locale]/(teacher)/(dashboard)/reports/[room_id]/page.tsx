@@ -106,7 +106,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 
 async function getCapsuleId(roomId: string) {
     const supabase = createClient();
-    const { data, error } = await supabase.from('rooms').select('capsule_id').eq('id', roomId).single();
+    const { data, error } = await supabase.from('rooms').select('capsule_id').eq('id', parseInt(roomId)).single();
     if (error || !data.capsule_id) {
         logger.error('next:page', 'SessionDetailsPage', 'Error fetching capsuleId', error?.message ?? 'No data');
         return null
@@ -128,7 +128,7 @@ async function getCapsuleTitle(capsuleId: string) {
 
 async function getSessionStartDate(roomId: string) {
     const supabase = createClient();
-    const { data, error } = await supabase.from('rooms').select('created_at').eq('id', roomId).single();
+    const { data, error } = await supabase.from('rooms').select('created_at').eq('id', parseInt(roomId)).single();
     if (error || !data.created_at) {
         logger.error('next:page', 'SessionDetailsPage', 'Error fetching session date', error?.message ?? 'No data');
         return null

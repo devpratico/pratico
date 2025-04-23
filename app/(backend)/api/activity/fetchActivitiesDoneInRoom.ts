@@ -32,7 +32,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const { data: events, error } = await supabase
         .from('room_events')
         .select('*')
-        .eq('room_id', roomId)
+        .eq('room_id', parseInt(roomId))
 
 
     if (error) {
@@ -86,7 +86,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const { data: titlesTypesQuestions, error: titlesError } = await supabase
         .from('activities')
         .select('id, type, object->>title, object->>questions')
-        .in('id', activitiesIds)
+        .in('id', activitiesIds.map((id) => parseInt(id)))
 
     if (titlesError) {
         logger.error(
@@ -226,7 +226,7 @@ async function computePollParticipation(args: {
     const { data, error } = await supabase
         .from('attendance')
         .select('user_id')
-        .eq('room_id', args.roomId)
+        .eq('room_id', parseInt(args.roomId))
 
     if (error) {
         logger.error(
@@ -244,7 +244,7 @@ async function computePollParticipation(args: {
     const { data: activityData, error: activityError } = await supabase
     .from('activities')
     .select('object')
-    .eq('id', args.pollId)
+    .eq('id', parseInt(args.pollId))
     .single();
 
     if (activityError) {
@@ -301,7 +301,7 @@ async function computeQuizSuccess(args: {
     const { data, error } = await supabase
         .from('activities')
         .select('object')
-        .eq('id', args.quizId)
+        .eq('id', parseInt(args.quizId))
         .single()
 
     if (error) {

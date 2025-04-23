@@ -10,7 +10,7 @@ import LinkButton from "@/app/(frontend)/[locale]/_components/LinkButton"
 export default async function ClosedRoomPage({ params }: { params: { room_id: string } }) {
     const supabase = createClient();
     const formatter = await getFormatter();
-    const { data, error } = await supabase.from("rooms").select("capsule_snapshot, capsules(title, created_at)").eq("id", params.room_id).single();
+    const { data, error } = await supabase.from("rooms").select("capsule_snapshot, capsules(title, created_at)").eq("id", parseInt(params.room_id)).single();
     if (error || !data || !data.capsule_snapshot)
     {
         logger.error("supabase:database", "ClosedRoomPage", error ? `Error fetching room ${error.message}` : "No data found");

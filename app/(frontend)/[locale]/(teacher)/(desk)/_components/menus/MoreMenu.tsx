@@ -50,7 +50,7 @@ export default function MoreMenu() {
 					{isRoom ? <AnimationMenu /> : <CreationMenu />}
 					{
 						pageIds && pageIds.length > 0
-						? <CapsuleToPdfDialog capsuleId={capsule_id} isRoom={isRoom} />
+						? <CapsuleToPdfDialog capsuleId={capsule_id as string} isRoom={isRoom} />
 						: <></>
 					}
 		

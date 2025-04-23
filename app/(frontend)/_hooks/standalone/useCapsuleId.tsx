@@ -26,7 +26,7 @@ export default function useCapsuleId(): string | undefined {
             const { data, error } = await supabase
                 .from('rooms')
                 .select('capsule_id')
-                .eq('code', params.room_code)
+                .eq('code', params.room_code as string)
                 .eq('status', 'open')
                 .single()
 

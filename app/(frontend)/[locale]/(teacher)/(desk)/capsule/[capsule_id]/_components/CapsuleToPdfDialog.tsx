@@ -10,7 +10,7 @@ import { CircleAlert, CircleCheck, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFormatter } from "next-intl";
 
-export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string | string[], isRoom: boolean})
+export function CapsuleToPdfDialog({capsuleId, isRoom}: {capsuleId: string, isRoom: boolean})
 {
 	const { editor } = useTLEditor();
 	const supabase = createClient();
