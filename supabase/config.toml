@@ -189,3 +189,15 @@ s3_region = "env(S3_REGION)"
 s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
+
+
+[db.seed]
+enabled = true
+#sql_paths = ['./seeds/*.sql']
+sql_paths = [
+    './seeds/users.sql',
+    './seeds/capsules.sql',
+    './seeds/activities.sql',
+    './seeds/rooms.sql',
+    './seeds/attendances.sql',
+]

@@ -1,0 +1,15 @@
+--
+-- test@test.com user and anonymous users
+--
+INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encrypted_password", "email_confirmed_at", "invited_at", "confirmation_token", "confirmation_sent_at", "recovery_token", "recovery_sent_at", "email_change_token_new", "email_change", "email_change_sent_at", "last_sign_in_at", "raw_app_meta_data", "raw_user_meta_data", "is_super_admin", "created_at", "updated_at", "phone", "phone_confirmed_at", "phone_change", "phone_change_token", "phone_change_sent_at", "email_change_token_current", "email_change_confirm_status", "banned_until", "reauthentication_token", "reauthentication_sent_at", "is_sso_user", "deleted_at", "is_anonymous") VALUES
+	('00000000-0000-0000-0000-000000000000', 'bd745bf6-b800-4b3e-b121-b44baa80de59', 'authenticated', 'authenticated', 'test@test.com', '$2a$10$MrkZK8kG2n50J1ykM0snlupn5MYhmL2r.8FibgylD9fh5sDKeA3S.', '2025-03-20 16:02:33.341316+00', NULL, '', NULL, '', NULL, '', '', NULL, '2025-03-21 09:59:41.314757+00', '{"provider": "email", "providers": ["email"]}', '{"sub": "bd745bf6-b800-4b3e-b121-b44baa80de59", "email": "test@test.com", "email_verified": false, "phone_verified": false}', NULL, '2025-03-20 16:02:33.33522+00', '2025-03-21 09:59:41.316324+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL, false, NULL, false),
+	('00000000-0000-0000-0000-000000000000', 'ef0e0a37-ee20-49ca-869b-23bbffdb39fe', 'authenticated', 'authenticated', NULL, '', NULL, NULL, '', NULL, '', NULL, '', '', NULL, '2025-03-21 10:37:18.059015+00', '{}', '{}', NULL, '2025-03-21 10:37:18.056551+00', '2025-03-21 10:37:18.060178+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL, false, NULL, true),
+	('00000000-0000-0000-0000-000000000000', '7310822a-f760-4af0-92e9-d18d9939aaf5', 'authenticated', 'authenticated', NULL, '', NULL, NULL, '', NULL, '', NULL, '', '', NULL, '2025-03-21 10:39:52.540094+00', '{}', '{}', NULL, '2025-03-21 10:39:52.53862+00', '2025-03-21 10:39:52.5413+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL, false, NULL, true),
+	('00000000-0000-0000-0000-000000000000', 'e10286ef-b820-4ff5-95ca-6c647009d163', 'authenticated', 'authenticated', NULL, '', NULL, NULL, '', NULL, '', NULL, '', '', NULL, '2025-03-21 10:40:59.446053+00', '{}', '{}', NULL, '2025-03-21 10:40:59.444652+00', '2025-03-21 10:40:59.447197+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL, false, NULL, true);
+
+
+--
+-- identity for test@test.com
+--
+INSERT INTO "auth"."identities" ("provider_id", "user_id", "identity_data", "provider", "last_sign_in_at", "created_at", "updated_at", "id") VALUES
+	('bd745bf6-b800-4b3e-b121-b44baa80de59', 'bd745bf6-b800-4b3e-b121-b44baa80de59', '{"sub": "bd745bf6-b800-4b3e-b121-b44baa80de59", "email": "test@test.com", "email_verified": false, "phone_verified": false}', 'email', '2025-03-20 16:02:33.339339+00', '2025-03-20 16:02:33.339366+00', '2025-03-20 16:02:33.339366+00', 'de0b4234-8085-44ed-b509-d0b3157bb8f3');
