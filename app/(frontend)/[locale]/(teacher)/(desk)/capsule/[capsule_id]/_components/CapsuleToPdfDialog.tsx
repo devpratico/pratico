@@ -22,7 +22,7 @@ export function CapsuleToPdfDialog({
   capsuleId,
   isRoom,
 }: {
-  capsuleId: string | string[];
+  capsuleId: string;
   isRoom: boolean;
 }) {
   const { editor } = useTLEditor();
