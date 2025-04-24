@@ -9,5 +9,18 @@ INSERT INTO "public"."rooms" ("id", "created_by", "capsule_id", "params", "capsu
 -- Room events for room 1
 --
 INSERT INTO "public"."room_events" ("id", "timestamp", "type", "payload", "room_id") VALUES
-	(3, '2025-03-21 10:41:06.191197+00', 'start poll', '{"activityId":"2"}', 1),
-	(4, '2025-03-21 10:41:21.502097+00', 'end poll', '{"startEventId":"3","answers":[{"choiceId":"choice-1742553360806-1155","questionId":"question-01","timestamp":1742553668543,"userId":"e10286ef-b820-4ff5-95ca-6c647009d163"},{"choiceId":"choice-1742553362822-1772","questionId":"question-01","timestamp":1742553670281,"userId":"7310822a-f760-4af0-92e9-d18d9939aaf5"},{"choiceId":"choice-1742553362822-1772","questionId":"question-01","timestamp":1742553672023,"userId":"bd745bf6-b800-4b3e-b121-b44baa80de59"},{"choiceId":"choice-1742553374383-9433","questionId":"question-1742553364472-2114","timestamp":1742553676051,"userId":"7310822a-f760-4af0-92e9-d18d9939aaf5"},{"choiceId":"choice-1742553374383-9433","questionId":"question-1742553364472-2114","timestamp":1742553677941,"userId":"e10286ef-b820-4ff5-95ca-6c647009d163"},{"choiceId":"choice-1742553375338-4229","questionId":"question-1742553364472-2114","timestamp":1742553679153,"userId":"bd745bf6-b800-4b3e-b121-b44baa80de59"}]}', 1);
+	(1, '2025-03-21 10:41:06.191197+00', 'start poll', '{"activityId":"1"}', 1),
+	(2, '2025-03-21 10:41:21.502097+00', 'end poll', '{"startEventId":"1","answers":[{"choiceId":"choice-1742553360806-1155","questionId":"question-01","timestamp":1742553668543,"userId":"e10286ef-b820-4ff5-95ca-6c647009d163"},{"choiceId":"choice-1742553362822-1772","questionId":"question-01","timestamp":1742553670281,"userId":"7310822a-f760-4af0-92e9-d18d9939aaf5"},{"choiceId":"choice-1742553362822-1772","questionId":"question-01","timestamp":1742553672023,"userId":"bd745bf6-b800-4b3e-b121-b44baa80de59"},{"choiceId":"choice-1742553374383-9433","questionId":"question-1742553364472-2114","timestamp":1742553676051,"userId":"7310822a-f760-4af0-92e9-d18d9939aaf5"},{"choiceId":"choice-1742553374383-9433","questionId":"question-1742553364472-2114","timestamp":1742553677941,"userId":"e10286ef-b820-4ff5-95ca-6c647009d163"},{"choiceId":"choice-1742553375338-4229","questionId":"question-1742553364472-2114","timestamp":1742553679153,"userId":"bd745bf6-b800-4b3e-b121-b44baa80de59"}]}', 1);
+
+
+
+
+--
+-- Update pg serial sequence for rooms
+--
+SELECT setval(pg_get_serial_sequence('public.rooms', 'id'), (SELECT MAX(id) FROM public.rooms));
+
+--
+-- Update pg serial sequence for room_events
+--
+SELECT setval(pg_get_serial_sequence('public.room_events', 'id'), (SELECT MAX(id) FROM public.room_events));
