@@ -6,13 +6,13 @@ import logger from "@/app/_utils/logger";
 
 export default function useDownloadCsvReport(): {
     pending: boolean;
-    downloadCsvReport: (startEventId: string) => Promise<{ error: string | null }>;
+    downloadCsvReport: (type: "quiz" | "poll", startEventId: string) => Promise<{ error: string | null }>;
 } {
     const [pending, setPending] = useState(false);
 
-    const downloadCsvReport = async (startEventId: string) => {
+    const downloadCsvReport = async (type: "quiz" | "poll", startEventId: string) => {
         setPending(true);
-        const response = await fetch(`/api/activity/csv/${startEventId}`);
+        const response = await fetch(`/api/activity/csv/${startEventId}?type=${type}`);
 
         const res = await response.json();
 

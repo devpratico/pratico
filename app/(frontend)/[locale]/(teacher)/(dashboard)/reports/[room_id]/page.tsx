@@ -79,7 +79,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
                             activities?.map((activity: ActivityData) => {
 
                                 const color = activity.type === "poll" ? undefined : getParticipationColor(activity.relevantNumber!);
-                                const downloadCsvButton = <DownloadCsvBtn startEventId={activity.startEventId} variant='ghost'/>;
+                                const downloadCsvButton = <DownloadCsvBtn type={activity.type} startEventId={activity.startEventId} variant='ghost'/>;
 
                                 return (
                                     <ActivityWidgetView
