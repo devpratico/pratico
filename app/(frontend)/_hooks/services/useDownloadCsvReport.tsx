@@ -12,7 +12,7 @@ export default function useDownloadCsvReport(): {
 
     const downloadCsvReport = async (startEventId: string) => {
         setPending(true);
-        const response = await fetch(`/api/activity/csv/poll/${startEventId}`);
+        const response = await fetch(`/api/activity/csv/${startEventId}`);
 
         const res = await response.json();
 

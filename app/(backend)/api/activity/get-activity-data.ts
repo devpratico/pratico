@@ -138,7 +138,7 @@ export async function getPollData(startEventId: string) {
     };
 }
 
-async function getQuizData(startEventId: string) {
+export async function getQuizData(startEventId: string) {
     const startEvent = await getStartEvent(startEventId);
     if (startEvent.error) {
         return { data: null, error: startEvent.error };
@@ -188,6 +188,63 @@ async function getQuizData(startEventId: string) {
 }
 
 
+function makePollQuestionsArray(args: {
+    index: number;
+    questionText: string;
+    choices: {
+        text: string;
+        timesAnswered: number;
+    }[];
+}) {
+    const header = ["Question " + (args.index + 1), args.questionText, "Nombre de réponses"];
+    const data = args.choices.map((choice, i) => [
+        "Réponse " + String.fromCharCode(65 + i), // Convert index to corresponding letter (A, B, C, ...)
+        choice.text,
+        choice.timesAnswered.toString(),
+    ]);
+
+    return [header, ...data];
+}
+
+function makeQuizQuestionsArray(args: {
+    index: number;
+    questionText: string;
+    choices: {
+        text: string;
+        timesAnswered: number;
+        isCorrect: boolean;
+    }[];
+}) {
+    const header = ["Question " + (args.index + 1), args.questionText, "Réponse correcte", "Nombre de réponses"];
+    const data = args.choices.map((choice, i) => [
+        "Réponse " + String.fromCharCode(65 + i), // Convert index to corresponding letter (A, B, C, ...)
+        choice.text,
+        choice.isCorrect ? "VRAI" : "FAUX",
+        choice.timesAnswered.toString(),
+    ]);
+
+    return [header, ...data];
+}
+
+function makeQuizAnswersDetailsArray(args: {
+    questionText: string;
+    answers: {
+        userFullName: string;
+        choiceText: string;
+        isCorrect: boolean;
+    }[];
+}) {
+
+    const header1 = ["Question", args.questionText];
+    const header2 = ["Nom", "Réponse", "Résultat"];
+
+    const data = args.answers.map((answer) => [
+        answer.userFullName,
+        answer.choiceText,
+        answer.isCorrect ? "Correct" : "Incorrect",
+    ]);
+    return [header1, header2, ...data];
+}
 
 type GetPollDataResponse = NonNullable<Awaited<ReturnType<typeof getPollData>>["data"]>;
 type GetQuizDataResponse = NonNullable<Awaited<ReturnType<typeof getQuizData>>["data"]>;
@@ -198,15 +255,83 @@ export function makeDataArrayForPoll(
 ): string[][] {
     const { capsule, activity, start, end, attendances } = data;
 
+    // Main info
     const arr: string[][] = [
         ["Capsule", capsule.title || "Sans titre"],
         ["Sondage", activity.object.title],
         ["Date de début", new Date(start.timestamp).toLocaleString()],
         ["Date de fin", new Date(end.timestamp).toLocaleString()],
-        [""],
+        [" "],
         ["Nombre de questions", activity.object.questions.length.toString()],
         ["Nombre de participants", attendances.length.toString()],
+        [" "]
     ];
+
+    // Questions
+    for (let i = 0; i < activity.object.questions.length; i++) {
+        const question = activity.object.questions[i];
+        const choices = question.choices.map((choice) => ({
+            text: choice.text,
+            timesAnswered: end.payload.answers.filter(
+                (answer) => answer.choiceId === choice.id
+            ).length,
+        }));
+
+        arr.push(...makePollQuestionsArray({ index: i, questionText: question.text, choices }));
+        arr.push([" "]);
+    }
+
+    return arr;
+}
+
+export function makeDataArrayForQuiz(
+    data: GetQuizDataResponse
+): string[][] {
+    const { capsule, activity, start, end, attendances } = data;
+
+    // Main info
+    const arr: string[][] = [
+        ["Capsule", capsule.title || "Sans titre"],
+        ["Quiz", activity.object.title],
+        ["Date de début", new Date(start.timestamp).toLocaleString()],
+        ["Date de fin", new Date(end.timestamp).toLocaleString()],
+        [" "],
+        ["Nombre de questions", activity.object.questions.length.toString()],
+        ["Nombre de participants", attendances.length.toString()],
+        [" "]
+    ];
+
+    // Questions
+    for (let i = 0; i < activity.object.questions.length; i++) {
+        const question = activity.object.questions[i];
+        const choices = question.choices.map((choice) => ({
+            text: choice.text,
+            timesAnswered: end.payload.answers.filter(
+                (answer) => answer.choiceId === choice.id
+            ).length,
+            isCorrect: choice.isCorrect,
+        }));
+
+        arr.push(...makeQuizQuestionsArray({ index: i, questionText: question.text, choices }));
+        arr.push([" "]);
+    }
+
+    // Answers details
+    for (let i = 0; i < activity.object.questions.length; i++) {
+        const question = activity.object.questions[i];
+        const answers = end.payload.answers
+            .filter((answer) => answer.questionId === question.id)
+            .map((answer) => {
+                const user = attendances.find((user) => user.user_id === answer.userId);
+                return {
+                    userFullName: user ? user.first_name + " " + user.last_name : "Anonyme",
+                    choiceText: question.choices.find((choice) => choice.id === answer.choiceId)?.text || "Texte vide",
+                    isCorrect: question.choices.find((choice) => choice.id === answer.choiceId)?.isCorrect || false,
+                };
+            });
+        arr.push(...makeQuizAnswersDetailsArray({ questionText: question.text, answers }));
+        arr.push([" "]);
+    }
 
     return arr;
 }
