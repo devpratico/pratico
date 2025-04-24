@@ -29,7 +29,7 @@ export default function useDownloadCsvReport(): {
         }
 
 
-        downloadCSV(res.csvString, "rapport_sondage");
+        downloadCSV(res.csvString, `rapport-${type}-${startEventId}.csv`);
         setPending(false);
         return { error: null };
     };
