@@ -2,6 +2,7 @@
 import { downloadCSV } from "@/app/_utils/csv";
 import { useState } from "react";
 import logger from "@/app/_utils/logger";
+import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client";
 
 
 export default function useDownloadCsvReport(): {
@@ -27,6 +28,9 @@ export default function useDownloadCsvReport(): {
             setPending(false);
             return { error: 'No csv string returned' };
         }
+
+        const sendDiscordAlert = sendDiscordMessage.bind(null, `**📄 Téléchargement d'un rapport** .csv`)
+        await sendDiscordAlert();
 
 
         downloadCSV(res.csvString, `rapport-${type}-${startEventId}.csv`);

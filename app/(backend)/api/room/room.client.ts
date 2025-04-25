@@ -193,7 +193,7 @@ export const createRoom = async (capsuleId: string) => {
     //revalidatePath(`/room/${createdRoom.code}`)
 
     // Send a message to discord
-    sendDiscordMessage(`🧪 **Lancement de capsule!** (${createdRoom.code})`)
+    sendDiscordMessage(`🧪 **Lancement de capsule !** (${createdRoom.code})`)
 
     return { room: createdRoom, error: null }
 }
@@ -282,6 +282,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
 }
 
 
+// TODO: Unused
 /**
  * Generates an initial 'snapshot' object for the activity, then saves it in the room row.
  */

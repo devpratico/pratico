@@ -33,7 +33,7 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
         }
 
         const sendDiscordAlert = sendDiscordMessage.bind(null, `**🎨 Création de capsule** par ${user.email}`)
-        sendDiscordAlert()
+        await sendDiscordAlert()
 
         router.push('/capsule/' + data.id)
     }

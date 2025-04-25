@@ -9,6 +9,7 @@ import { Poll, PollSnapshot } from "@/app/_types/poll"
 import useActivityQuery from "../queries/useActivityQuery"
 import { useRoomMutation } from "../mutations/useRoomMutation"
 import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
+import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client"
 
 
 type AsyncOperationResult = { error: string | null }
@@ -74,6 +75,9 @@ export function useStartActivityService(): {
 
             addStartActivityEvent(`${id}`, 'quiz')
 
+            const sendDiscordAlert = sendDiscordMessage.bind(null, `**🏆 Démarrage d'un quiz**`)
+            await sendDiscordAlert();
+
             
         } else if (data.type === 'poll') {
             const poll = data.object as Poll
@@ -104,6 +108,9 @@ export function useStartActivityService(): {
             }
 
             addStartActivityEvent(`${id}`, 'poll')
+
+            const sendDiscordAlert = sendDiscordMessage.bind(null, `**🗳️ Démarrage d'un Sondage**`)
+            await sendDiscordAlert();
 
 
         } else {
