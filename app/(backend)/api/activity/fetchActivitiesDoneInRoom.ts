@@ -1,13 +1,14 @@
 "use server";
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
-import DatabaseResponse from '@/app/_utils/DatabaseResponse'
+import DatabaseResponse from '@/app/_utils/ServerResponse'
 import { Poll, PollUserAnswer } from '@/app/_types/poll'
 import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
 
 
 export type ActivityData = {
     widgetId: string,
+    startEventId: string,
     activityId: string,
     type: 'quiz' | 'poll',
     title: string,
@@ -31,7 +32,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const { data: events, error } = await supabase
         .from('room_events')
         .select('*')
-        .eq('room_id', roomId)
+        .eq('room_id', parseInt(roomId))
 
 
     if (error) {
@@ -85,7 +86,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const { data: titlesTypesQuestions, error: titlesError } = await supabase
         .from('activities')
         .select('id, type, object->>title, object->>questions')
-        .in('id', activitiesIds)
+        .in('id', activitiesIds.map((id) => parseInt(id)))
 
     if (titlesError) {
         logger.error(
@@ -106,7 +107,8 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     const activities: Array<ActivityData> = eventCouples.map((couple) => {
         const start = couple.start
         const end = couple.end
-        const widgetId = (end?.payload as { startEventId: string }).startEventId;
+        const startEventId = (end?.payload as { startEventId: string }).startEventId;
+        const widgetId = startEventId;
         const activityId = (start.payload as { activityId: string }).activityId
         const titleTypeQuestion = titlesTypesQuestions.find((titleTypeQuestion) => `${titleTypeQuestion.id}` === activityId) || { type: 'quiz', title: 'Unknown', questions: '' }
         const title = titleTypeQuestion.title
@@ -116,7 +118,17 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         const questions = JSON.parse(titleTypeQuestion.questions);        
         const nbQuestions = Array.isArray(questions) ? questions.length : 0
 
-        return { widgetId, activityId, type, title, startDate, endDate, relevantNumber: undefined, nbQuestions }
+        return {
+            widgetId,
+            startEventId,
+            activityId,
+            type,
+            title,
+            startDate,
+            endDate,
+            relevantNumber: undefined,
+            nbQuestions
+        }
     })
 
     // Now we need to compute the relevant number for each activity
@@ -184,6 +196,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
         logger.log('supabase:database', 'fetchActivitiesDoneInRoom', `Activity ${item.activityId} (${item.type}) title: ${item.title}`);
         const activity = {
             widgetId: item.widgetId,
+            startEventId: item.startEventId,
             activityId: item.activityId,
             type: item.type,
             title: item.title,
@@ -213,7 +226,7 @@ async function computePollParticipation(args: {
     const { data, error } = await supabase
         .from('attendance')
         .select('user_id')
-        .eq('room_id', args.roomId)
+        .eq('room_id', parseInt(args.roomId))
 
     if (error) {
         logger.error(
@@ -231,7 +244,7 @@ async function computePollParticipation(args: {
     const { data: activityData, error: activityError } = await supabase
     .from('activities')
     .select('object')
-    .eq('id', args.pollId)
+    .eq('id', parseInt(args.pollId))
     .single();
 
     if (activityError) {
@@ -288,7 +301,7 @@ async function computeQuizSuccess(args: {
     const { data, error } = await supabase
         .from('activities')
         .select('object')
-        .eq('id', args.quizId)
+        .eq('id', parseInt(args.quizId))
         .single()
 
     if (error) {

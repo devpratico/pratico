@@ -115,7 +115,7 @@ export const toggleCollaborationForAll = async ({ roomCode, allUsersIds }: toggl
 
 const saveRoom = async (room: RoomInsert) => {
     const supabase = createClient()
-    const { data, error } = await supabase.from('rooms').upsert(room).select()
+    const { data, error } = await supabase.from('rooms').upsert(room).select().single()
     if (error) logger.error('supabase:database', 'Error saving room', error.message)
     return { data, error: error?.message }
 }
@@ -155,6 +155,12 @@ export const createRoom = async (capsuleId: string) => {
 
     // Ensure the code is unique
     const { data: existingCodes, error: errorCodes } = await fetchOpenRoomsCodes()
+
+    if (errorCodes) {
+        logger.error('supabase:database', 'Error fetching existing room codes', errorCodes)
+        return { room: null, error: errorCodes }
+    }
+
     if (existingCodes) {
         while (existingCodes.includes({ code })) {
             code = generateRandomCode()
@@ -177,13 +183,10 @@ export const createRoom = async (capsuleId: string) => {
     }
 
     // Set the room in the database, and get the room that is created
-    const { data: createdRoomA, error: errorRoom } = await saveRoom(room)
+    //const { data: createdRoom, error: errorRoom } = await saveRoom(room)
+    const { data: createdRoom, error: errorRoom } = await supabase.from('rooms').insert(room).select().single()
 
     if (errorRoom) return { room: null, error: errorRoom }
-    if (!createdRoomA) return { room: null, error: 'saveRomm returned no room' }
-
-    // Not sure why this is an array, but we only want the first element
-    const createdRoom = createdRoomA[0]
 
     // Revalidate cache
     //revalidatePath(`/room/${createdRoom.code}`)

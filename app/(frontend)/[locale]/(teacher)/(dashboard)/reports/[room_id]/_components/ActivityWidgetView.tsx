@@ -4,14 +4,15 @@ import { Box, DataList, Heading } from "@radix-ui/themes";
 import ReportWidgetTemplate from "./ReportWidgetTemplate";
 import { ActivityData } from "@/app/(backend)/api/activity/fetchActivitiesDoneInRoom";
 
-export function ActivityWidgetView({ color, activity}
-	: { color: string | undefined, activity: ActivityData }) {
+
+export function ActivityWidgetView(props: {
+    color: string | undefined;
+    activity: ActivityData;
+    downloadCsvButton: React.ReactNode;
+}) {
+    const { color, activity, downloadCsvButton } = props;
 	const { startDate, endDate } = formatEventDates(activity.startDate, activity.endDate!); 
 	const thumbSmallText = activity.type === "poll" ? "de participation" : "de réussite";
-
-	const handleDownloadCSV = () => {
-		console.log("Download CSV");
-	};
 
 	const Thumb = () => <WidgetThumb bigText={`${activity.relevantNumber?.toString()}`} bigTextOption="%" smallText={thumbSmallText} color={color} />;
 	
@@ -41,17 +42,9 @@ export function ActivityWidgetView({ color, activity}
 			</Box>);
 	};
 	const buttons = <>
-		{/* <Tooltip content="Télécharger les résultats de l'activité en csv" side="top">
-			<IconButton variant="ghost" onClick={handleDownloadCSV}>
-				<FileDown />
-			</IconButton>
-		</Tooltip>
-		<Button radius="full" asChild>
-			<Link href={"#"}>
-				Détails
-			</Link>
-		</Button> */}
+		{downloadCsvButton}
 	</>
+    
 	return (
 		<ReportWidgetTemplate 
 			thumb={<Thumb />}

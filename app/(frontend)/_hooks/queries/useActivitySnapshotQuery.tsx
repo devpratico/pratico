@@ -24,7 +24,7 @@ export default function useActivitySnapshotQuery(): {
         const { data, error } = await supabase
             .from('rooms')
             .select('activity_snapshot')
-            .eq('id', roomId)
+            .eq('id', parseInt(roomId))
             .single()
 
         if (error) return { data: null, error: error }

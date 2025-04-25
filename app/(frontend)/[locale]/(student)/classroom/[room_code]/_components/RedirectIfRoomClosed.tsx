@@ -21,7 +21,7 @@ export default function RedirectIfRoomClosed(props: {
         const { data, error } = await supabase
             .from('rooms')
             .select('status, code')
-            .eq('id', roomId)
+            .eq('id', parseInt(roomId))
             .order('end_of_session', { ascending: false })
             .limit(1)
             .single<Room>();

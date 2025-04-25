@@ -99,7 +99,7 @@ export async function fetchUserAttendanceData(roomId: number, userId: string) {
 
 export async function countAttendances(roomId: string | number) {
     const supabase = createClient()
-    const response = await supabase.from('attendance').select('id').eq('room_id', roomId)
+    const response = await supabase.from('attendance').select('id').eq('room_id', parseInt(`${roomId}`))
     if (response.error) {
         logger.error('supabase:database', 'countAttendances', 'error counting attendances', response.error.message, 'discord')
         return 0
