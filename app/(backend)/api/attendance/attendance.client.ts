@@ -9,6 +9,7 @@ import { fetchUser } from "../user/user.server";
 import { User } from "@supabase/supabase-js";
 import { signInAnonymously } from "../user/user.server";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
+import { send } from "process";
 
 // TODO: rename this kind of files "actions"
 
@@ -103,6 +104,8 @@ async function insertAttendance(args: {
     const { error } =  await supabase
         .from('attendance')
         .insert(attendanceInsert);
+
+    sendDiscordMessage(`✍️ **Émargement signé** par ${args.first_name} ${args.last_name} dans la room ${args.room_code} !`);
 
     return { error: error?.message || null };
 }
