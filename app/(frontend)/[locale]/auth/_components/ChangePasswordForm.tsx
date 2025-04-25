@@ -8,7 +8,6 @@ import { updateUserPassword } from "@/app/(backend)/api/auth/auth.client"
 import { useDisable } from "@/app/(frontend)/_hooks/contexts/useDisable"
 import ClientMismatchMessage from "./ClientMismatchMessage"
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation"
-import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client"
 import { useUser } from "@/app/(frontend)/_hooks/contexts/useUser"
 
 
@@ -46,8 +45,6 @@ export default function ChangePasswordForm() {
             setErrorMessage(error);
 
         } else {
-            setSuccessMessage('Mot de passe mis à jour avec succès. Vous allez être redirigé vers votre dashboard.');
-            sendDiscordMessage(`🔑 **Changement de mot de passe** pour ${user?.email}`)
             setTimeout(() => {
                 setDisabled(false);
                 router.push('/capsules');

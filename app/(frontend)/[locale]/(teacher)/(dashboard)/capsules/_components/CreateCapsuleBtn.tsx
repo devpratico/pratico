@@ -5,6 +5,7 @@ import { Button } from "@radix-ui/themes";
 import { useRouter } from "@/app/(frontend)/_intl/intlNavigation";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { sendDiscordMessage } from "@/app/(backend)/api/discord/discord.client";
 
 
 interface CreateCapsuleBtnProps {
@@ -30,6 +31,9 @@ export default function CreateCapsuleBtn({ message }: CreateCapsuleBtnProps) {
             setLoading(false)
             return
         }
+
+        const sendDiscordAlert = sendDiscordMessage.bind(null, `**🎨 Création de capsule** par ${user.email}`)
+        await sendDiscordAlert()
 
         router.push('/capsule/' + data.id)
     }

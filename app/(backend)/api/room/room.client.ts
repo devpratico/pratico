@@ -9,6 +9,7 @@ import { generateRandomCode } from '@/app/_utils/codeGen'
 import { fetchUser } from '../user/user.server'
 import { fetchActivity } from '../activity/activity.server'
 import { RoomParams } from './types'
+import { sendDiscordMessage } from '../discord/discord.server'
 
 
 export type RoomInsert = TablesInsert<'rooms'>
@@ -191,6 +192,9 @@ export const createRoom = async (capsuleId: string) => {
     // Revalidate cache
     //revalidatePath(`/room/${createdRoom.code}`)
 
+    // Send a message to discord
+    sendDiscordMessage(`🧪 **Lancement de capsule !** (${createdRoom.code})`)
+
     return { room: createdRoom, error: null }
 }
 
@@ -278,6 +282,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
 }
 
 
+// TODO: Unused
 /**
  * Generates an initial 'snapshot' object for the activity, then saves it in the room row.
  */
@@ -302,6 +307,9 @@ export const startActivity = async ({ activityId, roomCode }: { activityId: numb
     }
 
     logger.log('supabase:database', 'startActivity', 'Activity started successfully')
+
+    // Send a message to discord
+    sendDiscordMessage(`🚀 **Lancement d'activité!** (capsule ${roomCode})`)
     return { error: null }
 }
 

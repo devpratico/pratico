@@ -35,7 +35,8 @@ export default function RecoveryForm() {
         } else {
             const fullMessage = error.name + ': ' + error.message + error.cause ? ' - ' + error.cause : '';
             setErrorMessage(fullMessage);
-            sendDiscordMessage(`⚠️ _${email}_ a voulu réinitialiser son mot de passe mais une erreur est survenue : *"${fullMessage}"*`);
+            const sendDiscordAlert = sendDiscordMessage.bind(null, `⚠️ _${email}_ a voulu réinitialiser son mot de passe mais une erreur est survenue : *"${fullMessage}"*`);
+            await sendDiscordAlert();
         }
     }
 

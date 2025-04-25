@@ -1,6 +1,8 @@
 import logger from '@/app/_utils/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
+import { sendDiscordMessage } from '../discord/discord.server';
+
 
 export async function POST(req: NextRequest) {
 	try {
@@ -28,12 +30,10 @@ export async function POST(req: NextRequest) {
 				});
 		}
 		logger.log("next:api", "api/generate-pdf", "Saving PDF...");
-		const startTime = Date.now();
 		const pdfBytes = await pdfDoc.save();
-		const endTime = Date.now();
-		logger.log("next:api", "api/generate-pdf", `PDF save took ${endTime - startTime}ms`);
-		const end = Date.now();
-		logger.log("next:api", "api/generate-pdf", `PDF generated in ${end - beginning}ms`);
+
+        sendDiscordMessage(`**📄 Création d'un PDF** (${blobsUrls.length} pages)`)
+
 		return new NextResponse(pdfBytes, {
 			status: 200,
 			headers: {

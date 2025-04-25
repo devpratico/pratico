@@ -4,6 +4,8 @@ import logger from '@/app/_utils/logger'
 import { revalidatePath } from 'next/cache'
 import { User } from '@supabase/supabase-js'
 import { isUserAnonymous as isUserAnonymousServer } from './auth.server'
+import { sendDiscordMessage } from '../discord/discord.server'
+import { send } from 'process'
 
 
 
@@ -27,6 +29,8 @@ export const login = async ({ email, password }: LoginArgs): Promise<LoginReturn
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (!error) { revalidatePath('/', 'layout') }
 
+    sendDiscordMessage(`🔑 **Connexion** de __${email}__`)
+
     return { user: data?.user, error: error?.message || null }
 }
 
@@ -41,6 +45,9 @@ export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpRet
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({ email, password })
     revalidatePath('/', 'layout')
+
+    sendDiscordMessage(`🎉 **Nouvel inscrit !** ${email}`)
+
     return { user: data?.user, error: error?.message || null }
 }
 
@@ -67,8 +74,13 @@ export const signOut = async () => {
 
 export const updateUserPassword = async (password: string) => {
     const supabase = createClient()
+    
+    const { data: {user} } = await supabase.auth.getUser()
+    sendDiscordMessage(`🔑 **Changement de mot de passe** pour ${user?.email}`)
+
     const { error } = await supabase.auth.updateUser({ password })
     if (error) logger.error('supabase:auth', 'Error updating user password', error.message)
+
     return { error: error?.message }
 }
 
