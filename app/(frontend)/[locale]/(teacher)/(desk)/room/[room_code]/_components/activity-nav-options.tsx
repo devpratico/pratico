@@ -9,6 +9,11 @@ import {
     Callout,
 } from "@radix-ui/themes"
 import { ChevronsLeftRight, TriangleAlert } from "lucide-react"
+import { useState } from "react"
+//import { setActivityNavAction } from "@/client/server-actions/set-activity-nav"
+//import { useRef } from "react"
+import { useSetActivityNav } from "@/client/hooks/use-set-activity-nav"
+
 
 
 function View(props: {
@@ -29,6 +34,7 @@ function View(props: {
             </Popover.Trigger>
 
                 <Popover.Content align="center" side="top" maxWidth='300px'>
+                    
                     <RadioCards.Root
                         columns='1'
                         size='1'
@@ -37,6 +43,7 @@ function View(props: {
                         style={{opacity: isPending ? 0.8 : 1}}
                     >
 
+                        
                         <RadioCards.Item value="animateur" disabled={disabled}>
                             <Flex direction="column" gap="1" width="100%">                            
                                 <Text weight="bold">Défilement animateur</Text>
@@ -73,8 +80,19 @@ function ActivityNavOptions(props: {
     defaultValue: "animateur" | "libre"
     disabled?: boolean
 } & Omit<IconButtonProps, "onChange" | "defaultValue" | "disabled">) {
+
+    //const formRef = useRef<HTMLFormElement>(null)
+    //const [value, setValue] = useState<"animateur" | "libre">(props.defaultValue)
+
+    const { set, res, isPending } = useSetActivityNav(1) // TODO: get roomId from context
+
     return (
-        <View {...props}/>
+            <View
+                onChange={set}
+                isPending={isPending}
+                errorMessage={res.error ? res.error.message : undefined}
+                {...props}
+            />
     )
 }
 

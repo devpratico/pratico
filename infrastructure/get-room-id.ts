@@ -1,12 +1,14 @@
 import "server-only";
 import createClient from "@/supabase/clients/server";
 
-export async function fetchActivitySnapshot(roomId: number) {
+
+export async function getRoomId(roomCode: string) {
     const supabase = createClient();
     const res = await supabase
         .from("rooms")
-        .select("activity_snapshot")
-        .eq("id", roomId)
+        .select("id")
+        .eq("room_code", roomCode)
+        .eq("open", true)
         .single();
 
     if (res.error) console.error(res.error);

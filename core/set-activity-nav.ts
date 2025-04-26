@@ -1,22 +1,26 @@
-import { fetchActivitySnapshot } from "@/infrastructure/fetch-activity-snapshot";
+import { getActivitySnapshot } from "@/infrastructure/get-activity-snapshot";
 import { updateRoom } from "@/infrastructure/update-room";
-import { PollSnapshot } from "@/domain/entities/activities/poll";
-import { QuizSnapshot } from "@/domain/entities/activities/quiz";
 
-export async function setNav(args: {
+
+async function setActivityNav(args: {
     roomId: number,
     navigation: "animateur" | "libre",
 }): Promise<{error: Error | null}> {
     const { roomId, navigation } = args;
 
-    const { data, error } = await fetchActivitySnapshot(roomId);
+    const { data, error } = await getActivitySnapshot(roomId);
     if (error) {
         console.error(error);
         return { error };
     }
 
-    const activitySnapshot = data.activity_snapshot as PollSnapshot | QuizSnapshot;
+    const activitySnapshot = data.activity_snapshot as any // TODO: use zod
     if (!activitySnapshot) return { error: new Error("No activity snapshot found") };
+
+    if (activitySnapshot.navigation === navigation) {
+        console.warn("Navigation is already set to the desired value");
+        return { error: null };
+    }
 
     const updatedSnapshot = {
         ...activitySnapshot,
@@ -35,3 +39,5 @@ export async function setNav(args: {
 
     return { error: null };
 }
+
+export { setActivityNav };
