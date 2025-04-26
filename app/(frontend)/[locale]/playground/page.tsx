@@ -4,7 +4,7 @@ import { Flex } from "@radix-ui/themes"
 export default function PlayGround () {
 	return (
         <Flex align="center" justify="center" height="100vh" width="100vw">
-            <ActivityNavOptions defaultValue="animateur" />
+            <ActivityNavOptions defaultValue="animateur" roomId={1}/>
         </Flex>
     )
 };

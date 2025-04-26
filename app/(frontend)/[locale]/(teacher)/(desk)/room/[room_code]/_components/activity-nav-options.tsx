@@ -9,10 +9,8 @@ import {
     Callout,
 } from "@radix-ui/themes"
 import { ChevronsLeftRight, TriangleAlert } from "lucide-react"
-import { useState } from "react"
-//import { setActivityNavAction } from "@/client/server-actions/set-activity-nav"
-//import { useRef } from "react"
 import { useSetActivityNav } from "@/client/hooks/use-set-activity-nav"
+import { useTransition } from "react"
 
 
 
@@ -40,7 +38,7 @@ function View(props: {
                         size='1'
                         defaultValue={defaultValue}
                         onValueChange={onChange}
-                        style={{opacity: isPending ? 0.8 : 1}}
+                        color={isPending ? "gray" : undefined}
                     >
 
                         
@@ -78,25 +76,29 @@ function View(props: {
 
 function ActivityNavOptions(props: {
     defaultValue: "animateur" | "libre"
+    roomId: number
     disabled?: boolean
 } & Omit<IconButtonProps, "onChange" | "defaultValue" | "disabled">) {
 
-    //const formRef = useRef<HTMLFormElement>(null)
-    //const [value, setValue] = useState<"animateur" | "libre">(props.defaultValue)
+    const { defaultValue, roomId, disabled, ...btnProps } = props
+    const { set, res, isPending } = useSetActivityNav(roomId)
+    const [ tPending, startTransition ] = useTransition()
 
-    const { set, res, isPending } = useSetActivityNav(1) // TODO: get roomId from context
+    const handleChange = (value: "animateur" | "libre") => {
+        startTransition(() => {
+            set(value)
+        })
+    }
 
     return (
             <View
-                onChange={set}
-                isPending={isPending}
+                defaultValue={defaultValue}
+                onChange={handleChange}
+                isPending={isPending || tPending}
                 errorMessage={res.error ? res.error.message : undefined}
-                {...props}
+                {...btnProps}
             />
     )
 }
-
-
-
 
 export default ActivityNavOptions
