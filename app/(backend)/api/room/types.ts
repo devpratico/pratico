@@ -1,6 +1,6 @@
 import { Tables } from "@/supabase/types/database.types"
 import { TLStoreSnapshot } from "tldraw"
-import { ActivitySnapshot } from "@/app/_types/activity"
+import { ActivitySnapshot } from "@/domain/entities/activities/activity"
 
 
 export interface RoomParams {

@@ -1,5 +1,5 @@
 //import { calculateQuizRate, questionQuizRateType } from "./fetchActivitiesDoneInRoom";
-import { QuizUserAnswer } from "@/app/_types/quiz";
+import { QuizUserAnswer } from "@/domain/entities/activities/quiz";
 import { calculateUserQuizScore, calculateTotalQuizScore } from "./scoresCalculation";
 
 

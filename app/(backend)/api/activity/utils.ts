@@ -1,6 +1,6 @@
 import { Json } from "@/supabase/types/database.types"
-import { Quiz } from "@/app/_types/quiz"
-import { Poll } from "@/app/_types/poll"
+import { Quiz } from "@/domain/entities/activities/quiz"
+import { Poll } from "@/domain/entities/activities/poll"
 import logger from "@/app/_utils/logger"
 
 

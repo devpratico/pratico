@@ -2,8 +2,8 @@
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 import DatabaseResponse from '@/app/_utils/ServerResponse'
-import { Poll, PollUserAnswer } from '@/app/_types/poll'
-import { Quiz, QuizUserAnswer } from '@/app/_types/quiz'
+import { Poll, PollUserAnswer } from '@/domain/entities/activities/poll'
+import { Quiz, QuizUserAnswer } from '@/domain/entities/activities/quiz'
 
 
 export type ActivityData = {

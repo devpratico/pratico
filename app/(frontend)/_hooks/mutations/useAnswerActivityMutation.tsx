@@ -1,6 +1,6 @@
 'use client'
-import { PollUserAnswer } from "@/app/_types/poll"
-import { QuizUserAnswer } from "@/app/_types/quiz"
+import { PollUserAnswer } from "@/domain/entities/activities/poll"
+import { QuizUserAnswer } from "@/domain/entities/activities/quiz"
 import { PostgrestError } from "@supabase/supabase-js"
 import { useState, useCallback, useMemo } from "react"
 import createClient from "@/supabase/clients/client"

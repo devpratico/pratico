@@ -1,6 +1,6 @@
 import logger from "@/app/_utils/logger"
 import { useEffect } from "react"
-import { PollSnapshot, Poll, PollUserAnswer } from "@/app/_types/poll"
+import { PollSnapshot, Poll, PollUserAnswer } from "@/domain/entities/activities/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"

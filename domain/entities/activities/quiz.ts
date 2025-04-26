@@ -47,6 +47,7 @@ export interface QuizSnapshot {
     activityId: number | string;
     currentQuestionId: string;
     state: 'answering' | 'showing results';
+    navigation: 'animateur' | 'libre';
     answers: QuizUserAnswer[]
 }
 

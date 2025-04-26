@@ -1,5 +1,5 @@
 'use client'
-import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/app/_types/quiz"
+import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/domain/entities/activities/quiz"
 import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"

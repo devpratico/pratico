@@ -3,7 +3,7 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const createNextIntlPlugin = require('next-intl/plugin')
 const withNextIntl = createNextIntlPlugin('./app/(frontend)/_intl/i18n.ts')
 
-
+// TODO: Remove browser-sync
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -57,6 +57,7 @@ export interface PollSnapshot {
     activityId: string | number;
     currentQuestionId: string;
     state: 'voting' | 'showing results',
+    navigation: 'animateur' | 'libre';
     answers: PollUserAnswer[]
 }
 

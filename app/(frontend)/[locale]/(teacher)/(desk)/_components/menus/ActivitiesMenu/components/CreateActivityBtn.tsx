@@ -2,7 +2,7 @@
 import { DropdownMenu, Button } from "@radix-ui/themes"
 import usePollCreationStore from "../../../../../../../_hooks/stores/usePollCreationStore"
 import useQuizCreationStore from "@/app/(frontend)/_hooks/stores/useQuizCreationStore"
-import { emptyPoll  } from "@/app/_types/poll"
+import { emptyPoll  } from "@/domain/entities/activities/poll"
 
 
 export default function CreateActivityBtn() {

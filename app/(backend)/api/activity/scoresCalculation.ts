@@ -1,4 +1,4 @@
-import { Quiz } from "@/app/_types/quiz"
+import { Quiz } from "@/domain/entities/activities/quiz"
 
 
 const scoreRules = {

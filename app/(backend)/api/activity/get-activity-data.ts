@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
-import { Activity } from "@/app/_types/activity";
-import { Poll } from "@/app/_types/poll";
-import { Quiz } from "@/app/_types/quiz";
+import { Activity } from "@/domain/entities/activities/activity";
+import { Poll } from "@/domain/entities/activities/poll";
+import { Quiz } from "@/domain/entities/activities/quiz";
 import Result from "@/app/_utils/ServerResponse";
 
 
