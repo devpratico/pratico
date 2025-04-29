@@ -1,6 +1,6 @@
 "use client"
 import { useActionState } from "react"
-import { initialRes, ServerActionRes } from "@/client/server-actions/utils"
+import { initialRes, ServerActionRes } from "@/app/actions/utils"
 
 /**
  * This hooks simplifies a bit `useActionState` by handling the

@@ -1,6 +1,6 @@
 'use client'
-import { PollSnapshot } from "@/domain/entities/activities/poll"
-import { QuizSnapshot } from "@/domain/entities/activities/quiz"
+import { PollSnapshot } from "@/core/domain/entities/activities/poll"
+import { QuizSnapshot } from "@/core/domain/entities/activities/quiz"
 import { PostgrestError } from "@supabase/supabase-js"
 import useFetch from "./useFetch"
 import createClient from "@/supabase/clients/client"

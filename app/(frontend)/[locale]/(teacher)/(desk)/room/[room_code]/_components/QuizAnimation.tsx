@@ -4,7 +4,7 @@ import useQuizAnimationStore from '@/app/(frontend)/_hooks/stores/useQuizAnimati
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card, ButtonProps } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
-import { QuizSnapshot } from '@/domain/entities/activities/quiz'
+import { QuizSnapshot } from '@/core/domain/entities/activities/quiz'
 import { useSyncAnimationQuizService, useCloseQuizService, useQuizAnimationService } from '@/app/(frontend)/_hooks/services/useQuizAnimationService'
 import { useMemo } from 'react'
 

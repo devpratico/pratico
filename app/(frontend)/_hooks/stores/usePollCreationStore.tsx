@@ -1,4 +1,4 @@
-import { Poll, PollQuestion, PollChoice } from "@/domain/entities/activities/poll"
+import { Poll, PollQuestion, PollChoice } from "@/core/domain/entities/activities/poll"
 import logger from "@/app/_utils/logger"
 import { produce } from "immer"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"

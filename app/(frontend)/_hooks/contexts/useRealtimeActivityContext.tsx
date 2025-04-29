@@ -1,6 +1,6 @@
 'use client'
-import { Poll, PollSnapshot } from "@/domain/entities/activities/poll"
-import { Quiz, QuizSnapshot } from "@/domain/entities/activities/quiz"
+import { Poll, PollSnapshot } from "@/core/domain/entities/activities/poll"
+import { Quiz, QuizSnapshot } from "@/core/domain/entities/activities/quiz"
 import { useRoom } from "./useRoom"
 import { useState, useEffect, useMemo, createContext, useContext } from "react"
 import logger from "@/app/_utils/logger"

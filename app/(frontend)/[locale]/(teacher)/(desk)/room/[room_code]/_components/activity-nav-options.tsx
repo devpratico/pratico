@@ -44,15 +44,15 @@ function View(props: {
                         
                         <RadioCards.Item value="animateur" disabled={disabled}>
                             <Flex direction="column" gap="1" width="100%">                            
-                                <Text weight="bold">Défilement animateur</Text>
-                                <Text color="gray">L&apos;animateur contrôle ce que voient les apprenants</Text>
+                                <Text weight="bold">Au rythme de l&apos;animateur</Text>
+                                <Text color="gray">L&apos;animateur contrôle le défilement des questions</Text>
                             </Flex>
                         </RadioCards.Item>
                         
                         <RadioCards.Item value="libre" disabled={disabled}>
                             <Flex direction="column" gap="1" width="100%">
-                                <Text weight="bold">Défilement libre</Text>
-                                <Text color="gray">Les apprenants peuvent naviguer librement dans l&apos;activité</Text>
+                                <Text weight="bold">Au rythme du participant</Text>
+                                <Text color="gray">Les participants parcourent librement les questions</Text>
                             </Flex>
                         </RadioCards.Item>
 

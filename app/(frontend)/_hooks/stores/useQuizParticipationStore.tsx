@@ -1,5 +1,5 @@
 'use client'
-import { QuizUserAnswer, Quiz, QuizSnapshot } from "@/domain/entities/activities/quiz"
+import { QuizUserAnswer, Quiz, QuizSnapshot } from "@/core/domain/entities/activities/quiz"
 import { create } from "zustand"
 import { produce } from "immer"
 import logger from "@/app/_utils/logger"

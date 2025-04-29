@@ -1,5 +1,5 @@
 "use server"
-import { setActivityNav } from "@/core/set-activity-nav"
+import { setActivityNav } from "@/core/application/set-activity-nav"
 import { ServerActionRes } from "./utils"
 
 

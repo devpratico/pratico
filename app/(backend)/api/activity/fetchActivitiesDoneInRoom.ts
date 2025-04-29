@@ -2,8 +2,8 @@
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 import DatabaseResponse from '@/app/_utils/ServerResponse'
-import { Poll, PollUserAnswer } from '@/domain/entities/activities/poll'
-import { Quiz, QuizUserAnswer } from '@/domain/entities/activities/quiz'
+import { Poll, PollUserAnswer } from '@/core/domain/entities/activities/poll'
+import { Quiz, QuizUserAnswer } from '@/core/domain/entities/activities/quiz'
 
 
 export type ActivityData = {
@@ -328,7 +328,7 @@ async function computeQuizSuccess(args: {
     
 }
 export type questionQuizRateType = { questionId: string, correctChoices: string[], totalChoices: number };
-export const calculateQuizRate = (questions: questionQuizRateType[], allUserIds: Set<string>, answers: QuizUserAnswer[] ) => {
+export const calculateQuizRate = async (questions: questionQuizRateType[], allUserIds: Set<string>, answers: QuizUserAnswer[] ) => {
     const usersScores: { [userId: string]: number[] } = {};
     allUserIds.forEach((userId) => {
         if (!(userId in usersScores))

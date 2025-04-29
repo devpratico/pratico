@@ -4,7 +4,7 @@ import usePollAnimation from '@/app/(frontend)/_hooks/stores/usePollAnimationSto
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
-import { PollSnapshot } from '@/domain/entities/activities/poll'
+import { PollSnapshot } from '@/core/domain/entities/activities/poll'
 import { useSyncAnimationPollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 import { useMemo } from 'react'
 

@@ -1,8 +1,8 @@
 'use server'
 import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
-import { Quiz } from "@/domain/entities/activities/quiz"
-import { Poll } from "@/domain/entities/activities/poll"
+import { Quiz } from "@/core/domain/entities/activities/quiz"
+import { Poll } from "@/core/domain/entities/activities/poll"
 import { adapter } from "./utils"
 import { TablesInsert, Tables } from "@/supabase/types/database.types"
 import { revalidatePath } from "next/cache"

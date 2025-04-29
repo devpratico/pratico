@@ -1,5 +1,5 @@
 'use client'
-import { Poll, PollUserAnswer, PollSnapshot } from "@/domain/entities/activities/poll"
+import { Poll, PollUserAnswer, PollSnapshot } from "@/core/domain/entities/activities/poll"
 import { create } from "zustand"
 import { produce } from "immer"
 

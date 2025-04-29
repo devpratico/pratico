@@ -1,5 +1,5 @@
-import { getActivitySnapshot } from "@/infrastructure/get-activity-snapshot";
-import { updateRoom } from "@/infrastructure/update-room";
+import { getActivitySnapshot } from "@/infra/get-activity-snapshot";
+import { updateRoom } from "@/infra/update-room";
 
 
 async function setActivityNav(args: {

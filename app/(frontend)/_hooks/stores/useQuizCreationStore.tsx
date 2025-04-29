@@ -1,8 +1,8 @@
-import { Quiz } from "@/domain/entities/activities/quiz"
+import { Quiz } from "@/core/domain/entities/activities/quiz"
 import { create } from "zustand"
 import { current, produce } from "immer"
 import logger from "@/app/_utils/logger"
-import { emptyQuiz } from "@/domain/entities/activities/quiz"
+import { emptyQuiz } from "@/core/domain/entities/activities/quiz"
 import { uniqueTimestampId } from "@/app/_utils/utils_functions"
 
 

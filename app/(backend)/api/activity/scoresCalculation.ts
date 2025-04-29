@@ -1,4 +1,4 @@
-import { Quiz } from "@/domain/entities/activities/quiz"
+import { Quiz } from "@/core/domain/entities/activities/quiz"
 
 
 const scoreRules = {
