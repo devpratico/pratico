@@ -1,6 +1,6 @@
 import StudentCanvas from './_components/StudentCanvas'
 import { fetchUser } from '@/app/(backend)/api/user/user.server'
-import { redirect } from '@/app/(frontend)/_intl/intlNavigation'
+import { redirect } from '@/app/(frontend)/_intl/navigation'
 import { CanvasUser } from '@/app/(frontend)/[locale]/_components/canvases/Canvas'
 import { getRandomColor } from '@/app/_utils/codeGen'
 import { fetchRoomByCode } from '@/app/(backend)/api/room/room.server'
@@ -26,7 +26,7 @@ export default async function StudentViewPage({ params }: { params: Promise<{ ro
         const isRecentlyClosed = isRoomClosedInTheLast24h(roomData.end_of_session);
         logger.log("next:page", "StudentViewPage", "Room closed in the last 24h ?", isRecentlyClosed);
         if (isRecentlyClosed)
-            return (redirect(`/classroom/closed/${roomData.id}`));
+            return (redirect({ href: `/classroom/closed/${roomData.id}`, locale: 'fr' }));
         throw new Error("La session est fermée");
 	}
 
@@ -35,7 +35,7 @@ export default async function StudentViewPage({ params }: { params: Promise<{ ro
 	if (!user || error) {
 		logger.log('next:page', 'StudentViewPage', 'Student not logged in. Redirecting to form page', error);
 		const nextUrl = `/classroom/${room_code}`;
-        redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        redirect({ href: '/form?' + new URLSearchParams({ nextUrl }).toString(), locale: 'fr' });
         return null;
 	}
 
@@ -45,7 +45,7 @@ export default async function StudentViewPage({ params }: { params: Promise<{ ro
     if (attendanceError) { // If none found or more than one found, supabase will return an error
         logger.log('next:page', 'StudentViewPage', 'Student has not signed attendance yet. Redirecting to form page', user!.id, attendanceError);
         const nextUrl = `/classroom/${room_code}`;
-        redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
+        redirect({ href: '/form?' + new URLSearchParams({ nextUrl }).toString(), locale: 'fr' });
         return null;
     }
 

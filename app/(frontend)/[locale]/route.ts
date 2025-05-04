@@ -1,4 +1,4 @@
-import { redirect } from "../_intl/intlNavigation"
+import { redirect } from "../_intl/navigation"
 import { fetchUser } from "@/app/(backend)/api/user/user.server"
 import { saveCapsule } from "@/app/(backend)/api/capsule/capsule.server"
 
@@ -15,7 +15,7 @@ export async function GET() {
 
     // If the user is registered, redirect to the dashboard (capsules) page
     if (user && !user.is_anonymous) {
-        return redirect('/capsules')
+        return redirect({ href: '/capsules', locale: 'fr' })
     }
 
     // If the user is anonymous, open an empty capsule
@@ -25,13 +25,13 @@ export async function GET() {
             logger.error('next:page', 'Home route error:', error)
             throw error
         } else {
-            return redirect(`/capsule/${data.id}`)
+            return redirect({ href: `/capsule/${data.id}`, locale: 'fr' })
         }
     }
 
     // If there's no user (or an error), redirect to empty capsule page
     if (!user || error) {
-        return redirect('/capsule')
+        return redirect({ href: '/capsule', locale: 'fr' })
     }
 
     throw new Error('Unexpected error - user not found')

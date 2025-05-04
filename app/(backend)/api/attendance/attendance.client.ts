@@ -8,7 +8,7 @@ import { TablesInsert, TablesUpdate } from "@/supabase/types/database.types";
 import { fetchUser } from "../user/user.server";
 import { User } from "@supabase/supabase-js";
 import { signInAnonymously } from "../user/user.server";
-import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
+import { redirect } from "@/app/(frontend)/_intl/navigation";
 
 // TODO: rename this kind of files "actions"
 
@@ -201,7 +201,7 @@ export async function submitAttendanceForm(prevState: any, formData: FormData): 
     }
 
     // Redirect to nextUrl
-    redirect(nextUrl);
+    redirect({ href: nextUrl, locale: 'fr' });
 
     return { error: null };
 }

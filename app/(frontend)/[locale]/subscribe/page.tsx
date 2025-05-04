@@ -2,7 +2,7 @@ import styles from './page.module.css'
 import { getTranslations } from 'next-intl/server';
 import { fetchUser } from '@/app/(backend)/api/user/user.server';
 import config from '@/app/(backend)/api/stripe/stripe.config';
-import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
+import { redirect } from '@/app/(frontend)/_intl/navigation';
 import { Container, Section, Card, Heading, Text } from '@radix-ui/themes';
 
 // declare global {
@@ -32,7 +32,7 @@ export default async function SubScribePage() {
 
     // If no user or user is anonymous, redirect to the auth page
     if (error || !user || user.is_anonymous) {
-        redirect('/auth?authTab=signup&nextUrl=/subscribe')
+        redirect({ href: '/auth?authTab=signup&nextUrl=/subscribe', locale: 'fr' })
         return null
     }
 

@@ -1,4 +1,4 @@
-import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
+import { redirect } from "@/app/(frontend)/_intl/navigation";
 import { fetchRoomCreator } from "@/app/(backend)/api/room/room.server";
 import { fetchUser } from "@/app/(backend)/api/user/user.server";
 import logger from "@/app/_utils/logger";
@@ -25,8 +25,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ room
     const isTeacher = roomCreatorId === user?.id
 
     if (isTeacher) {
-        redirect(`/room/${room_code}`)
+        redirect({ href: `/room/${room_code}`, locale: 'fr' })
     } else {
-        redirect(`/classroom/${room_code}`)
+        redirect({ href: `/classroom/${room_code}`, locale: 'fr' })
     }
 }

@@ -8,7 +8,7 @@ import StopBtn from "./_components/StopBtn";
 import MenuTabs from "../../_components/MenuTabs";
 import createClient from "@/supabase/clients/server";
 import logger from "@/app/_utils/logger";
-import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
+import { redirect } from "@/app/(frontend)/_intl/navigation";
 import PollAnimation from "./_components/PollAnimation";
 import QuizAnimation from "./_components/QuizAnimation";
 import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: Promise<{ room_code: st
         throw (roomError);
     }
     if (roomData && roomData.created_by && user?.id !== roomData?.created_by)
-		redirect(`/classroom/${room_code}`);
+		redirect({ href: `/classroom/${room_code}`, locale: 'fr' });
 	else if (!roomData)
 		throw new Error("La session est terminée ou n'existe pas");
 
