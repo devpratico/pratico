@@ -1,23 +1,21 @@
 import { type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import createMiddleware from 'next-intl/middleware'
-import intlConfig from './app/(frontend)/_intl/intl.config'
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './app/(frontend)/_intl/routing';
 import logger from './app/_utils/logger'
  
 
 export const config = {
     // Match all pathnames except for
-    // - … if they start with `/api`, `/_next` or `/_vercel`
+    // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
     // - … the ones containing a dot (e.g. `favicon.ico`)
-    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+    matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)'
 };
 
 
 // This is the middleware provided by next-intl library
-const nextIntlMiddleware = createMiddleware({
-    locales: intlConfig.locales,
-    defaultLocale: intlConfig.defaultLocale,
-})
+const nextIntlMiddleware = createMiddleware(routing);
+
 
 
 /**

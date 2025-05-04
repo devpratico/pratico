@@ -7,7 +7,9 @@ import { DisableProvider } from '@/app/(frontend)/_hooks/contexts/useDisable';
 import { UserContextProvider } from '@/app/(frontend)/_hooks/contexts/useUser';
 import createClient from '@/supabase/clients/server';
 import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
-import { NextIntlClientProvider } from 'next-intl';
+import { notFound } from 'next/navigation';
+import { routing } from '../_intl/routing';
+import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import FocusZoneProvider from '../_hooks/useFocusZone';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -44,7 +46,10 @@ export default async function RootLayout({children, params}: RootLayoutProps) {
 
     const isSubscribed = await customerIsSubscribed(data?.user?.id)
 
-    const locale = await params.then((params) => params.locale)
+    const { locale } = await params
+    if (!hasLocale(routing.locales, locale)) {
+        notFound();
+    }
     
     return (
         <html lang={locale} data-theme="pratico">
