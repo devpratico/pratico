@@ -56,7 +56,7 @@ export async function sendDiscordError(message: string): Promise<SendDiscordMess
         return { success: false, error: 'No message provided' };
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: userData, error: userError } = await supabase.auth.getUser()
 
     let names: string | undefined

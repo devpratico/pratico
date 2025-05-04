@@ -24,7 +24,7 @@ export interface LoginReturn {
  * Log in an existing user
  */
 export const login = async ({ email, password }: LoginArgs): Promise<LoginReturn> => {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (!error) { revalidatePath('/', 'layout') }
@@ -42,7 +42,7 @@ export interface SignUpReturn extends LoginReturn { }
  * Create a new user
  */
 export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpReturn> => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.auth.signUp({ email, password })
     revalidatePath('/', 'layout')
 
@@ -53,7 +53,7 @@ export const signup = async ({ email, password }: SignUpArgs): Promise<SignUpRet
 
 // TODO: delete
 export const signInAnonymously = async () => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.auth.signInAnonymously({})
 
     if (error) logger.error('supabase:auth', 'error signing in anonymously', error.message)
@@ -64,7 +64,7 @@ export const signInAnonymously = async () => {
 
 
 export const signOut = async () => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.auth.signOut()
     if (error) logger.error('supabase:auth', 'Error signing out', error.message)
     revalidatePath('/', 'layout')
@@ -73,7 +73,7 @@ export const signOut = async () => {
 
 
 export const updateUserPassword = async (password: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     const { data: {user} } = await supabase.auth.getUser()
     sendDiscordMessage(`🔑 **Changement de mot de passe** pour ${user?.email}`)

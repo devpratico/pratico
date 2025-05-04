@@ -4,7 +4,7 @@ import { Json, TablesUpdate } from "@/supabase/types/database.types";
 
 
 export async function updateRoom(data: TablesUpdate<"rooms">) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const res = await supabase
         .from("rooms")
         .update(data)

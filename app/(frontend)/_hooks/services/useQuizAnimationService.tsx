@@ -1,5 +1,5 @@
 'use client'
-import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/core/domain/entities/activities/quiz"
+import { QuizSnapshot, QuizUserAnswer, Quiz } from "@/core/domain/entities/quiz"
 import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
@@ -303,6 +303,7 @@ function useSaveQuizSnapshot(): {
             type: 'quiz',
             activityId: state.activityId,
             currentQuestionId: state.currentQuestionId,
+            navigation: "animateur",
             state: state.state,
             answers: state.answers
         }

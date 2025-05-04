@@ -7,7 +7,7 @@ export type AttendanceInsert = TablesInsert<'attendance'>
 
 
 export const fetchAllAttendances = async () => {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select();
     if (error) logger.error('supabase:database', `error fetching all attendances.`, error.message)
     return ({ data, error: error?.message });
@@ -18,7 +18,7 @@ export const fetchAttendance = async (id: number | undefined) => {
         logger.error('next:api', 'fetchAttendance id missing');
         return ({ data: null, error: 'fetchAttendance id missing' });
     }
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('id', id).single();
     if (error) logger.error('supabase:database', `error fetching attendance ${id}...`, error.message)
     return ({ data, error: error?.message });
@@ -29,7 +29,7 @@ export const fetchAttendanceByRoomId = async (roomId: number | undefined) => {
         logger.error('next:api', 'fetchAttendanceByRoomId id missing');
         return ({ data: null, error: 'fetchAttendanceByrRoomId id missing' });
     }
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
     if (error) logger.error('supabase:database', `error fetching attendance with room ID ${roomId}...`, error.message);
     return ({ data, error: error?.message });
@@ -41,14 +41,14 @@ export const fetchAttendanceByUser = async (userId: string) => {
         logger.error('next:api', 'fetchAttendanceByUser id missing');
         return ({ data: null, error: 'fetchAttendanceByUser id missing' });
     }
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('user_id', userId);
     if (error) logger.error('supabase:database', `error fetching attendance with user ${userId.slice(0, 5)}...`, error.message)
     return ({ data, error: error?.message });
 };
 
 export const fetchNamesFromAttendance = async (userId: string) => {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select('first_name, last_name').eq('user_id', userId).single();
     if (error || null) {
         logger.log('supabase:database', `no names for user ${userId.slice(0, 5)}...`, error?.message);
@@ -62,7 +62,7 @@ export const fetchNamesFromAttendance = async (userId: string) => {
 export const fetchUserHasSignedAttendance = async (roomId: number, userId: string) => {
     logger.log('next:api', 'fetUserHasSignedAttendance', `roomId: ${roomId}, userId: ${userId}`);
 
-    const supabase = createClient();
+    const supabase = await createClient();
     /*const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId);
     if (error) logger.error('supabase:database', `error fetching attendance with room id ${roomId}...`, error.message);
 
@@ -88,7 +88,7 @@ export const fetchUserHasSignedAttendance = async (roomId: number, userId: strin
 };
 
 export async function fetchUserAttendanceData(roomId: number, userId: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('attendance').select('*').eq('room_id', roomId).eq('user_id', userId).single();
     if (error) {
         logger.log('supabase:database', 'fetchUserAttendanceData', 'No attendance (or more than one) found', error.message);
@@ -98,7 +98,7 @@ export async function fetchUserAttendanceData(roomId: number, userId: string) {
 }
 
 export async function countAttendances(roomId: string | number) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const response = await supabase.from('attendance').select('id').eq('room_id', parseInt(`${roomId}`))
     if (response.error) {
         logger.error('supabase:database', 'countAttendances', 'error counting attendances', response.error.message, 'discord')

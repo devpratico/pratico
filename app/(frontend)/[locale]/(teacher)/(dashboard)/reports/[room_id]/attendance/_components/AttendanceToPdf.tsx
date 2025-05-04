@@ -37,7 +37,7 @@ export type TeacherInfo = {
 	return (null);
   };
   
-  export const AttendanceToPDF = forwardRef<HTMLDivElement, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname, hideColumnInfo }, ref) => {
+  export const AttendanceToPDF = forwardRef<HTMLDivElement | null, Props>(({ attendances, sessionDate, capsuleTitle, user: { userInfo }, backTo, hideClassname, hideColumnInfo }, ref) => {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrint = useReactToPrint({contentRef: ref as RefObject<HTMLDivElement> || contentRef});
 	const formatter = useFormatter();

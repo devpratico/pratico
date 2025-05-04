@@ -53,7 +53,7 @@ async function asyncMatchResult<D1, E1, D2, E2>(
         data: (data: D1) => D2 | Promise<D2>,
         error: (error: E1) => E2 | Promise<E2>,
     }
-): AsyncResult<D2, E2> {
+): Promise<Result<D2, E2>> {
 
     const awaitedResult = await result;
 

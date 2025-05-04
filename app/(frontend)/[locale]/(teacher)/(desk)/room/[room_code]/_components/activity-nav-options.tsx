@@ -9,7 +9,7 @@ import {
     Callout,
 } from "@radix-ui/themes"
 import { ChevronsLeftRight, TriangleAlert } from "lucide-react"
-import { useSetActivityNav } from "@/client/hooks/use-set-activity-nav"
+import { useSetActivityNav } from "@/app/hooks/use-set-activity-nav"
 import { useTransition } from "react"
 
 

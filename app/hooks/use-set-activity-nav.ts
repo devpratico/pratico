@@ -1,6 +1,6 @@
 "use client"
-import { setActivityNavAction } from "../server-actions/set-activity-nav"
-import { useServerAction } from "./utils/use-server-action"
+import { setActivityNavAction } from "../actions/set-activity-nav"
+import { useServerAction } from "./use-server-action"
 
 function useSetActivityNav(roomId: number) {
     const [res, action, isPending] = useServerAction(setActivityNavAction)

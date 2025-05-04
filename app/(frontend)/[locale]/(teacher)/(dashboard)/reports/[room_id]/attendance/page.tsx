@@ -1,13 +1,13 @@
 import logger from "@/app/_utils/logger";
 import { Container, ScrollArea, Section } from "@radix-ui/themes";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { Params } from "next/dist/server/request/params";
 import createClient from "@/supabase/clients/server";
 import { AttendanceInfoType } from "../page";
 import { AttendanceDisplay } from "./_components/AttendanceDisplay";
 
-export default async function AttendanceDetailsPage ({ params }: { params: Params }) {
-	const supabase = createClient();
-	const roomId = params.room_id;
+export default async function AttendanceDetailsPage ({ params }: { params: Promise<Params> }) {
+	const supabase = await createClient();
+	const roomId = (await params).room_id;
 	let attendances: AttendanceInfoType[] = [];
 	let capsuleTitle = "Sans titre";
 	let sessionDate: { date: string, end: string | null | undefined } = {
@@ -32,10 +32,10 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 				logger.log('supabase:database', 'sessionDetailsPage', 'fetch names from user_profiles error', error);
 			if (data)
 				userInfo = data;
-			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', roomId).single();
+			const {data: roomData, error: roomError} = await supabase.from('rooms').select('created_at, capsule_id, end_of_session').eq('id', parseInt(roomId as string)).single();
 			if (roomData)
 				sessionDate = { date: roomData.created_at, end: roomData.end_of_session };	
-			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', roomId);
+			const { data: attendanceData, error: attendanceError } = await supabase.from('attendance').select('*').eq('room_id', parseInt(roomId as string));
 			if (!attendanceData?.length)
 				logger.log('supabase:database', 'sessionDetailsPage', 'No attendances data for this capsule');
 			else if (!attendanceData || attendanceError) {
@@ -78,7 +78,7 @@ export default async function AttendanceDetailsPage ({ params }: { params: Param
 		<ScrollArea>
 			<Section px={{ initial: '3', xs: '0' }}>
 				<Container>
-					<AttendanceDisplay attendances={attendances} roomId={roomId} sessionDate={sessionDate} userInfo={userInfo} capsuleTitle={capsuleTitle} hideColumnInfo={hideColumnInfo}/>
+					<AttendanceDisplay attendances={attendances} roomId={roomId as string} sessionDate={sessionDate} userInfo={userInfo} capsuleTitle={capsuleTitle} hideColumnInfo={hideColumnInfo}/>
 				</Container>
 			</Section>	
 		</ScrollArea>

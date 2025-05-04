@@ -12,7 +12,7 @@ type AttendanceWidgetProps = {
 };
 
 export async function AttendanceWidget({ roomId, capsuleTitle }: AttendanceWidgetProps) {
-	const supabase = createClient();
+	const supabase = await createClient();
 	const attendanceCount = await countAttendances(roomId);
     const userId = (await getUser()).data?.user?.id;
     if (!userId) {

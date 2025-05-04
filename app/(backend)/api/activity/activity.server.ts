@@ -3,13 +3,13 @@ import createClient from "@/supabase/clients/server"
 import logger from "@/app/_utils/logger"
 import { adapter } from './utils'
 import { getUser } from '../auth/auth.server'
-import { Quiz } from '@/core/domain/entities/activities/quiz'
-import { Poll } from '@/core/domain/entities/activities/poll'
+import { Quiz } from '@/core/domain/entities/quiz'
+import { Poll } from '@/core/domain/entities/poll'
 import { Tables } from '@/supabase/types/database.types'
 
 
 export const fetchActivity = async (id: number) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     logger.log('supabase:database', `Fetching activity ${id}...`)
     const { data, error } = await supabase.from('activities').select().eq('id', id).single()
 
@@ -59,7 +59,7 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
         return { data: [], error: userError?.message || null }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     logger.log('supabase:database', `Fetching activities of user ${userId}...`)
     const { data, error } = await supabase.from('activities').select().eq('created_by', userId).limit(limit || 100).order('created_at', { ascending: false })
 
@@ -89,7 +89,7 @@ export const fetchActivitiesOfCurrentUser = async (limit?: number): Promise<{ da
 
 
 export async function fetchSnapshot(roomId: number) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('rooms').select('activity_snapshot').eq('id', roomId).single()
 
     if (error) {

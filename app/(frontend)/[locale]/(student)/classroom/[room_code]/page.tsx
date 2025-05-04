@@ -9,10 +9,12 @@ import { fetchUserAttendanceData } from '@/app/(backend)/api/attendance/attendan
 import RedirectIfRoomClosed from './_components/RedirectIfRoomClosed'
 
 
-export default async function StudentViewPage({ params }: { params: { room_code: string } }) {
+export default async function StudentViewPage({ params }: { params: Promise<{ room_code: string }> }) {
+
+    const { room_code } = await params;
 
 	// Check room exists
-	const { data: roomData, error: roomError } = await fetchRoomByCode(params.room_code);
+	const { data: roomData, error: roomError } = await fetchRoomByCode(room_code);
 	if (roomError || !roomData) 
     {
         logger.error("next:page", "StudentViewPage", "room error", roomError);
@@ -32,7 +34,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 	const { user, error } = await fetchUser();
 	if (!user || error) {
 		logger.log('next:page', 'StudentViewPage', 'Student not logged in. Redirecting to form page', error);
-		const nextUrl = `/classroom/${params.room_code}`;
+		const nextUrl = `/classroom/${room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
         return null;
 	}
@@ -42,7 +44,7 @@ export default async function StudentViewPage({ params }: { params: { room_code:
 
     if (attendanceError) { // If none found or more than one found, supabase will return an error
         logger.log('next:page', 'StudentViewPage', 'Student has not signed attendance yet. Redirecting to form page', user!.id, attendanceError);
-        const nextUrl = `/classroom/${params.room_code}`;
+        const nextUrl = `/classroom/${room_code}`;
         redirect('/form?' + new URLSearchParams({ nextUrl }).toString());
         return null;
     }

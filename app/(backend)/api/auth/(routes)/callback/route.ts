@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
     if (code) {
         logger.log('supabase:auth', 'Exchanging code for session', code)
-        const supabase = createClient()
+        const supabase = await createClient()
         try {
             const { error } = await supabase.auth.exchangeCodeForSession(code)
             if (!error) {

@@ -1,7 +1,7 @@
 import createClient from "@/supabase/clients/server";
-import { Activity } from "@/core/domain/entities/activities/activity";
-import { Poll } from "@/core/domain/entities/activities/poll";
-import { Quiz } from "@/core/domain/entities/activities/quiz";
+import { Activity } from "@/core/domain/entities/activity";
+import { Poll } from "@/core/domain/entities/poll";
+import { Quiz } from "@/core/domain/entities/quiz";
 import Result from "@/app/_utils/ServerResponse";
 
 
@@ -20,7 +20,7 @@ type EndEventPayload = {
 };
 
 async function getStartEvent(startEventId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("room_events")
         .select("*")
@@ -31,7 +31,7 @@ async function getStartEvent(startEventId: string) {
 
 
 async function getEndEvent(endEventId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("room_events")
         .select("*")
@@ -42,7 +42,7 @@ async function getEndEvent(endEventId: string) {
 
 /** Find the end event corresponding to the start event */
 async function findEndEvent(type: "poll" | "quiz", startEventId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("room_events")
         .select("*")
@@ -54,7 +54,7 @@ async function findEndEvent(type: "poll" | "quiz", startEventId: string) {
 }
 
 async function getActivity<T extends Activity>(id: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("activities")
         .select("*")
@@ -64,7 +64,7 @@ async function getActivity<T extends Activity>(id: string) {
 }
 
 async function getAttendances(roomId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("attendance")
         .select("*")
@@ -72,7 +72,7 @@ async function getAttendances(roomId: string) {
 }
 
 async function getCapsuleMetadata(capsuleId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("capsules")
         .select("id, title")
@@ -81,7 +81,7 @@ async function getCapsuleMetadata(capsuleId: string) {
 }
 
 async function getCapsuleId(roomId: string) {
-    const client = createClient();
+    const client = await createClient();
     return await client
         .from("rooms")
         .select("capsule_id")

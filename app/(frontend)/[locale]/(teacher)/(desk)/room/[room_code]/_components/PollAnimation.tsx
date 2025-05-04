@@ -4,7 +4,7 @@ import usePollAnimation from '@/app/(frontend)/_hooks/stores/usePollAnimationSto
 import { Button, Box, Badge, Grid, Flex, VisuallyHidden, Heading, Container, Section, Card } from '@radix-ui/themes'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import Navigator from '../../../_components/menus/ActivitiesMenu/components/Navigator'
-import { PollSnapshot } from '@/core/domain/entities/activities/poll'
+import { PollSnapshot } from '@/core/domain/entities/poll'
 import { useSyncAnimationPollService, useClosePollService, usePollAnimationService } from '@/app/(frontend)/_hooks/services/usePollAnimationService'
 import { useMemo } from 'react'
 
@@ -76,6 +76,8 @@ export default function PollAnimation() {
                 <Flex p='3' pt='0' justify='center'>
                     <Card variant='classic'>
                         <Flex justify='center' gap='3'>
+
+                            
 
                             <Navigator
                                 total={poll?.questions ? Object.keys(poll.questions).length : 0}

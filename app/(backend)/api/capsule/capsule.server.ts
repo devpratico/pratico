@@ -10,7 +10,7 @@ export const fetchCapsule = cache(async (capsuleId: string) => {
     const sanitizedCapsuleId = sanitizeUuid(capsuleId);
     if (!sanitizedCapsuleId)
         return ({ data: null, error: 'fetchCapsule, capsuleId missing' })
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('capsules').select('*').eq('id', sanitizedCapsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule', error.message)
     return { data, error: error?.message }
@@ -18,7 +18,7 @@ export const fetchCapsule = cache(async (capsuleId: string) => {
 
 
 export const fetchCapsulesData = cache(async (userId: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('capsules').select('*').eq('created_by', userId)
     if (error) logger.error('supabase:database', 'Error fetching capsules', error.message, 'for user', userId)
 
@@ -26,7 +26,7 @@ export const fetchCapsulesData = cache(async (userId: string) => {
 })
 
 export const fetchCapsulesDataAndRoomStatus = cache(async (userId: string) => {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('capsules').select('*, rooms(status, code)').eq('created_by', userId);
     if (error)
     {
@@ -43,14 +43,14 @@ export const fetchCapsulesDataAndRoomStatus = cache(async (userId: string) => {
 
 
 export async function downloadCapsuleFile(fileUrl: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.storage.from('capsules_files').download(fileUrl)
     if (error) logger.error('supabase:storage', 'Error downloading file', error)
     return { data, error: error?.message }
 }
 
 export async function createSignedUrl(fileUrl: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.storage.from('capsules_files').createSignedUrl(fileUrl, 60)
     if (error) logger.error('supabase:storage', 'Error creating signed URL', error)
     return { data, error: error?.message }
@@ -62,14 +62,14 @@ export async function createSignedUrl(fileUrl: string) {
 
 
 export const fetchCapsuleTitle = cache(async (capsuleId: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule title', error.message)
     return { data, error: error?.message }
 })
 
 export const fetchCapsuleSnapshot = async (capsuleId: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     logger.log('supabase:database', 'Fetching capsule snapshot for capsuleId', capsuleId)
     const { data, error } = await supabase.from('capsules').select('tld_snapshot').eq('id', capsuleId).single()
     if (error) logger.error('supabase:database', 'Error fetching capsule snapshot', error.message)
@@ -81,7 +81,7 @@ export type Capsule = Tables<'capsules'>
 export type SaveCapsuleArg = TablesInsert<'capsules'>
 
 export async function saveCapsule(capsule: SaveCapsuleArg) {
-    const supabase = createClient()
+    const supabase = await createClient()
     logger.log('supabase:database', 'Saving capsule...')
     const { data, error } = await supabase.from('capsules').upsert(capsule).select().single()
     if (error || !data) logger.error('supabase:database', 'Error saving capsule', error?.message)

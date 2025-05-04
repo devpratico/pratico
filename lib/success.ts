@@ -52,7 +52,7 @@ async function asyncMatchSuccess<E1, E2>(
     handlers: {
         error: (error: E1) => Promise<E2> | E2,
     }
-): AsyncSuccess<E2> {
+): Promise<Success<E2>> {
     
     const awaitedResult = await result;
 

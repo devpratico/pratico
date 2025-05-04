@@ -17,7 +17,7 @@ type UploadCapsuleFileArgs = {
  * Client-side function to upload a file related to a capsule
  */
 export default async function uploadCapsuleFile(args: UploadCapsuleFileArgs) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     logger.log('supabase:storage', 'Uploading file', args);
 

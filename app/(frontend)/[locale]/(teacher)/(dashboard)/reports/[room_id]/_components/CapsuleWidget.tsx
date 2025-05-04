@@ -7,7 +7,7 @@ import logger from "@/app/_utils/logger";
 import { getUser } from "@/app/(backend)/api/auth/auth.server";
 
 export async function CapsuleWidget ({ capsuleTitle, capsuleId, roomId }: { capsuleTitle: string, capsuleId: null | string, roomId: string }) {
-	const supabase = createClient();
+	const supabase = await createClient();
 	const formatter = await getFormatter();
 	let capsuleDate = "";
 	let capsuleSnapshot: Json | TLEditorSnapshot | null = null;

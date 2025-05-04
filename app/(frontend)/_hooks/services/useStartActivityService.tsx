@@ -4,8 +4,8 @@ import { useState, useCallback } from "react"
 import { useRoom } from "../contexts/useRoom"
 import useQuizAnimationStore from "../stores/useQuizAnimationStore"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
-import { Quiz, QuizSnapshot } from "@/core/domain/entities/activities/quiz"
-import { Poll, PollSnapshot } from "@/core/domain/entities/activities/poll"
+import { Quiz, QuizSnapshot } from "@/core/domain/entities/quiz"
+import { Poll, PollSnapshot } from "@/core/domain/entities/poll"
 import useActivityQuery from "../queries/useActivityQuery"
 import { useRoomMutation } from "../mutations/useRoomMutation"
 import useRoomEventsMutation from "../mutations/useRoomEventsMutation"
@@ -59,6 +59,7 @@ export function useStartActivityService(): {
                 type: 'quiz',
                 activityId: id,
                 currentQuestionId: quiz.questions[0].id,
+                navigation: "animateur",
                 state: 'answering',
                 answers: []
             }
@@ -93,6 +94,7 @@ export function useStartActivityService(): {
                 type: 'poll',
                 activityId: id,
                 currentQuestionId: poll.questions[0].id,
+                navigation: "animateur",
                 state: 'voting',
                 answers: []
             }

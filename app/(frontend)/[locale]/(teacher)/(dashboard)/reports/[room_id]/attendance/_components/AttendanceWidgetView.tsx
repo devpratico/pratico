@@ -39,7 +39,7 @@ export type AttendanceWidgetViewProps = {
 
 export function AttendanceWidgetView ({data}: AttendanceWidgetViewProps) {
 	const contentRef = useRef<HTMLDivElement>(null);
-	const reactToPrint = useReactToPrint({contentRef});
+    const reactToPrint = useReactToPrint({ contentRef: contentRef as React.RefObject<Element> });
 	const formatter = useFormatter();
 	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	const locale = useLocale();

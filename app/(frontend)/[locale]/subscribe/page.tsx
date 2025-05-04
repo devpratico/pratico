@@ -5,14 +5,25 @@ import config from '@/app/(backend)/api/stripe/stripe.config';
 import { redirect } from '@/app/(frontend)/_intl/intlNavigation';
 import { Container, Section, Card, Heading, Text } from '@radix-ui/themes';
 
-declare global {
+// declare global {
+//     namespace JSX {
+//       interface IntrinsicElements {
+//         'stripe-pricing-table': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+//       }
+//     }
+// }
+
+declare module "react" {
     namespace JSX {
-      interface IntrinsicElements {
-        'stripe-pricing-table': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-      }
+        interface IntrinsicElements {
+            'stripe-pricing-table': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+                'client-reference-id'?: string;
+                'pricing-table-id'?: string;
+                'publishable-key'?: string;
+            };
+        }
     }
 }
-
 
 export default async function SubScribePage() {
     // On passe l'id de l'utilisateur à stripe afin de pouvoir facilement le retrouver parmis

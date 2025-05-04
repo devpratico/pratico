@@ -28,7 +28,7 @@ interface RootLayoutProps {
 }
 
 export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     const { data, error } = await supabase.auth.getUser()
     let firstName: string | undefined

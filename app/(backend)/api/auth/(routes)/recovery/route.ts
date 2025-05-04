@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const redirectTo = new URL('/auth?authTab=change-password', request.url)
 
     if (token_hash && type) {
-        const supabase = createClient()
+        const supabase = await createClient()
         const { error } = await supabase.auth.verifyOtp({type, token_hash})
 
         if (!error) {

@@ -1,6 +1,6 @@
 import logger from "@/app/_utils/logger"
 import { useEffect } from "react"
-import { PollSnapshot, Poll, PollUserAnswer } from "@/core/domain/entities/activities/poll"
+import { PollSnapshot, Poll, PollUserAnswer } from "@/core/domain/entities/poll"
 import usePollAnimationStore from "../stores/usePollAnimationStore"
 import { useRoom } from "../contexts/useRoom"
 import { useRealtimeActivityContext } from "../contexts/useRealtimeActivityContext"
@@ -299,6 +299,7 @@ function useSavePollSnapshot() :{
             activityId: state.id,
             currentQuestionId: state.currentQuestionId,
             state: state.state,
+            navigation: "animateur",
             answers: state.answers
         }
         

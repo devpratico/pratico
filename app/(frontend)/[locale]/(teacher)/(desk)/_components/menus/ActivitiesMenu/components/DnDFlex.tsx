@@ -53,7 +53,7 @@ function Item({id, children}: {id: string, children: React.ReactNode}) {
 }
 
 
-function Normal({children}: {children: JSX.Element}) {
+function Normal({children}: {children: React.ReactNode}) {
     const [hasGrabHandle, setHasGrabHandle] = useState(false);
     const itemContext = useContext(ItemContext);
 
@@ -76,17 +76,17 @@ function Normal({children}: {children: JSX.Element}) {
 }
 
 
-function Active({children}: {children: JSX.Element}) {
+function Active({children}: {children: React.ReactNode}) {
     return children
 }
 
 
-function Overlay({children}: {children: JSX.Element}) {
+function Overlay({children}: {children: React.ReactNode}) {
     return children
 }
 
 /** Adds the grabbing interactive behavior to the child */
-function InteractiveGrabHandle({children}: {children: JSX.Element}) {
+function InteractiveGrabHandle({children}: {children: React.ReactNode}) {
     const itemContext = useContext(ItemContext);
     const setHasGrabHandle = useContext(GrabHandleContext);
 
@@ -108,7 +108,7 @@ function InteractiveGrabHandle({children}: {children: JSX.Element}) {
 }
 
 
-function GrabHandle({children}: {children: JSX.Element}) {
+function GrabHandle({ children }: { children: React.ReactNode }) {
     const isInDnDItemNormal = useContext(DnDItemNormalContext);
     // No need for interactivity if outside DnDItemNormal
     return isInDnDItemNormal ? <InteractiveGrabHandle>{children}</InteractiveGrabHandle> : children

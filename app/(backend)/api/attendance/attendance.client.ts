@@ -9,7 +9,6 @@ import { fetchUser } from "../user/user.server";
 import { User } from "@supabase/supabase-js";
 import { signInAnonymously } from "../user/user.server";
 import { redirect } from "@/app/(frontend)/_intl/intlNavigation";
-import { send } from "process";
 
 // TODO: rename this kind of files "actions"
 
@@ -24,7 +23,7 @@ async function insertAttendance(args: {
     Promise<{ error: string | null }>
 {
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Fetch the room id
     const { data: roomData, error: getIdError } = await supabase

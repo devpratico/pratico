@@ -14,9 +14,10 @@ import QuizAnimation from "./_components/QuizAnimation";
 import { RealtimeActivityProvider } from "@/app/(frontend)/_hooks/contexts/useRealtimeActivityContext";
 import { StopSessionWarningAlert } from "./_components/StopSessionWarningAlert";
 
-export default async function Page({ params: { room_code } }: { params: { room_code: string } }) {
+export default async function Page({ params }: { params: Promise<{ room_code: string }> }) {
     const logoScale = 0.25;
-	const supabase = createClient();
+    const { room_code } = await params;
+	const supabase = await createClient();
 
 	const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (!user || userError) {

@@ -1,5 +1,5 @@
 'use client'
-import { ActivitySnapshot } from "@/core/domain/entities/activities/activity"
+import { ActivitySnapshot } from '@/core/domain/entities/activity'
 import createClient from "@/supabase/clients/client"
 import { useState, useCallback } from "react"
 import { Json } from "@/supabase/types/database.types"

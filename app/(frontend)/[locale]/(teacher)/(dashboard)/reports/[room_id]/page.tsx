@@ -1,6 +1,6 @@
 import logger from "@/app/_utils/logger";
 import { Container, Grid, ScrollArea, Section, Text, Heading } from "@radix-ui/themes";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { Params } from "next/dist/server/request/params";
 import createClient from "@/supabase/clients/server";
 import { AttendanceWidget } from "./attendance/_components/AttendanceWidget";
 import { BackButton } from "@/app/(frontend)/[locale]/_components/BackButton";
@@ -37,8 +37,15 @@ export type SessionInfoType = {
   capsule_title?: string | null
 };
 
-export default async function SessionDetailsPage ({ params }: { params: Params }) {
-	const roomId: string = params.room_id;
+export default async function SessionDetailsPage ({ params }: { params: Promise<Params> }) {
+	const roomId = (await params).room_id as string | undefined;
+    if (!roomId) {
+        logger.error('next:page', 'SessionDetailsPage', 'No roomId found in params');
+        return <p>Erreur: aucune donnée disponible pour cette session.</p>
+    }
+
+
+
     let capsuleTitle = "Sans titre";
     let sessionDateSubtitle = "Date inconnue";
 
@@ -105,7 +112,7 @@ export default async function SessionDetailsPage ({ params }: { params: Params }
 // with proper error handling (returning a { data, error } object)
 
 async function getCapsuleId(roomId: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('rooms').select('capsule_id').eq('id', parseInt(roomId)).single();
     if (error || !data.capsule_id) {
         logger.error('next:page', 'SessionDetailsPage', 'Error fetching capsuleId', error?.message ?? 'No data');
@@ -116,7 +123,7 @@ async function getCapsuleId(roomId: string) {
 
 
 async function getCapsuleTitle(capsuleId: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('capsules').select('title').eq('id', capsuleId).single();
     if (error || !data.title) {
         logger.error('next:page', 'SessionDetailsPage', 'Error fetching capsuleTitle', error?.message ?? 'No data');
@@ -127,7 +134,7 @@ async function getCapsuleTitle(capsuleId: string) {
 
 
 async function getSessionStartDate(roomId: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.from('rooms').select('created_at').eq('id', parseInt(roomId)).single();
     if (error || !data.created_at) {
         logger.error('next:page', 'SessionDetailsPage', 'Error fetching session date', error?.message ?? 'No data');

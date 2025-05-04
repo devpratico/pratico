@@ -5,7 +5,7 @@ import { fetchUser } from '../user/user.server'
 
 
 export async function getUser() {
-    const supabase = createClient()
+    const supabase = await createClient()
     return await supabase.auth.getUser()
 }
 
@@ -18,7 +18,7 @@ export async function getUserRole() {
         return { role: null, error: userError }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: roleData, error: roleError } = await supabase.from('user_profiles').select('role').eq('id', userData.user.id).single()
 
     if (roleError || !roleData) {
@@ -31,7 +31,7 @@ export async function getUserRole() {
 
 
 export const isLoggedIn = async () => {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     try {
         const user = supabase.auth.getUser()

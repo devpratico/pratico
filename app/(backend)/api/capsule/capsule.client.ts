@@ -13,14 +13,14 @@ import {
 //export type Snapshot = TLStoreSnapshot
 
 export const deleteCapsule = async (capsuleId: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.from('capsules').delete().eq('id', capsuleId)
     if (error) logger.error('supabase:database', 'Error deleting capsule', capsuleId, error.message)
     return { error: error?.message }
 }
 
 const saveSnapshotToCapsules = async (capsuleId: string, snapshot: TLStoreSnapshot) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const jsonSnapshot = snapshot as unknown as Json
     const { data, error } = await supabase.from('capsules').update({ tld_snapshot: [jsonSnapshot] }).eq('id', capsuleId)
     if (error) logger.error('supabase:database', 'Error saving snapshot to capsule', error.message)
@@ -46,7 +46,7 @@ export const saveCapsuleTitle = async (capsuleId: string, title: string) => {
         return result
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error } = await supabase.from('capsules').update({ title }).eq('id', capsuleId)
 
     if (error) {
@@ -58,7 +58,7 @@ export const saveCapsuleTitle = async (capsuleId: string, title: string) => {
 }
 
 export async function getPublicUrl(path: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data } = supabase.storage.from('capsules_files').getPublicUrl(path)
     return data.publicUrl
 }

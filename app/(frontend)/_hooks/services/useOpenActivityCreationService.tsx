@@ -1,11 +1,11 @@
 'use client'
 import { useCallback, useState } from 'react'
-import { Activity } from '@/core/domain/entities/activities/activity'
+import { Activity } from '@/core/domain/entities/activity'
 import usePollCreationStore from '../stores/usePollCreationStore'
 import useQuizCreationStore from '../stores/useQuizCreationStore'
 import logger from '@/app/_utils/logger'
-import { Poll } from '@/core/domain/entities/activities/poll'
-import { Quiz } from '@/core/domain/entities/activities/quiz'
+import { Poll } from '@/core/domain/entities/poll'
+import { Quiz } from '@/core/domain/entities/quiz'
 import useActivityQuery from '../queries/useActivityQuery'
 
 

@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
 
 async function saveStripeId(userId: string, stripeId: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     //const { data, error } = await supabase.from('user_profiles').update({ stripe_id: stripeId }).eq('id', userId)
     // Upsert instead (create row if it doesn't exist)
     const { data, error } = await supabase.from('user_profiles').upsert({ id: userId, stripe_id: stripeId })

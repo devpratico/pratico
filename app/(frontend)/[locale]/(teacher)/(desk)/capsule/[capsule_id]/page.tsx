@@ -17,10 +17,10 @@ import { customerIsSubscribed } from '@/app/(backend)/api/stripe/stripe.server';
 
 
 
-export default async function Page({ params: { capsule_id } }: { params: { capsule_id: string } }) {
+export default async function Page({ params }: { params: Promise<{ capsule_id: string }> }) {
     const logoScale = 0.25
-    const supabase = createClient();
-
+    const supabase = await createClient();
+    const { capsule_id } = await params;
     const { user, error } = await fetchUser();
     if (!user || error)
         throw new Error("User not found");

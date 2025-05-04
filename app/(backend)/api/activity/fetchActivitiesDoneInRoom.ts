@@ -2,8 +2,8 @@
 import createClient from '@/supabase/clients/server'
 import logger from '@/app/_utils/logger'
 import DatabaseResponse from '@/app/_utils/ServerResponse'
-import { Poll, PollUserAnswer } from '@/core/domain/entities/activities/poll'
-import { Quiz, QuizUserAnswer } from '@/core/domain/entities/activities/quiz'
+import { Poll, PollUserAnswer } from '@/core/domain/entities/poll'
+import { Quiz, QuizUserAnswer } from '@/core/domain/entities/quiz'
 
 
 export type ActivityData = {
@@ -26,7 +26,7 @@ export async function fetchActivitiesDoneInRoom(roomId: string): Promise<Databas
     Array<ActivityData>,
     Error
 >> {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Fetch all the events rows
     const { data: events, error } = await supabase
@@ -220,7 +220,7 @@ async function computePollParticipation(args: {
 }): 
     Promise<DatabaseResponse<number, Error>>
 {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // We need to count how many attendencies for this room
     const { data, error } = await supabase
@@ -297,7 +297,7 @@ async function computeQuizSuccess(args: {
     Promise<DatabaseResponse<number, Error>>
 {
     // We need to fetch the activity object to get the correct answers
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase
         .from('activities')
         .select('object')

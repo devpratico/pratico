@@ -4,7 +4,7 @@ import logger from '@/app/_utils/logger'
 import { revalidatePath } from 'next/cache'
 import { getRoomId, fetchRoomParams, fetchOpenRoomsCodes, fetchOpenRoomByCode as fetchOpenRoomByCodeServer } from './room.server'
 import { TablesInsert, Tables, Json } from '@/supabase/types/database.types'
-import { ActivitySnapshot } from '@/core/domain/entities/activities/activity'
+import { ActivitySnapshot } from '@/core/domain/entities/activity'
 import { generateRandomCode } from '@/app/_utils/codeGen'
 import { fetchUser } from '../user/user.server'
 import { fetchActivity } from '../activity/activity.server'
@@ -18,7 +18,7 @@ export type Capsule = Tables<'capsules'>
 
 
 export const stopRoom = async (roomId: number) => {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { error } = await supabase.from('rooms').update({ status: 'closed' }).eq('id', roomId)
     if (error) {
@@ -115,7 +115,7 @@ export const toggleCollaborationForAll = async ({ roomCode, allUsersIds }: toggl
 
 
 const saveRoom = async (room: RoomInsert) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('rooms').upsert(room).select().single()
     if (error) logger.error('supabase:database', 'Error saving room', error.message)
     return { data, error: error?.message }
@@ -123,7 +123,7 @@ const saveRoom = async (room: RoomInsert) => {
 
 
 export const deleteRoom = async (roomId: number) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('rooms').delete().eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error deleting room', error.message)
     if (!error) revalidatePath('/')
@@ -134,7 +134,7 @@ export const deleteRoom = async (roomId: number) => {
 
 
 export const createRoom = async (capsuleId: string) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { user, error: userError } = await fetchUser()
     if (userError) return { room: null, error: userError }
     if (!user) return { room: null, error: 'No user' }
@@ -200,7 +200,7 @@ export const createRoom = async (capsuleId: string) => {
 
 
 export const saveRoomSnapshot = async (roomId: number, snapshot: any) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('rooms').update({ capsule_snapshot: snapshot as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saving room snapshot', error.message)
     return { data, error: error?.message }
@@ -208,7 +208,7 @@ export const saveRoomSnapshot = async (roomId: number, snapshot: any) => {
 
 
 export const saveRoomParams = async (roomId: number, params: RoomParams) => {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('rooms').update({ params: params as unknown as Json }).eq('id', roomId)
     if (error) logger.error('supabase:database', 'Error saveRoomParams', error.message)
     return { data, error: error?.message }
@@ -217,7 +217,7 @@ export const saveRoomParams = async (roomId: number, params: RoomParams) => {
 
 // TODO: remove this to use a mutation hook
 export const saveActivitySnapshot = async (roomId: number, snapshot: ActivitySnapshot | null) => {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     logger.log('supabase:database', 'saveActivitySnapshot', '⭐️ saving snapshot in room...', 'roomId:', roomId, 'snapshot:', snapshot)
 
@@ -262,6 +262,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
             activityId: activityId,
             currentQuestionId: firstQuestionId,
             state: 'answering',
+            navigation: "animateur",
             answers: []
         }
     } else if (activity.type === 'poll') {
@@ -270,6 +271,7 @@ export const generateInitialActivitySnapshot = async (activityId: number): Promi
             activityId: activityId,
             currentQuestionId: firstQuestionId,
             state: 'voting',
+            navigation: "animateur",
             answers: []
         }
     } else {

@@ -5,9 +5,11 @@ import {getPollData, makeDataArrayForPoll, getQuizData, makeDataArrayForQuiz} fr
 import { NextRequest } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: { start_event_id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ start_event_id: string }> }) {
 
     logger.log('next:api', 'activity/routes/csv/poll/[start_event_id]/route.ts', 'GET', { params });
+
+    const startEventId = (await params).start_event_id;
 
     const searchParams = req.nextUrl.searchParams
     const type = searchParams.get('type')
@@ -15,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { start_event_
     let arr: string[][];
 
     if (type == 'poll') {
-        const { data, error } = await getPollData(params.start_event_id);
+        const { data, error } = await getPollData(startEventId);
 
         if (error) {
             logger.error('next:api', 'activity/routes/csv/[start_event_id]/route.ts', 'Error making poll object for csv', error);
@@ -25,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: { start_event_
         arr = makeDataArrayForPoll(data);
 
     } else if (type == 'quiz') {
-        const { data, error } = await getQuizData(params.start_event_id);
+        const { data, error } = await getQuizData(startEventId);
         if (error) {
             logger.error('next:api', 'activity/routes/csv/[start_event_id]/route.ts', 'Error making quiz object for csv', error);
             return Response.json({ error }, { status: 500 });

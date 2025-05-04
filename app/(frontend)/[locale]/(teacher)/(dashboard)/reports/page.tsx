@@ -11,7 +11,7 @@ export type CapsuleType = TablesInsert<"capsules">;
 export default async function ReportsPage() {
 	let capsules: CapsuleType[] = [];
 	let sessions: SessionInfoType[] = [];
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	try {
 		const { data: {user}, error } = await supabase.auth.getUser();

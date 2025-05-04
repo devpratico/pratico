@@ -3,7 +3,7 @@ import createClient from "@/supabase/clients/server";
 
 
 export async function getRoomId(roomCode: string) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const res = await supabase
         .from("rooms")
         .select("id")
