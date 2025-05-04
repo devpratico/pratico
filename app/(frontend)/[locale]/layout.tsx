@@ -24,10 +24,10 @@ export const viewport: Viewport = {
 
 interface RootLayoutProps {
     children: React.ReactNode
-    params: { locale: string }
+    params: Promise<{ locale: string }>
 }
 
-export default async function RootLayout({children, params: { locale }}: RootLayoutProps) {
+export default async function RootLayout({children, params}: RootLayoutProps) {
     const supabase = await createClient()
     
     const { data, error } = await supabase.auth.getUser()
@@ -43,6 +43,8 @@ export default async function RootLayout({children, params: { locale }}: RootLay
     }
 
     const isSubscribed = await customerIsSubscribed(data?.user?.id)
+
+    const locale = await params.then((params) => params.locale)
     
     return (
         <html lang={locale} data-theme="pratico">

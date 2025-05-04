@@ -1,5 +1,5 @@
 import {notFound} from 'next/navigation';
-import {getRequestConfig} from 'next-intl/server';
+import { getRequestConfig } from 'next-intl/server';
 import { IntlError, IntlErrorCode } from 'next-intl';
 import config from './intl.config';
  
@@ -7,7 +7,7 @@ import config from './intl.config';
 const locales = config.locales;
 const defaultLocale = config.defaultLocale;
  
-export default getRequestConfig(async ({locale}) => {
+export default getRequestConfig(async ({ locale = defaultLocale }: { locale?: string }) => {
 
   // If locale is not in the list of supported locales, return a 404
   if (!locales.includes(locale as any)) {
@@ -47,6 +47,7 @@ export default getRequestConfig(async ({locale}) => {
   }
  
   return {
+    locale,
     messages,
     onError,
     getMessageFallback,
