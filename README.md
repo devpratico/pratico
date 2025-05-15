@@ -6,7 +6,7 @@ Pratico est une application web construite avec `TypeScript`, `React` et `Next.j
 - [pnpm](https://pnpm.io/fr/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [Stripe CLI](https://stripe.com/docs/stripe-cli) (optionnel - si besoin de travailler sur Stripe)
-- Variables d'environnement à renseigner dans un fichier `.env.local` à la racine du projet (voir `.env.example` pour connaître les variabled)
+- Variables d'environnement à renseigner dans un fichier `.env.local` à la racine du projet (voir `.env.example` pour connaître les variables)
 
 # 🚀 Pour commencer
 1. `pnpm i`
