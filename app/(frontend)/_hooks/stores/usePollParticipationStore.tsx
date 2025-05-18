@@ -19,6 +19,7 @@ type Actions = {
     setSnapshot: (snapshot: PollSnapshot | null) => void
     vote:       (arg0: {choiceId: string, userId: string}) => void
     removeVote: (arg0: {choiceId: string, userId: string}) => void
+    setCurrentQuestionId: (questionId: string) => void
 }
 
 type Store = State & Actions
@@ -76,7 +77,18 @@ const usePollParticipationStore = create<Store>((set, get) => ({
                 !((a.choiceId == choiceId) && (a.userId == userId))
             )
         }))
-    }
+    },
+
+    setCurrentQuestionId: (questionId) => {
+        if (!thereIsAPoll()) {
+            logger.error('zustand:store', 'usePollParticipation.tsx', 'setCurrentQuestionId', 'No poll found')
+            return
+        }
+
+        set(produce<State>(draft => {
+            draft.currentQuestionId = questionId
+        }))
+    },
 }))
 
 export default usePollParticipationStore

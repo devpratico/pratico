@@ -4,13 +4,17 @@ import {
     Popover,
     IconButton,
     IconButtonProps,
+    Button,
     RadioCards,
     Text,
     Callout,
 } from "@radix-ui/themes"
 import { ChevronsLeftRight, TriangleAlert } from "lucide-react"
 import { useSetActivityNav } from "@/app/hooks/use-set-activity-nav"
-import { useTransition } from "react"
+import { useTransition, useEffect, useState } from "react"
+import { useRoom } from "@/app/(frontend)/_hooks/contexts/useRoom"
+import useActivitySnapshotQuery from "@/app/(frontend)/_hooks/queries/useActivitySnapshotQuery"
+
 
 
 
@@ -26,9 +30,10 @@ function View(props: {
         <Popover.Root>
 
             <Popover.Trigger>
-                <IconButton variant="ghost" {...btnProps}>
-                    <ChevronsLeftRight />
-                </IconButton>
+                <Button {...btnProps}>
+                    <ChevronsLeftRight size={28} />
+                    Synchrone
+                </Button>
             </Popover.Trigger>
 
                 <Popover.Content align="center" side="top" maxWidth='300px'>
@@ -44,15 +49,15 @@ function View(props: {
                         
                         <RadioCards.Item value="animateur" disabled={disabled}>
                             <Flex direction="column" gap="1" width="100%">                            
-                                <Text weight="bold">Au rythme de l&apos;animateur</Text>
-                                <Text color="gray">L&apos;animateur contrôle le défilement des questions</Text>
+                                <Text weight="bold">Synchrone</Text>
+                                <Text color="gray">L&apos;animateur contrôle le déroulé des questions</Text>
                             </Flex>
                         </RadioCards.Item>
                         
                         <RadioCards.Item value="libre" disabled={disabled}>
                             <Flex direction="column" gap="1" width="100%">
-                                <Text weight="bold">Au rythme du participant</Text>
-                                <Text color="gray">Les participants parcourent librement les questions</Text>
+                                <Text weight="bold">Asynchrone</Text>
+                                <Text color="gray">Les participants répondent aux questions à leur rythme</Text>
                             </Flex>
                         </RadioCards.Item>
 
@@ -75,14 +80,25 @@ function View(props: {
 
 
 function ActivityNavOptions(props: {
-    defaultValue: "animateur" | "libre"
-    roomId: number
     disabled?: boolean
 } & Omit<IconButtonProps, "onChange" | "defaultValue" | "disabled">) {
 
-    const { defaultValue, roomId, disabled, ...btnProps } = props
+    const { disabled, ...btnProps } = props
+    const room = useRoom()
+    const roomId = room.room?.id || 0
     const { set, res, isPending } = useSetActivityNav(roomId)
+    const { fetchSnapshot } = useActivitySnapshotQuery()
+    const [ initialNav, setInitialNav] = useState<"animateur" | "libre">("animateur")
+
+    useEffect(() => {
+        fetchSnapshot(`${roomId}`).then(({data, error}) => {
+            if (data) setInitialNav(data.navigation)
+        });
+    }, [fetchSnapshot, setInitialNav, roomId]);
+
     const [ tPending, startTransition ] = useTransition()
+
+    
 
     const handleChange = (value: "animateur" | "libre") => {
         startTransition(() => {
@@ -92,7 +108,7 @@ function ActivityNavOptions(props: {
 
     return (
             <View
-                defaultValue={defaultValue}
+                defaultValue={initialNav}
                 onChange={handleChange}
                 isPending={isPending || tPending}
                 errorMessage={res.error ? res.error.message : undefined}

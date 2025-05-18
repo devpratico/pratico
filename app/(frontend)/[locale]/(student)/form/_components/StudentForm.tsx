@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { janifera } from '@/app/(frontend)/Fonts';
 import { submitAttendanceForm } from '@/app/(backend)/api/attendance/attendance.client';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 
 
 const cguLink = "https://www.pratico.live/conditions-generales-dutilisation-et-de-vente"
@@ -19,7 +20,7 @@ export default function StudentForm() {
     const [lastName, setLastName] = useState('');
     const fullName = `${firstName} ${lastName}`;
 
-    const [state, action] = useFormState(submitAttendanceForm, { error: null });
+    const [state, action] = useActionState(submitAttendanceForm, { error: null });
 
     if (!nextUrl) throw new Error('nextUrl not found in query params');
     if (!roomCode) throw new Error('Room code not found in query params');

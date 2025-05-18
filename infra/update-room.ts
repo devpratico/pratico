@@ -3,11 +3,12 @@ import createClient from "@/supabase/clients/server";
 import { Json, TablesUpdate } from "@/supabase/types/database.types";
 
 
-export async function updateRoom(data: TablesUpdate<"rooms">) {
+export async function updateRoom(id: number, data: TablesUpdate<"rooms">) {
     const supabase = await createClient();
     const res = await supabase
         .from("rooms")
         .update(data)
+        .eq("id", id)
         .select()
         .single()
 

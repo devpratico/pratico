@@ -5,6 +5,7 @@ import usePollParticipationStore from "@/app/(frontend)/_hooks/stores/usePollPar
 import usePollParticipationService from "@/app/(frontend)/_hooks/services/usePollParticipationService"
 import CardDialog from "@/app/(frontend)/[locale]/(teacher)/(desk)/_components/CardDialog"
 import { useSyncParticipationPollService } from "@/app/(frontend)/_hooks/services/usePollParticipationService"
+import Navigation from "./navigation"
 
 
 
@@ -20,6 +21,7 @@ export default function PollParticipation() {
     const currentQuestionChoices = poll?.questions.find(q => q.id === currentQuestionId)?.choices || []
     const questionState = usePollParticipationStore(state => state.state)
     const answers = usePollParticipationStore(state => state.answers)
+    const setCurrentQuestionId = usePollParticipationStore(state => state.setCurrentQuestionId)
 
     // Service
     const { toggleVote, myChoicesIds, isPending } = usePollParticipationService()
@@ -48,6 +50,17 @@ export default function PollParticipation() {
                                 />
                             ))}
                         </Flex>
+                    </Section>
+
+                    <Section>
+                        <Navigation
+                            total={poll?.questions.length || 0}
+                            currentQuestionIndex={poll?.questions.findIndex(q => q.id === currentQuestionId) || 0}
+                            setCurrentQuestionIndex={(index) => {
+                                const questionId = poll?.questions[index].id
+                                if (questionId) {setCurrentQuestionId(questionId)}
+                            }}
+                        />
                     </Section>
                 </Container>
             </ScrollArea>

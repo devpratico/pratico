@@ -27,8 +27,7 @@ async function setActivityNav(args: {
         navigation,
     };
 
-    const { error: updateError } = await updateRoom({
-        id: roomId,
+    const { error: updateError } = await updateRoom(roomId, {
         activity_snapshot: updatedSnapshot,
     });
 
