@@ -128,11 +128,11 @@ const isAttendancesLimitReached = async (roomCode: string): Promise<{ isReached:
     // check if the customer is a paid customer
     const isPaidCustomer = await roomCreatorIsPaidCustomer(roomData.id);
     if (!isPaidCustomer) {
-        // check if the attendance count is less than 10
-        const maxParticipants = 10;
+        // check if the attendance count is less than 3
+        const maxParticipants = 3;
         const attendanceCount = await countAttendances(roomData.id);
         if (attendanceCount >= maxParticipants) {
-            logger.log('next:page', 'StudentViewPage', 'attendance count is greater than 10. Blocking user.');
+            logger.log('next:page', 'StudentViewPage', 'attendance count is greater than 3. Blocking user.');
             /*const { data: creatorData, error: creatorError } = await fetchRoomCreator(roomData!.code!);
             const creatorId = creatorData?.created_by;
             if (creatorId) {
