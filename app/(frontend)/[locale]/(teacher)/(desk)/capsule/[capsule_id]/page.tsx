@@ -57,7 +57,7 @@ export default async function Page({ params: { capsule_id } }: { params: { capsu
                                 color='amber'
                                 //size='1'
                             >
-                                    Débloquer la limite de 10 participants
+                                    Débloquer la limite de 3 participants
                             </LinkButton>
                         </Box>
                     }

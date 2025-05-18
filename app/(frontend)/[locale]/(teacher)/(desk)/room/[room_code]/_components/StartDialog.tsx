@@ -64,7 +64,7 @@ export default function StartDialog() {
 
 
                     <Flex align='center' display={ isSubscribed ? 'none' : 'flex'}>
-                        <Text color='gray' size='2'>Le nombre de participants est limité à <Strong>10</Strong>.</Text>
+                        <Text color='gray' size='2'>Le nombre de participants est limité à <Strong>3</Strong>.</Text>
                         <GoPremiumBtn size='1' ml='3'/>
                     </Flex>
 

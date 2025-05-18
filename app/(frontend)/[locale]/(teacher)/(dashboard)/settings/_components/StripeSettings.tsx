@@ -32,7 +32,7 @@ function FreePlan({active=false}: {active?: boolean}) {
             <Heading size='3'>Pratico Free</Heading>
             <CalloutList items={[
                 'Toutes les fonctionnalités de Pratico',
-                'Limite de 10 participants par session'
+                'Limite de 3 participants par session'
             ]}/>
 
         </Callout.Root>

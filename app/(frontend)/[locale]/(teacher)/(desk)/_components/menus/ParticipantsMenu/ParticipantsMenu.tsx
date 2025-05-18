@@ -35,7 +35,7 @@ export default function ParticipantMenu() {
                         <Callout.Root color='amber' size='1' mb='6' variant='surface'>
                             <Callout.Icon><TriangleAlertIcon/></Callout.Icon>
                             <Callout.Text>
-                                Le nombre de participants est limité à <Strong>10</Strong>.
+                                Le nombre de participants est limité à <Strong>3</Strong>.
                             </Callout.Text>
                             <GoPremiumBtn/>
                         </Callout.Root>

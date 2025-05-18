@@ -49,7 +49,7 @@ function Banner() {
                             <AlertTriangle />
                         </Callout.Icon>
                         <Callout.Text>
-                            Vous êtes limité à 10 participants maximum par session.
+                            Vous êtes limité à 3 participants maximum par session.
                         </Callout.Text>
                     </Callout.Root>
 
